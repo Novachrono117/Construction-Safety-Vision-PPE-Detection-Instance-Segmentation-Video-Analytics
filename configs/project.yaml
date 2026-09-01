@@ -1,0 +1,46 @@
+# Project-level experiment configuration.
+#
+# Loaded by `construction_safety_vision.config.load_experiment_config`.
+# Parsing is strict: unknown keys raise a ConfigError.
+#
+# STATUS: foundation phase. The `dataset` block below is a PLANNING HYPOTHESIS.
+# Nothing in it has been verified against real files yet (`verified: false`).
+
+project_name: construction-safety-vision
+
+# Single global seed for every stochastic step (splitting, augmentation,
+# training). Recorded in every provenance record.
+seed: 42
+
+# Split protected from any development use until the final one-shot evaluation.
+holdout_split: test
+
+# Target proportions. The audit phase decides whether the dataset's own splits
+# are adopted or the data is re-split; the frozen result must match these
+# numbers (or this file must be updated and the change justified in the report).
+split_ratios:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+
+dataset:
+  name: Construction PPE Compliance Detection
+  source: roboflow_universe
+  # Filled in during phase 3 with the exact dataset *version* URL. Left empty on
+  # purpose: no URL is recorded before it has been opened and verified.
+  source_url: ""
+  # Instance segmentation is the canonical source of truth. Detection boxes are
+  # derived mathematically from the polygons, so both tasks share images and IDs.
+  canonical_task: instance_segmentation
+  # Hypothesised class list, subject to the phase 4 audit.
+  expected_classes:
+    - person
+    - helmet_loose
+    - helmet_on_head
+    - vest_loose
+    - vest_on_body
+  verified: false
+  notes: >-
+    Candidate only. Image count, split composition, class balance and annotation
+    quality are unverified. Do not cite any of these fields as facts before the
+    phase 4 audit sets verified to true.

@@ -1,0 +1,38 @@
+# Normalize every text file to LF in the repository and in the working tree.
+* text=auto eol=lf
+
+# Explicit text types (avoid heuristic misdetection).
+*.py    text eol=lf
+*.md    text eol=lf
+*.toml  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.txt   text eol=lf
+*.cfg   text eol=lf
+*.ipynb text eol=lf
+
+# Windows-only helpers keep CRLF.
+*.bat   text eol=crlf
+*.ps1   text eol=crlf
+
+# Binary assets: never diffed, never normalized.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.mp4   binary
+*.avi   binary
+*.mov   binary
+*.pt    binary
+*.pth   binary
+*.onnx  binary
+*.engine binary
+*.zip   binary
+*.tar   binary
+*.gz    binary
+*.npy   binary
+*.npz   binary
+
+# Notebooks: keep diffs readable, do not treat as binary.
+*.ipynb diff

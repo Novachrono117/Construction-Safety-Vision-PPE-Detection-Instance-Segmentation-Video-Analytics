@@ -1,0 +1,191 @@
+# CLAUDE.md - Operating constitution for this repository
+
+This file governs every Claude Code session in this repository. It refines the
+global engineering guidelines and, on conflict inside this repository, it wins.
+
+This is an academic project **and** a public portfolio project. Its value comes
+entirely from the honesty of its evidence: a wrong number that looks right is
+worse than no number at all. Every rule below exists to protect that.
+
+Read alongside: [`reports/rubric_contract.md`](reports/rubric_contract.md)
+(what must be delivered) and [`reports/roadmap.md`](reports/roadmap.md) (in what
+order, and the gate each phase must pass).
+
+Repository: <https://github.com/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics>
+
+---
+
+## 1. Test data is protected
+
+The `test` split is a locked holdout.
+
+- It may be read **once**, in phase 11, after both models are frozen.
+- Until then: no training on it, no metrics from it, no threshold tuning on it,
+  no "just to check" inspection, no plotting it, no looking at its images.
+- Model and hyperparameter selection use the **validation** split only.
+- Access goes through `construction_safety_vision.splits.assert_split_allowed`,
+  which requires two independent opt-ins: `allow_test=True` in code **and**
+  `CSVISION_ALLOW_TEST_SPLIT=1` in the environment. Never set that variable
+  "to make an error go away", never weaken the guard, and never bypass it with a
+  direct path read.
+- If the holdout is touched by accident, say so immediately and in full. A
+  disclosed leak is a limitation; a hidden one is fraud.
+
+## 2. No fabricated metrics
+
+- Never write a number that was not produced by an executed run. This includes
+  examples, placeholders that look plausible, "typical" values, and numbers
+  carried over from a paper, a tutorial, or a previous session's memory.
+- Never state dataset statistics (image counts, class balance, split sizes)
+  before the audit phase has measured them.
+- If a value is unknown, write `TBD` and say which phase will produce it.
+- Every reported metric must be traceable to a committed metrics file and a
+  provenance record. If it cannot be traced, it cannot be reported.
+- Report failures as plainly as successes: a run that diverged, a class the
+  model cannot detect, or a metric worse than the baseline all get written down.
+
+## 3. No causal claims without experimental support
+
+- Distinguish `FACT` (measured), `LIKELY` (strongly indicated), `HYPOTHESIS`
+  (plausible, untested) and `UNKNOWN`. Label the weaker ones explicitly.
+- "Augmentation X improved mAP" is a claim about causation. It requires a
+  controlled comparison in which only X differed. Otherwise write "run B, which
+  differed by X and by Y, scored higher; the cause is untested".
+- Two runs differing by a fraction of a point do not establish an ordering.
+  Acknowledge run-to-run variance instead of ranking noise.
+- Explanations of error patterns are hypotheses until an experiment tests them.
+
+## 4. No hidden manual dataset changes
+
+- `data/raw/` is immutable. Never edit, delete, re-encode or "fix" a raw file.
+- Every correction, filter or relabel is implemented as code in the
+  preprocessing pipeline, so it is visible, reviewable and reproducible.
+- Never hand-edit an annotation file, a manifest or a metrics file.
+- Removing images (duplicates, corrupt files, unlabelled samples) is a pipeline
+  step with a recorded count and a stated criterion, never an ad-hoc deletion.
+
+## 5. All preprocessing must be reproducible
+
+- Everything under `data/interim/` and `data/processed/` must be re-derivable
+  from `data/raw/` by running committed code with a committed configuration.
+- No transformation lives only in a notebook cell or a shell one-liner.
+- Every stochastic step draws from the configured seed and records it.
+- If a step cannot be reproduced, it is a defect: fix the pipeline rather than
+  keeping the output.
+
+## 6. Split alignment across tasks
+
+- Instance segmentation is the canonical annotation source. Detection boxes are
+  **derived mathematically** from the polygons, never annotated separately.
+- Detection and segmentation use exactly the same image IDs in `train`, `val`
+  and `test`.
+- Alignment is verified by an automated check, not by assertion, and re-verified
+  whenever either dataset view is regenerated.
+- Splits are frozen in phase 5 and recorded in manifests. Changing a split after
+  the freeze invalidates every result produced under it; if it must happen, the
+  affected results are recomputed or withdrawn, and the change is documented.
+- Duplicate and same-video-sequence images must not straddle a split boundary.
+
+## 7. Data and model provenance must be recorded
+
+- Every acquisition, derivation, training run and evaluation writes a
+  provenance record (`construction_safety_vision.provenance`): source, code
+  commit, configuration snapshot, environment, input and output file hashes.
+- Datasets and checkpoints are identified by hash, never by "the latest run".
+- A dataset without a recorded source, version and license is not used.
+- Never commit downloaded data or trained weights; commit the record that makes
+  them re-obtainable.
+
+## 8. New dependencies require justification
+
+- Prefer the standard library, then the already-installed set.
+- Adding a dependency requires stating what it does, why the existing set is
+  insufficient, and what it costs (size, build requirements, Colab
+  compatibility, license, maintenance).
+- Heavy frameworks are installed by the phase that needs them, not in advance.
+- Pin through `pyproject.toml` plus `uv.lock`. Never `pip install` into a
+  session without recording it.
+
+## 9. Tests and linting before reporting completion
+
+Run, from the repository root, before claiming any work is done:
+
+```bash
+uv run ruff check .
+uv run ruff format --check .
+uv run pytest
+```
+
+- Report the actual output. If a command was not run, say so and say why.
+- "It should work" is not a result. Either it was executed, or it was not.
+- Add tests for logic that protects the protocol (splits, alignment, derivation,
+  metric plumbing). Do not add tests that only inflate the count.
+
+## 10. Version control discipline
+
+- **Never commit, push, tag, or rewrite history unless explicitly asked in the
+  current session.** Approval given for one commit does not extend to the next.
+- Never modify global git configuration.
+- Never force-push, never `git reset --hard` on work you did not create, never
+  delete branches on your own initiative.
+- Commit messages in English, small and atomic, describing what changed and why.
+
+## 11. Binary and model artifacts stay out of the repository
+
+- Never commit: datasets, images, videos, `.pt`/`.pth`/`.onnx`/`.engine`
+  checkpoints, archives, or notebook outputs containing embedded binaries.
+- `.gitignore` enforces this; do not add exceptions casually.
+- Large outputs are referenced by provenance record plus an external link.
+- Small text artifacts (manifests, metrics JSON, provenance records) are
+  committed, because they are the evidence.
+
+## 12. Documentation must match the repository
+
+- The README describes what exists **now**, including the honest project status.
+- Never document a script, notebook, dataset or result that has not been
+  created. Planned work is labelled as planned.
+- When code changes, update the documentation that describes it in the same
+  change.
+- When a phase completes, update the status table in `reports/roadmap.md`.
+
+## 13. Every experiment records its configuration
+
+- No hyperparameter is passed only on a command line or typed into a notebook
+  cell. It lives in a file under `configs/`.
+- Configuration parsing is strict: unknown keys raise. Do not relax that to make
+  a file load.
+- To run a variant, add a new configuration file rather than editing one whose
+  results are already reported.
+- The report documents the complete hyperparameter set, not just the ones that
+  were changed.
+
+---
+
+## Working agreements
+
+- **Language.** Code, identifiers, docstrings, comments, commit messages and the
+  technical README are in English. Conversation with the maintainer is in
+  Brazilian Portuguese. Academic deliverables may have a Portuguese version.
+- **Read before write.** Inspect the existing structure and conventions before
+  editing. Do not assume a file, function or field exists.
+- **Root cause over symptom.** Diagnose before changing code; no random edits in
+  the hope that something works.
+- **Scope.** Out-of-scope problems are reported and classified
+  (`BLOCKER / HIGH / MEDIUM / LOW`), not silently fixed. Never change an API,
+  schema or split silently.
+- **Honesty over agreement.** If a proposed decision is technically wrong, say
+  so, give the reason and offer a better option.
+- **Secrets.** Never hardcode keys or tokens. Use `.env` (git-ignored) and keep
+  `.env.example` in sync.
+- **Phase discipline.** Work the current roadmap phase. Do not start a later
+  phase because it seems more interesting, and do not start bonus work before
+  the mandatory deliverables are complete.
+
+## Current state (keep this accurate)
+
+- **Phase:** 2 - repository foundation.
+- **Dataset:** none downloaded. `configs/project.yaml` declares a *candidate*
+  with `verified: false`; its classes, size and splits are unverified hypotheses.
+- **Models:** none trained. No metrics exist.
+- **Holdout:** not yet defined (no data), therefore not yet frozen. The lock
+  becomes meaningful at the phase 5 freeze.

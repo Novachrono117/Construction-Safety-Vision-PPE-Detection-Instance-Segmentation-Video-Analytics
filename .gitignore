@@ -1,0 +1,60 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# --- Environments ---
+.venv/
+venv/
+env/
+.env
+.env.local
+
+# --- Tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# --- Datasets: never committed, always re-derivable from provenance records ---
+data/raw/**
+data/interim/**
+data/processed/**
+data/external/**
+!data/**/.gitkeep
+!data/**/README.md
+# Provenance/manifest files are small, text, and reproducibility-critical: keep them.
+!data/**/*.provenance.json
+!data/**/*.manifest.csv
+
+# --- Model and experiment artifacts (tracked only via provenance records) ---
+runs/
+outputs/
+wandb/
+mlruns/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+
+# --- Media outputs (inference videos, large renders) ---
+reports/figures/**/*.mp4
+reports/figures/**/*.avi
+reports/figures/**/*.mov
+*.mp4
+*.avi
+*.mov
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+!.vscode/extensions.json
