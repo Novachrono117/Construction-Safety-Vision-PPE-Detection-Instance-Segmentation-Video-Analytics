@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "report": "dataset_provenance",
+  "phase": 3,
+  "generated_at": "2026-09-01T14:03:09+00:00",
+  "git_commit": "985a4c816846c5ecfcb05f915ed03209b13ec260",
+  "provider": {
+    "name": "roboflow",
+    "workspace": "agis-workspace-8gs52",
+    "project_slug": "construction-ppe-compliance-detection",
+    "project_name": "Construction PPE Compliance Detection",
+    "public_project_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection",
+    "public_version_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4",
+    "acquisition_method": "Roboflow REST API, stdlib urllib, Authorization: Bearer header; export link resolved at run time and never stored"
+  },
+  "project_level": {
+    "source": "provider_reported",
+    "task_type": "instance-segmentation",
+    "images": 436,
+    "unannotated": 0,
+    "splits": {
+      "test": 43,
+      "train": 306,
+      "valid": 87
+    },
+    "annotation_counts_per_class": {
+      "helmet_loose": 393,
+      "helmet_on_head": 314,
+      "person": 914,
+      "vest_loose": 45,
+      "vest_on_body": 365
+    },
+    "license": "CC BY 4.0",
+    "public": true,
+    "total_versions": 4
+  },
+  "version_level": {
+    "source": "provider_reported",
+    "version": 4,
+    "name": "2026-05-09 7:18pm",
+    "images": 742,
+    "splits": {
+      "test": 43,
+      "train": 612,
+      "valid": 87
+    },
+    "preprocessing": {
+      "auto-orient": true,
+      "resize": {
+        "format": "Stretch to",
+        "height": "640",
+        "width": "640"
+      }
+    },
+    "augmentation": {
+      "blur": {
+        "pixels": 2
+      },
+      "brightness": {
+        "brighten": true,
+        "darken": true,
+        "percent": 25
+      },
+      "cutout": {
+        "count": 3,
+        "percent": 10
+      },
+      "exposure": {
+        "percent": 15
+      },
+      "flip": {
+        "horizontal": true,
+        "vertical": false
+      },
+      "image": {
+        "versions": 2
+      },
+      "noise": {
+        "percent": 2
+      },
+      "rotate": {
+        "degrees": 15
+      }
+    },
+    "export_format": "coco-segmentation",
+    "export_size_mb": 51.867677
+  },
+  "source_vs_generated_analysis": {
+    "conclusion": "B_source_plus_generated",
+    "summary": "Version contains source images plus offline-generated variants. Augmentation was applied to ['train'] only (2 versions per source image); ['test', 'valid'] are unchanged. The 742 version images are therefore NOT 742 independent samples: the independent source population is 436.",
+    "per_split": {
+      "test": {
+        "source": 43,
+        "version": 43,
+        "status": "unchanged"
+      },
+      "train": {
+        "source": 306,
+        "version": 612,
+        "status": "generated",
+        "multiplier": 2
+      },
+      "valid": {
+        "source": 87,
+        "version": 87,
+        "status": "unchanged"
+      }
+    },
+    "generated_splits": [
+      "train"
+    ],
+    "unchanged_splits": [
+      "test",
+      "valid"
+    ],
+    "declared_versions_per_source_image": 2,
+    "independent_source_images": 436,
+    "version_images": 742,
+    "independent_images_are_provider_reported": true
+  },
+  "acquired_artifact": {
+    "source": "computed",
+    "archive": {
+      "path": "data/external/construction-ppe-compliance-detection-v4-coco-segmentation.zip",
+      "sha256": "5c0c35f79be251af349f289ab300a8c706f260f9a5b52f66facfbd23466538f6",
+      "size_bytes": 51867677
+    },
+    "acquired_at": "2026-09-01T14:03:09+00:00",
+    "acquired_at_git_commit": "985a4c816846c5ecfcb05f915ed03209b13ec260",
+    "extracted_to": "data/raw/construction-ppe-compliance-detection-v4-coco-segmentation",
+    "extracted_members": 747
+  },
+  "annotation_files": {
+    "source": "computed",
+    "files": {
+      "test/_annotations.coco.json": {
+        "sha256": "6eae9600dc34bed12ef6b20f6f2772e792f6ff188048774e00f226d848875d56",
+        "size_bytes": 147798
+      },
+      "train/_annotations.coco.json": {
+        "sha256": "ff45f7fbefff1c125e13b1d212cab2ed1dede6acad909a86a333380872de4f5a",
+        "size_bytes": 2195560
+      },
+      "valid/_annotations.coco.json": {
+        "sha256": "cf30a026be7e2916942227231ddd9771b0f34ea11cce8b82f8403557b71bd822",
+        "size_bytes": 274458
+      }
+    }
+  },
+  "exported_structure": {
+    "source": "computed",
+    "splits": {
+      "test": {
+        "split": "test",
+        "annotations_path": "test/_annotations.coco.json",
+        "image_records": 43,
+        "annotation_records": 166,
+        "image_files_on_disk": 43,
+        "categories": {
+          "0": "object",
+          "1": "helmet_loose",
+          "2": "helmet_on_head",
+          "3": "person",
+          "4": "vest_loose",
+          "5": "vest_on_body"
+        },
+        "annotations_per_category": {
+          "helmet_loose": 8,
+          "helmet_on_head": 39,
+          "person": 85,
+          "vest_on_body": 34
+        },
+        "segmentation_types": {
+          "polygon": 65,
+          "rle": 101
+        },
+        "annotations_with_bbox": 166,
+        "annotations_with_segmentation": 166,
+        "missing_image_files": [],
+        "orphan_image_files": [],
+        "dangling_image_ids": [],
+        "undefined_category_ids": [],
+        "duplicate_image_ids": [],
+        "duplicate_annotation_ids": [],
+        "images_without_annotations": 4,
+        "is_structurally_sound": true
+      },
+      "train": {
+        "split": "train",
+        "annotations_path": "train/_annotations.coco.json",
+        "image_records": 612,
+        "annotation_records": 2836,
+        "image_files_on_disk": 612,
+        "categories": {
+          "0": "object",
+          "1": "helmet_loose",
+          "2": "helmet_on_head",
+          "3": "person",
+          "4": "vest_loose",
+          "5": "vest_on_body"
+        },
+        "annotations_per_category": {
+          "helmet_loose": 662,
+          "helmet_on_head": 388,
+          "person": 1248,
+          "vest_loose": 64,
+          "vest_on_body": 474
+        },
+        "segmentation_types": {
+          "polygon": 1337,
+          "rle": 1499
+        },
+        "annotations_with_bbox": 2836,
+        "annotations_with_segmentation": 2836,
+        "missing_image_files": [],
+        "orphan_image_files": [],
+        "dangling_image_ids": [],
+        "undefined_category_ids": [],
+        "duplicate_image_ids": [],
+        "duplicate_annotation_ids": [],
+        "images_without_annotations": 22,
+        "is_structurally_sound": true
+      },
+      "valid": {
+        "split": "valid",
+        "annotations_path": "valid/_annotations.coco.json",
+        "image_records": 87,
+        "annotation_records": 371,
+        "image_files_on_disk": 87,
+        "categories": {
+          "0": "object",
+          "1": "helmet_loose",
+          "2": "helmet_on_head",
+          "3": "person",
+          "4": "vest_loose",
+          "5": "vest_on_body"
+        },
+        "annotations_per_category": {
+          "helmet_loose": 48,
+          "helmet_on_head": 81,
+          "person": 172,
+          "vest_loose": 13,
+          "vest_on_body": 57
+        },
+        "segmentation_types": {
+          "polygon": 168,
+          "rle": 203
+        },
+        "annotations_with_bbox": 371,
+        "annotations_with_segmentation": 371,
+        "missing_image_files": [],
+        "orphan_image_files": [],
+        "dangling_image_ids": [],
+        "undefined_category_ids": [],
+        "duplicate_image_ids": [],
+        "duplicate_annotation_ids": [],
+        "images_without_annotations": 2,
+        "is_structurally_sound": true
+      }
+    },
+    "totals": {
+      "image_records": 742,
+      "annotation_records": 3373,
+      "image_files_on_disk": 742,
+      "annotations_per_category": {
+        "helmet_loose": 718,
+        "helmet_on_head": 508,
+        "person": 1505,
+        "vest_loose": 77,
+        "vest_on_body": 565
+      },
+      "segmentation_types": {
+        "polygon": 1570,
+        "rle": 1803
+      }
+    }
+  },
+  "classes": {
+    "expected_from_config": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body"
+    ],
+    "declared_categories_computed": [
+      "helmet_loose",
+      "helmet_on_head",
+      "object",
+      "person",
+      "vest_loose",
+      "vest_on_body"
+    ],
+    "categories_with_annotations_computed": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body"
+    ],
+    "declared_but_never_annotated": [
+      "object"
+    ]
+  },
+  "integrity_checks": {
+    "splits_structurally_sound": {
+      "test": true,
+      "train": true,
+      "valid": true
+    },
+    "all_splits_sound": true,
+    "image_records_match_files_on_disk": true,
+    "annotations_all_have_segmentation": true,
+    "expected_classes_present_as_categories": true,
+    "expected_classes_with_annotations": true,
+    "undeclared_categories": [
+      "object"
+    ]
+  },
+  "notable_findings": {
+    "source": "computed",
+    "classes_absent_per_split": {
+      "test": [
+        "vest_loose"
+      ],
+      "train": [],
+      "valid": []
+    },
+    "findings": [
+      {
+        "id": "mixed_segmentation_representation",
+        "severity": "HIGH",
+        "computed": {
+          "polygon": 1570,
+          "rle": 1803
+        },
+        "statement": "The export mixes polygon and RLE segmentation in the same files. Phase 5 must decode both representations to derive bounding boxes; code that assumes polygons only would silently drop the RLE annotations."
+      },
+      {
+        "id": "class_absent_from_split",
+        "severity": "HIGH",
+        "computed": {
+          "test": [
+            "vest_loose"
+          ]
+        },
+        "statement": "At least one expected class has zero annotations in a split. A class absent from the evaluation split cannot be scored there, which constrains what the final metrics can claim."
+      },
+      {
+        "id": "images_without_annotations",
+        "severity": "MEDIUM",
+        "computed": {
+          "per_split": {
+            "test": 4,
+            "train": 22,
+            "valid": 2
+          },
+          "total": 28,
+          "provider_reported_unannotated": 0
+        },
+        "statement": "Image records carry no annotation, while the provider reports unannotated=0. These may be deliberate background/negative samples rather than missed labels; phase 4 must determine which, since the distinction changes how they are used and scored."
+      },
+      {
+        "id": "undeclared_categories_present",
+        "severity": "LOW",
+        "computed": {
+          "categories": [
+            "object"
+          ]
+        },
+        "statement": "The export declares categories that the project configuration does not expect and that carry no annotations. This is the provider's conventional root placeholder; phase 5 must exclude it from the class map rather than shifting every class index."
+      }
+    ]
+  },
+  "academic_requirement": {
+    "minimum_images": 300,
+    "independent_source_images": 436,
+    "currently_supported": true,
+    "basis": "Independent source images are provider-reported (project-level count); the version-level count includes offline-generated variants and must not be used for this requirement."
+  },
+  "license": {
+    "dataset_license": "CC BY 4.0",
+    "dataset_license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution_required": true,
+    "creator": "AGIs Workspace",
+    "note": "Applies to the dataset only. The software license of this repository is a separate, still undecided matter. The dataset is not redistributed here."
+  },
+  "unresolved_questions": [
+    "Which of the 436 source images survive de-duplication (phase 4).",
+    "Whether near-duplicate or same-scene frames exist across the provider's splits (phase 4); the provider's split assignment has not been audited.",
+    "Whether augmented train variants leak information about validation or test images; this cannot be ruled out until source-image identity is recovered (phase 4/5).",
+    "Whether the provider's train/valid/test assignment is adopted or the data is re-split (phase 5).",
+    "Annotation quality: polygon geometry has been counted, not validated against the imagery (phase 4)."
+  ]
+}

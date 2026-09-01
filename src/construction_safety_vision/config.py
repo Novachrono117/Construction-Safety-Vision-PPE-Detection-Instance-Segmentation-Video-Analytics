@@ -15,6 +15,8 @@ from typing import Any
 
 import yaml
 
+from construction_safety_vision.paths import ProjectRootNotFoundError, find_project_root
+
 CANONICAL_TASKS: frozenset[str] = frozenset({"instance_segmentation", "object_detection"})
 """Tasks accepted as the canonical annotation format of the source dataset."""
 
@@ -139,6 +141,10 @@ class DatasetCandidate:
         source_url: Canonical URL of the dataset version. Empty until acquired.
         verified: Whether the audit phase confirmed the declared fields.
         notes: Free-form provenance notes.
+        workspace: Provider workspace slug used to address the dataset.
+        project_slug: Provider project slug.
+        version: Provider dataset version number. ``0`` means unselected.
+        export_format: Provider export format slug used for acquisition.
     """
 
     name: str
@@ -148,6 +154,10 @@ class DatasetCandidate:
     source_url: str = ""
     verified: bool = False
     notes: str = ""
+    workspace: str = ""
+    project_slug: str = ""
+    version: int = 0
+    export_format: str = ""
 
     def __post_init__(self) -> None:
         """Validate the declared dataset fields.
@@ -188,13 +198,26 @@ class DatasetCandidate:
         _check_keys(
             data,
             required=("name", "source", "canonical_task", "expected_classes"),
-            optional=("source_url", "verified", "notes"),
+            optional=(
+                "source_url",
+                "verified",
+                "notes",
+                "workspace",
+                "project_slug",
+                "version",
+                "export_format",
+            ),
             context="dataset",
         )
         classes = data["expected_classes"]
         if isinstance(classes, str) or not isinstance(classes, Iterable):
             msg = "dataset.expected_classes must be a list of class names"
             raise ConfigError(msg)
+        try:
+            version = int(data.get("version", 0))
+        except (TypeError, ValueError) as exc:
+            msg = f"dataset.version must be an integer ({exc})"
+            raise ConfigError(msg) from exc
         return cls(
             name=str(data["name"]),
             source=str(data["source"]),
@@ -203,6 +226,10 @@ class DatasetCandidate:
             source_url=str(data.get("source_url", "")),
             verified=bool(data.get("verified", False)),
             notes=str(data.get("notes", "")),
+            workspace=str(data.get("workspace", "")),
+            project_slug=str(data.get("project_slug", "")),
+            version=version,
+            export_format=str(data.get("export_format", "")),
         )
 
 
@@ -271,13 +298,32 @@ class ExperimentConfig:
     def to_dict(self) -> dict[str, Any]:
         """Serialise the configuration for provenance records.
 
+        ``source_path`` is emitted relative to the repository root. Provenance
+        records are committed, and an absolute path would leak the local user's
+        directory layout while helping nobody reproduce the run.
+
         Returns:
             A JSON-serialisable snapshot of the configuration.
         """
         payload = asdict(self)
         payload["dataset"]["expected_classes"] = list(self.dataset.expected_classes)
-        payload["source_path"] = None if self.source_path is None else str(self.source_path)
+        payload["source_path"] = self.relative_source_path()
         return payload
+
+    def relative_source_path(self) -> str | None:
+        """Return the configuration path relative to the repository root.
+
+        Returns:
+            A repository-relative POSIX path, the bare file name when the file
+            lies outside the repository, or ``None`` for in-memory configurations.
+        """
+        if self.source_path is None:
+            return None
+        resolved = Path(self.source_path).expanduser().resolve()
+        try:
+            return resolved.relative_to(find_project_root()).as_posix()
+        except (ValueError, ProjectRootNotFoundError):
+            return resolved.name
 
 
 def load_experiment_config(path: str | Path) -> ExperimentConfig:

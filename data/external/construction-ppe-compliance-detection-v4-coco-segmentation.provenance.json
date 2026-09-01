@@ -1,0 +1,138 @@
+{
+  "config": {
+    "dataset": {
+      "canonical_task": "instance_segmentation",
+      "expected_classes": [
+        "person",
+        "helmet_loose",
+        "helmet_on_head",
+        "vest_loose",
+        "vest_on_body"
+      ],
+      "export_format": "coco-segmentation",
+      "name": "Construction PPE Compliance Detection",
+      "notes": "Verified in phase 3 against the downloaded COCO instance-segmentation export (see reports/dataset_provenance.md). IMPORTANT: version 4 contains 742 images, but only 436 are independent source images; the train split is augmented x2 offline. Phases 4 and 5 must treat 436 as the independent population. Open items: vest_loose has zero annotations in the test split, 28 image records carry no annotations, and segmentation geometry is a mix of polygon and RLE.",
+      "project_slug": "construction-ppe-compliance-detection",
+      "source": "roboflow_universe",
+      "source_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4",
+      "verified": true,
+      "version": 4,
+      "workspace": "agis-workspace-8gs52"
+    },
+    "holdout_split": "test",
+    "project_name": "construction-safety-vision",
+    "seed": 42,
+    "source_path": "configs/project.yaml",
+    "split_ratios": {
+      "test": 0.15,
+      "train": 0.7,
+      "val": 0.15
+    }
+  },
+  "created_at": "2026-09-01T14:03:09+00:00",
+  "details": {
+    "acquisition_method": "Roboflow REST API, stdlib urllib, Authorization: Bearer header; export link resolved at run time and never stored",
+    "export_format": "coco-segmentation",
+    "extracted_members": 747,
+    "extracted_to": "data/raw/construction-ppe-compliance-detection-v4-coco-segmentation",
+    "project_slug": "construction-ppe-compliance-detection",
+    "provider": "roboflow",
+    "provider_reported_export": {
+      "format": "coco-segmentation",
+      "size": 51.867677
+    },
+    "provider_reported_project": {
+      "annotation": "object",
+      "classes": {
+        "helmet_loose": 393,
+        "helmet_on_head": 314,
+        "person": 914,
+        "vest_loose": 45,
+        "vest_on_body": 365
+      },
+      "id": "agis-workspace-8gs52/construction-ppe-compliance-detection",
+      "images": 436,
+      "license": "CC BY 4.0",
+      "name": "Construction PPE Compliance Detection",
+      "public": true,
+      "splits": {
+        "test": 43,
+        "train": 306,
+        "valid": 87
+      },
+      "type": "instance-segmentation",
+      "unannotated": 0,
+      "versions": 4
+    },
+    "provider_reported_version": {
+      "augmentation": {
+        "blur": {
+          "pixels": 2
+        },
+        "brightness": {
+          "brighten": true,
+          "darken": true,
+          "percent": 25
+        },
+        "cutout": {
+          "count": 3,
+          "percent": 10
+        },
+        "exposure": {
+          "percent": 15
+        },
+        "flip": {
+          "horizontal": true,
+          "vertical": false
+        },
+        "image": {
+          "versions": 2
+        },
+        "noise": {
+          "percent": 2
+        },
+        "rotate": {
+          "degrees": 15
+        }
+      },
+      "created": 1778350856.869,
+      "id": "agis-workspace-8gs52/construction-ppe-compliance-detection/4",
+      "images": 742,
+      "name": "2026-05-09 7:18pm",
+      "preprocessing": {
+        "auto-orient": true,
+        "resize": {
+          "format": "Stretch to",
+          "height": "640",
+          "width": "640"
+        }
+      },
+      "splits": {
+        "test": 43,
+        "train": 612,
+        "valid": 87
+      }
+    },
+    "public_project_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection",
+    "public_version_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4",
+    "version": 4,
+    "workspace": "agis-workspace-8gs52"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "985a4c816846c5ecfcb05f915ed03209b13ec260",
+  "inputs": [],
+  "name": "dataset-acquisition",
+  "outputs": [
+    {
+      "path": "data/external/construction-ppe-compliance-detection-v4-coco-segmentation.zip",
+      "sha256": "5c0c35f79be251af349f289ab300a8c706f260f9a5b52f66facfbd23466538f6",
+      "size_bytes": 51867677
+    }
+  ],
+  "phase": 3,
+  "schema_version": 1
+}

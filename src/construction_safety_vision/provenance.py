@@ -15,7 +15,6 @@ import hashlib
 import json
 import platform
 import subprocess
-import sys
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -82,6 +81,10 @@ def git_commit(root: str | Path | None = None) -> str | None:
 def runtime_environment() -> dict[str, str]:
     """Capture the interpreter and platform the artifact was produced on.
 
+    The interpreter *path* is deliberately excluded: provenance records are
+    committed, and an absolute path leaks the local user's directory layout
+    without helping anyone reproduce the run.
+
     Returns:
         A mapping with the Python version, implementation and platform string.
     """
@@ -89,7 +92,6 @@ def runtime_environment() -> dict[str, str]:
         "python_version": platform.python_version(),
         "python_implementation": platform.python_implementation(),
         "platform": platform.platform(),
-        "executable": sys.executable,
     }
 
 

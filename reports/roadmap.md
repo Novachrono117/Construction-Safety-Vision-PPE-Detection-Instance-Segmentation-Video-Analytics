@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.0 · Current phase: **2 - Repository foundation** (in progress)
+Version: 1.1 · Current phase: **4 - Dataset/annotation audit and EDA** (not started)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -16,9 +16,9 @@ change log at the bottom of this file.
 | # | Phase | Status |
 | --- | --- | --- |
 | 1 | Scope and rubric contract | done |
-| 2 | Repository foundation | in progress |
-| 3 | Dataset acquisition and provenance | not started |
-| 4 | Dataset/annotation audit and EDA | not started |
+| 2 | Repository foundation | done |
+| 3 | Dataset acquisition and provenance | done |
+| 4 | Dataset/annotation audit and EDA | **next** |
 | 5 | Split freeze and task-specific dataset generation | not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
@@ -65,34 +65,55 @@ change log at the bottom of this file.
 - **Objective.** Acquire the source dataset in its canonical instance
   segmentation form and record exactly what was obtained, from where, under
   which license.
-- **Inputs.** `configs/project.yaml` (declared dataset); source credentials from
-  `.env`.
-- **Outputs.** `data/raw/<dataset>/` (untracked); `data/raw/*.provenance.json`
-  with source URL, dataset version, license, download timestamp, file count and
-  hashes; an acquisition script; `reports/dataset_card.md` (source description,
-  intended use, known limitations).
-- **Validation gate.** The download is reproducible from the recorded version;
-  every raw file is hashed; the license permits public release of derived work
-  and of the report; `configs/project.yaml` is updated with the exact version URL.
+- **Inputs.** `configs/project.yaml` (declared dataset); `ROBOFLOW_API_KEY` from
+  the environment.
+- **Outputs (as delivered).** `scripts/download_dataset.py` and
+  `scripts/inspect_dataset.py`; `src/construction_safety_vision/data/`
+  (`roboflow`, `acquisition`, `coco`, `versioning`); the archive and its record
+  in `data/external/` (archive untracked, record committed); the extracted
+  export in `data/raw/` (untracked);
+  [`reports/dataset_provenance.md`](dataset_provenance.md) and
+  `reports/dataset_provenance.json`.
+- **Validation gate (passed).** The download is reproducible from the recorded
+  version and its SHA-256; annotation files are hashed; the license (CC BY 4.0)
+  permits public release of derived work and of the report;
+  `configs/project.yaml` carries the exact provider coordinates and version URL;
+  the export is structurally sound (no dangling image or category references, no
+  duplicate ids, no missing files); the difference between the project-level and
+  version-level image counts is explained by evidence rather than assumed.
 - **Academic mapping.** C1 (problem and dataset).
+
+> **Key outcome.** Version 4 contains 742 images but only **436 independent
+> source images**: the train split is offline-augmented x2 (306 -> 612) while
+> validation and test are unchanged. Every later phase must treat 436 as the
+> independent population. Provenance-level facts are verified; annotation
+> *quality* is not, and remains phase 4's job.
 
 ## Phase 4 - Dataset/annotation audit and EDA
 
 - **Objective.** Replace every planning hypothesis with a measurement, and find
   the defects that would otherwise silently corrupt the evaluation.
-- **Inputs.** `data/raw/`; the acquisition provenance record.
+- **Inputs.** `data/raw/`; the acquisition provenance record;
+  `reports/dataset_provenance.md` (structure and open items already established).
 - **Outputs.** `notebooks/01_dataset_audit.ipynb`; `reports/dataset_audit.md`;
   audit tables in `data/interim/`; figures for class distribution, object size
   distribution and objects per image.
-- **Validation gate.** Measured image and instance counts per class; annotation
-  integrity checked (empty or degenerate polygons, out-of-bounds coordinates,
-  self-intersections, class-name inconsistencies, unlabelled images); exact
-  duplicates detected by content hash; near duplicates detected by perceptual
-  hash with a documented threshold; potential video-frame sequences identified
-  and grouped; the >= 300 annotated image requirement confirmed or the dataset
-  choice revised. `configs/project.yaml` sets `dataset.verified: true` only if
-  the declared fields survived the audit.
+- **Validation gate.** The **436 independent source images** are recovered from
+  the 742 exported records, so that augmented variants are never counted as
+  independent samples; annotation integrity checked (empty or degenerate
+  polygons, out-of-bounds coordinates, self-intersections, RLE decoding,
+  class-name inconsistencies); the 28 image records with no annotations are
+  classified as deliberate negatives or as missing labels; exact duplicates
+  detected by content hash; near duplicates detected by perceptual hash with a
+  documented threshold; potential video-frame sequences identified and grouped;
+  the >= 300 annotated image requirement re-confirmed on the de-duplicated
+  population; the absence of `vest_loose` from the provider's test split is
+  quantified and its consequence for reporting stated.
 - **Academic mapping.** C1; feeds the limitations section of C4 and C6.
+
+> Phase 3 set `dataset.verified: true` for *provenance-level* facts only
+> (source, license, format, class list, artifact integrity). Annotation quality,
+> duplication and split suitability are decided here.
 
 ## Phase 5 - Split freeze and task-specific dataset generation
 
@@ -259,3 +280,4 @@ change log at the bottom of this file.
 | Date | Change |
 | --- | --- |
 | 2026-09-01 | Roadmap created during the foundation phase (phases 1-14 defined). |
+| 2026-09-01 | Phases 2 and 3 completed. Phase 3 established that version 4 holds 436 independent source images plus offline-augmented train variants; phase 4 gates updated to work from that population. |

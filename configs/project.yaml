@@ -3,8 +3,8 @@
 # Loaded by `construction_safety_vision.config.load_experiment_config`.
 # Parsing is strict: unknown keys raise a ConfigError.
 #
-# STATUS: foundation phase. The `dataset` block below is a PLANNING HYPOTHESIS.
-# Nothing in it has been verified against real files yet (`verified: false`).
+# STATUS: phase 3 complete. The `dataset` block below was verified against the
+# acquired export; see reports/dataset_provenance.md for the evidence.
 
 project_name: construction-safety-vision
 
@@ -26,21 +26,37 @@ split_ratios:
 dataset:
   name: Construction PPE Compliance Detection
   source: roboflow_universe
-  # Filled in during phase 3 with the exact dataset *version* URL. Left empty on
-  # purpose: no URL is recorded before it has been opened and verified.
-  source_url: ""
+  # Provider coordinates used by scripts/download_dataset.py. Verified against
+  # the Roboflow REST API in phase 3.
+  workspace: agis-workspace-8gs52
+  project_slug: construction-ppe-compliance-detection
+  version: 4
+  # COCO instance segmentation is the canonical acquisition format: it preserves
+  # polygon geometry independently of any detector/segmenter implementation.
+  export_format: coco-segmentation
+  source_url: "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4"
   # Instance segmentation is the canonical source of truth. Detection boxes are
   # derived mathematically from the polygons, so both tasks share images and IDs.
   canonical_task: instance_segmentation
-  # Hypothesised class list, subject to the phase 4 audit.
+  # Verified in phase 3: all five appear as COCO categories and all five carry
+  # annotations. The export also declares a placeholder category 'object' with
+  # zero annotations, which phase 5 must exclude from the class map.
   expected_classes:
     - person
     - helmet_loose
     - helmet_on_head
     - vest_loose
     - vest_on_body
-  verified: false
+  # Set true by the phase 3 acquisition: provenance, license, segmentation
+  # annotations, class list and artifact integrity were all verified against the
+  # downloaded export. This is NOT a statement about annotation quality, class
+  # balance, duplicates or split suitability - those are phase 4 questions.
+  verified: true
   notes: >-
-    Candidate only. Image count, split composition, class balance and annotation
-    quality are unverified. Do not cite any of these fields as facts before the
-    phase 4 audit sets verified to true.
+    Verified in phase 3 against the downloaded COCO instance-segmentation export
+    (see reports/dataset_provenance.md). IMPORTANT: version 4 contains 742
+    images, but only 436 are independent source images; the train split is
+    augmented x2 offline. Phases 4 and 5 must treat 436 as the independent
+    population. Open items: vest_loose has zero annotations in the test split,
+    28 image records carry no annotations, and segmentation geometry is a mix of
+    polygon and RLE.

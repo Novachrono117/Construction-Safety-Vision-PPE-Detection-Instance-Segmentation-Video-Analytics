@@ -183,9 +183,32 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 2 - repository foundation.
-- **Dataset:** none downloaded. `configs/project.yaml` declares a *candidate*
-  with `verified: false`; its classes, size and splits are unverified hypotheses.
+- **Phase:** 3 complete (dataset acquisition and provenance). Phase 4 (audit and
+  EDA) is next and has not started.
+- **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
+  construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
+  4.0. Archive SHA-256
+  `5c0c35f79be251af349f289ab300a8c706f260f9a5b52f66facfbd23466538f6`. Evidence in
+  `reports/dataset_provenance.md`.
+- **`dataset.verified: true` means provenance only.** Source, license, format,
+  class list and artifact integrity were verified. Annotation *quality*,
+  duplicates, near duplicates and frame leakage were **not** examined and must
+  not be described as verified.
+- **436, not 742.** The export contains 742 images, of which only **436 are
+  independent source images**; the train split is offline-augmented x2 (306 ->
+  612). Never quote 742 as a sample count, never let augmented variants of one
+  source image land in different splits, and never treat them as independent in
+  any statistic.
+- **Known open items for phase 4:** segmentation geometry mixes polygon (1570)
+  and RLE (1803) - code that handles only polygons will silently drop
+  annotations; `vest_loose` has zero annotations in the provider's test split;
+  28 image records carry no annotations while the provider reports
+  `unannotated: 0`; the export declares a placeholder category `object` with no
+  annotations that must be excluded from the class map without shifting indices.
 - **Models:** none trained. No metrics exist.
-- **Holdout:** not yet defined (no data), therefore not yet frozen. The lock
-  becomes meaningful at the phase 5 freeze.
+- **Holdout:** the provider ships a `test` split, but it is **not yet the frozen
+  holdout** - phase 5 decides whether to adopt or re-split. Treat it as protected
+  in the meantime.
+- **Credentials:** `ROBOFLOW_API_KEY` is required by `scripts/download_dataset.py`
+  and is read from the environment only. It must never be written to `.env.example`,
+  a provenance record, a log line, or any committed file.

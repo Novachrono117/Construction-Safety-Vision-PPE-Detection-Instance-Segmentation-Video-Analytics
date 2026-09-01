@@ -1,9 +1,10 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: Foundation Phase (phase 2 of 14).** No dataset has been downloaded,
-> no model has been trained, and **no results exist yet**. This README documents
-> the problem, the plan and the current repository state only. Every metric
-> section is intentionally empty until a real, recorded run produces it.
+> **Status: dataset acquired (phase 3 of 14 complete).** The canonical dataset
+> has been downloaded, hashed and structurally verified. **No model has been
+> trained, no split has been frozen, no exploratory analysis has been done, and
+> no results exist yet.** Every metric section is intentionally empty until a
+> real, recorded run produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -74,9 +75,10 @@ Two design decisions define this architecture:
 
 | Area | State |
 | --- | --- |
-| Repository foundation | In progress (this phase) |
-| Dataset | **Not acquired.** A candidate is declared in `configs/project.yaml` with `verified: false`. |
-| Splits | Not defined, not frozen. |
+| Repository foundation | Done (phase 2). |
+| Dataset acquisition and provenance | Done (phase 3). Archive hashed, export structurally verified. |
+| Dataset audit / EDA | **Not started** (phase 4). Annotation quality, duplicates and frame leakage are unexamined. |
+| Splits | **Provider-supplied only; not audited, not frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
 | Metrics | **None.** No evaluation has been run. |
@@ -84,15 +86,33 @@ Two design decisions define this architecture:
 | Tracking (bonus) | Not started; deliberately deferred. |
 
 What exists today: the project layout, a pinned environment, strict typed
-configuration loading, the holdout protection guard, provenance primitives,
-their tests, an environment-check script, and the planning documents
-(`reports/rubric_contract.md`, `reports/roadmap.md`, `CLAUDE.md`).
+configuration, the holdout protection guard, provenance primitives, a
+dependency-free Roboflow acquisition client, COCO structural inspection, 140
+tests, and the planning documents (`reports/rubric_contract.md`,
+`reports/roadmap.md`, `CLAUDE.md`).
 
-The candidate dataset is *Construction PPE Compliance Detection* (Roboflow
-Universe), with a hypothesised class set of `person`, `helmet_loose`,
-`helmet_on_head`, `vest_loose`, `vest_on_body`. Its image count, split
-composition, class balance and annotation quality are **unverified** and are
-treated as hypotheses until the audit phase measures them.
+### The dataset
+
+*Construction PPE Compliance Detection* (Roboflow Universe,
+`agis-workspace-8gs52`, version 4), acquired as a **COCO instance-segmentation**
+export under **CC BY 4.0**. Classes verified in the annotations: `person`,
+`helmet_loose`, `helmet_on_head`, `vest_loose`, `vest_on_body`.
+
+> **742 exported images are not 742 independent samples.** The project holds
+> **436 independent source images**; version 4 augments the train split x2
+> offline (306 -> 612) and leaves validation (87) and test (43) unchanged. This
+> was established from provider metadata, exact arithmetic and the provider's own
+> export documentation - see
+> [`reports/dataset_provenance.md`](reports/dataset_provenance.md).
+
+Structural inspection found the export internally consistent: 742 image records
+matching 742 files on disk, 3373 annotations, no dangling image or category
+references, no duplicate ids. It also surfaced items that phase 4 must resolve:
+segmentation geometry is a **mix of polygon (1570) and RLE (1803)**,
+`vest_loose` has **zero annotations in the test split**, and 28 image records
+carry no annotations.
+
+Annotation quality, duplicates and frame leakage remain **unexamined**.
 
 ## Academic requirements
 
@@ -153,22 +173,27 @@ Work proceeds through 14 gated phases (see
 ├── configs/                   # Versioned experiment configuration (single source of settings)
 │   └── project.yaml
 ├── data/                      # Never committed; see data/README.md
-│   ├── raw/                   # Immutable downloads
-│   ├── interim/               # Regenerable intermediates
-│   ├── processed/             # Task-ready datasets derived from raw/
-│   └── external/              # Non-dataset assets (e.g. inference video)
+│   ├── external/              # Immutable provider archive + its provenance record
+│   ├── raw/                   # Extracted canonical export, untouched
+│   ├── interim/               # Reserved: audited/derived representations (phase 4)
+│   └── processed/             # Reserved: model-ready datasets (phase 5)
 ├── notebooks/                 # Colab-executable notebooks (added by the phase that needs them)
 ├── reports/
 │   ├── rubric_contract.md     # Rubric as a verifiable contract
 │   ├── roadmap.md             # 14 phases with validation gates
+│   ├── dataset_provenance.md  # What the dataset is, and how we know
+│   ├── dataset_provenance.json
 │   └── figures/
 ├── scripts/
-│   └── check_environment.py   # Environment, configuration and holdout-lock report
+│   ├── check_environment.py   # Environment, configuration and holdout-lock report
+│   ├── download_dataset.py    # Acquire + hash + extract the canonical export
+│   └── inspect_dataset.py     # Structural inspection -> provenance report
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout for local and Colab runs
 │   ├── provenance.py          # Hashing and run provenance records
-│   └── splits.py              # Split identifiers and the holdout guard
+│   ├── splits.py              # Split identifiers and the holdout guard
+│   └── data/                  # Acquisition client, COCO inspection, version analysis
 └── tests/
 ```
 
@@ -215,8 +240,17 @@ Requires [uv](https://docs.astral.sh/uv/) and Python 3.11+.
 git clone https://github.com/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics.git
 cd Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics
 uv sync
-cp .env.example .env          # optional; nothing is required in the foundation phase
+cp .env.example .env          # then set ROBOFLOW_API_KEY to acquire the dataset
 uv run python scripts/check_environment.py
+```
+
+Acquire the dataset. The key is read from the environment only, sent as an
+`Authorization` header rather than a URL parameter, and never written to any
+file, log or provenance record:
+
+```bash
+uv run python scripts/download_dataset.py
+uv run python scripts/inspect_dataset.py
 ```
 
 Checks:
@@ -232,7 +266,16 @@ uv run pytest
 Not available. No model has been trained and no evaluation has been run. This
 section will be filled by phases 10-12, from committed metrics files.
 
-## License
+## License and attribution
 
-Not yet chosen. The dataset's license (recorded in phase 3) constrains what may
-be redistributed here.
+The **software** license of this repository is not yet chosen.
+
+The **dataset** is a separate matter and is licensed **CC BY 4.0** by AGIs
+Workspace. It is not redistributed here; `scripts/download_dataset.py` obtains it
+from the original source. Attribution:
+
+```text
+Construction PPE Compliance Detection [dataset], version 4.
+AGIs Workspace, Roboflow Universe. Licensed CC BY 4.0.
+https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4
+```

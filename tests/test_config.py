@@ -165,7 +165,9 @@ def test_to_dict_is_json_serialisable(tmp_path: Path) -> None:
     payload = json.loads(json.dumps(config.to_dict()))
 
     assert payload["dataset"]["expected_classes"] == ["person", "helmet_on_head"]
-    assert payload["source_path"].endswith("config.yaml")
+    # Provenance records are committed: the path must not be absolute.
+    assert payload["source_path"] == "config.yaml"
+    assert ":" not in payload["source_path"]
 
 
 def test_shipped_project_config_is_valid_and_consistent() -> None:
@@ -177,4 +179,60 @@ def test_shipped_project_config_is_valid_and_consistent() -> None:
     assert isinstance(config, ExperimentConfig)
     assert config.holdout_split in config.split_ratios.as_dict()
     assert config.dataset.canonical_task == "instance_segmentation"
-    assert config.dataset.verified is False, "no dataset has been audited yet"
+    assert config.dataset.verified is True, "phase 3 verified the acquired export"
+
+
+def test_provider_coordinates_are_parsed(tmp_path: Path) -> None:
+    body = VALID_CONFIG + (
+        "\n  workspace: ws"
+        "\n  project_slug: proj"
+        "\n  version: 4"
+        "\n  export_format: coco-segmentation\n"
+    )
+    config = load_experiment_config(write_config(tmp_path, body))
+
+    assert config.dataset.workspace == "ws"
+    assert config.dataset.project_slug == "proj"
+    assert config.dataset.version == 4
+    assert config.dataset.export_format == "coco-segmentation"
+
+
+def test_provider_coordinates_default_to_unset(tmp_path: Path) -> None:
+    config = load_experiment_config(write_config(tmp_path, VALID_CONFIG))
+
+    assert config.dataset.workspace == ""
+    assert config.dataset.version == 0
+
+
+def test_non_integer_version_is_rejected() -> None:
+    with pytest.raises(ConfigError, match="version must be an integer"):
+        DatasetCandidate.from_mapping(
+            {
+                "name": "Example",
+                "source": "roboflow_universe",
+                "canonical_task": "instance_segmentation",
+                "expected_classes": ["person"],
+                "version": "latest",
+            }
+        )
+
+
+def test_shipped_config_carries_the_acquired_version() -> None:
+    # Phase 3 recorded real provider coordinates; they must stay parseable.
+    paths = ProjectPaths.from_root()
+    dataset = load_experiment_config(paths.configs / "project.yaml").dataset
+
+    assert dataset.workspace
+    assert dataset.project_slug
+    assert dataset.version > 0
+    assert dataset.export_format == "coco-segmentation", (
+        "the canonical acquisition format must preserve segmentation geometry"
+    )
+
+
+def test_shipped_config_serialises_a_repository_relative_path() -> None:
+    # A committed provenance record must not leak the local directory layout.
+    paths = ProjectPaths.from_root()
+    config = load_experiment_config(paths.configs / "project.yaml")
+
+    assert config.to_dict()["source_path"] == "configs/project.yaml"
