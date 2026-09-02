@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.1 · Current phase: **4 - Dataset/annotation audit and EDA** (not started)
+Version: 1.2 · Current phase: **4 - Dataset/annotation audit and EDA** (4A automated audit done; 4B visual review outstanding)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -18,7 +18,7 @@ change log at the bottom of this file.
 | 1 | Scope and rubric contract | done |
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
-| 4 | Dataset/annotation audit and EDA | **next** |
+| 4 | Dataset/annotation audit and EDA | 4A done · 4B (visual review) **next** |
 | 5 | Split freeze and task-specific dataset generation | not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
@@ -280,4 +280,5 @@ change log at the bottom of this file.
 | Date | Change |
 | --- | --- |
 | 2026-09-01 | Roadmap created during the foundation phase (phases 1-14 defined). |
+| 2026-09-02 | Phase 4A completed: 436 source originals acquired and audited. No exact duplicates; 6 cross-split near-duplicate candidates pending visual confirmation; vest_loose present in only 8 images and absent from the provider test split; source project has drifted 76 annotations ahead of the frozen v4 export. Provider split classified UNDETERMINED_PENDING_VISUAL_REVIEW. |
 | 2026-09-01 | Phases 2 and 3 completed. Phase 3 established that version 4 holds 436 independent source images plus offline-augmented train variants; phase 4 gates updated to work from that population. |

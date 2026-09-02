@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "report": "source_eda",
+  "phase": 4,
+  "generated_at": "2026-09-02T12:24:46+00:00",
+  "git_commit": "ed9f59aed5b54335a344ec12e82b8bf1e9cd92d2",
+  "population": {
+    "source_images": 436,
+    "basis": "436 independent source images; the 742-image v4 export is not used here"
+  },
+  "image_level": {
+    "images": 436,
+    "decoded": 436,
+    "decode_failures": 0,
+    "modes": {
+      "RGB": 436
+    },
+    "width": {
+      "count": 436,
+      "min": 852.0,
+      "p05": 867.0,
+      "p25": 1600.0,
+      "median": 1600.0,
+      "p75": 1600.0,
+      "p95": 1880.0,
+      "max": 1920.0,
+      "mean": 1494.2706422018348,
+      "std": 283.51332049762243
+    },
+    "height": {
+      "count": 436,
+      "min": 608.0,
+      "p05": 720.0,
+      "p25": 1067.0,
+      "median": 1124.5,
+      "p75": 1300.0,
+      "p95": 2400.0,
+      "max": 2844.0,
+      "mean": 1351.3577981651376,
+      "std": 517.1270676444667
+    },
+    "pixels": {
+      "count": 436,
+      "min": 656640.0,
+      "p05": 800550.0,
+      "p25": 1562800.0,
+      "median": 1707200.0,
+      "p75": 2355640.0,
+      "p95": 3840000.0,
+      "max": 4550400.0,
+      "mean": 2045074.5412844038,
+      "std": 932081.4049480973
+    },
+    "aspect_ratio": {
+      "count": 436,
+      "min": 0.5625879043600562,
+      "p05": 0.6666666666666666,
+      "p25": 0.75,
+      "median": 1.499531396438613,
+      "p75": 1.499531396438613,
+      "p95": 1.5690191027786562,
+      "max": 1.7802503477051461,
+      "mean": 1.2232664768425272,
+      "std": 0.3870948333585447
+    },
+    "file_size_bytes": {
+      "count": 436,
+      "min": 43034.0,
+      "p05": 89442.75,
+      "p25": 174375.5,
+      "median": 262586.5,
+      "p75": 421216.25,
+      "p95": 673845.5,
+      "max": 1199956.0,
+      "mean": 314903.67201834865,
+      "std": 196790.23375324343
+    },
+    "mean_luminance": {
+      "count": 436,
+      "min": 0.050967412483565545,
+      "p05": 0.22779861075195368,
+      "p25": 0.35834444326877424,
+      "median": 0.4646887383916162,
+      "p75": 0.5685173185106621,
+      "p95": 0.6917580833484608,
+      "max": 0.8227993524570322,
+      "mean": 0.461916311166147,
+      "std": 0.1466154891774334
+    },
+    "std_luminance_contrast_proxy": {
+      "count": 436,
+      "min": 0.07354709337469338,
+      "p05": 0.1494790593645443,
+      "p25": 0.20006728080703703,
+      "median": 0.23354526317269475,
+      "p75": 0.2628312336843861,
+      "p95": 0.30528443893795393,
+      "max": 0.3712105918604058,
+      "mean": 0.23080934214678017,
+      "std": 0.04783714466104328
+    },
+    "dynamic_range_p05_p95": {
+      "count": 436,
+      "min": 0.17647058823529416,
+      "p05": 0.453921568627451,
+      "p25": 0.6431372549019607,
+      "median": 0.7333333333333333,
+      "p75": 0.803921568627451,
+      "p95": 0.9019607843137255,
+      "max": 0.9882352941176471,
+      "mean": 0.7121154883971936,
+      "std": 0.13091161677813265
+    }
+  },
+  "class_level": {
+    "images_containing_class": {
+      "person": 366,
+      "vest_on_body": 208,
+      "helmet_on_head": 176,
+      "helmet_loose": 75,
+      "vest_loose": 8
+    },
+    "percent_images_containing_class": {
+      "person": 83.94,
+      "vest_on_body": 47.71,
+      "helmet_on_head": 40.37,
+      "helmet_loose": 17.2,
+      "vest_loose": 1.83
+    },
+    "instances_per_class": {
+      "person": 914,
+      "helmet_loose": 393,
+      "vest_on_body": 365,
+      "helmet_on_head": 314,
+      "vest_loose": 45
+    },
+    "instances_per_image": {
+      "count": 436,
+      "min": 0.0,
+      "p05": 1.0,
+      "p25": 2.0,
+      "median": 3.0,
+      "p75": 5.0,
+      "p95": 14.0,
+      "max": 64.0,
+      "mean": 4.658256880733945,
+      "std": 6.598248355829368
+    },
+    "zero_instance_images": 17,
+    "class_cooccurrence_image_counts": {
+      "person+vest_on_body": 208,
+      "helmet_on_head+person": 176,
+      "helmet_on_head+vest_on_body": 133,
+      "helmet_loose+person": 26,
+      "helmet_loose+vest_on_body": 13,
+      "helmet_loose+helmet_on_head": 4,
+      "helmet_loose+vest_loose": 4
+    },
+    "instances_per_class_by_split": {
+      "test": {
+        "helmet_loose": 8,
+        "helmet_on_head": 39,
+        "person": 85,
+        "vest_on_body": 47
+      },
+      "train": {
+        "helmet_loose": 337,
+        "helmet_on_head": 194,
+        "person": 657,
+        "vest_loose": 32,
+        "vest_on_body": 259
+      },
+      "valid": {
+        "helmet_loose": 48,
+        "helmet_on_head": 81,
+        "person": 172,
+        "vest_loose": 13,
+        "vest_on_body": 59
+      }
+    },
+    "images_with_class_by_split": {
+      "test": {
+        "helmet_loose": 5,
+        "helmet_on_head": 20,
+        "person": 35,
+        "vest_on_body": 23
+      },
+      "train": {
+        "helmet_loose": 55,
+        "helmet_on_head": 116,
+        "person": 254,
+        "vest_loose": 7,
+        "vest_on_body": 147
+      },
+      "valid": {
+        "helmet_loose": 15,
+        "helmet_on_head": 40,
+        "person": 77,
+        "vest_loose": 1,
+        "vest_on_body": 38
+      }
+    }
+  },
+  "geometry_level": {
+    "annotations": 2031,
+    "geometry_types": {
+      "mask": 1022,
+      "polygon": 1007,
+      "unknown": 2
+    },
+    "mask_geometry_vertices_available": false,
+    "note": "The provider exposes polygon vertices only for 'polygon' instances. 'mask' instances carry a bounding box but no vertex list, so source mask-area statistics are NOT available and are reported as PARTIAL.",
+    "relative_box_width": {
+      "count": 2031,
+      "min": 0.003076923076923077,
+      "p05": 0.020625,
+      "p25": 0.05875,
+      "median": 0.13796296296296295,
+      "p75": 0.2784707446808511,
+      "p95": 0.620625,
+      "max": 1.0,
+      "mean": 0.2009584242078297,
+      "std": 0.1963758285236778
+    },
+    "relative_box_height": {
+      "count": 2031,
+      "min": 0.002307692307692308,
+      "p05": 0.030914561302597232,
+      "p25": 0.09748477038425493,
+      "median": 0.2268041237113402,
+      "p75": 0.5060918462980318,
+      "p95": 0.9012828947368421,
+      "max": 1.0,
+      "mean": 0.3250741311304847,
+      "std": 0.2794436653815561
+    },
+    "relative_box_area": {
+      "count": 2031,
+      "min": 7.100591715976332e-06,
+      "p05": 0.0006572637258177422,
+      "p25": 0.006325095228469051,
+      "median": 0.03009899250234302,
+      "p75": 0.13057429559634254,
+      "p95": 0.4782930420208089,
+      "max": 0.9985421875,
+      "mean": 0.10507331527301017,
+      "std": 0.16662730850999352
+    },
+    "small_object_threshold_area_fraction": 0.01,
+    "small_objects_by_class": {
+      "helmet_loose": {
+        "small": 178,
+        "total": 393,
+        "percent": 45.29
+      },
+      "helmet_on_head": {
+        "small": 166,
+        "total": 314,
+        "percent": 52.87
+      },
+      "person": {
+        "small": 252,
+        "total": 914,
+        "percent": 27.57
+      },
+      "vest_loose": {
+        "small": 2,
+        "total": 45,
+        "percent": 4.44
+      },
+      "vest_on_body": {
+        "small": 92,
+        "total": 365,
+        "percent": 25.21
+      }
+    }
+  },
+  "figures": [
+    "reports/figures/source_dimensions.png",
+    "reports/figures/source_aspect_ratio.png",
+    "reports/figures/source_luminance.png",
+    "reports/figures/source_file_size.png",
+    "reports/figures/source_class_distribution.png",
+    "reports/figures/source_class_by_split.png",
+    "reports/figures/source_instances_per_image.png",
+    "reports/figures/source_object_relative_area.png"
+  ]
+}

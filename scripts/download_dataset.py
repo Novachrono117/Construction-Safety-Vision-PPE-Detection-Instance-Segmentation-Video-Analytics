@@ -35,6 +35,7 @@ from construction_safety_vision.data.roboflow import (
     RoboflowError,
     api_key_from_env,
 )
+from construction_safety_vision.env import load_project_env
 from construction_safety_vision.paths import ProjectPaths
 from construction_safety_vision.provenance import ProvenanceRecord
 
@@ -147,6 +148,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     paths = ProjectPaths.from_root()
+    # The shell environment wins; .env only fills in what it does not define.
+    loaded = load_project_env(paths.root)
+    if loaded:
+        print(f"loaded from .env: {loaded}")
     config_path = args.config or (paths.configs / "project.yaml")
     try:
         config = load_experiment_config(config_path)

@@ -28,6 +28,9 @@ from typing import Any
 API_BASE = "https://api.roboflow.com"
 """Root of the Roboflow REST API."""
 
+SOURCE_BASE = "https://source.roboflow.com"
+"""Root of the provider's original source-image storage."""
+
 UNIVERSE_BASE = "https://universe.roboflow.com"
 """Root of the public Roboflow Universe site."""
 
@@ -39,6 +42,39 @@ USER_AGENT = "construction-safety-vision/0.1 (+acquisition)"
 
 DEFAULT_TIMEOUT = 120.0
 """Socket timeout in seconds for metadata requests."""
+
+RETRY_STATUSES = frozenset({429, 500, 502, 503, 504})
+"""HTTP statuses worth retrying with backoff."""
+
+MAX_RETRIES = 5
+"""Attempts per request before giving up."""
+
+BACKOFF_SECONDS = 5.0
+"""Base delay for exponential backoff; the provider rate-limits rapid bursts."""
+
+REQUEST_INTERVAL_SECONDS = 0.4
+"""Minimum spacing between requests. Measured: bursts draw HTTP 429 from this
+provider, and a rate-limited inventory walk is both slower and less reliable than
+a paced one."""
+
+SEARCH_PAGE_SIZE = 100
+"""Records requested per search page."""
+
+SEARCH_MAX_PAGE_SIZE = 250
+"""Largest page the provider will actually return, measured; larger asks are capped."""
+
+SEARCH_FIELDS = (
+    "id",
+    "name",
+    "split",
+    "width",
+    "height",
+    "created",
+    "tags",
+    "annotations",
+    "owner",
+)
+"""Source-image fields requested from the search API. Embeddings are never requested."""
 
 Transport = Callable[[urllib.request.Request, float], Any]
 """Callable that performs a request. Injected so tests never touch the network."""
@@ -54,6 +90,10 @@ class MissingApiKeyError(RoboflowError):
 
 class AuthenticationError(RoboflowError):
     """Raised when the provider rejects the credentials."""
+
+
+class _RetryableStatusError(Exception):
+    """Internal marker for a transient provider failure worth retrying."""
 
 
 class ExportNotReadyError(RoboflowError):
@@ -199,6 +239,8 @@ class RoboflowClient:
             raise MissingApiKeyError(msg)
         self._api_key = api_key
         self._transport = _default_transport if transport is None else transport
+        self._interval = REQUEST_INTERVAL_SECONDS if transport is None else 0.0
+        self._last_request_at = 0.0
 
     def __repr__(self) -> str:
         """Return a representation that cannot leak the credential.
@@ -219,6 +261,15 @@ class RoboflowClient:
         """
         return redact(text, self._api_key)
 
+    def _pace(self) -> None:
+        """Wait, if needed, so requests stay at least one interval apart."""
+        if self._interval <= 0:
+            return
+        elapsed = time.monotonic() - self._last_request_at
+        if 0 < elapsed < self._interval:
+            time.sleep(self._interval - elapsed)
+        self._last_request_at = time.monotonic()
+
     def _get_json(
         self, path: str, *, timeout: float = DEFAULT_TIMEOUT
     ) -> tuple[int, dict[str, Any]]:
@@ -230,18 +281,85 @@ class RoboflowClient:
 
         Returns:
             The HTTP status code and the decoded body.
+        """
+        return self._request_json(path, timeout=timeout)
+
+    def _request_json(
+        self,
+        path: str,
+        *,
+        method: str = "GET",
+        body: dict[str, Any] | None = None,
+        timeout: float = DEFAULT_TIMEOUT,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> tuple[int, dict[str, Any]]:
+        """Perform an authenticated request, retrying transient failures.
+
+        The provider rate-limits rapid bursts, so a retryable status backs off
+        exponentially instead of failing a long inventory walk outright.
+
+        Args:
+            path: API path, without a leading slash.
+            method: HTTP method.
+            body: JSON body for POST requests.
+            timeout: Socket timeout in seconds.
+            sleep: Sleep function. Injected for tests.
+
+        Returns:
+            The HTTP status code and the decoded body.
+
+        Raises:
+            RoboflowError: If every attempt failed with a retryable status.
+        """
+        last = ""
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                return self._single_request(path, method=method, body=body, timeout=timeout)
+            except _RetryableStatusError as exc:
+                last = str(exc)
+                if attempt < MAX_RETRIES:
+                    sleep(BACKOFF_SECONDS * (2 ** (attempt - 1)))
+        msg = f"{method} {path!r} still failing after {MAX_RETRIES} attempts: {last}"
+        raise RoboflowError(msg)
+
+    def _single_request(
+        self,
+        path: str,
+        *,
+        method: str = "GET",
+        body: dict[str, Any] | None = None,
+        timeout: float = DEFAULT_TIMEOUT,
+    ) -> tuple[int, dict[str, Any]]:
+        """Perform one authenticated request returning parsed JSON.
+
+        Args:
+            path: API path, without a leading slash.
+            method: HTTP method.
+            body: JSON body for POST requests.
+            timeout: Socket timeout in seconds.
+
+        Returns:
+            The HTTP status code and the decoded body.
 
         Raises:
             AuthenticationError: On HTTP 401 or 403.
+            _RetryableStatusError: On a transient provider failure.
             RoboflowError: On any other HTTP or decoding failure.
         """
+        self._pace()
+        payload_bytes = json.dumps(body).encode("utf-8") if body is not None else None
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "User-Agent": USER_AGENT,
+            "Accept": "application/json",
+        }
+        if payload_bytes is not None:
+            headers["Content-Type"] = "application/json"
         request = urllib.request.Request(
             f"{API_BASE}/{path}",
-            headers={
-                "Authorization": f"Bearer {self._api_key}",
-                "User-Agent": USER_AGENT,
-                "Accept": "application/json",
-            },
+            data=payload_bytes,
+            method=method,
+            headers=headers,
         )
         try:
             with self._transport(request, timeout) as response:
@@ -249,22 +367,25 @@ class RoboflowClient:
                 payload = json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = self.redact(exc.read(500).decode("utf-8", "replace")) if exc.fp else ""
+            if exc.code in RETRY_STATUSES:
+                raise _RetryableStatusError(f"HTTP {exc.code} {exc.reason}") from None
             if exc.code in (401, 403):
                 msg = (
                     f"Provider rejected the credentials for {path!r}: HTTP {exc.code} "
                     f"{exc.reason}. Check {API_KEY_ENV_VAR}. Detail: {detail}"
                 )
                 raise AuthenticationError(msg) from None
-            msg = f"GET {path!r} failed: HTTP {exc.code} {exc.reason}. Detail: {detail}"
+            msg = f"{method} {path!r} failed: HTTP {exc.code} {exc.reason}. Detail: {detail}"
             raise RoboflowError(msg) from None
         except (urllib.error.URLError, TimeoutError) as exc:
-            msg = f"GET {path!r} failed: {self.redact(str(exc))}"
-            raise RoboflowError(msg) from None
+            # DNS hiccups and dropped connections are transient; a 436-image
+            # walk must survive one rather than restarting from scratch.
+            raise _RetryableStatusError(f"{type(exc).__name__}: {self.redact(str(exc))}") from None
         except json.JSONDecodeError as exc:
-            msg = f"GET {path!r} returned a body that is not valid JSON: {exc}"
+            msg = f"{method} {path!r} returned a body that is not valid JSON: {exc}"
             raise RoboflowError(msg) from None
         if not isinstance(payload, dict):
-            msg = f"GET {path!r} returned {type(payload).__name__}, expected a JSON object"
+            msg = f"{method} {path!r} returned {type(payload).__name__}, expected a JSON object"
             raise RoboflowError(msg)
         return status, payload
 
@@ -329,3 +450,70 @@ class RoboflowClient:
             "re-run the acquisition later."
         )
         raise ExportNotReadyError(msg)
+
+    def search_images_page(
+        self,
+        coordinates: DatasetCoordinates,
+        *,
+        limit: int = SEARCH_PAGE_SIZE,
+        offset: int = 0,
+    ) -> dict[str, Any]:
+        """Fetch one page of the project's source-image inventory.
+
+        Args:
+            coordinates: Dataset identity.
+            limit: Records per page.
+            offset: Records to skip.
+
+        Returns:
+            The decoded page, containing ``total``, ``offset`` and ``results``.
+
+        Raises:
+            RoboflowError: If the response is not a search payload.
+        """
+        status, payload = self._request_json(
+            f"{coordinates.project_path}/search",
+            method="POST",
+            body={"limit": limit, "offset": offset, "fields": list(SEARCH_FIELDS)},
+        )
+        if status != 200 or "results" not in payload:
+            msg = f"Unexpected search response: HTTP {status}, keys={sorted(payload)}"
+            raise RoboflowError(msg)
+        return payload
+
+    def image_details(self, coordinates: DatasetCoordinates, image_id: str) -> dict[str, Any]:
+        """Fetch one source image's authoritative record, including annotations.
+
+        The provider also returns a similarity ``embedding``. It is dropped here
+        and never persisted: it is large, opaque, and of no use to this audit.
+
+        Args:
+            coordinates: Dataset identity.
+            image_id: Provider image identifier.
+
+        Returns:
+            The ``image`` object, without its embedding.
+
+        Raises:
+            RoboflowError: If the response has no image object.
+        """
+        status, payload = self._request_json(f"{coordinates.project_path}/images/{image_id}")
+        image = payload.get("image")
+        if status != 200 or not isinstance(image, dict):
+            msg = f"Unexpected image-details response for {image_id!r}: HTTP {status}"
+            raise RoboflowError(msg)
+        image.pop("embedding", None)
+        return image
+
+
+def original_image_url(owner: str, image_id: str) -> str:
+    """Build the provider URL of an original source image.
+
+    Args:
+        owner: Provider owner identifier.
+        image_id: Provider image identifier.
+
+    Returns:
+        The URL of the original-quality image.
+    """
+    return f"{SOURCE_BASE}/{owner}/{image_id}/original.jpg"

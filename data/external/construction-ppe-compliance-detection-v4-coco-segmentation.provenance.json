@@ -29,7 +29,7 @@
       "val": 0.15
     }
   },
-  "created_at": "2026-09-01T14:03:09+00:00",
+  "created_at": "2026-09-01T14:58:46+00:00",
   "details": {
     "acquisition_method": "Roboflow REST API, stdlib urllib, Authorization: Bearer header; export link resolved at run time and never stored",
     "export_format": "coco-segmentation",
@@ -123,7 +123,7 @@
     "python_implementation": "CPython",
     "python_version": "3.12.13"
   },
-  "git_commit": "985a4c816846c5ecfcb05f915ed03209b13ec260",
+  "git_commit": "ed9f59aed5b54335a344ec12e82b8bf1e9cd92d2",
   "inputs": [],
   "name": "dataset-acquisition",
   "outputs": [

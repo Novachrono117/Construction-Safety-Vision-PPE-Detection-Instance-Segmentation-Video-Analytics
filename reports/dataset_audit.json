@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "report": "source_dataset_audit",
+  "phase": 4,
+  "generated_at": "2026-09-02T12:24:45+00:00",
+  "git_commit": "ed9f59aed5b54335a344ec12e82b8bf1e9cd92d2",
+  "population": {
+    "source_images": 436,
+    "expected": 436,
+    "instances": 2031,
+    "splits": {
+      "train": 306,
+      "valid": 87,
+      "test": 43
+    },
+    "note": "The 742-image v4 export is NOT this population; it augments train x2."
+  },
+  "exact_duplicates": {
+    "images": 436,
+    "unique_hashes": 436,
+    "duplicate_groups": 0,
+    "images_in_duplicate_groups": 0,
+    "cross_split_groups": 0
+  },
+  "near_duplicates": {
+    "images_fingerprinted": 436,
+    "pairs_compared": 94830,
+    "candidates": 11,
+    "same_split_candidates": 5,
+    "cross_split_candidates": 6,
+    "dhash_threshold": 10,
+    "phash_threshold": 10
+  },
+  "sequences": {
+    "near_duplicate_chains": 11,
+    "images_in_chains": 22,
+    "chains_crossing_splits": 6,
+    "filename_prefixes": {
+      "pb_": 12,
+      "photo-": 213,
+      "premium_": 75,
+      "px_": 73,
+      "tu_": 35,
+      "un_": 21,
+      "wm_": 7
+    }
+  },
+  "zero_instance_images": {
+    "count": 17,
+    "by_split": {
+      "test": 4,
+      "train": 11,
+      "valid": 2
+    },
+    "requires_visual_review": true
+  },
+  "source_geometry_types": {
+    "mask": 1022,
+    "polygon": 1007,
+    "unknown": 2
+  },
+  "source_vs_export_drift": {
+    "per_split": {
+      "train": {
+        "source_instances": 1479,
+        "export_instances": 2836,
+        "export_augmentation_factor": 2,
+        "export_instances_per_source_copy": 1418.0,
+        "difference": 61.0,
+        "agrees": false
+      },
+      "valid": {
+        "source_instances": 373,
+        "export_instances": 371,
+        "export_augmentation_factor": 1,
+        "export_instances_per_source_copy": 371.0,
+        "difference": 2.0,
+        "agrees": false
+      },
+      "test": {
+        "source_instances": 179,
+        "export_instances": 166,
+        "export_augmentation_factor": 1,
+        "export_instances_per_source_copy": 166.0,
+        "difference": 13.0,
+        "agrees": false
+      }
+    },
+    "source_and_export_agree": false,
+    "interpretation": "The live source project and the frozen v4 export describe different annotation counts. The export is a snapshot taken before later edits, so the two are not interchangeable. Phase 5 must state which is canonical; this audit does not decide it."
+  },
+  "provider_split_audit": {
+    "per_split": {
+      "test": {
+        "images": 43,
+        "instances": 179,
+        "negatives": 4,
+        "images_with_class": {
+          "helmet_loose": 5,
+          "helmet_on_head": 20,
+          "person": 35,
+          "vest_on_body": 23
+        },
+        "instances_per_class": {
+          "helmet_loose": 8,
+          "helmet_on_head": 39,
+          "person": 85,
+          "vest_on_body": 47
+        }
+      },
+      "train": {
+        "images": 306,
+        "instances": 1479,
+        "negatives": 11,
+        "images_with_class": {
+          "helmet_loose": 55,
+          "helmet_on_head": 116,
+          "person": 254,
+          "vest_loose": 7,
+          "vest_on_body": 147
+        },
+        "instances_per_class": {
+          "helmet_loose": 337,
+          "helmet_on_head": 194,
+          "person": 657,
+          "vest_loose": 32,
+          "vest_on_body": 259
+        }
+      },
+      "valid": {
+        "images": 87,
+        "instances": 373,
+        "negatives": 2,
+        "images_with_class": {
+          "helmet_loose": 15,
+          "helmet_on_head": 40,
+          "person": 77,
+          "vest_loose": 1,
+          "vest_on_body": 38
+        },
+        "instances_per_class": {
+          "helmet_loose": 48,
+          "helmet_on_head": 81,
+          "person": 172,
+          "vest_loose": 13,
+          "vest_on_body": 59
+        }
+      }
+    },
+    "classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body"
+    ],
+    "concerns": [
+      "split 'test' has zero instances of ['vest_loose']",
+      "6 near-duplicate candidate pair(s) cross a split boundary (candidates, not confirmed leakage)",
+      "6 near-duplicate chain(s) span more than one split"
+    ],
+    "classification": "UNDETERMINED_PENDING_VISUAL_REVIEW",
+    "near_duplicate_summary": {
+      "images_fingerprinted": 436,
+      "pairs_compared": 94830,
+      "candidates": 11,
+      "same_split_candidates": 5,
+      "cross_split_candidates": 6,
+      "dhash_threshold": 10,
+      "phash_threshold": 10
+    }
+  },
+  "strongest_cross_split_pairs": [
+    {
+      "image_a": "4UEcuYsspsOsSV0XYgSR",
+      "image_b": "6hpR44qukoBLy0iFwzip",
+      "name_a": "photo-1617118600471-ecc90bdb4db0.jpg",
+      "name_b": "un_0158_HybkhmK6SsU.jpg",
+      "split_a": "valid",
+      "split_b": "train",
+      "dhash": 1,
+      "phash": 0
+    },
+    {
+      "image_a": "FBzxttXYsNSZKcVNofUI",
+      "image_b": "Um5Oft7wh92nWZzcd33C",
+      "name_a": "un_0192_Fj4wvdZMhoE.jpg",
+      "name_b": "photo-1763328044377-d37cd9052d99.jpg",
+      "split_a": "valid",
+      "split_b": "train",
+      "dhash": 0,
+      "phash": 0
+    },
+    {
+      "image_a": "OgbeepjjlVIRghzAMurI",
+      "image_b": "Ud5BlYIB2FSpmLDEEq9z",
+      "name_a": "un_0002_X1P1_EDNnok.jpg",
+      "name_b": "photo-1587582423116-ec07293f0395.jpg",
+      "split_a": "valid",
+      "split_b": "train",
+      "dhash": 0,
+      "phash": 0
+    },
+    {
+      "image_a": "THaelQmgDKdUwfSFIAx5",
+      "image_b": "ymICdUCkVq8IfApx2TvK",
+      "name_a": "photo-1709719263381-30553a1d618b.jpg",
+      "name_b": "un_0074_WwMG7hiQgDE.jpg",
+      "split_a": "train",
+      "split_b": "valid",
+      "dhash": 2,
+      "phash": 0
+    },
+    {
+      "image_a": "L51HLb9pTcXWg0hlY2eI",
+      "image_b": "WRFgtFooB6kjdViPXWHk",
+      "name_a": "photo-1755692881539-fa170f6859bc.jpg",
+      "name_b": "photo-1755692879700-721ffbc767b8.jpg",
+      "split_a": "train",
+      "split_b": "valid",
+      "dhash": 1,
+      "phash": 8
+    },
+    {
+      "image_a": "kvlkvPKhlcIlNoa2lJKq",
+      "image_b": "tjHCOqwRIYw66vZcCHJp",
+      "name_a": "photo-1640236889840-40f550ed5ef9.jpg",
+      "name_b": "photo-1640236889794-424977d08dda.jpg",
+      "split_a": "valid",
+      "split_b": "test",
+      "dhash": 5,
+      "phash": 5
+    }
+  ]
+}

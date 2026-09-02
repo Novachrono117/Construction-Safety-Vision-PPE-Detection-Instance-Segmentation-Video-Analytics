@@ -21,6 +21,7 @@ from construction_safety_vision.config import (
     SplitRatios,
     load_experiment_config,
 )
+from construction_safety_vision.env import load_project_env
 from construction_safety_vision.paths import ProjectPaths, find_project_root, in_colab
 from construction_safety_vision.provenance import (
     ArtifactRecord,
@@ -54,5 +55,6 @@ __all__ = [
     "find_project_root",
     "in_colab",
     "load_experiment_config",
+    "load_project_env",
     "sha256_file",
 ]

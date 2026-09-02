@@ -1,0 +1,12 @@
+group_id,evidence,confidence,size,splits,crosses_split,image_ids,names
+chain-001,near_duplicate_chain,candidate,2,train|valid,True,4UEcuYsspsOsSV0XYgSR|6hpR44qukoBLy0iFwzip,photo-1617118600471-ecc90bdb4db0.jpg|un_0158_HybkhmK6SsU.jpg
+chain-002,near_duplicate_chain,candidate,2,train,False,3LUOWEww9aCx2Cx4B38y|LVQG21gdyYgR1aZBE6h9,un_0126_6tAIO3pxde4.jpg|photo-1620388640785-892616248ec8.jpg
+chain-003,near_duplicate_chain,candidate,2,train|valid,True,OgbeepjjlVIRghzAMurI|Ud5BlYIB2FSpmLDEEq9z,un_0002_X1P1_EDNnok.jpg|photo-1587582423116-ec07293f0395.jpg
+chain-004,near_duplicate_chain,candidate,2,train|valid,True,FBzxttXYsNSZKcVNofUI|Um5Oft7wh92nWZzcd33C,un_0192_Fj4wvdZMhoE.jpg|photo-1763328044377-d37cd9052d99.jpg
+chain-005,near_duplicate_chain,candidate,2,train|valid,True,L51HLb9pTcXWg0hlY2eI|WRFgtFooB6kjdViPXWHk,photo-1755692881539-fa170f6859bc.jpg|photo-1755692879700-721ffbc767b8.jpg
+chain-006,near_duplicate_chain,candidate,2,train,False,IyVJr4DcosMWf0wZS1uN|ghzZPWPu7P2hqWEVXzdK,un_0157_cigfVTfU39I.jpg|photo-1768158988512-ad31657fe5b8.jpg
+chain-007,near_duplicate_chain,candidate,2,train,False,66p9gzaQFGcmQA2v40Of|pbOZlgeseTpoTXwVJjAh,px_0121_15483292.jpg|px_0124_15483291.jpg
+chain-008,near_duplicate_chain,candidate,2,train,False,TwF1Rahc7CIP2gpmlbLS|pd0SyehnE6l5xoGZqJCt,un_0068_77X7pOwapGg.jpg|photo-1596266953826-e43f503716df.jpg
+chain-009,near_duplicate_chain,candidate,2,test|valid,True,kvlkvPKhlcIlNoa2lJKq|tjHCOqwRIYw66vZcCHJp,photo-1640236889840-40f550ed5ef9.jpg|photo-1640236889794-424977d08dda.jpg
+chain-010,near_duplicate_chain,candidate,2,train,False,p5lxtMTKDL0gIgbqSrls|xwPbKAjD2vxaff0GdKp1,un_0161_wp81DxKUd1E.jpg|photo-1552879890-3a06dd3a06c2.jpg
+chain-011,near_duplicate_chain,candidate,2,train|valid,True,THaelQmgDKdUwfSFIAx5|ymICdUCkVq8IfApx2TvK,photo-1709719263381-30553a1d618b.jpg|un_0074_WwMG7hiQgDE.jpg

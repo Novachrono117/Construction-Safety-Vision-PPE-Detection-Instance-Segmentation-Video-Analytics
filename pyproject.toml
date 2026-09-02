@@ -12,12 +12,25 @@ classifiers = [
 ]
 dependencies = [
     "pyyaml>=6.0.2",
+    # Runtime, not analysis-only: phase 5 derives detection boxes from the
+    # canonical segmentation geometry, and 1803 of the 3373 annotations are
+    # compressed COCO RLE. pycocotools is the reference implementation of that
+    # format; hand-rolling a compressed-RLE decoder for the project's single
+    # source of truth would be a correctness risk, not a saving. numpy comes
+    # with it and is used for the mask arithmetic.
+    "numpy>=2.1",
+    "pycocotools>=2.0.8",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.3",
     "ruff>=0.9",
+    # Analysis-only: decoding source images and rendering report figures and
+    # contact sheets. Deliberately NOT runtime dependencies - training and
+    # inference must never import them.
+    "pillow>=11.0",
+    "matplotlib>=3.9",
 ]
 
 [build-system]

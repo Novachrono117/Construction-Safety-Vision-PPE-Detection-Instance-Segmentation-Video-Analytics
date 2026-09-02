@@ -23,8 +23,12 @@ undocumented one-off shell invocation.
 read from the environment only, sent as an `Authorization` header rather than a
 URL parameter, and never written to any file, log or provenance record.
 
+Phase 4A scripts run in this order: `fetch_source_inventory` -> `download_source_images`
+-> `audit_source_dataset` -> `eda_source_dataset` -> `build_review_package` ->
+`write_audit_reports`. The first two need `ROBOFLOW_API_KEY`; the rest are offline.
+
 ## Planned scripts
 
-Audit, split freeze, training, evaluation, error analysis and video inference
+Split freeze, training, evaluation, error analysis and video inference
 scripts are added by their respective roadmap phases. None are stubbed in
 advance.

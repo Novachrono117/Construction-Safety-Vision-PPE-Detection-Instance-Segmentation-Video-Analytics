@@ -1,10 +1,11 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: dataset acquired (phase 3 of 14 complete).** The canonical dataset
-> has been downloaded, hashed and structurally verified. **No model has been
-> trained, no split has been frozen, no exploratory analysis has been done, and
-> no results exist yet.** Every metric section is intentionally empty until a
-> real, recorded run produces it.
+> **Status: automated dataset audit complete (phase 4A of 14).** The dataset is
+> acquired, hashed, structurally verified, and its 436 original source images
+> have been audited and analysed. **No split has been frozen, no model has been
+> trained, and no results exist yet.** Phase 4 is *not* finished: the visual
+> review it produced evidence for has not been carried out. Every metric section
+> is intentionally empty until a real, recorded run produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -77,8 +78,9 @@ Two design decisions define this architecture:
 | --- | --- |
 | Repository foundation | Done (phase 2). |
 | Dataset acquisition and provenance | Done (phase 3). Archive hashed, export structurally verified. |
-| Dataset audit / EDA | **Not started** (phase 4). Annotation quality, duplicates and frame leakage are unexamined. |
-| Splits | **Provider-supplied only; not audited, not frozen.** |
+| Automated audit + source EDA | Done (phase 4A). 436 originals acquired, measured and screened. |
+| Visual review | **Not started** (phase 4B). Evidence package built; semantic questions open. |
+| Splits | **Provider-supplied only. Audited, not approved, not frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
 | Metrics | **None.** No evaluation has been run. |
@@ -107,12 +109,30 @@ export under **CC BY 4.0**. Classes verified in the annotations: `person`,
 
 Structural inspection found the export internally consistent: 742 image records
 matching 742 files on disk, 3373 annotations, no dangling image or category
-references, no duplicate ids. It also surfaced items that phase 4 must resolve:
-segmentation geometry is a **mix of polygon (1570) and RLE (1803)**,
-`vest_loose` has **zero annotations in the test split**, and 28 image records
-carry no annotations.
+references, no duplicate ids. Segmentation geometry is a **mix of polygon (1570)
+and RLE (1803)**.
 
-Annotation quality, duplicates and frame leakage remain **unexamined**.
+### What the audit found (phase 4A)
+
+All 436 originals were acquired at full resolution, measured and screened. See
+[`reports/dataset_audit_report.md`](reports/dataset_audit_report.md) and
+[`reports/eda_report.md`](reports/eda_report.md).
+
+- **No exact duplicates.** 436 images, 436 unique content hashes.
+- **11 near-duplicate candidates, 6 of them crossing a split boundary**, three of
+  which are identical under both perceptual fingerprints. These are *candidates*
+  awaiting human confirmation, not established leakage.
+- **`vest_loose` appears in only 8 of 436 images** (45 instances): 7 train,
+  1 valid, **0 test**. The rare class cannot be scored on the provider's test split.
+- **17 source images carry no annotation.** Whether they are deliberate negatives
+  or missing labels needs a person to look at them.
+- **The live source project now holds 76 more annotations than the frozen v4
+  export**, so the two are not interchangeable and phase 5 must choose one.
+- **The supplied COCO bbox disagrees materially with RLE segmentation geometry.**
+  The preferred policy is to derive boxes from the geometry, but that decision is
+  **provisional pending visual validation**.
+
+Annotation *quality* has not been visually validated. Phase 4 remains open.
 
 ## Academic requirements
 

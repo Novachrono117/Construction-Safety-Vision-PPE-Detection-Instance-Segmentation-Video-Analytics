@@ -1,0 +1,995 @@
+{
+  "schema_version": 1,
+  "report": "bbox_consistency_audit",
+  "phase": 4,
+  "generated_at": "2026-09-01T14:43:41+00:00",
+  "git_commit": "ed9f59aed5b54335a344ec12e82b8bf1e9cd92d2",
+  "scope": "v4 export annotations only. Source-original images were not available when this audit ran, so no source-level statistic is computed here.",
+  "primary_tolerance_px": 1.0,
+  "tolerances_px": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    5.0
+  ],
+  "totals": {
+    "annotations_total": 3373,
+    "annotations_checked": 3373,
+    "by_representation": {
+      "polygon": 1570,
+      "rle": 1803
+    },
+    "within_tolerance": {
+      "0.0": {
+        "polygon": 23,
+        "all": 45,
+        "rle": 22
+      },
+      "0.5": {
+        "polygon": 1570,
+        "all": 1793,
+        "rle": 223
+      },
+      "1.0": {
+        "polygon": 1570,
+        "all": 2589,
+        "rle": 1019
+      },
+      "2.0": {
+        "polygon": 1570,
+        "all": 2725,
+        "rle": 1155
+      },
+      "5.0": {
+        "polygon": 1570,
+        "all": 2910,
+        "rle": 1340
+      }
+    },
+    "within_primary": 2589,
+    "canvas_spill": {
+      "polygon|inside|agrees": 1570,
+      "rle|inside|agrees": 953,
+      "rle|inside|differs": 585,
+      "rle|spills|agrees": 66,
+      "rle|spills|differs": 199
+    },
+    "containment": {
+      "polygon|derived_inside_supplied": 1570,
+      "rle|derived_inside_supplied": 1777,
+      "rle|derived_escapes": 26
+    },
+    "mismatches_at_primary_tolerance": 784,
+    "max_delta_px": 123.5,
+    "mean_delta_px": 3.9626,
+    "exact_matches": 45
+  },
+  "splits": [
+    {
+      "split": "test",
+      "annotations_total": 166,
+      "annotations_checked": 166,
+      "skipped": {},
+      "by_representation": {
+        "polygon": 65,
+        "rle": 101
+      },
+      "max_delta_px": 39.0,
+      "mean_delta_px": 0.7079,
+      "within_tolerance": {
+        "0.0": {
+          "polygon": 2,
+          "all": 4,
+          "rle": 2
+        },
+        "0.5": {
+          "polygon": 65,
+          "all": 90,
+          "rle": 25
+        },
+        "1.0": {
+          "polygon": 65,
+          "all": 159,
+          "rle": 94
+        },
+        "2.0": {
+          "polygon": 65,
+          "all": 165,
+          "rle": 100
+        },
+        "5.0": {
+          "polygon": 65,
+          "all": 165,
+          "rle": 100
+        }
+      },
+      "canvas_spill": {
+        "polygon|inside|agrees": 65,
+        "rle|inside|agrees": 88,
+        "rle|inside|differs": 7,
+        "rle|spills|agrees": 6
+      },
+      "containment": {
+        "polygon|derived_inside_supplied": 65,
+        "rle|derived_inside_supplied": 100,
+        "rle|derived_escapes": 1
+      },
+      "mismatches_at_primary_tolerance": 7,
+      "worst_examples": [
+        {
+          "annotation_id": 144,
+          "image_id": 34,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 39.0,
+          "deltas_px": [
+            39.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "supplied_bbox": [
+            303.0,
+            75.0,
+            101.0,
+            484.0
+          ],
+          "derived_bbox": [
+            342.0,
+            76.0,
+            62.0,
+            483.0
+          ]
+        },
+        {
+          "annotation_id": 119,
+          "image_id": 31,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.75,
+          "deltas_px": [
+            0.5,
+            1.75,
+            0.5,
+            0.25
+          ],
+          "supplied_bbox": [
+            243.5,
+            132.25,
+            139.0,
+            263.5
+          ],
+          "derived_bbox": [
+            244.0,
+            134.0,
+            139.0,
+            262.0
+          ]
+        },
+        {
+          "annotation_id": 10,
+          "image_id": 4,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.0,
+            1.5,
+            0.0,
+            0.5
+          ],
+          "supplied_bbox": [
+            137.0,
+            220.5,
+            151.0,
+            146.0
+          ],
+          "derived_bbox": [
+            137.0,
+            222.0,
+            151.0,
+            145.0
+          ]
+        },
+        {
+          "annotation_id": 16,
+          "image_id": 4,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.0,
+            1.5,
+            0.0,
+            0.5
+          ],
+          "supplied_bbox": [
+            159.0,
+            392.5,
+            101.0,
+            142.0
+          ],
+          "derived_bbox": [
+            159.0,
+            394.0,
+            101.0,
+            141.0
+          ]
+        },
+        {
+          "annotation_id": 61,
+          "image_id": 17,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.25,
+          "deltas_px": [
+            0.75,
+            0.75,
+            0.25,
+            1.25
+          ],
+          "supplied_bbox": [
+            8.25,
+            395.25,
+            55.5,
+            172.5
+          ],
+          "derived_bbox": [
+            9.0,
+            396.0,
+            55.0,
+            173.0
+          ]
+        },
+        {
+          "annotation_id": 92,
+          "image_id": 29,
+          "category": "helmet_on_head",
+          "representation": "rle",
+          "max_delta_px": 1.25,
+          "deltas_px": [
+            0.5,
+            1.25,
+            0.5,
+            0.75
+          ],
+          "supplied_bbox": [
+            15.5,
+            115.75,
+            65.0,
+            70.5
+          ],
+          "derived_bbox": [
+            16.0,
+            117.0,
+            64.0,
+            70.0
+          ]
+        },
+        {
+          "annotation_id": 110,
+          "image_id": 30,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.25,
+          "deltas_px": [
+            0.5,
+            1.25,
+            0.5,
+            0.75
+          ],
+          "supplied_bbox": [
+            225.5,
+            304.75,
+            25.0,
+            61.5
+          ],
+          "derived_bbox": [
+            226.0,
+            306.0,
+            25.0,
+            61.0
+          ]
+        },
+        {
+          "annotation_id": 2,
+          "image_id": 0,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.0,
+          "deltas_px": [
+            1.0,
+            0.75,
+            1.0,
+            0.25
+          ],
+          "supplied_bbox": [
+            91.0,
+            258.25,
+            520.0,
+            381.5
+          ],
+          "derived_bbox": [
+            92.0,
+            259.0,
+            520.0,
+            381.0
+          ]
+        },
+        {
+          "annotation_id": 9,
+          "image_id": 4,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.0,
+          "deltas_px": [
+            0.5,
+            1.0,
+            0.5,
+            1.0
+          ],
+          "supplied_bbox": [
+            321.5,
+            180.0,
+            131.0,
+            162.0
+          ],
+          "derived_bbox": [
+            322.0,
+            181.0,
+            131.0,
+            162.0
+          ]
+        },
+        {
+          "annotation_id": 14,
+          "image_id": 4,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.0,
+          "deltas_px": [
+            0.25,
+            1.0,
+            0.75,
+            1.0
+          ],
+          "supplied_bbox": [
+            298.75,
+            342.0,
+            61.5,
+            148.0
+          ],
+          "derived_bbox": [
+            299.0,
+            343.0,
+            62.0,
+            148.0
+          ]
+        }
+      ]
+    },
+    {
+      "split": "train",
+      "annotations_total": 2836,
+      "annotations_checked": 2836,
+      "skipped": {},
+      "by_representation": {
+        "rle": 1499,
+        "polygon": 1337
+      },
+      "max_delta_px": 123.5,
+      "mean_delta_px": 4.596,
+      "within_tolerance": {
+        "0.0": {
+          "rle": 17,
+          "all": 36,
+          "polygon": 19
+        },
+        "0.5": {
+          "rle": 165,
+          "all": 1502,
+          "polygon": 1337
+        },
+        "1.0": {
+          "rle": 737,
+          "all": 2074,
+          "polygon": 1337
+        },
+        "2.0": {
+          "rle": 856,
+          "all": 2193,
+          "polygon": 1337
+        },
+        "5.0": {
+          "rle": 1040,
+          "all": 2377,
+          "polygon": 1337
+        }
+      },
+      "canvas_spill": {
+        "rle|spills|differs": 199,
+        "rle|inside|differs": 563,
+        "rle|spills|agrees": 46,
+        "polygon|inside|agrees": 1337,
+        "rle|inside|agrees": 691
+      },
+      "containment": {
+        "rle|derived_inside_supplied": 1477,
+        "rle|derived_escapes": 22,
+        "polygon|derived_inside_supplied": 1337
+      },
+      "mismatches_at_primary_tolerance": 762,
+      "worst_examples": [
+        {
+          "annotation_id": 1831,
+          "image_id": 380,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 123.5,
+          "deltas_px": [
+            66.5,
+            123.5,
+            16.5,
+            12.5
+          ],
+          "supplied_bbox": [
+            -66.5,
+            68.5,
+            222.0,
+            531.0
+          ],
+          "derived_bbox": [
+            0.0,
+            192.0,
+            139.0,
+            395.0
+          ]
+        },
+        {
+          "annotation_id": 689,
+          "image_id": 146,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 121.5,
+          "deltas_px": [
+            39.5,
+            67.0,
+            121.5,
+            63.0
+          ],
+          "supplied_bbox": [
+            38.5,
+            21.0,
+            635.0,
+            682.0
+          ],
+          "derived_bbox": [
+            78.0,
+            88.0,
+            474.0,
+            552.0
+          ]
+        },
+        {
+          "annotation_id": 1835,
+          "image_id": 380,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 103.0,
+          "deltas_px": [
+            67.0,
+            103.0,
+            16.0,
+            68.0
+          ],
+          "supplied_bbox": [
+            -67.0,
+            65.0,
+            251.0,
+            643.0
+          ],
+          "derived_bbox": [
+            0.0,
+            168.0,
+            168.0,
+            472.0
+          ]
+        },
+        {
+          "annotation_id": 11,
+          "image_id": 1,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 99.0,
+          "deltas_px": [
+            99.0,
+            28.0,
+            68.0,
+            17.0
+          ],
+          "supplied_bbox": [
+            212.0,
+            234.0,
+            496.0,
+            423.0
+          ],
+          "derived_bbox": [
+            311.0,
+            262.0,
+            329.0,
+            378.0
+          ]
+        },
+        {
+          "annotation_id": 2782,
+          "image_id": 595,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 99.0,
+          "deltas_px": [
+            99.0,
+            45.0,
+            13.0,
+            35.0
+          ],
+          "supplied_bbox": [
+            79.0,
+            114.0,
+            554.0,
+            561.0
+          ],
+          "derived_bbox": [
+            178.0,
+            159.0,
+            442.0,
+            481.0
+          ]
+        },
+        {
+          "annotation_id": 2776,
+          "image_id": 592,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 94.5,
+          "deltas_px": [
+            94.5,
+            34.5,
+            2.5,
+            59.5
+          ],
+          "supplied_bbox": [
+            69.5,
+            323.5,
+            502.0,
+            376.0
+          ],
+          "derived_bbox": [
+            164.0,
+            358.0,
+            405.0,
+            282.0
+          ]
+        },
+        {
+          "annotation_id": 156,
+          "image_id": 26,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 94.0,
+          "deltas_px": [
+            3.0,
+            38.5,
+            94.0,
+            21.5
+          ],
+          "supplied_bbox": [
+            83.0,
+            34.5,
+            423.0,
+            627.0
+          ],
+          "derived_bbox": [
+            86.0,
+            73.0,
+            326.0,
+            567.0
+          ]
+        },
+        {
+          "annotation_id": 1834,
+          "image_id": 380,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 90.5,
+          "deltas_px": [
+            14.5,
+            45.5,
+            27.5,
+            90.5
+          ],
+          "supplied_bbox": [
+            542.5,
+            -45.5,
+            125.0,
+            441.0
+          ],
+          "derived_bbox": [
+            557.0,
+            0.0,
+            83.0,
+            305.0
+          ]
+        },
+        {
+          "annotation_id": 2740,
+          "image_id": 579,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 90.0,
+          "deltas_px": [
+            90.0,
+            34.5,
+            5.0,
+            15.5
+          ],
+          "supplied_bbox": [
+            203.0,
+            193.5,
+            408.0,
+            462.0
+          ],
+          "derived_bbox": [
+            293.0,
+            228.0,
+            313.0,
+            412.0
+          ]
+        },
+        {
+          "annotation_id": 886,
+          "image_id": 199,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 89.5,
+          "deltas_px": [
+            59.5,
+            21.5,
+            89.5,
+            1.5
+          ],
+          "supplied_bbox": [
+            -59.5,
+            -21.5,
+            479.0,
+            663.0
+          ],
+          "derived_bbox": [
+            0.0,
+            0.0,
+            330.0,
+            640.0
+          ]
+        }
+      ]
+    },
+    {
+      "split": "valid",
+      "annotations_total": 371,
+      "annotations_checked": 371,
+      "skipped": {},
+      "by_representation": {
+        "polygon": 168,
+        "rle": 203
+      },
+      "max_delta_px": 28.25,
+      "mean_delta_px": 0.5774,
+      "within_tolerance": {
+        "0.0": {
+          "polygon": 2,
+          "all": 5,
+          "rle": 3
+        },
+        "0.5": {
+          "polygon": 168,
+          "all": 201,
+          "rle": 33
+        },
+        "1.0": {
+          "polygon": 168,
+          "all": 356,
+          "rle": 188
+        },
+        "2.0": {
+          "polygon": 168,
+          "all": 367,
+          "rle": 199
+        },
+        "5.0": {
+          "polygon": 168,
+          "all": 368,
+          "rle": 200
+        }
+      },
+      "canvas_spill": {
+        "polygon|inside|agrees": 168,
+        "rle|inside|agrees": 174,
+        "rle|inside|differs": 15,
+        "rle|spills|agrees": 14
+      },
+      "containment": {
+        "polygon|derived_inside_supplied": 168,
+        "rle|derived_inside_supplied": 200,
+        "rle|derived_escapes": 3
+      },
+      "mismatches_at_primary_tolerance": 15,
+      "worst_examples": [
+        {
+          "annotation_id": 319,
+          "image_id": 76,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 28.25,
+          "deltas_px": [
+            0.25,
+            28.25,
+            0.75,
+            0.75
+          ],
+          "supplied_bbox": [
+            293.75,
+            229.75,
+            22.5,
+            123.5
+          ],
+          "derived_bbox": [
+            294.0,
+            258.0,
+            23.0,
+            96.0
+          ]
+        },
+        {
+          "annotation_id": 208,
+          "image_id": 55,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 16.75,
+          "deltas_px": [
+            0.5,
+            0.75,
+            0.5,
+            16.75
+          ],
+          "supplied_bbox": [
+            320.5,
+            195.25,
+            225.0,
+            332.5
+          ],
+          "derived_bbox": [
+            321.0,
+            196.0,
+            225.0,
+            315.0
+          ]
+        },
+        {
+          "annotation_id": 96,
+          "image_id": 24,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 6.0,
+          "deltas_px": [
+            0.0,
+            0.0,
+            0.0,
+            6.0
+          ],
+          "supplied_bbox": [
+            338.0,
+            322.0,
+            101.0,
+            102.0
+          ],
+          "derived_bbox": [
+            338.0,
+            322.0,
+            101.0,
+            96.0
+          ]
+        },
+        {
+          "annotation_id": 91,
+          "image_id": 23,
+          "category": "vest_loose",
+          "representation": "rle",
+          "max_delta_px": 3.25,
+          "deltas_px": [
+            0.0,
+            3.25,
+            0.0,
+            0.75
+          ],
+          "supplied_bbox": [
+            342.0,
+            96.75,
+            298.0,
+            265.5
+          ],
+          "derived_bbox": [
+            342.0,
+            100.0,
+            298.0,
+            263.0
+          ]
+        },
+        {
+          "annotation_id": 150,
+          "image_id": 40,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.25,
+            1.5,
+            0.75,
+            0.5
+          ],
+          "supplied_bbox": [
+            466.75,
+            285.5,
+            22.5,
+            65.0
+          ],
+          "derived_bbox": [
+            467.0,
+            287.0,
+            23.0,
+            64.0
+          ]
+        },
+        {
+          "annotation_id": 195,
+          "image_id": 51,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.0,
+            1.5,
+            0.0,
+            0.5
+          ],
+          "supplied_bbox": [
+            289.0,
+            354.5,
+            83.0,
+            168.0
+          ],
+          "derived_bbox": [
+            289.0,
+            356.0,
+            83.0,
+            167.0
+          ]
+        },
+        {
+          "annotation_id": 304,
+          "image_id": 75,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.5,
+            1.5,
+            0.5,
+            0.5
+          ],
+          "supplied_bbox": [
+            162.5,
+            256.5,
+            19.0,
+            87.0
+          ],
+          "derived_bbox": [
+            163.0,
+            258.0,
+            19.0,
+            86.0
+          ]
+        },
+        {
+          "annotation_id": 307,
+          "image_id": 75,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.5,
+          "deltas_px": [
+            0.75,
+            1.5,
+            0.25,
+            0.5
+          ],
+          "supplied_bbox": [
+            43.25,
+            253.5,
+            76.5,
+            213.0
+          ],
+          "derived_bbox": [
+            44.0,
+            255.0,
+            76.0,
+            212.0
+          ]
+        },
+        {
+          "annotation_id": 7,
+          "image_id": 1,
+          "category": "vest_on_body",
+          "representation": "rle",
+          "max_delta_px": 1.25,
+          "deltas_px": [
+            1.25,
+            0.75,
+            0.75,
+            0.25
+          ],
+          "supplied_bbox": [
+            353.75,
+            341.25,
+            96.5,
+            219.5
+          ],
+          "derived_bbox": [
+            355.0,
+            342.0,
+            96.0,
+            219.0
+          ]
+        },
+        {
+          "annotation_id": 56,
+          "image_id": 17,
+          "category": "person",
+          "representation": "rle",
+          "max_delta_px": 1.25,
+          "deltas_px": [
+            1.25,
+            0.75,
+            0.75,
+            0.25
+          ],
+          "supplied_bbox": [
+            239.75,
+            227.25,
+            180.5,
+            315.5
+          ],
+          "derived_bbox": [
+            241.0,
+            228.0,
+            180.0,
+            315.0
+          ]
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "COMPUTED: polygon annotations agree essentially perfectly - 1570 of 1570 (100.00%) within 0.5 px, though only 23 match to the bit. The supplied box for a polygon is the polygon's own coordinate extrema.",
+    "COMPUTED: the entire disagreement lives in the RLE annotations - 1019 of 1803 (56.52%) within 1.0 px. The largest single discrepancy is 123.5 px.",
+    "COMPUTED: the mask-derived box lies inside the supplied box in 1777 of 1803 RLE cases (98.56%). The supplied box is systematically the larger of the two, not randomly offset.",
+    "COMPUTED: 265 supplied boxes extend outside the image canvas, which a rasterised mask cannot do; only 24.91% of those agree, against 61.96% for boxes fully inside the canvas. Clipping is therefore a contributing factor but NOT the explanation: 585 RLE annotations disagree while their supplied box is entirely within the canvas.",
+    "COMPUTED: the export's `area` field equals bbox width x height, not the mask area, so it carries no independent evidence about the mask and was not used here.",
+    "COMPUTED: mean discrepancy is far larger on the augmented split (train 4.596 px) than on the un-augmented ones (test 0.7079 px, valid 0.5774 px).",
+    "HYPOTHESIS (untested): the supplied box may be transformed as a box through augmentation while the mask is transformed as pixels - rotating an axis-aligned box and re-axis-aligning it always enlarges it, which would produce exactly this direction of error and exactly this train/validation gap. This is consistent with the numbers; it has NOT been demonstrated, and it does not account for the disagreements on the un-augmented splits.",
+    "DECISION FOR PHASE 5: recompute every detection box from the segmentation geometry and do not use the supplied `bbox`. This is not merely tidier - for the RLE annotations the two disagree materially, and the segmentation is by project definition the source of truth. Whether the mask or the supplied box better reflects the real object is a visual question this audit cannot settle."
+  ],
+  "open_questions": [
+    "Whether the same agreement holds for the ORIGINAL source annotations: this audit sees the preprocessed export, in which every image was resized to 640x640.",
+    "Whether the annotations with the largest discrepancies are genuine annotation defects or artefacts of the polygon-to-RLE conversion. Requires visual review.",
+    "Why the export mixes polygon and RLE at all - whether it tracks how each instance was originally drawn. Not answerable from the export alone."
+  ]
+}

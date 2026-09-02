@@ -1,0 +1,12 @@
+image_a_id,image_b_id,provider_split_a,provider_split_b,dhash_distance,phash_distance,min_distance,cross_split,reason
+3LUOWEww9aCx2Cx4B38y,LVQG21gdyYgR1aZBE6h9,train,train,1,0,0,False,dhash+phash
+4UEcuYsspsOsSV0XYgSR,6hpR44qukoBLy0iFwzip,valid,train,1,0,0,True,dhash+phash
+FBzxttXYsNSZKcVNofUI,Um5Oft7wh92nWZzcd33C,valid,train,0,0,0,True,dhash+phash
+IyVJr4DcosMWf0wZS1uN,ghzZPWPu7P2hqWEVXzdK,train,train,1,0,0,False,dhash+phash
+OgbeepjjlVIRghzAMurI,Ud5BlYIB2FSpmLDEEq9z,valid,train,0,0,0,True,dhash+phash
+THaelQmgDKdUwfSFIAx5,ymICdUCkVq8IfApx2TvK,train,valid,2,0,0,True,dhash+phash
+TwF1Rahc7CIP2gpmlbLS,pd0SyehnE6l5xoGZqJCt,train,train,0,2,0,False,dhash+phash
+p5lxtMTKDL0gIgbqSrls,xwPbKAjD2vxaff0GdKp1,train,train,0,2,0,False,dhash+phash
+L51HLb9pTcXWg0hlY2eI,WRFgtFooB6kjdViPXWHk,train,valid,1,8,1,True,dhash+phash
+kvlkvPKhlcIlNoa2lJKq,tjHCOqwRIYw66vZcCHJp,valid,test,5,5,5,True,dhash+phash
+66p9gzaQFGcmQA2v40Of,pbOZlgeseTpoTXwVJjAh,train,train,12,9,9,False,phash

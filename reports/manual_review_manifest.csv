@@ -1,0 +1,147 @@
+short_id,image_id,name,split,reason,contact_sheet,note
+0CHrBSJA,0CHrBSJAmY24quC0QSYA,tu_px_09163_9227531.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+7ZBa5LYX,7ZBa5LYXLSg2gd59x0Nl,photo-1526924108427-294aaa2df1b2.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+DiZN18we,DiZN18wef1vuHh6pVvtI,photo-1755619063743-d4a662df5219.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+KN9YcUjf,KN9YcUjf4MbiILNfF6d1,premium_photo-1664300750264-1f0e461554a3.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+SurmZufk,SurmZufksfn5NllTtjD8,tu_px_09164_35281196.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+Yus4GG8O,Yus4GG8O9bfML35pe2Xg,photo-1622612063021-116cc3407145.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+hsfBHYaz,hsfBHYazMXnS3WJlQzR7,premium_photo-1664301167194-455b2ea6f8e7.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+pwZkhgJc,pwZkhgJcda4HLCsziTh1,photo-1668786710595-afc9d92f304e.jpg,train,overview_sample,reports/figures/review_a_overview.jpg,
+0sRAfq8g,0sRAfq8grYqMA2xuCHP6,premium_photo-1663090296504-9ac2d924744a.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+8O2JjSJC,8O2JjSJCb1ylJibwosnA,photo-1580810734868-7ea4e9130c01.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+Dny3q3vJ,Dny3q3vJmCFOBIzhGir1,photo-1574313462720-50e62ba298d6.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+LECJ0QrW,LECJ0QrWJeyWICbOqamy,photo-1516216628859-9bccecab13ca.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+SA6z7RB5,SA6z7RB5PM7Ij8AwZgp1,premium_photo-1663045488413-3e33a7ac44b0.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+Y8Qx4RUx,Y8Qx4RUxXlcq5dm2gx4n,premium_photo-1664300982961-f57190dca362.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+iYDeCo5S,iYDeCo5SbjJugwsbVESB,photo-1556033773-e6988a371bec.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+r3HWnAoR,r3HWnAoRdj2C2qeAdFkr,photo-1774599730788-a74cd9253b56.jpg,valid,overview_sample,reports/figures/review_a_overview.jpg,
+1XJO4jpZ,1XJO4jpZ1EjuFK7M5WzU,premium_photo-1721460167347-c25682fa8511.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+8LgvW2sr,8LgvW2srLb751N5SJDxq,px_0017_8487729.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+FbZqQM7g,FbZqQM7gZbTKYNSbQPNc,photo-1636414722386-a73bd3fc368c.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+RGHYIrvH,RGHYIrvH4ypjKeh0X9jI,photo-1557089011-e00dec01a241.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+YEZrZA7G,YEZrZA7GrbvlyKBA7z5q,tu_px_09003_8487720.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+fVfuf7cW,fVfuf7cWPnRyw4D9x1vo,photo-1759159091245-fc043faacddc.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+jZRJXWZr,jZRJXWZrSuoa2xxRDSQL,photo-1591955506264-3f5a6834570a.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+o0SiQwUZ,o0SiQwUZ5uRlCXASCtiR,px_0133_11666845.jpg,test,overview_sample,reports/figures/review_a_overview.jpg,
+0OEuk7X9,0OEuk7X9WrM64hqQbedA,px_0011_28196526.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+0ejTKqob,0ejTKqobP0Z7bG7iS1dF,premium_photo-1680658081728-5ed42001028d.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+1BVaqcup,1BVaqcupKpVSmlh5tncK,photo-1617118600610-dcdf743b3dfc.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+1XJO4jpZ,1XJO4jpZ1EjuFK7M5WzU,premium_photo-1721460167347-c25682fa8511.jpg,test,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+2estUvSX,2estUvSXu4usdh4plcAm,premium_photo-1661609600871-9cb2081d68f2.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+4UEcuYss,4UEcuYsspsOsSV0XYgSR,photo-1617118600471-ecc90bdb4db0.jpg,valid,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+6hpR44qu,6hpR44qukoBLy0iFwzip,un_0158_HybkhmK6SsU.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+6yISFDLT,6yISFDLTaSrGRErrVKUw,wm_0335_LGBT_construction_helmets.jpg,train,class_example:helmet_loose,reports/figures/review_b_class_helmet_loose.jpg,
+0TCko19j,0TCko19jiO1CcXl2vqsd,premium_photo-1663054541741-0276bdf1808b.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0ajF0d1e,0ajF0d1eniugei3qRqvl,px_0016_9258892.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0ejTKqob,0ejTKqobP0Z7bG7iS1dF,premium_photo-1680658081728-5ed42001028d.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0g77gkQG,0g77gkQGLuqJIxRBDCMC,photo-1769422837020-ea7251eb708d.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0sRAfq8g,0sRAfq8grYqMA2xuCHP6,premium_photo-1663090296504-9ac2d924744a.jpg,valid,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0vIelRhK,0vIelRhK7EUfEcEMkBV0,photo-1694521787193-9293daeddbaa.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+2estUvSX,2estUvSXu4usdh4plcAm,premium_photo-1661609600871-9cb2081d68f2.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+35kJU6sO,35kJU6sOxBnL8qucfgHx,premium_photo-1725898345872-ee08c29fcd38.jpg,train,class_example:helmet_on_head,reports/figures/review_b_class_helmet_on_head.jpg,
+0CHrBSJA,0CHrBSJAmY24quC0QSYA,tu_px_09163_9227531.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0OEuk7X9,0OEuk7X9WrM64hqQbedA,px_0011_28196526.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0Orp0pwb,0Orp0pwbiOU0MIg0a28r,tu_px_09159_30572791.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0TCko19j,0TCko19jiO1CcXl2vqsd,premium_photo-1663054541741-0276bdf1808b.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0ajF0d1e,0ajF0d1eniugei3qRqvl,px_0016_9258892.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0ejTKqob,0ejTKqobP0Z7bG7iS1dF,premium_photo-1680658081728-5ed42001028d.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0fMloNWo,0fMloNWonp8DEQff6L2n,photo-1581091212991-8891c7d4bd9b.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+0g77gkQG,0g77gkQGLuqJIxRBDCMC,photo-1769422837020-ea7251eb708d.jpg,train,class_example:person,reports/figures/review_b_class_person.jpg,
+1dnS0NtM,1dnS0NtMgQN35Eb4GNTe,photo-1777891733988-540ac2abbd40.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+Hwlufkrc,HwlufkrcXA9g8e3aNCm5,photo-1662309376159-b95fb193d96b.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+Mbgd4Kw2,Mbgd4Kw22vX5vdWxqfRn,premium_photo-1753820185684-8999b0c70865.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+TwF1Rahc,TwF1Rahc7CIP2gpmlbLS,un_0068_77X7pOwapGg.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+Vtt35PA6,Vtt35PA66TdcCFU5LqWG,px_0199_34442873.jpg,valid,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+dOdZyD1R,dOdZyD1R1kVyKKu9TD1D,photo-1605647434635-ddd0227349be.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+pd0Syehn,pd0SyehnE6l5xoGZqJCt,photo-1596266953826-e43f503716df.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+xCsoN8tQ,xCsoN8tQQsB259iyGJJD,premium_photo-1678837556054-cb0b59e83a7f.jpg,train,class_example:vest_loose,reports/figures/review_b_class_vest_loose.jpg,
+0OEuk7X9,0OEuk7X9WrM64hqQbedA,px_0011_28196526.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+0TCko19j,0TCko19jiO1CcXl2vqsd,premium_photo-1663054541741-0276bdf1808b.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+0ajF0d1e,0ajF0d1eniugei3qRqvl,px_0016_9258892.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+0sRAfq8g,0sRAfq8grYqMA2xuCHP6,premium_photo-1663090296504-9ac2d924744a.jpg,valid,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+0vIelRhK,0vIelRhK7EUfEcEMkBV0,photo-1694521787193-9293daeddbaa.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+2Qh4yEmc,2Qh4yEmcE64JRJXTM10C,tu_un_09116_8Z3yOkt2Pb4.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+2estUvSX,2estUvSXu4usdh4plcAm,premium_photo-1661609600871-9cb2081d68f2.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+2qD9FzEo,2qD9FzEoqf4Rsihf6kf7,tu_px_09050_9733798.jpg,train,class_example:vest_on_body,reports/figures/review_b_class_vest_on_body.jpg,
+kusZ7rL0,kusZ7rL0IJdPP025Z3VL,photo-1516880711640-ef7db81be3e1.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,64 instances
+p5lxtMTK,p5lxtMTKDL0gIgbqSrls,un_0161_wp81DxKUd1E.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,48 instances
+vltD7ae0,vltD7ae0puVQgcj8VjlZ,premium_photo-1674248799812-cacb8147fc65.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,38 instances
+iYDeCo5S,iYDeCo5SbjJugwsbVESB,photo-1556033773-e6988a371bec.jpg,valid,crowded_scene,reports/figures/review_d_crowded.jpg,36 instances
+sCBw5cHM,sCBw5cHMoREKazVjQfkj,px_0189_38070.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,35 instances
+xwPbKAjD,xwPbKAjD2vxaff0GdKp1,photo-1552879890-3a06dd3a06c2.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,35 instances
+pE6UkMMW,pE6UkMMWzcDOy86QHSoC,photo-1504384308090-c894fdcc538d.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,33 instances
+6yISFDLT,6yISFDLTaSrGRErrVKUw,wm_0335_LGBT_construction_helmets.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,32 instances
+f1CUR1R0,f1CUR1R0AXa8BF8OuBa2,wm_0118_Hard_Hat_Tree.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,28 instances
+Vtt35PA6,Vtt35PA66TdcCFU5LqWG,px_0199_34442873.jpg,valid,crowded_scene,reports/figures/review_d_crowded.jpg,27 instances
+x9uzQ6Sw,x9uzQ6SwddanWcvV1McI,photo-1531834685032-c34bf0d84c77.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,26 instances
+3INKyAoe,3INKyAoeOEbPQKuxINbX,photo-1556033773-f4be30dd8eb2.jpg,train,crowded_scene,reports/figures/review_d_crowded.jpg,25 instances
+q96gkRtL,q96gkRtLhrZTtKhFqiQU,photo-1564483335100-3413b45dbd37.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.051
+TqbtZYtT,TqbtZYtTWiEhg5zB0duU,photo-1726421690313-2e0519335b82.jpg,valid,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.090
+9RMi9YBh,9RMi9YBhKa1nLz3ugIma,photo-1593394850229-e9189f069ada.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.095
+Vtt35PA6,Vtt35PA66TdcCFU5LqWG,px_0199_34442873.jpg,valid,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.123
+7ZBa5LYX,7ZBa5LYXLSg2gd59x0Nl,photo-1526924108427-294aaa2df1b2.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.129
+RL2s7RdA,RL2s7RdAmeNec6fLrJez,px_0190_13507074.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.144
+WeIamb2s,WeIamb2srt7SBgcfAFq1,un_0191_-3VlPEKi1Zo.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.153
+DiZN18we,DiZN18wef1vuHh6pVvtI,photo-1755619063743-d4a662df5219.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.153
+CM5yr8YH,CM5yr8YHsaaoIdidqtnU,un_0096_e4ippDCPHms.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.164
+gtQyCqdK,gtQyCqdKvXk2yIeURzCw,un_0017_gQKhNj9fV8E.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.173
+VKyk8uoM,VKyk8uoMs024kVF0SQRN,px_0159_15332313.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.177
+BhdMkBrR,BhdMkBrR1P1zUTVq9DaC,un_0019_yOEBsOJwkI4.jpg,train,lower_luminance,reports/figures/review_e_lower_luminance.jpg,mean_luminance=0.182
+60TqAIaO,60TqAIaOldetEAmBqqMX,photo-1707553031504-98d859ef2e16.jpg,test,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+62UoaBv0,62UoaBv0beM5cBLCubmT,photo-1586528116311-ad8dd3c8310d.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+7ZBa5LYX,7ZBa5LYXLSg2gd59x0Nl,photo-1526924108427-294aaa2df1b2.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+9b7VLDWD,9b7VLDWDFhy21Ygmz7ss,photo-1770240080339-872269ce435d.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+9koFugzZ,9koFugzZozUI9YIfWZk0,photo-1503708928676-1cb796a0891e.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+KgOOMlBE,KgOOMlBEXp0QxhSxTT6a,photo-1760872703636-f8d643a2b510.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+KqRSROf9,KqRSROf90W22N1qzQzN0,photo-1762169985718-40919441a74e.jpg,valid,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+NtpAqzun,NtpAqzunm5la8DrZocsj,photo-1553413077-190dd305871c.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+OnqsKM2C,OnqsKM2CX6FubTfVtaAG,photo-1535732759880-bbd5c7265e3f.jpg,valid,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+aY9eNC7X,aY9eNC7XGXN7yzM04BIy,photo-1640236889868-97b4708793d0.jpg,test,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+arsAD5W3,arsAD5W3OM2LZE59FvZO,premium_photo-1682148826211-99809e7034eb.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+fl9aZo56,fl9aZo56CB47TAGghJlT,photo-1575281923032-f40d94ef6160.jpg,test,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+inWNXCMj,inWNXCMjoiZbYJ8VZYuO,photo-1599707254554-027aeb4deacd.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+jZRJXWZr,jZRJXWZrSuoa2xxRDSQL,photo-1591955506264-3f5a6834570a.jpg,test,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+l6p3b532,l6p3b5329wOTIlDWrxKz,photo-1707553031390-e2b41823d6c0.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+qx08jrWT,qx08jrWTs2SMpvKiaAT7,photo-1599995903128-531fc7fb694b.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+wpbZJyUR,wpbZJyURzZHruvXGMRtd,photo-1649836215936-41c76a724233.jpg,train,zero_instance,reports/figures/review_f_zero_instance.jpg,requires semantic judgement
+3LUOWEww,3LUOWEww9aCx2Cx4B38y,un_0126_6tAIO3pxde4.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+LVQG21gd,LVQG21gdyYgR1aZBE6h9,photo-1620388640785-892616248ec8.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+4UEcuYss,4UEcuYsspsOsSV0XYgSR,photo-1617118600471-ecc90bdb4db0.jpg,valid,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+6hpR44qu,6hpR44qukoBLy0iFwzip,un_0158_HybkhmK6SsU.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+FBzxttXY,FBzxttXYsNSZKcVNofUI,un_0192_Fj4wvdZMhoE.jpg,valid,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=0
+Um5Oft7w,Um5Oft7wh92nWZzcd33C,photo-1763328044377-d37cd9052d99.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=0
+IyVJr4Dc,IyVJr4DcosMWf0wZS1uN,un_0157_cigfVTfU39I.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+ghzZPWPu,ghzZPWPu7P2hqWEVXzdK,photo-1768158988512-ad31657fe5b8.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=1 phash=0
+Ogbeepjj,OgbeepjjlVIRghzAMurI,un_0002_X1P1_EDNnok.jpg,valid,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=0
+Ud5BlYIB,Ud5BlYIB2FSpmLDEEq9z,photo-1587582423116-ec07293f0395.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=0
+THaelQmg,THaelQmgDKdUwfSFIAx5,photo-1709719263381-30553a1d618b.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=2 phash=0
+ymICdUCk,ymICdUCkVq8IfApx2TvK,un_0074_WwMG7hiQgDE.jpg,valid,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=2 phash=0
+TwF1Rahc,TwF1Rahc7CIP2gpmlbLS,un_0068_77X7pOwapGg.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=2
+pd0Syehn,pd0SyehnE6l5xoGZqJCt,photo-1596266953826-e43f503716df.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=2
+p5lxtMTK,p5lxtMTKDL0gIgbqSrls,un_0161_wp81DxKUd1E.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=2
+xwPbKAjD,xwPbKAjD2vxaff0GdKp1,photo-1552879890-3a06dd3a06c2.jpg,train,near_duplicate_candidate,reports/figures/review_g_near_duplicates.jpg,dhash=0 phash=2
+4UEcuYss,4UEcuYsspsOsSV0XYgSR,photo-1617118600471-ecc90bdb4db0.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=1 phash=0
+6hpR44qu,6hpR44qukoBLy0iFwzip,un_0158_HybkhmK6SsU.jpg,train,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=1 phash=0
+FBzxttXY,FBzxttXYsNSZKcVNofUI,un_0192_Fj4wvdZMhoE.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=0 phash=0
+Um5Oft7w,Um5Oft7wh92nWZzcd33C,photo-1763328044377-d37cd9052d99.jpg,train,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=0 phash=0
+Ogbeepjj,OgbeepjjlVIRghzAMurI,un_0002_X1P1_EDNnok.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=0 phash=0
+Ud5BlYIB,Ud5BlYIB2FSpmLDEEq9z,photo-1587582423116-ec07293f0395.jpg,train,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=0 phash=0
+THaelQmg,THaelQmgDKdUwfSFIAx5,photo-1709719263381-30553a1d618b.jpg,train,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=2 phash=0
+ymICdUCk,ymICdUCkVq8IfApx2TvK,un_0074_WwMG7hiQgDE.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=2 phash=0
+L51HLb9p,L51HLb9pTcXWg0hlY2eI,photo-1755692881539-fa170f6859bc.jpg,train,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=1 phash=8
+WRFgtFoo,WRFgtFooB6kjdViPXWHk,photo-1755692879700-721ffbc767b8.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=1 phash=8
+kvlkvPKh,kvlkvPKhlcIlNoa2lJKq,photo-1640236889840-40f550ed5ef9.jpg,valid,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=5 phash=5
+tjHCOqwR,tjHCOqwRIYw66vZcCHJp,photo-1640236889794-424977d08dda.jpg,test,near_duplicate_candidate_cross_split,reports/figures/review_h_near_duplicates.jpg,dhash=5 phash=5
+ann144,v4-image-34,test ann=144 person rle delta=39.0px,test,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_test_1
+ann119,v4-image-31,test ann=119 vest_on_body rle delta=1.75px,test,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_test_2
+ann10,v4-image-4,test ann=10 vest_on_body rle delta=1.5px,test,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_test_3
+ann1831,v4-image-380,train ann=1831 vest_on_body rle delta=123.5px,train,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_train_1
+ann689,v4-image-146,train ann=689 person rle delta=121.5px,train,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_train_2
+ann1835,v4-image-380,train ann=1835 person rle delta=103.0px,train,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_train_3
+ann319,v4-image-76,valid ann=319 vest_on_body rle delta=28.25px,valid,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_valid_1
+ann208,v4-image-55,valid ann=208 vest_on_body rle delta=16.75px,valid,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_valid_2
+ann96,v4-image-24,valid ann=96 person rle delta=6.0px,valid,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,largest_valid_3
+ann1,v4-image-0,valid ann=1 polygon delta=0.01px (representative),polygon,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_polygon
+ann4,v4-image-1,valid ann=4 rle delta=1.00px (representative),rle,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_rle
+ann1,v4-image-0,test ann=1 polygon delta=0.00px (representative),polygon,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_polygon
+ann2,v4-image-0,test ann=2 rle delta=1.00px (representative),rle,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_rle

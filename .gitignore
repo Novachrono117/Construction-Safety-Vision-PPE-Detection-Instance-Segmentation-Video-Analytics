@@ -13,6 +13,18 @@ env/
 .env
 .env.local
 
+# --- Credentials kept loose in the working directory ---
+# Belt and braces: a key pasted into a stray file at the repo root must never be
+# stageable. Prefer .env; these patterns exist so an accident cannot become a
+# published secret.
+*api*key*.txt
+*chave*api*.txt
+*.key
+*.pem
+*credential*
+*secret*
+!.env.example
+
 # --- Tooling caches ---
 .pytest_cache/
 .ruff_cache/

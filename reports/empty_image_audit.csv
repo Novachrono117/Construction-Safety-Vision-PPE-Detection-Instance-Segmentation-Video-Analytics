@@ -1,0 +1,18 @@
+image_id,name,split,width,height,requires_visual_review,note
+60TqAIaOldetEAmBqqMX,photo-1707553031504-98d859ef2e16.jpg,test,1600,2387,True,zero annotated instances; deliberate negative vs missing label is unresolved
+62UoaBv0beM5cBLCubmT,photo-1586528116311-ad8dd3c8310d.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+7ZBa5LYXLSg2gd59x0Nl,photo-1526924108427-294aaa2df1b2.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+9b7VLDWDFhy21Ygmz7ss,photo-1770240080339-872269ce435d.jpg,train,1600,1280,True,zero annotated instances; deliberate negative vs missing label is unresolved
+9koFugzZozUI9YIfWZk0,photo-1503708928676-1cb796a0891e.jpg,train,1600,1200,True,zero annotated instances; deliberate negative vs missing label is unresolved
+KgOOMlBEXp0QxhSxTT6a,photo-1760872703636-f8d643a2b510.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+KqRSROf90W22N1qzQzN0,photo-1762169985718-40919441a74e.jpg,valid,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+NtpAqzunm5la8DrZocsj,photo-1553413077-190dd305871c.jpg,train,1600,2133,True,zero annotated instances; deliberate negative vs missing label is unresolved
+OnqsKM2CX6FubTfVtaAG,photo-1535732759880-bbd5c7265e3f.jpg,valid,1600,2000,True,zero annotated instances; deliberate negative vs missing label is unresolved
+aY9eNC7XGXN7yzM04BIy,photo-1640236889868-97b4708793d0.jpg,test,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+arsAD5W3OM2LZE59FvZO,premium_photo-1682148826211-99809e7034eb.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+fl9aZo56CB47TAGghJlT,photo-1575281923032-f40d94ef6160.jpg,test,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+inWNXCMjoiZbYJ8VZYuO,photo-1599707254554-027aeb4deacd.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+jZRJXWZrSuoa2xxRDSQL,photo-1591955506264-3f5a6834570a.jpg,test,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+l6p3b5329wOTIlDWrxKz,photo-1707553031390-e2b41823d6c0.jpg,train,1600,1067,True,zero annotated instances; deliberate negative vs missing label is unresolved
+qx08jrWTs2SMpvKiaAT7,photo-1599995903128-531fc7fb694b.jpg,train,1600,901,True,zero annotated instances; deliberate negative vs missing label is unresolved
+wpbZJyURzZHruvXGMRtd,photo-1649836215936-41c76a724233.jpg,train,1600,1071,True,zero annotated instances; deliberate negative vs missing label is unresolved

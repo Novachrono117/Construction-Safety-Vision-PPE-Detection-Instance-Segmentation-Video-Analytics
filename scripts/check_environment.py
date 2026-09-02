@@ -16,6 +16,7 @@ from pathlib import Path
 
 from construction_safety_vision import __version__
 from construction_safety_vision.config import ConfigError, load_experiment_config
+from construction_safety_vision.env import load_project_env
 from construction_safety_vision.paths import (
     ProjectPaths,
     ProjectRootNotFoundError,
@@ -78,6 +79,8 @@ def main(argv: list[str] | None = None) -> int:
 
     paths = ProjectPaths.from_root(root)
     print(f"  project_root: {paths.root}")
+    # Names only: a value must never reach stdout.
+    print(f"  .env supplied: {load_project_env(paths.root) or 'nothing'}")
     print(f"  git_commit: {git_commit(paths.root) or 'unavailable'}")
 
     config_path = args.config or (paths.configs / "project.yaml")
