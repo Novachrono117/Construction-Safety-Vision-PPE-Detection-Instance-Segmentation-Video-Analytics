@@ -22,6 +22,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import sys
 from pathlib import Path
@@ -78,12 +79,20 @@ def distribution_row(name: str, summary: dict[str, Any], digits: int = 3) -> str
     return f"| {name} | {cells} |"
 
 
-def build_audit_report(audit: dict[str, Any], bbox: dict[str, Any]) -> str:
+def build_audit_report(
+    audit: dict[str, Any],
+    bbox: dict[str, Any],
+    manual_split_decision: str | None = None,
+) -> str:
     """Render the dataset audit report.
 
     Args:
         audit: Source-audit payload.
         bbox: Bbox consistency audit payload.
+        manual_split_decision: The phase 4B verdict on the provider split, when
+            the manual audit has been recorded. The automated classification is
+            never rewritten - it was correct for the evidence it had - but the
+            report says plainly that a later phase superseded it.
 
     Returns:
         Markdown text.
@@ -113,6 +122,14 @@ def build_audit_report(audit: dict[str, Any], bbox: dict[str, Any]) -> str:
         "review; see `manual_review_manifest.csv`."
     )
     add("")
+    if manual_split_decision:
+        add(
+            "That review was carried out in phase 4B and is recorded in "
+            "[`manual_audit_report.md`](manual_audit_report.md) and "
+            "`manual_audit_decisions.csv`. This document is unchanged by it: it remains the "
+            "automated record, and the two are deliberately kept apart."
+        )
+        add("")
 
     add("## Population")
     add("")
@@ -372,15 +389,30 @@ def build_audit_report(audit: dict[str, Any], bbox: dict[str, Any]) -> str:
         "the remaining concern is the rare-class coverage below."
     )
     add("")
+    if manual_split_decision:
+        add(
+            f"> **SUPERSEDED IN PHASE 4B: `{manual_split_decision}`.** The visual review "
+            "confirmed the cross-split near-duplicate candidates, so the provider split is no "
+            "longer undetermined. The classification above is kept as it stood, because it is "
+            "the automated evidence the later decision was made from. The reasoning and its "
+            "consequences are in [`manual_audit_report.md`](manual_audit_report.md)."
+        )
+        add("")
     return "\n".join(lines)
 
 
-def build_eda_report(eda: dict[str, Any], audit: dict[str, Any]) -> str:
+def build_eda_report(
+    eda: dict[str, Any],
+    audit: dict[str, Any],
+    manual_recorded: bool = False,
+) -> str:
     """Render the exploratory analysis report.
 
     Args:
         eda: EDA payload.
         audit: Source-audit payload, for the split context.
+        manual_recorded: Whether the phase 4B manual audit exists. The open
+            questions below are kept verbatim; only their status is added.
 
     Returns:
         Markdown text.
@@ -554,7 +586,34 @@ def build_eda_report(eda: dict[str, Any], audit: dict[str, Any]) -> str:
     ]:
         add(f"- {question}")
     add("")
+    if manual_recorded:
+        add(
+            "**Status.** Phase 4B addressed the first three from the visual review; the "
+            "canonical-population question is still open, and `vest_loose` is now known to be "
+            "too thinly represented to carry a per-class claim under the provider split. What "
+            "each judgement does and does not license is in "
+            "[`manual_audit_report.md`](manual_audit_report.md)."
+        )
+        add("")
     return "\n".join(lines)
+
+
+def phase4b_split_decision(path: Path) -> str | None:
+    """Read the phase 4B verdict on the provider split, when it has been recorded.
+
+    Args:
+        path: ``reports/manual_audit_decisions.csv``.
+
+    Returns:
+        The recorded verdict, or ``None`` while phase 4B has not run.
+    """
+    if not path.is_file():
+        return None
+    with path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("review_type") == "provider_split":
+                return row.get("decision")
+    return None
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -577,10 +636,18 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: run the audit and EDA scripts first.", file=sys.stderr)
         return 2
 
+    manual_split_decision = phase4b_split_decision(paths.reports / "manual_audit_decisions.csv")
+
     audit_path = paths.reports / "dataset_audit_report.md"
-    audit_path.write_text(build_audit_report(audit, bbox), encoding="utf-8", newline="\n")
+    audit_path.write_text(
+        build_audit_report(audit, bbox, manual_split_decision), encoding="utf-8", newline="\n"
+    )
     eda_path = paths.reports / "eda_report.md"
-    eda_path.write_text(build_eda_report(eda, audit), encoding="utf-8", newline="\n")
+    eda_path.write_text(
+        build_eda_report(eda, audit, manual_split_decision is not None),
+        encoding="utf-8",
+        newline="\n",
+    )
 
     print(f"wrote reports/{audit_path.name} and reports/{eda_path.name}")
     return 0

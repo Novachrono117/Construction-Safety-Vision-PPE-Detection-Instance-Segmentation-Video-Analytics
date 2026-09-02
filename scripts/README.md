@@ -27,6 +27,15 @@ Phase 4A scripts run in this order: `fetch_source_inventory` -> `download_source
 -> `audit_source_dataset` -> `eda_source_dataset` -> `build_review_package` ->
 `write_audit_reports`. The first two need `ROBOFLOW_API_KEY`; the rest are offline.
 
+`record_manual_audit.py` (phase 4B) turns the human visual review of that package
+into `reports/manual_audit_decisions.csv` and `reports/manual_audit_report.md`. It
+reads no dataset image and makes no judgement of its own: the judgements are
+declared as data at the top of the file, and the script resolves them against the
+phase 4A manifests, refusing anything that does not resolve unambiguously. Run it
+with `--check` to re-validate the committed record without rewriting it.
+`write_audit_reports.py` then cross-references the outcome; re-run it after
+recording. Both are offline.
+
 ## Planned scripts
 
 Split freeze, training, evaluation, error analysis and video inference

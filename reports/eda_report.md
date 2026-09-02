@@ -110,3 +110,5 @@ Small objects, defined as a box covering less than 1% of the image area (COMPUTE
 - Is the segmentation or the supplied bbox the better description of an object? The phase 5 bbox policy stays provisional until this is looked at.
 - Should the canonical population be the frozen v4 export or the live source project, which now holds more annotations?
 - Can `vest_loose` support any per-class claim, or must it be reported as under-represented and excluded from headline metrics?
+
+**Status.** Phase 4B addressed the first three from the visual review; the canonical-population question is still open, and `vest_loose` is now known to be too thinly represented to carry a per-class claim under the provider split. What each judgement does and does not license is in [`manual_audit_report.md`](manual_audit_report.md).

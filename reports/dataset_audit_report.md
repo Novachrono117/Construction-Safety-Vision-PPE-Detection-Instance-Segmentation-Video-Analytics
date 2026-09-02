@@ -6,6 +6,8 @@ Scope: the **436 independent source images**, acquired at original resolution fr
 
 This is the automated half of the audit. Semantic questions - is this a valid negative, are these two frames the same scene - are deliberately left to human review; see `manual_review_manifest.csv`.
 
+That review was carried out in phase 4B and is recorded in [`manual_audit_report.md`](manual_audit_report.md) and `manual_audit_decisions.csv`. This document is unchanged by it: it remains the automated record, and the two are deliberately kept apart.
+
 ## Population
 
 | | Value | Basis |
@@ -155,3 +157,5 @@ Images containing each class (not instance counts):
 ### Classification: `UNDETERMINED_PENDING_VISUAL_REVIEW`
 
 **INTERPRETATION.** This is an audit recommendation and does **not** freeze or replace anything. The split cannot be judged suitable until a person has looked at the cross-split near-duplicate candidates: if they are genuine, the provider's split leaks and a new partition is required in phase 5; if they are false alarms, the remaining concern is the rare-class coverage below.
+
+> **SUPERSEDED IN PHASE 4B: `UNSUITABLE_FOR_FINAL_PROTOCOL`.** The visual review confirmed the cross-split near-duplicate candidates, so the provider split is no longer undetermined. The classification above is kept as it stood, because it is the automated evidence the later decision was made from. The reasoning and its consequences are in [`manual_audit_report.md`](manual_audit_report.md).

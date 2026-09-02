@@ -1,11 +1,12 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: automated dataset audit complete (phase 4A of 14).** The dataset is
-> acquired, hashed, structurally verified, and its 436 original source images
-> have been audited and analysed. **No split has been frozen, no model has been
-> trained, and no results exist yet.** Phase 4 is *not* finished: the visual
-> review it produced evidence for has not been carried out. Every metric section
-> is intentionally empty until a real, recorded run produces it.
+> **Status: dataset audit complete (phase 4 of 14).** The dataset is acquired,
+> hashed, structurally verified, and its 436 original source images have been
+> audited automatically (4A) and reviewed visually by people (4B). The provider's
+> split was **rejected for the final protocol**; the canonical split has not been
+> created. **No split has been frozen, no model has been trained, and no results
+> exist yet.** Every metric section is intentionally empty until a real, recorded
+> run produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -79,8 +80,8 @@ Two design decisions define this architecture:
 | Repository foundation | Done (phase 2). |
 | Dataset acquisition and provenance | Done (phase 3). Archive hashed, export structurally verified. |
 | Automated audit + source EDA | Done (phase 4A). 436 originals acquired, measured and screened. |
-| Visual review | **Not started** (phase 4B). Evidence package built; semantic questions open. |
-| Splits | **Provider-supplied only. Audited, not approved, not frozen.** |
+| Manual visual audit | Done (phase 4B). 32 human decisions recorded and validated against the phase 4A manifests. |
+| Splits | **Provider split rejected for the final protocol. No canonical split created, none frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
 | Metrics | **None.** No evaluation has been run. |
@@ -89,7 +90,8 @@ Two design decisions define this architecture:
 
 What exists today: the project layout, a pinned environment, strict typed
 configuration, the holdout protection guard, provenance primitives, a
-dependency-free Roboflow acquisition client, COCO structural inspection, 140
+dependency-free Roboflow acquisition client, COCO structural inspection, the
+source audit / EDA / visual-review tooling, the phase 4B decision recorder, 267
 tests, and the planning documents (`reports/rubric_contract.md`,
 `reports/roadmap.md`, `CLAUDE.md`).
 
@@ -119,20 +121,49 @@ All 436 originals were acquired at full resolution, measured and screened. See
 [`reports/eda_report.md`](reports/eda_report.md).
 
 - **No exact duplicates.** 436 images, 436 unique content hashes.
-- **11 near-duplicate candidates, 6 of them crossing a split boundary**, three of
-  which are identical under both perceptual fingerprints. These are *candidates*
-  awaiting human confirmation, not established leakage.
+- **11 near-duplicate candidates, 6 of them crossing a split boundary**, two of
+  which are identical under both perceptual fingerprints. Phase 4A raised these
+  as *candidates*, not established leakage; phase 4B confirmed them (below).
 - **`vest_loose` appears in only 8 of 436 images** (45 instances): 7 train,
   1 valid, **0 test**. The rare class cannot be scored on the provider's test split.
 - **17 source images carry no annotation.** Whether they are deliberate negatives
-  or missing labels needs a person to look at them.
+  or missing labels needed a person to look at them; phase 4B did.
 - **The live source project now holds 76 more annotations than the frozen v4
   export**, so the two are not interchangeable and phase 5 must choose one.
 - **The supplied COCO bbox disagrees materially with RLE segmentation geometry.**
   The preferred policy is to derive boxes from the geometry, but that decision is
   **provisional pending visual validation**.
 
-Annotation *quality* has not been visually validated. Phase 4 remains open.
+### What the visual review decided (phase 4B)
+
+The project owner and a technical reviewer looked at the phase 4A contact sheets
+and answered the semantic questions counting cannot. The judgements are recorded
+in [`reports/manual_audit_report.md`](reports/manual_audit_report.md) and, in
+machine-readable form, in `reports/manual_audit_decisions.csv`. They are kept in
+separate files from the computed artifacts on purpose: a human judgement is not a
+measurement, and the two must never be quoted as if they were the same evidence.
+
+- **All 6 cross-split near-duplicate pairs are semantic duplicates.** Same
+  content, different bytes - the SHA-256 result stands, byte identity is *not*
+  claimed. They form six groups that phase 5 must keep inside one split.
+- **The provider split is `UNSUITABLE_FOR_FINAL_PROTOCOL`**: confirmed duplicates
+  cross its boundaries, its test split has no `vest_loose` at all, and the rare
+  class is too thin for a defensible per-class evaluation. **The split is
+  rejected; the dataset is not.**
+- **No widespread missing labels among the 17 zero-instance images.** Three are
+  out of domain (a cartoon illustration, an office-like interior, a street scene)
+  and become exclusion *candidates* for phase 5. Nothing was removed.
+- **Segmentation-derived boxes are preferred, and now visually supported** - but
+  the policy is `PREFERRED_AND_VISUALLY_SUPPORTED`, not applied. No annotation
+  was converted.
+- **The dataset is heterogeneous.** Site photography mixed with stock, posed
+  portraits and product-style PPE images. It must be described as *mixed
+  construction and PPE imagery*, and results on it do not demonstrate deployment
+  performance on arbitrary construction-site video.
+
+Two items stay open for phase 5: which annotation snapshot is canonical (the
+frozen v4 export or the drifted live source project), and the disposition of two
+source annotations whose representation is unrecognised.
 
 ## Academic requirements
 

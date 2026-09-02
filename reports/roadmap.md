@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.2 · Current phase: **4 - Dataset/annotation audit and EDA** (4A automated audit done; 4B visual review outstanding)
+Version: 1.3 · Current phase: **5 - Split freeze and task-specific dataset generation** (not started; phase 4 complete)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -18,8 +18,8 @@ change log at the bottom of this file.
 | 1 | Scope and rubric contract | done |
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
-| 4 | Dataset/annotation audit and EDA | 4A done · 4B (visual review) **next** |
-| 5 | Split freeze and task-specific dataset generation | not started |
+| 4 | Dataset/annotation audit and EDA | done (4A automated, 4B visual review) |
+| 5 | Split freeze and task-specific dataset generation | **next** · not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -115,6 +115,37 @@ change log at the bottom of this file.
 > (source, license, format, class list, artifact integrity). Annotation quality,
 > duplication and split suitability are decided here.
 
+### Phase 4A - automated audit (complete)
+
+Delivered `scripts/audit_source_dataset.py`, `scripts/audit_bbox_consistency.py`,
+`scripts/eda_source_dataset.py`, `scripts/build_review_package.py` and
+`scripts/write_audit_reports.py`; `reports/dataset_audit_report.md`,
+`reports/eda_report.md`, `reports/bbox_consistency_audit.md`, their JSON
+counterparts, `reports/source_image_manifest.jsonl` and the visual-review
+package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
+
+### Phase 4B - manual visual audit (complete)
+
+- **Objective.** Answer the semantic questions the automated audit deliberately
+  left open, and record the answers so they can be traced rather than trusted.
+- **Inputs.** The phase 4A contact sheets and manifests; judgements made by the
+  project owner with a technical reviewer, outside this repository.
+- **Outputs (as delivered).** `scripts/record_manual_audit.py` and
+  `src/construction_safety_vision/data/manualaudit.py`;
+  [`reports/manual_audit_report.md`](manual_audit_report.md) and
+  `reports/manual_audit_decisions.csv` (32 decisions).
+- **Validation gate (passed).** Every recorded subject resolves to an id in the
+  phase 4A manifests and appears on the figure its decision cites; every verdict
+  is drawn from a controlled vocabulary; semantic-duplicate group ids are a
+  function of their sorted members alone; no absolute path or credential
+  material is present. Verified by
+  `uv run python scripts/record_manual_audit.py --check`.
+- **Outcome.** Six cross-split semantic duplicate pairs confirmed; the provider
+  split classified `UNSUITABLE_FOR_FINAL_PROTOCOL`; the dataset itself
+  `ACCEPTED_WITH_DOCUMENTED_LIMITATIONS`. Twelve entry constraints (`P5-01` to
+  `P5-12`) are handed to phase 5. Nothing was split, excluded, converted or
+  deleted.
+
 ## Phase 5 - Split freeze and task-specific dataset generation
 
 - **Objective.** Freeze one canonical train/validation/test partition and derive
@@ -122,6 +153,11 @@ change log at the bottom of this file.
   evaluated on identical images.
 - **Inputs.** Audited dataset; duplicate and sequence groups from phase 4;
   `split_ratios` and `seed` from the configuration.
+- **Entry conditions.** The twelve constraints `P5-01` to `P5-12` recorded in
+  [`manual_audit_report.md`](manual_audit_report.md). In particular the provider
+  split is not reusable, the six confirmed semantic-duplicate groups must stay
+  intact, and the current-source-vs-v4 annotation drift must be resolved before
+  anything is frozen.
 - **Outputs.** `data/processed/splits/{train,val,test}.manifest.csv` (image ID,
   file hash, group ID); `data/processed/detection/` and
   `data/processed/segmentation/`; the box-from-polygon derivation code; a
@@ -281,4 +317,5 @@ change log at the bottom of this file.
 | --- | --- |
 | 2026-09-01 | Roadmap created during the foundation phase (phases 1-14 defined). |
 | 2026-09-02 | Phase 4A completed: 436 source originals acquired and audited. No exact duplicates; 6 cross-split near-duplicate candidates pending visual confirmation; vest_loose present in only 8 images and absent from the provider test split; source project has drifted 76 annotations ahead of the frozen v4 export. Provider split classified UNDETERMINED_PENDING_VISUAL_REVIEW. |
+| 2026-09-02 | Phase 4B completed, closing phase 4: the manual visual audit was recorded in `manual_audit_decisions.csv` (32 decisions) and `manual_audit_report.md`. Six cross-split pairs confirmed as semantic duplicates; three zero-instance images marked out-of-domain exclusion candidates; segmentation-derived boxes preferred but not applied; provider split reclassified UNSUITABLE_FOR_FINAL_PROTOCOL; dataset ACCEPTED_WITH_DOCUMENTED_LIMITATIONS. Twelve entry constraints handed to phase 5. |
 | 2026-09-01 | Phases 2 and 3 completed. Phase 3 established that version 4 holds 436 independent source images plus offline-augmented train variants; phase 4 gates updated to work from that population. |
