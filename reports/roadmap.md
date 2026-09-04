@@ -19,7 +19,7 @@ change log at the bottom of this file.
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | 5A done · 5B done · 5B.1 done (all candidates dispositioned) · 5C **next**, not started |
+| 5 | Split freeze and task-specific dataset generation | 5A/5B/5B.1 done · 5C.1 done (candidates generated, none selected) · 5C.2 **next**, not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -246,7 +246,31 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 - **The last candidate had never been shown to a reviewer.** It was drawn alone in
   `figures/review_o_remaining_near_duplicates.jpg` and decided there.
 
-### Phase 5C - split design and freeze (not started)
+### Phase 5C.1 - provisional split candidates (complete)
+
+- **What it did.** Searched for candidate train/validation/test assignments over
+  the 422 indivisible groups and compared them. **It selected nothing and froze
+  nothing.**
+- **Result.** Six candidates, every one hitting the exact 70/15/15 target of
+  303 / 65 / 65 images with all hard constraints satisfied: all five classes in
+  all three splits at image and instance level, `vest_loose` at 5/1/2 (five
+  candidates) or 4/2/2 (one), negatives at 10/2/2.
+- **Objective.** Normalised per class and averaged, so a 914-instance class
+  cannot outweigh a 45-instance one; each component reported separately rather
+  than folded into one opaque score.
+- **Determinism.** 192 restarts seeded from the project seed 42; re-running
+  reproduces identical assignments, fingerprints, scores and ranking.
+- **Correction carried forward.** The brief stated no `vest_loose` image belongs
+  to a duplicate group. Phase 5B.1 made that false: two of the eight are in
+  `manual_dup_010`, so the class occupies 7 indivisible units and moves in
+  chunks. All declared families stay feasible under it.
+- **Outputs.** [`split_candidate_report.md`](split_candidate_report.md),
+  `split_candidates/summary.csv`, one assignment file per candidate, and
+  `configs/split_search.yaml`.
+- **Explicitly not done.** No candidate selected, no holdout frozen, no holdout
+  fingerprint, no candidate test set evaluated, no YOLO dataset, no model.
+
+### Phase 5C.2 - split selection and freeze (not started)
 
 - **Entry gate: CLOSED.**
   `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - all 11 phase 4A
@@ -423,3 +447,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5B closed as READY_FOR_SPLIT_DESIGN after owner review. Automatic nested-annotation filtering was **rejected** (`REJECTED_FOR_AUTOMATIC_FILTERING`): containment inside an older same-class annotation is not evidence of error, and the evaluated rules cannot separate fragments from legitimate instance splits, geometry refinements and corrections of previously merged objects. All 2031 canonical annotations retained, 0 excluded; the 34 evaluated candidates carry the descriptive flag NESTED_SAME_CLASS_CANDIDATE. Recorded explicitly: the 76 v4 additions are a historical annotation-drift reference set, not ground truth for bad annotations, so rule precision against them measures agreement with drift rather than annotation correctness. Phase 5C carries one open entry gate: manual disposition of the 5 remaining near-duplicate candidates before any split is frozen. |
 | 2026-09-04 | Phase 5B.1 dispositioned the outstanding near-duplicate candidates. Reconciled the counts: phase 4A raised 11 candidates (6 cross-split, 5 same-split); `review_h` showed all 6 cross-split pairs and `review_g` showed the 8 smallest-distance candidates, which were 4 of those 6 plus 4 same-split - so `review_g` held 8 pairs of which only 4 were novel, and the 11th candidate fell outside the cap and appeared on no sheet at all. The 4 novel same-split pairs were confirmed EXACT_SEMANTIC_DUPLICATE (HIGH) as manual_dup_007-010, giving 10 confirmed groups, 413 singletons and 423 split units; groups are now computed as connected components so a transitive chain forms one group. `chain-007` remains undecided and unmerged, drawn alone in figures/review_o_remaining_near_duplicates.jpg. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES stays OPEN and phase 5C is BLOCKED_ON_MANUAL_DISPOSITION. No split, holdout or model exists. |
 | 2026-09-04 | Phase 5B.1 closed. The final outstanding candidate (chain-007, `66p9gzaQFGcmQA2v40Of` ~ `pbOZlgeseTpoTXwVJjAh`) was decided NEAR_DUPLICATE_SAME_SCENE (MEDIUM, GROUP_TOGETHER): the same worker and scene at a different moment rather than the same frame, but correlated enough that separating them across splits would risk leakage. Grouping serves statistical independence, not image identity, so it is indivisible like an exact duplicate while being recorded as a different finding via `group_basis`. All 11 phase 4A candidates now carry a human disposition (6 in 4B, 5 in 5B.1); zero outstanding. Final structure: 433 modelling images, 2031 annotations, 11 confirmed groups (22 images) + 411 singletons = 422 split units, largest group 2 images. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES is CLOSED and phase 5C entry readiness is READY_FOR_SPLIT_OPTIMIZATION. No split, holdout or model exists. |
+| 2026-09-04 | Phase 5C.1 generated six provisional split candidates over the 422 indivisible groups. All reach the exact 70/15/15 target (303/65/65 images) with every hard constraint satisfied: five classes in all three splits at image and instance level, vest_loose 5/1/2 or 4/2/2, negatives 10/2/2. The objective is normalised per class and averaged so the frequent classes cannot outweigh the rare one, and each component is reported separately. Search is deterministic: 192 restarts seeded from the project seed 42, 49 feasible, 49 unique, re-run byte-identical. The provider split is read nowhere - the optimiser refuses to run if the feature table carries such a column. A correction: the brief stated no vest_loose image belongs to a duplicate group, which phase 5B.1 made false (two of the eight are in manual_dup_010), so the class occupies 7 indivisible units. Family B (5/2/1) is searched but rejected by the two-image holdout floor. algorithmic_best_candidate is candidate_001; final_selected_candidate remains UNSELECTED_PENDING_REVIEW. No split frozen, no holdout fingerprint, no model. |

@@ -1,6 +1,6 @@
 # Canonical Modelling Population
 
-Generated: 2026-09-04T14:29:16+00:00 · Phase: 5B · Commit: `5197df5805a9452e585657dea268a52d025793d2`
+Generated: 2026-09-04T14:46:34+00:00 · Phase: 5B · Commit: `c6a1eb44d80edd73cffd24480de4e5cdf6fb21f8`
 
 **Question.** Which images and annotations are eligible to enter a future split, and which images must stay together when one is designed?
 

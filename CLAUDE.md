@@ -183,10 +183,10 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5B complete (`READY_FOR_SPLIT_DESIGN`) and 5B.1 complete - all 11
-  near-duplicate candidates dispositioned, gate CLOSED,
-  `phase_5c_entry_readiness = READY_FOR_SPLIT_OPTIMIZATION`. Phase 5C (split
-  design and freeze) has not started.
+- **Phase:** 5C.1 complete - six provisional split candidates generated and
+  compared. **No candidate is selected and no split is frozen**;
+  `final_selected_candidate` is `UNSELECTED_PENDING_REVIEW`. Phase 5C.2
+  (selection and freeze) has not started.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -274,8 +274,20 @@ uv run pytest
   human-drawn segmentation.
 - **Models:** none trained. No metrics exist.
 - **Holdout:** no holdout has been frozen. The provider ships a `test` split; it
-  is **not** the project's holdout and phase 5B decides the real partition. Treat
-  it as protected in the meantime.
+  is **not** the project's holdout. Phase 5C.1 produced *provisional* candidates
+  only - a candidate `test` set is not a holdout, must not be evaluated, and must
+  not be inspected for model-quality reasons. Treat all of it as protected.
+- **Split candidates are provisional.** The column is `provisional_split`, never
+  `split`. Six candidates hit 303/65/65 exactly with every hard constraint met.
+  Do not describe any as final, and do not create `reports/split_manifest.json`
+  or `data/processed/splits/` until phase 5C.2 selects one.
+- **The split search never reads the provider split** - not as input,
+  initialisation or target. `optimize_split_candidates.py` refuses to run if the
+  group feature table carries such a column. Keep it that way.
+- **The rare class is named in configuration**, not hardcoded: `rare_class:
+  vest_loose` in `configs/split_search.yaml`. It occupies **7** indivisible units
+  over 8 images, because two of them sit in `manual_dup_010`, so it moves in
+  chunks and cannot be freely rebalanced.
 - **Long paths:** 137 of the export's 742 image files exceed the Windows
   `MAX_PATH` limit on this machine. Open them through
   `construction_safety_vision.paths.long_path`, never with a bare path.

@@ -25,6 +25,7 @@ undocumented one-off shell invocation.
 | `analyze_fragment_rule.py` | 5B | Test whether a geometry rule computed from the current state alone can identify the annotations added since version 4. Scores candidates against the v4 diff; exits non-zero when none is acceptable. |
 | `build_modeling_population.py` | 5B | Decide which images and annotations may be modelled, materialise geometry-less records, and build the indivisible split units. Creates no split. |
 | `build_remaining_duplicate_review.py` | 5B.1 | Draw the near-duplicate candidates that still carry no human decision, so the gap is closed by looking. Merges nothing. |
+| `optimize_split_candidates.py` | 5C.1 | Search for provisional train/validation/test assignments over the canonical groups and compare them. Selects nothing and freezes nothing. |
 
 ## Rules
 
@@ -77,8 +78,16 @@ image keeps its file, keeps its place in the source provenance population of 436
 and gains a reason and a decision source. It refuses to write a manifest whose
 invariants are broken.
 
+`optimize_split_candidates.py` assigns **groups**, never images, so a confirmed
+duplicate pair cannot be separated. It never reads the provider split - rejected
+in phase 4B - and refuses to run if the group feature table carries one. Its
+output column is `provisional_split` rather than `split`, so nothing downstream
+can mistake a candidate for a frozen assignment. The protocol lives in
+`configs/split_search.yaml`, parsed strictly, and the whole search is a pure
+function of that file and the group features.
+
 ## Planned scripts
 
-Modelling-population construction, split freeze, training, evaluation, error
-analysis and video inference scripts are added by their respective roadmap
-phases. None are stubbed in advance.
+Split selection and freeze, training, evaluation, error analysis and video
+inference scripts are added by their respective roadmap phases. None are stubbed
+in advance.

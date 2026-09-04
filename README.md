@@ -85,6 +85,7 @@ Two design decisions define this architecture:
 | Canonical annotation snapshot | Done (phase 5A). The live source state, recovered read-only with complete geometry in original coordinates. |
 | Canonical modelling population | Done (phase 5B). 433 modelling images, 2031 annotations retained. |
 | Semantic duplicate groups | Done (phase 5B.1). All 11 near-duplicate candidates dispositioned; 11 groups, 422 split units. |
+| Split candidates | Phase 5C.1. Six provisional candidates generated and compared. **None selected, none frozen.** |
 | Splits | **Provider split rejected for the final protocol. No canonical split created, none frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
@@ -290,7 +291,40 @@ and being same-split it was not on the cross-split sheet either. It was drawn on
 its own in `reports/figures/review_o_remaining_near_duplicates.jpg` and decided
 there.
 
-Phase 5C designs and freezes the split from the 422 groups. No split exists yet.
+### Provisional split candidates (phase 5C.1)
+
+Phase 5C.1 searched for candidate train/validation/test assignments over the 422
+groups. It **selected nothing and froze nothing**: `final_selected_candidate` is
+`UNSELECTED_PENDING_REVIEW`, the holdout remains locked, and no candidate test
+set has been evaluated. Evidence in
+[`reports/split_candidate_report.md`](reports/split_candidate_report.md) and
+`reports/split_candidates/`.
+
+- **Six candidates**, all hitting the exact 70/15/15 target of **303 / 65 / 65**
+  images with every hard constraint satisfied.
+- **The unit assigned is the group, never the image**, so no confirmed duplicate
+  pair can be separated - that is structural, not a penalty.
+- **The provider's split is not read anywhere**: not as an input, an
+  initialisation, or a target. The optimiser refuses to run if the feature table
+  even carries such a column.
+- **All five classes appear in all three splits**, at image and instance level.
+  `vest_loose` is allocated 5/1/2 images in five candidates and 4/2/2 in the
+  sixth; the 14 negatives are split 10/2/2 throughout.
+- **The objective is normalised per class and averaged**, so `person` (914
+  instances) cannot drown out `vest_loose` (45). Each component is reported
+  separately rather than hidden inside one score.
+- **Deterministic**: 192 restarts seeded from the project seed 42, re-run
+  produces identical assignments, fingerprints and ranking.
+
+One correction to the phase 5C.1 brief: it stated that no `vest_loose` image
+belongs to a duplicate group. That held before phase 5B.1, which then confirmed
+`manual_dup_010` as a same-scene pair - and two of the eight `vest_loose` images
+are in it. The class therefore occupies **7** indivisible units, not 8, and moves
+in chunks. All three declared allocation families remain feasible under that
+constraint; family B (5/2/1) is searched but rejected by the requirement that the
+holdout carry at least two images of the class.
+
+Phase 5C.2 selects one candidate and freezes it. No split exists yet.
 
 ## Academic requirements
 
@@ -349,7 +383,8 @@ Work proceeds through 14 gated phases (see
 ├── .env.example               # Documented environment variables (no secrets)
 ├── .gitattributes             # LF normalisation, binary declarations
 ├── configs/                   # Versioned experiment configuration (single source of settings)
-│   └── project.yaml
+│   ├── project.yaml
+│   └── split_search.yaml      # Split-search protocol: targets, constraints, weights (5C.1)
 ├── data/                      # Never committed; see data/README.md
 │   ├── external/              # Provider archive, source originals, provenance record
 │   ├── raw/                   # Extracted canonical export, untouched
@@ -372,6 +407,8 @@ Work proceeds through 14 gated phases (see
 │   ├── canonical_modeling_manifest.json   # The population, machine-readable
 │   ├── group_manifest.csv                 # Indivisible split units
 │   ├── group_split_features.csv           # One row per group, for phase 5C
+│   ├── split_candidate_report.md          # Provisional split candidates (phase 5C.1)
+│   ├── split_candidates/                  # One assignment per candidate, plus a summary
 │   └── figures/               # Contact sheets and analytical plots
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -392,7 +429,8 @@ Work proceeds through 14 gated phases (see
 │   ├── resolve_canonical_snapshot.py # The canonical-snapshot decision + manifest
 │   ├── analyze_fragment_rule.py   # Can a geometry rule identify the drifted annotations?
 │   ├── build_modeling_population.py # Eligible images/annotations + indivisible groups
-│   └── build_remaining_duplicate_review.py # Candidates still awaiting a human decision
+│   ├── build_remaining_duplicate_review.py # Candidates still awaiting a human decision
+│   └── optimize_split_candidates.py # Provisional split candidates over the groups
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -489,6 +527,13 @@ Build the canonical modelling population (phase 5B). Fully offline:
 uv run python scripts/analyze_fragment_rule.py
 uv run python scripts/build_modeling_population.py
 uv run python scripts/build_remaining_duplicate_review.py
+```
+
+Search for provisional split candidates (phase 5C.1). Selects and freezes
+nothing:
+
+```bash
+uv run python scripts/optimize_split_candidates.py
 ```
 
 Checks:

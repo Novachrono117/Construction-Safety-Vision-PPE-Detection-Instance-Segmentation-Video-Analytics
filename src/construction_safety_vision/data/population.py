@@ -472,14 +472,19 @@ def group_features(
         One row of the group feature table.
     """
     instances: dict[str, int] = dict.fromkeys(classes, 0)
+    images_with: dict[str, int] = dict.fromkeys(classes, 0)
     zero_instance_images = 0
     for member in group.members:
         member_annotations = annotations_by_image.get(member, [])
         if not member_annotations:
             zero_instance_images += 1
+        present: set[str] = set()
         for annotation in member_annotations:
             if annotation.label in instances:
                 instances[annotation.label] += 1
+                present.add(annotation.label)
+        for name in present:
+            images_with[name] += 1
 
     row: dict[str, Any] = {
         "group_id": group.group_id,
@@ -489,6 +494,10 @@ def group_features(
     }
     for name in classes:
         row[f"has_{name}"] = "true" if instances[name] else "false"
+    # Images carrying the class, which is not the instance count and not the
+    # presence flag: a two-image duplicate group can hold one instance in each.
+    for name in classes:
+        row[f"images_with_{name}"] = images_with[name]
     for name in classes:
         row[f"instances_{name}"] = instances[name]
     row["total_instances"] = sum(instances.values())

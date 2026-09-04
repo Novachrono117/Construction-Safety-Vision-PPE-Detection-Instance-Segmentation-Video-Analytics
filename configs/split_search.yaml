@@ -1,0 +1,106 @@
+# Split-search protocol for phase 5C.1.
+#
+# Loaded by `construction_safety_vision.data.split_optimization`.
+# Parsing is strict: an unknown key raises rather than being ignored, so a typo
+# cannot silently change the protocol.
+#
+# STATUS: phase 5C.1. This file defines how *candidate* splits are searched for
+# and scored. It does not select one and it does not freeze anything. The
+# provider's split is absent by design - phase 4B classified it
+# UNSUITABLE_FOR_FINAL_PROTOCOL, so it is not an input, an initialisation or a
+# target anywhere in the search.
+
+schema_version: 1
+
+# The project's single global seed. Every restart derives its generator from it,
+# so the whole search is a pure function of (groups, this file).
+seed: 42
+
+# Canonical class set, in the order frozen in phase 5B. The provider's unused
+# `object` placeholder is absent by construction.
+classes:
+  - helmet_loose
+  - helmet_on_head
+  - person
+  - vest_loose
+  - vest_on_body
+
+# The academic protocol target. Ratios drive the balance objective; the integer
+# counts below drive the size constraint.
+target_ratios:
+  train: 0.70
+  validation: 0.15
+  test: 0.15
+
+# 433 modelling images at 70/15/15. 303 + 65 + 65 = 433 exactly.
+target_image_counts:
+  train: 303
+  validation: 65
+  test: 65
+
+# Images a split may deviate from its target. Zero: groups hold one or two
+# images, so exact counts are expected to be reachable. If a future constraint
+# makes them unreachable the search fails loudly rather than quietly drifting,
+# and relaxing this is a recorded protocol change.
+max_size_deviation: 0
+
+# Every class must appear in every split, at image level and instance level.
+# This is the generic floor; a class may raise it below.
+min_class_images:
+  train: 1
+  validation: 1
+  test: 1
+
+# The class whose scarcity the split must protect. Named rather than hardcoded:
+# which class is rare is a property of this dataset, not of the algorithm.
+rare_class: vest_loose
+
+# vest_loose carries 45 instances across 8 images held in 7 indivisible groups -
+# one of those groups holds two of the images, so the class moves in chunks.
+# Proportional stratification cannot protect a class this thin, so it gets an
+# explicit floor. Test is held at 2 because a class that appears once in the
+# holdout cannot support a per-class claim about it.
+min_rare_class_images:
+  train: 4
+  validation: 1
+  test: 2
+
+# 14 images carry no annotation. They are deliberate negatives per the phase 4B
+# audit, so they must not all land in train.
+min_negative_images:
+  train: 1
+  validation: 1
+  test: 1
+
+# The rare-class allocations to search, each as an exact per-split image count.
+# Left to itself the search converges on whichever allocation scores best, which
+# hides the alternatives a reviewer is meant to weigh. Each family is therefore
+# searched separately with its counts pinned, and the results are pooled into one
+# ranking scored by the same unpinned objective.
+#
+# Family A (5/1/2) and C (4/2/2) put two vest_loose images in the holdout; family
+# B (5/2/1) puts one. A class appearing once in the holdout cannot support a
+# per-class claim about it, which is why min_rare_class_images.test is 2 - family
+# B is searched and reported, but it does not satisfy that floor and will be
+# rejected. It is listed so its absence is visible rather than silent.
+rare_class_allocation_families:
+  - {train: 5, validation: 1, test: 2}   # A
+  - {train: 5, validation: 2, test: 1}   # B
+  - {train: 4, validation: 2, test: 2}   # C
+
+# Soft objective weights. All equal, and deliberately so: each component is
+# already normalised and averaged over classes, so no component needs rescaling,
+# and equal weights cannot be mistaken for tuning toward a preferred answer.
+weights:
+  image_class_balance: 1.0
+  instance_class_balance: 1.0
+  negative_balance: 1.0
+  size: 1.0
+
+search:
+  # Independent restarts, each seeded from `seed + index`.
+  starts: 64
+  # Local-search steps per restart.
+  iterations: 4000
+  # Unique candidates retained for review.
+  top_candidates: 5

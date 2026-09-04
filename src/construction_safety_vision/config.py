@@ -28,7 +28,7 @@ class ConfigError(ValueError):
     """Raised when a configuration file is missing, malformed or incomplete."""
 
 
-def _check_keys(
+def check_keys(
     data: Mapping[str, Any],
     *,
     required: Iterable[str],
@@ -114,7 +114,7 @@ class SplitRatios:
         Raises:
             ConfigError: If keys are missing, unknown or not numeric.
         """
-        _check_keys(data, required=("train", "val", "test"), context="split_ratios")
+        check_keys(data, required=("train", "val", "test"), context="split_ratios")
         try:
             train = float(data["train"])
             val = float(data["val"])
@@ -195,7 +195,7 @@ class DatasetCandidate:
         Raises:
             ConfigError: If keys are missing, unknown or malformed.
         """
-        _check_keys(
+        check_keys(
             data,
             required=("name", "source", "canonical_task", "expected_classes"),
             optional=(
@@ -271,7 +271,7 @@ class ExperimentConfig:
         Raises:
             ConfigError: If the mapping is malformed.
         """
-        _check_keys(
+        check_keys(
             data,
             required=("project_name", "seed", "split_ratios", "dataset"),
             optional=("holdout_split",),
