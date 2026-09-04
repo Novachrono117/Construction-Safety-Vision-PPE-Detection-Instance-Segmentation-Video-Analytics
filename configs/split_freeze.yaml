@@ -1,0 +1,93 @@
+# Split-freeze protocol for phase 5C.2.
+#
+# Loaded by `construction_safety_vision.data.split_freeze`.
+# Parsing is strict: an unknown key raises rather than being ignored.
+#
+# This file is deliberately NOT the search protocol. `configs/split_search.yaml`
+# records how the six provisional candidates were generated and scored in phase
+# 5C.1, and it must stay an honest record of that; it is not edited here. This
+# file records something different and later: which of those candidates a person
+# selected, and what that candidate must still look like when it is frozen.
+#
+# Every expectation below is declared in advance. The freeze either reproduces
+# the reviewed candidate exactly or it fails - it can never quietly freeze a
+# different assignment that happens to be feasible.
+
+schema_version: 1
+
+# Schema version stamped on reports/split_manifest.json.
+manifest_schema_version: 1
+
+selection:
+  # The human-approved protocol decision, not an optimisation output.
+  selected_candidate: candidate_001
+
+  # The candidates were predeclared and deterministically generated in phase
+  # 5C.1; the choice among them was made by a person reviewing the rare-class
+  # and evaluation trade-offs. That the selection coincides with the best
+  # scorer does not make it an automatic selection.
+  selection_method: HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES
+  decision_source: PROJECT_OWNER_REVIEW
+
+  # Recorded separately so the two are never conflated in a later reading.
+  algorithmic_best_candidate: candidate_001
+
+  # The class whose allocation the freeze re-verifies image by image and
+  # instance by instance. Named here rather than hardcoded, as in the search
+  # protocol: which class is rare is a property of this dataset.
+  rare_class: vest_loose
+
+expected_fingerprints:
+  # The phase 5C.1 assignment digest of candidate_001, over (group_id, split).
+  # If the candidate file no longer reproduces this, the freeze stops rather
+  # than freezing whatever is on disk.
+  candidate_assignment_sha256: 081c39e729697f081302fc809eb4b78fff6450e910df254b88f311d623aa1fbe
+
+  # The modelling population the split is defined over, from
+  # reports/canonical_modeling_manifest.json. A split frozen over a different
+  # population would silently invalidate every result produced under it.
+  modeling_population_sha256: afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7
+  groups_sha256: d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf
+
+expected_counts:
+  # 433 modelling images at the 70/15/15 target, reached exactly.
+  images:
+    train: 303
+    validation: 65
+    test: 65
+
+  # Groups, not images: 422 indivisible units, 11 of them holding two images.
+  groups:
+    train: 294
+    validation: 63
+    test: 65
+
+  # The 14 deliberate negatives from the phase 4B audit.
+  negative_images:
+    train: 10
+    validation: 2
+    test: 2
+
+  # vest_loose over its 8 images and 7 indivisible units.
+  rare_class_images:
+    train: 5
+    validation: 1
+    test: 2
+
+  # Instances are not proportional to images: the 8 images carry very unequal
+  # numbers of the class, so this is verified separately rather than derived.
+  rare_class_instances:
+    train: 30
+    validation: 8
+    test: 7
+
+# The declared access policy for the protected split. It restates, in the
+# artifact a reader checks, the rule enforced in code by
+# `construction_safety_vision.splits.assert_split_allowed`. Both opt-ins are
+# required; neither alone is sufficient; the default state is locked.
+holdout_guard:
+  protected_split: test
+  env_var: CSVISION_ALLOW_TEST_SPLIT
+  requires_code_opt_in: true
+  requires_environment_opt_in: true
+  default_state: LOCKED

@@ -1,0 +1,116 @@
+{
+  "config": {
+    "decision_source": "PROJECT_OWNER_REVIEW",
+    "selected_candidate": "candidate_001",
+    "selection_method": "HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES",
+    "split_freeze": "configs/split_freeze.yaml"
+  },
+  "created_at": "2026-09-04T16:10:33+00:00",
+  "details": {
+    "actual_image_counts": {
+      "test": 65,
+      "train": 303,
+      "validation": 65
+    },
+    "candidate_assignment_sha256": "081c39e729697f081302fc809eb4b78fff6450e910df254b88f311d623aa1fbe",
+    "groups_sha256": "d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf",
+    "holdout_evaluated": false,
+    "holdout_guard": {
+      "default_state": "LOCKED",
+      "env_var": "CSVISION_ALLOW_TEST_SPLIT",
+      "protected_split": "test",
+      "requires_code_opt_in": true,
+      "requires_environment_opt_in": true
+    },
+    "holdout_sha256": "bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00",
+    "images_materialised": false,
+    "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+    "models_trained": 0,
+    "phase": "5C.2",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+    "status": "FROZEN"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "93e364b647f0f755d16d94a76cdd487c66c4f79f",
+  "inputs": [
+    {
+      "path": "reports/split_candidates/candidate_001.csv",
+      "sha256": "a9daf788e56e0fea6a885cf43d074b5a7a3933263fd493e48090de98d885a7f2",
+      "size_bytes": 15715
+    },
+    {
+      "path": "reports/split_candidates/summary.csv",
+      "sha256": "d5505512807df3ec0f0444960837fecaf243cdc807b01d0992f20588db72b8b2",
+      "size_bytes": 1580
+    },
+    {
+      "path": "reports/group_manifest.csv",
+      "sha256": "8aab560dedd3d9990738e2d567c518cd9535334bd4969f87d9265a3d4ed438c9",
+      "size_bytes": 43408
+    },
+    {
+      "path": "reports/group_split_features.csv",
+      "sha256": "a828da7d2f5f6b54404915cea2ecdf3eab13139f6ec03919fa2edc9aa626635e",
+      "size_bytes": 40492
+    },
+    {
+      "path": "reports/canonical_modeling_population.csv",
+      "sha256": "147b4626229395b6b869ab0a52ca3673451a52630305513bbdeb76e46d29e0a3",
+      "size_bytes": 80923
+    },
+    {
+      "path": "reports/canonical_annotation_actions.csv",
+      "sha256": "ee019589952ed4f3f9d4a629e9238b373b3ecd945f8e0d1b3e6d36ecf6067d71",
+      "size_bytes": 340385
+    },
+    {
+      "path": "reports/canonical_modeling_manifest.json",
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f",
+      "size_bytes": 6531
+    },
+    {
+      "path": "configs/split_freeze.yaml",
+      "sha256": "515072ea992c0203648973f59cb73630dfdf62ac006509e177763a2be1dd9bb5",
+      "size_bytes": 3654
+    },
+    {
+      "path": "configs/split_search.yaml",
+      "sha256": "ba3aef493649b67c3c105074c04d57757440b984fe5282347f3a62a6e75f8826",
+      "size_bytes": 4017
+    }
+  ],
+  "name": "split_freeze",
+  "outputs": [
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    },
+    {
+      "path": "reports/final_split_assignments.csv",
+      "sha256": "5ff9a42a0309481b011209428e2f3a5bf1a809eb5c960775222ee0fdf6a39537",
+      "size_bytes": 25053
+    },
+    {
+      "path": "reports/split_freeze_report.md",
+      "sha256": "c5730cccbdfe7c3377660af8111d494fdb86ff6ae9c2c5b716064928a962b29b",
+      "size_bytes": 13934
+    },
+    {
+      "path": "reports/split_candidates/selection.csv",
+      "sha256": "fdb5f114c9eaf92eee909273e5bd0518d0ca363d6608d9feb2f8e80bc1c784c0",
+      "size_bytes": 326
+    },
+    {
+      "path": "reports/split_candidate_report.md",
+      "sha256": "f2301302697074a44552fc83756bf49ef7f12bd25e126bbbb85065e5ee2c358f",
+      "size_bytes": 17550
+    }
+  ],
+  "phase": 5,
+  "schema_version": 1
+}

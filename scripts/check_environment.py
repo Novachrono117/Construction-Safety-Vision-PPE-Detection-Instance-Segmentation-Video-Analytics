@@ -1,8 +1,8 @@
 """Report the runtime environment and the state of the holdout lock.
 
 Run this first in a fresh local shell or Colab runtime to confirm that the
-repository resolves, the configuration parses, and the test split is still
-locked.
+repository resolves, the configuration parses, the frozen split verifies against
+its own fingerprints, and the test split is still locked.
 
 Usage:
     uv run python scripts/check_environment.py
@@ -16,6 +16,10 @@ from pathlib import Path
 
 from construction_safety_vision import __version__
 from construction_safety_vision.config import ConfigError, load_experiment_config
+from construction_safety_vision.data.split_freeze import (
+    SplitManifestError,
+    load_frozen_splits,
+)
 from construction_safety_vision.env import load_project_env
 from construction_safety_vision.paths import (
     ProjectPaths,
@@ -45,6 +49,33 @@ def _package_version(name: str) -> str:
     except ImportError:
         return "not installed"
     return str(getattr(module, "__version__", "installed"))
+
+
+def _report_frozen_split(paths: ProjectPaths) -> None:
+    """Report the frozen split's identity, without touching the holdout.
+
+    The holdout's size comes from the manifest's declared counts rather than from
+    the access layer, so this report never needs the guard's opt-ins and can
+    never be the thing that unlocks it.
+
+    Args:
+        paths: Project layout.
+    """
+    manifest_path = paths.reports / "split_manifest.json"
+    if not manifest_path.is_file():
+        print("  split: not frozen (no reports/split_manifest.json)")
+        return
+    try:
+        splits = load_frozen_splits(manifest_path)
+    except SplitManifestError as exc:
+        print(f"  split: PRESENT BUT UNUSABLE - {exc}", file=sys.stderr)
+        return
+    counts = splits.manifest["actual_image_counts"]
+    sizes = "/".join(str(counts[name]) for name in ("train", "validation", "test"))
+    print(f"  split: {splits.manifest['status']} {sizes} images")
+    print(f"    from: {splits.manifest['created_from_candidate']}")
+    print(f"    split_assignment_sha256: {splits.split_assignment_sha256}")
+    print(f"    holdout_sha256: {splits.holdout_sha256}")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -101,6 +132,7 @@ def main(argv: list[str] | None = None) -> int:
             "the final one-shot test evaluation.",
             file=sys.stderr,
         )
+    _report_frozen_split(paths)
 
     print("optional packages:")
     for name in OPTIONAL_PACKAGES:

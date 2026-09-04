@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.3 · Current phase: **5 - Split freeze and task-specific dataset generation** (not started; phase 4 complete)
+Version: 1.4 · Current phase: **5 - Split freeze and task-specific dataset generation** (5A/5B/5B.1/5C.1/5C.2 complete; 5D next)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -19,7 +19,7 @@ change log at the bottom of this file.
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | 5A/5B/5B.1 done · 5C.1 done (candidates generated, none selected) · 5C.2 **next**, not started |
+| 5 | Split freeze and task-specific dataset generation | 5A/5B/5B.1/5C.1 done · 5C.2 done (split frozen 303/65/65, holdout locked) · 5D **next**, not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -270,29 +270,59 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 - **Explicitly not done.** No candidate selected, no holdout frozen, no holdout
   fingerprint, no candidate test set evaluated, no YOLO dataset, no model.
 
-### Phase 5C.2 - split selection and freeze (not started)
+### Phase 5C.2 - split selection and freeze (complete)
 
-- **Entry gate: CLOSED.**
-  `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - all 11 phase 4A
-  near-duplicate candidates carry a human disposition, so no unreviewed
-  perceptual relation can leak content across a split boundary. Readiness:
-  `READY_FOR_SPLIT_OPTIMIZATION`.
-- **Entry conditions.** The 427 groups as the units a split assigns;
-  `group_split_features.csv` as the optimiser's input; the full 2031-annotation
-  population; and `vest_loose` at 45 instances over 8 images as the binding
-  rare-class constraint.
-- **Outputs.** `data/processed/splits/{train,val,test}.manifest.csv` (image ID,
-  file hash, group ID); `data/processed/detection/` and
-  `data/processed/segmentation/`; the box-from-polygon derivation code; a
-  provenance record for the freeze; `reports/split_report.md`.
-- **Validation gate.** Splits are disjoint by image ID and by duplicate/sequence
-  group (no near-duplicate or same-sequence frame crosses a split boundary);
-  realised proportions match the configured ratios within a stated tolerance;
-  every class appears in every split, or its absence is explicitly justified;
-  an automated check confirms the detection and segmentation datasets contain
-  the same image IDs per split; boxes are verified to be the tight bounds of
-  their polygons on a sampled subset; the manifests are hashed and committed.
-  **From this point the test split is locked.**
+- **What it did.** Promoted one predeclared candidate to the project's
+  authoritative split and locked the holdout. **It froze membership only** - no
+  image was copied, moved, resized or preprocessed, no label file was written,
+  and `data/processed/` is untouched.
+- **Selection.** `candidate_001`, chosen by a person reviewing the predeclared
+  deterministic candidates (`HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES`,
+  decision source `PROJECT_OWNER_REVIEW`). It coincides with
+  `algorithmic_best_candidate`; the two are recorded separately because a
+  coincidence of outcome does not replace the review step.
+- **Result.** **303 / 65 / 65 images** over **294 / 63 / 65 groups**, 422 groups
+  in total, 2031 annotations at 1422 / 304 / 305. All five classes present in
+  all three splits at image and instance level. `vest_loose` at **5 / 1 / 2
+  images** and **30 / 8 / 7 instances**; negatives at 10 / 2 / 2. No group
+  crosses a boundary; no excluded out-of-domain image appears.
+- **Verification before writing.** The freeze re-derives the candidate's
+  assignment digest, cross-checks it against the phase 5C.1 summary, and checks
+  the phase 5B population and group fingerprints. Any disagreement is a stop:
+  nothing is written and the phase classifies `INVALID_CANDIDATE`.
+- **Fingerprints.** `split_assignment_sha256` over sorted
+  `(group_id, source_image_id, split)`; `holdout_sha256` over the holdout's group
+  ids, image ids and `modeling_population_sha256`. Both exclude timestamps,
+  paths, labels, metrics and the provider split. The freeze is idempotent:
+  re-running produces byte-identical artifacts.
+- **Holdout.** Locked. Two independent opt-ins are required
+  (`allow_test=True` **and** `CSVISION_ALLOW_TEST_SPLIT=1`), neither sufficient
+  alone, and `FrozenSplits` routes every request through the existing guard. The
+  variable is not set anywhere in this repository.
+- **Outputs.** [`split_freeze_report.md`](split_freeze_report.md),
+  `split_manifest.json`, `final_split_assignments.csv`,
+  `split_candidates/selection.csv`, `split_freeze.provenance.json`,
+  `configs/split_freeze.yaml`, and the
+  `construction_safety_vision.data.split_freeze` module.
+- **Explicitly not done.** No model, no YOLO or COCO dataset, no physical
+  train/val/test image copies, no inference, no holdout evaluation and no
+  holdout inspection.
+- **Academic mapping.** C1.
+
+### Phase 5D - task-specific dataset generation (not started)
+
+- **Entry conditions.** The frozen membership in `reports/split_manifest.json`,
+  read through `construction_safety_vision.data.split_freeze`; the 2031-annotation
+  canonical population; and the class map frozen in phase 5B.
+- **Outputs.** `data/processed/detection/` and `data/processed/segmentation/`;
+  the box-from-polygon derivation code; per-split manifests carrying image ID,
+  file hash and group ID; a provenance record for the materialisation.
+- **Validation gate.** Detection and segmentation views contain exactly the same
+  image IDs per split, verified by an automated check; boxes are verified to be
+  the tight bounds of their polygons on a sampled subset; the manifests are
+  hashed and committed. The holdout stays locked throughout, under the guard as
+  it stands; whether and when its view is materialised is a decision for that
+  phase to make and record, and the guard is not weakened to make it easier.
 - **Academic mapping.** C1, and the alignment requirement of C3.
 
 ## Phase 6 - Detection baseline
@@ -448,3 +478,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5B.1 dispositioned the outstanding near-duplicate candidates. Reconciled the counts: phase 4A raised 11 candidates (6 cross-split, 5 same-split); `review_h` showed all 6 cross-split pairs and `review_g` showed the 8 smallest-distance candidates, which were 4 of those 6 plus 4 same-split - so `review_g` held 8 pairs of which only 4 were novel, and the 11th candidate fell outside the cap and appeared on no sheet at all. The 4 novel same-split pairs were confirmed EXACT_SEMANTIC_DUPLICATE (HIGH) as manual_dup_007-010, giving 10 confirmed groups, 413 singletons and 423 split units; groups are now computed as connected components so a transitive chain forms one group. `chain-007` remains undecided and unmerged, drawn alone in figures/review_o_remaining_near_duplicates.jpg. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES stays OPEN and phase 5C is BLOCKED_ON_MANUAL_DISPOSITION. No split, holdout or model exists. |
 | 2026-09-04 | Phase 5B.1 closed. The final outstanding candidate (chain-007, `66p9gzaQFGcmQA2v40Of` ~ `pbOZlgeseTpoTXwVJjAh`) was decided NEAR_DUPLICATE_SAME_SCENE (MEDIUM, GROUP_TOGETHER): the same worker and scene at a different moment rather than the same frame, but correlated enough that separating them across splits would risk leakage. Grouping serves statistical independence, not image identity, so it is indivisible like an exact duplicate while being recorded as a different finding via `group_basis`. All 11 phase 4A candidates now carry a human disposition (6 in 4B, 5 in 5B.1); zero outstanding. Final structure: 433 modelling images, 2031 annotations, 11 confirmed groups (22 images) + 411 singletons = 422 split units, largest group 2 images. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES is CLOSED and phase 5C entry readiness is READY_FOR_SPLIT_OPTIMIZATION. No split, holdout or model exists. |
 | 2026-09-04 | Phase 5C.1 generated six provisional split candidates over the 422 indivisible groups. All reach the exact 70/15/15 target (303/65/65 images) with every hard constraint satisfied: five classes in all three splits at image and instance level, vest_loose 5/1/2 or 4/2/2, negatives 10/2/2. The objective is normalised per class and averaged so the frequent classes cannot outweigh the rare one, and each component is reported separately. Search is deterministic: 192 restarts seeded from the project seed 42, 49 feasible, 49 unique, re-run byte-identical. The provider split is read nowhere - the optimiser refuses to run if the feature table carries such a column. A correction: the brief stated no vest_loose image belongs to a duplicate group, which phase 5B.1 made false (two of the eight are in manual_dup_010), so the class occupies 7 indivisible units. Family B (5/2/1) is searched but rejected by the two-image holdout floor. algorithmic_best_candidate is candidate_001; final_selected_candidate remains UNSELECTED_PENDING_REVIEW. No split frozen, no holdout fingerprint, no model. |
+| 2026-09-04 | Phase 5C.2 froze the canonical split. `candidate_001` was selected by human review of the six predeclared deterministic candidates (`HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES`, `PROJECT_OWNER_REVIEW`); it coincides with `algorithmic_best_candidate`, and the two are recorded separately because a coincidence of outcome does not replace the review step. Frozen at 303/65/65 images over 294/63/65 groups (422 total, 11 non-singleton at 9/2/0), 2031 annotations at 1422/304/305, negatives 10/2/2, all five classes in all three splits at image and instance level, vest_loose 5/1/2 images and 30/8/7 instances. Verification ran before any write: the candidate re-derives its recorded digest, agrees with the phase 5C.1 summary, and matches the phase 5B population and group fingerprints. New fingerprints `split_assignment_sha256` `a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc` and `holdout_sha256` `bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00` cover membership only - no timestamp, path, label, metric or provider split - and the freeze is idempotent. Recorded as a protocol limitation: validation holds a single vest_loose image, so vest_loose validation metrics must not drive model selection on their own, and the split is a group-aware and class-aware constrained split, not a perfectly stratified one. **From this point the test split is a locked holdout**, requiring both `allow_test=True` and `CSVISION_ALLOW_TEST_SPLIT=1`; the variable was not set and the holdout has never been evaluated or inspected. Membership only: no image copied, no label written, `data/processed/` untouched, no model, no YOLO dataset, no inference. |

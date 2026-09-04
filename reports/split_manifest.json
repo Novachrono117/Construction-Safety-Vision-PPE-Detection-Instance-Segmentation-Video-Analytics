@@ -1,0 +1,2699 @@
+{
+  "actual_annotation_counts": {
+    "test": 305,
+    "train": 1422,
+    "validation": 304
+  },
+  "actual_group_counts": {
+    "test": 65,
+    "train": 294,
+    "validation": 63
+  },
+  "actual_image_counts": {
+    "test": 65,
+    "train": 303,
+    "validation": 65
+  },
+  "actual_negative_image_counts": {
+    "test": 2,
+    "train": 10,
+    "validation": 2
+  },
+  "actual_non_singleton_group_counts": {
+    "test": 0,
+    "train": 9,
+    "validation": 2
+  },
+  "algorithmic_best_candidate": "candidate_001",
+  "candidate_assignment_sha256": "081c39e729697f081302fc809eb4b78fff6450e910df254b88f311d623aa1fbe",
+  "created_from_candidate": "candidate_001",
+  "excluded_images": [
+    "9b7VLDWDFhy21Ygmz7ss",
+    "KgOOMlBEXp0QxhSxTT6a",
+    "KqRSROf90W22N1qzQzN0"
+  ],
+  "final_selected_candidate": "candidate_001",
+  "fingerprint_scope": {
+    "candidate_assignment_sha256": "phase 5C.1 digest over the sorted (group_id, split) pairs. It is the identity of the reviewed candidate and is preserved unchanged",
+    "excludes": [
+      "timestamps",
+      "machine-specific filesystem paths",
+      "the provider's rejected split",
+      "labels, geometry and any model result"
+    ],
+    "holdout_sha256": "digest over the holdout's group ids, its source image ids and modeling_population_sha256. It detects membership drift in the protected split; it covers no label, no metric and no model output",
+    "split_assignment_sha256": "phase 5C.2 digest over the sorted (group_id, source_image_id, split) triples. It differs from candidate_assignment_sha256 because the canonical final representation names images as well as groups, so it also moves when a group's membership changes while its split does not"
+  },
+  "git_commit": "93e364b647f0f755d16d94a76cdd487c66c4f79f",
+  "groups_sha256": "d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf",
+  "holdout_frozen": true,
+  "holdout_guard": {
+    "default_state": "LOCKED",
+    "env_var": "CSVISION_ALLOW_TEST_SPLIT",
+    "protected_split": "test",
+    "requires_code_opt_in": true,
+    "requires_environment_opt_in": true
+  },
+  "holdout_sha256": "bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00",
+  "images_with_class": {
+    "test": {
+      "helmet_loose": 11,
+      "helmet_on_head": 27,
+      "person": 55,
+      "vest_loose": 2,
+      "vest_on_body": 31
+    },
+    "train": {
+      "helmet_loose": 53,
+      "helmet_on_head": 123,
+      "person": 256,
+      "vest_loose": 5,
+      "vest_on_body": 146
+    },
+    "validation": {
+      "helmet_loose": 11,
+      "helmet_on_head": 26,
+      "person": 55,
+      "vest_loose": 1,
+      "vest_on_body": 31
+    }
+  },
+  "instances_by_class": {
+    "test": {
+      "helmet_loose": 60,
+      "helmet_on_head": 47,
+      "person": 136,
+      "vest_loose": 7,
+      "vest_on_body": 55
+    },
+    "train": {
+      "helmet_loose": 276,
+      "helmet_on_head": 220,
+      "person": 641,
+      "vest_loose": 30,
+      "vest_on_body": 255
+    },
+    "validation": {
+      "helmet_loose": 57,
+      "helmet_on_head": 47,
+      "person": 137,
+      "vest_loose": 8,
+      "vest_on_body": 55
+    }
+  },
+  "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+  "non_selected_candidates": [
+    "candidate_002",
+    "candidate_003",
+    "candidate_004",
+    "candidate_005",
+    "candidate_006"
+  ],
+  "phase": "5C.2",
+  "physical_materialisation": {
+    "note": "this phase freezes membership only. No image was copied, moved, resized or converted, and no label file was written. Phase 5D materialises the detection and segmentation views from this membership",
+    "performed": false
+  },
+  "provider_split_used": false,
+  "schema_version": 1,
+  "seed": 42,
+  "selection_decision_source": "PROJECT_OWNER_REVIEW",
+  "selection_method": "HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES",
+  "selection_status": "FINAL_SELECTED",
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "split_semantics": {
+    "test": "final untouched holdout. After this freeze it must not be used for model selection, architecture selection, hyperparameter tuning, augmentation tuning, image-size tuning, threshold tuning, qualitative model debugging or error-driven iteration. It may be evaluated only in the final-evaluation phase, once, after the models are frozen",
+    "train": "may be used to fit model parameters",
+    "validation": "may be used for model selection, hyperparameter selection, threshold and configuration decisions, and early stopping where a later protocol permits it"
+  },
+  "status": "FROZEN",
+  "target_ratios": {
+    "test": 0.15,
+    "train": 0.7,
+    "validation": 0.15
+  },
+  "test": {
+    "group_count": 65,
+    "groups": [
+      {
+        "group_id": "singleton-0TCko19jiO1CcXl2vqsd",
+        "source_image_ids": [
+          "0TCko19jiO1CcXl2vqsd"
+        ]
+      },
+      {
+        "group_id": "singleton-1dnS0NtMgQN35Eb4GNTe",
+        "source_image_ids": [
+          "1dnS0NtMgQN35Eb4GNTe"
+        ]
+      },
+      {
+        "group_id": "singleton-2Qh4yEmcE64JRJXTM10C",
+        "source_image_ids": [
+          "2Qh4yEmcE64JRJXTM10C"
+        ]
+      },
+      {
+        "group_id": "singleton-35kJU6sOxBnL8qucfgHx",
+        "source_image_ids": [
+          "35kJU6sOxBnL8qucfgHx"
+        ]
+      },
+      {
+        "group_id": "singleton-4ajEucaVD61th8hqHdux",
+        "source_image_ids": [
+          "4ajEucaVD61th8hqHdux"
+        ]
+      },
+      {
+        "group_id": "singleton-6R3F7WoZUjSohZEFSgXr",
+        "source_image_ids": [
+          "6R3F7WoZUjSohZEFSgXr"
+        ]
+      },
+      {
+        "group_id": "singleton-6wbVR0oBIJ7D6xM1XfYh",
+        "source_image_ids": [
+          "6wbVR0oBIJ7D6xM1XfYh"
+        ]
+      },
+      {
+        "group_id": "singleton-6zcUFRrk82e1KtW3sxk6",
+        "source_image_ids": [
+          "6zcUFRrk82e1KtW3sxk6"
+        ]
+      },
+      {
+        "group_id": "singleton-8ClEJ3kbOB1pz5A9tOlh",
+        "source_image_ids": [
+          "8ClEJ3kbOB1pz5A9tOlh"
+        ]
+      },
+      {
+        "group_id": "singleton-Ais9TUGiL1MJDTRdjVnE",
+        "source_image_ids": [
+          "Ais9TUGiL1MJDTRdjVnE"
+        ]
+      },
+      {
+        "group_id": "singleton-BFG4pp4pV1WkTUQUDVvc",
+        "source_image_ids": [
+          "BFG4pp4pV1WkTUQUDVvc"
+        ]
+      },
+      {
+        "group_id": "singleton-BhdMkBrR1P1zUTVq9DaC",
+        "source_image_ids": [
+          "BhdMkBrR1P1zUTVq9DaC"
+        ]
+      },
+      {
+        "group_id": "singleton-CM5yr8YHsaaoIdidqtnU",
+        "source_image_ids": [
+          "CM5yr8YHsaaoIdidqtnU"
+        ]
+      },
+      {
+        "group_id": "singleton-CSJxc0owYRXzhKLvpTQ9",
+        "source_image_ids": [
+          "CSJxc0owYRXzhKLvpTQ9"
+        ]
+      },
+      {
+        "group_id": "singleton-DErEbvqFZXpWqvCNQa9N",
+        "source_image_ids": [
+          "DErEbvqFZXpWqvCNQa9N"
+        ]
+      },
+      {
+        "group_id": "singleton-DRtY5eg2m6BkQJHYfMJy",
+        "source_image_ids": [
+          "DRtY5eg2m6BkQJHYfMJy"
+        ]
+      },
+      {
+        "group_id": "singleton-DY7f9eSSIqF3cejIv59H",
+        "source_image_ids": [
+          "DY7f9eSSIqF3cejIv59H"
+        ]
+      },
+      {
+        "group_id": "singleton-DiZN18wef1vuHh6pVvtI",
+        "source_image_ids": [
+          "DiZN18wef1vuHh6pVvtI"
+        ]
+      },
+      {
+        "group_id": "singleton-Dl8EqAh6dPQw7Dq34TlH",
+        "source_image_ids": [
+          "Dl8EqAh6dPQw7Dq34TlH"
+        ]
+      },
+      {
+        "group_id": "singleton-EMcfZIuO2gmvi4krBUxS",
+        "source_image_ids": [
+          "EMcfZIuO2gmvi4krBUxS"
+        ]
+      },
+      {
+        "group_id": "singleton-GF2RQ1mpGBJzlTjKoCHR",
+        "source_image_ids": [
+          "GF2RQ1mpGBJzlTjKoCHR"
+        ]
+      },
+      {
+        "group_id": "singleton-GpEW4sBKjwFabVZSUq2b",
+        "source_image_ids": [
+          "GpEW4sBKjwFabVZSUq2b"
+        ]
+      },
+      {
+        "group_id": "singleton-Gu6rHBgSwUF5mwFa6lfI",
+        "source_image_ids": [
+          "Gu6rHBgSwUF5mwFa6lfI"
+        ]
+      },
+      {
+        "group_id": "singleton-HQnZU6tMxbfwgxWzc8mt",
+        "source_image_ids": [
+          "HQnZU6tMxbfwgxWzc8mt"
+        ]
+      },
+      {
+        "group_id": "singleton-HU0eUY9BAn3Cnsxt7y4r",
+        "source_image_ids": [
+          "HU0eUY9BAn3Cnsxt7y4r"
+        ]
+      },
+      {
+        "group_id": "singleton-HwlufkrcXA9g8e3aNCm5",
+        "source_image_ids": [
+          "HwlufkrcXA9g8e3aNCm5"
+        ]
+      },
+      {
+        "group_id": "singleton-IUKDvF2wZjRXWHNvujtd",
+        "source_image_ids": [
+          "IUKDvF2wZjRXWHNvujtd"
+        ]
+      },
+      {
+        "group_id": "singleton-IxZ3C1K7vs4I43UcFG63",
+        "source_image_ids": [
+          "IxZ3C1K7vs4I43UcFG63"
+        ]
+      },
+      {
+        "group_id": "singleton-J1TlMOzR3PfvLVrD3kL2",
+        "source_image_ids": [
+          "J1TlMOzR3PfvLVrD3kL2"
+        ]
+      },
+      {
+        "group_id": "singleton-J8VVYL7NFqag8Q2h1LdU",
+        "source_image_ids": [
+          "J8VVYL7NFqag8Q2h1LdU"
+        ]
+      },
+      {
+        "group_id": "singleton-LECJ0QrWJeyWICbOqamy",
+        "source_image_ids": [
+          "LECJ0QrWJeyWICbOqamy"
+        ]
+      },
+      {
+        "group_id": "singleton-LSzsvsjaUz4782epO92M",
+        "source_image_ids": [
+          "LSzsvsjaUz4782epO92M"
+        ]
+      },
+      {
+        "group_id": "singleton-MBuNKaZBdNlilQvSv3zC",
+        "source_image_ids": [
+          "MBuNKaZBdNlilQvSv3zC"
+        ]
+      },
+      {
+        "group_id": "singleton-P4kyoAALuWE7lYtori2d",
+        "source_image_ids": [
+          "P4kyoAALuWE7lYtori2d"
+        ]
+      },
+      {
+        "group_id": "singleton-QmjHa7u0ZQG0cE5HadWX",
+        "source_image_ids": [
+          "QmjHa7u0ZQG0cE5HadWX"
+        ]
+      },
+      {
+        "group_id": "singleton-RKuAbxAitj0j4NzRD0Px",
+        "source_image_ids": [
+          "RKuAbxAitj0j4NzRD0Px"
+        ]
+      },
+      {
+        "group_id": "singleton-SOVx70YdnCwZQTD0yb1N",
+        "source_image_ids": [
+          "SOVx70YdnCwZQTD0yb1N"
+        ]
+      },
+      {
+        "group_id": "singleton-SkRWCmGhaCswgUNKIAos",
+        "source_image_ids": [
+          "SkRWCmGhaCswgUNKIAos"
+        ]
+      },
+      {
+        "group_id": "singleton-SpqTKP1HgPTfRMf3kjMw",
+        "source_image_ids": [
+          "SpqTKP1HgPTfRMf3kjMw"
+        ]
+      },
+      {
+        "group_id": "singleton-Sxg7i96XAHXonWrVAV8Q",
+        "source_image_ids": [
+          "Sxg7i96XAHXonWrVAV8Q"
+        ]
+      },
+      {
+        "group_id": "singleton-WizgfRCkmeL3P8qusBOI",
+        "source_image_ids": [
+          "WizgfRCkmeL3P8qusBOI"
+        ]
+      },
+      {
+        "group_id": "singleton-aEsSiryCIhDl2uLhyYVc",
+        "source_image_ids": [
+          "aEsSiryCIhDl2uLhyYVc"
+        ]
+      },
+      {
+        "group_id": "singleton-aY9eNC7XGXN7yzM04BIy",
+        "source_image_ids": [
+          "aY9eNC7XGXN7yzM04BIy"
+        ]
+      },
+      {
+        "group_id": "singleton-ajCO2t9BGFENy5GElzHf",
+        "source_image_ids": [
+          "ajCO2t9BGFENy5GElzHf"
+        ]
+      },
+      {
+        "group_id": "singleton-cR6jQqnXlXEih0YeParx",
+        "source_image_ids": [
+          "cR6jQqnXlXEih0YeParx"
+        ]
+      },
+      {
+        "group_id": "singleton-cYheOItaMXJ9X72dU5u4",
+        "source_image_ids": [
+          "cYheOItaMXJ9X72dU5u4"
+        ]
+      },
+      {
+        "group_id": "singleton-dV0CbyCSJtXWWMuNiUBb",
+        "source_image_ids": [
+          "dV0CbyCSJtXWWMuNiUBb"
+        ]
+      },
+      {
+        "group_id": "singleton-dVaKcGZ9EJmsN6TEqTdZ",
+        "source_image_ids": [
+          "dVaKcGZ9EJmsN6TEqTdZ"
+        ]
+      },
+      {
+        "group_id": "singleton-dkDUAa5JcRqtBp6op5UD",
+        "source_image_ids": [
+          "dkDUAa5JcRqtBp6op5UD"
+        ]
+      },
+      {
+        "group_id": "singleton-euCQjjUlEThJqziS0g9T",
+        "source_image_ids": [
+          "euCQjjUlEThJqziS0g9T"
+        ]
+      },
+      {
+        "group_id": "singleton-gNPDrOkY5ncvCstpk8Ir",
+        "source_image_ids": [
+          "gNPDrOkY5ncvCstpk8Ir"
+        ]
+      },
+      {
+        "group_id": "singleton-imjwATL2GrVSVnpZbh6h",
+        "source_image_ids": [
+          "imjwATL2GrVSVnpZbh6h"
+        ]
+      },
+      {
+        "group_id": "singleton-krq8FSSwp3IHgm9N0pao",
+        "source_image_ids": [
+          "krq8FSSwp3IHgm9N0pao"
+        ]
+      },
+      {
+        "group_id": "singleton-ljmzAWSjDGWvNtmeIhi5",
+        "source_image_ids": [
+          "ljmzAWSjDGWvNtmeIhi5"
+        ]
+      },
+      {
+        "group_id": "singleton-ojwkuYxr8Yg4pw09PSCT",
+        "source_image_ids": [
+          "ojwkuYxr8Yg4pw09PSCT"
+        ]
+      },
+      {
+        "group_id": "singleton-pb3x906Z3qhaYLgBVWrb",
+        "source_image_ids": [
+          "pb3x906Z3qhaYLgBVWrb"
+        ]
+      },
+      {
+        "group_id": "singleton-qpGvhFrN8YelHx1yTsM9",
+        "source_image_ids": [
+          "qpGvhFrN8YelHx1yTsM9"
+        ]
+      },
+      {
+        "group_id": "singleton-qrutbsVFIvplPnd3QSpO",
+        "source_image_ids": [
+          "qrutbsVFIvplPnd3QSpO"
+        ]
+      },
+      {
+        "group_id": "singleton-rpdoJYbURHUkBIZtjRyx",
+        "source_image_ids": [
+          "rpdoJYbURHUkBIZtjRyx"
+        ]
+      },
+      {
+        "group_id": "singleton-s9ircNOjL3KJuH5uqnhY",
+        "source_image_ids": [
+          "s9ircNOjL3KJuH5uqnhY"
+        ]
+      },
+      {
+        "group_id": "singleton-vltD7ae0puVQgcj8VjlZ",
+        "source_image_ids": [
+          "vltD7ae0puVQgcj8VjlZ"
+        ]
+      },
+      {
+        "group_id": "singleton-wpbZJyURzZHruvXGMRtd",
+        "source_image_ids": [
+          "wpbZJyURzZHruvXGMRtd"
+        ]
+      },
+      {
+        "group_id": "singleton-xibnPIqURhNVJI3zP0bz",
+        "source_image_ids": [
+          "xibnPIqURhNVJI3zP0bz"
+        ]
+      },
+      {
+        "group_id": "singleton-xnxssvkuDMAznbmlK9z8",
+        "source_image_ids": [
+          "xnxssvkuDMAznbmlK9z8"
+        ]
+      },
+      {
+        "group_id": "singleton-yyV4SbiMGeqs0hjR2Nmk",
+        "source_image_ids": [
+          "yyV4SbiMGeqs0hjR2Nmk"
+        ]
+      }
+    ],
+    "image_count": 65,
+    "non_singleton_group_count": 0
+  },
+  "train": {
+    "group_count": 294,
+    "groups": [
+      {
+        "group_id": "manual_dup_001",
+        "source_image_ids": [
+          "4UEcuYsspsOsSV0XYgSR",
+          "6hpR44qukoBLy0iFwzip"
+        ]
+      },
+      {
+        "group_id": "manual_dup_002",
+        "source_image_ids": [
+          "FBzxttXYsNSZKcVNofUI",
+          "Um5Oft7wh92nWZzcd33C"
+        ]
+      },
+      {
+        "group_id": "manual_dup_004",
+        "source_image_ids": [
+          "OgbeepjjlVIRghzAMurI",
+          "Ud5BlYIB2FSpmLDEEq9z"
+        ]
+      },
+      {
+        "group_id": "manual_dup_005",
+        "source_image_ids": [
+          "THaelQmgDKdUwfSFIAx5",
+          "ymICdUCkVq8IfApx2TvK"
+        ]
+      },
+      {
+        "group_id": "manual_dup_006",
+        "source_image_ids": [
+          "kvlkvPKhlcIlNoa2lJKq",
+          "tjHCOqwRIYw66vZcCHJp"
+        ]
+      },
+      {
+        "group_id": "manual_dup_008",
+        "source_image_ids": [
+          "66p9gzaQFGcmQA2v40Of",
+          "pbOZlgeseTpoTXwVJjAh"
+        ]
+      },
+      {
+        "group_id": "manual_dup_009",
+        "source_image_ids": [
+          "IyVJr4DcosMWf0wZS1uN",
+          "ghzZPWPu7P2hqWEVXzdK"
+        ]
+      },
+      {
+        "group_id": "manual_dup_010",
+        "source_image_ids": [
+          "TwF1Rahc7CIP2gpmlbLS",
+          "pd0SyehnE6l5xoGZqJCt"
+        ]
+      },
+      {
+        "group_id": "manual_dup_011",
+        "source_image_ids": [
+          "p5lxtMTKDL0gIgbqSrls",
+          "xwPbKAjD2vxaff0GdKp1"
+        ]
+      },
+      {
+        "group_id": "singleton-0CHrBSJAmY24quC0QSYA",
+        "source_image_ids": [
+          "0CHrBSJAmY24quC0QSYA"
+        ]
+      },
+      {
+        "group_id": "singleton-0Orp0pwbiOU0MIg0a28r",
+        "source_image_ids": [
+          "0Orp0pwbiOU0MIg0a28r"
+        ]
+      },
+      {
+        "group_id": "singleton-0ajF0d1eniugei3qRqvl",
+        "source_image_ids": [
+          "0ajF0d1eniugei3qRqvl"
+        ]
+      },
+      {
+        "group_id": "singleton-0ejTKqobP0Z7bG7iS1dF",
+        "source_image_ids": [
+          "0ejTKqobP0Z7bG7iS1dF"
+        ]
+      },
+      {
+        "group_id": "singleton-0fMloNWonp8DEQff6L2n",
+        "source_image_ids": [
+          "0fMloNWonp8DEQff6L2n"
+        ]
+      },
+      {
+        "group_id": "singleton-0g77gkQGLuqJIxRBDCMC",
+        "source_image_ids": [
+          "0g77gkQGLuqJIxRBDCMC"
+        ]
+      },
+      {
+        "group_id": "singleton-0vIelRhK7EUfEcEMkBV0",
+        "source_image_ids": [
+          "0vIelRhK7EUfEcEMkBV0"
+        ]
+      },
+      {
+        "group_id": "singleton-1BVaqcupKpVSmlh5tncK",
+        "source_image_ids": [
+          "1BVaqcupKpVSmlh5tncK"
+        ]
+      },
+      {
+        "group_id": "singleton-1XJO4jpZ1EjuFK7M5WzU",
+        "source_image_ids": [
+          "1XJO4jpZ1EjuFK7M5WzU"
+        ]
+      },
+      {
+        "group_id": "singleton-1zBF8eW6TRm4IBAb3Kwv",
+        "source_image_ids": [
+          "1zBF8eW6TRm4IBAb3Kwv"
+        ]
+      },
+      {
+        "group_id": "singleton-2estUvSXu4usdh4plcAm",
+        "source_image_ids": [
+          "2estUvSXu4usdh4plcAm"
+        ]
+      },
+      {
+        "group_id": "singleton-2qD9FzEoqf4Rsihf6kf7",
+        "source_image_ids": [
+          "2qD9FzEoqf4Rsihf6kf7"
+        ]
+      },
+      {
+        "group_id": "singleton-3INKyAoeOEbPQKuxINbX",
+        "source_image_ids": [
+          "3INKyAoeOEbPQKuxINbX"
+        ]
+      },
+      {
+        "group_id": "singleton-3wdTWWyA3a9YrQ9EfLc9",
+        "source_image_ids": [
+          "3wdTWWyA3a9YrQ9EfLc9"
+        ]
+      },
+      {
+        "group_id": "singleton-4XETInqs70Y4H9ry55k3",
+        "source_image_ids": [
+          "4XETInqs70Y4H9ry55k3"
+        ]
+      },
+      {
+        "group_id": "singleton-4baqXpqm2eXB2CHZWkM9",
+        "source_image_ids": [
+          "4baqXpqm2eXB2CHZWkM9"
+        ]
+      },
+      {
+        "group_id": "singleton-4ezyg6KhKI36ubNpMX1z",
+        "source_image_ids": [
+          "4ezyg6KhKI36ubNpMX1z"
+        ]
+      },
+      {
+        "group_id": "singleton-5fj7MBBP6mq9NtLfV51m",
+        "source_image_ids": [
+          "5fj7MBBP6mq9NtLfV51m"
+        ]
+      },
+      {
+        "group_id": "singleton-5p4hDwmBcrn3EI04GmlA",
+        "source_image_ids": [
+          "5p4hDwmBcrn3EI04GmlA"
+        ]
+      },
+      {
+        "group_id": "singleton-5tvMIxMJkb5Hp9bD8hBw",
+        "source_image_ids": [
+          "5tvMIxMJkb5Hp9bD8hBw"
+        ]
+      },
+      {
+        "group_id": "singleton-5xqkoD8kcbQ7JWIll2KF",
+        "source_image_ids": [
+          "5xqkoD8kcbQ7JWIll2KF"
+        ]
+      },
+      {
+        "group_id": "singleton-5z8XJfD2gto4gT3gwPAK",
+        "source_image_ids": [
+          "5z8XJfD2gto4gT3gwPAK"
+        ]
+      },
+      {
+        "group_id": "singleton-60TqAIaOldetEAmBqqMX",
+        "source_image_ids": [
+          "60TqAIaOldetEAmBqqMX"
+        ]
+      },
+      {
+        "group_id": "singleton-619mdz3TlcOedTGFv0za",
+        "source_image_ids": [
+          "619mdz3TlcOedTGFv0za"
+        ]
+      },
+      {
+        "group_id": "singleton-6B8gSWbJYQFfVadXSWxT",
+        "source_image_ids": [
+          "6B8gSWbJYQFfVadXSWxT"
+        ]
+      },
+      {
+        "group_id": "singleton-6ZHpQueANukCh7UeL4s5",
+        "source_image_ids": [
+          "6ZHpQueANukCh7UeL4s5"
+        ]
+      },
+      {
+        "group_id": "singleton-6nPmmdeGSmklKpfLZ04I",
+        "source_image_ids": [
+          "6nPmmdeGSmklKpfLZ04I"
+        ]
+      },
+      {
+        "group_id": "singleton-6yISFDLTaSrGRErrVKUw",
+        "source_image_ids": [
+          "6yISFDLTaSrGRErrVKUw"
+        ]
+      },
+      {
+        "group_id": "singleton-70XMYeBZO8t3mAXtu9ke",
+        "source_image_ids": [
+          "70XMYeBZO8t3mAXtu9ke"
+        ]
+      },
+      {
+        "group_id": "singleton-77sSza06NSDiTCn9F0sb",
+        "source_image_ids": [
+          "77sSza06NSDiTCn9F0sb"
+        ]
+      },
+      {
+        "group_id": "singleton-7Qa4QokXVymOY6hvk9CF",
+        "source_image_ids": [
+          "7Qa4QokXVymOY6hvk9CF"
+        ]
+      },
+      {
+        "group_id": "singleton-7ZBa5LYXLSg2gd59x0Nl",
+        "source_image_ids": [
+          "7ZBa5LYXLSg2gd59x0Nl"
+        ]
+      },
+      {
+        "group_id": "singleton-7aLiOz0V7KPglydbD5H7",
+        "source_image_ids": [
+          "7aLiOz0V7KPglydbD5H7"
+        ]
+      },
+      {
+        "group_id": "singleton-84V2JE8FINqroFaJRHRL",
+        "source_image_ids": [
+          "84V2JE8FINqroFaJRHRL"
+        ]
+      },
+      {
+        "group_id": "singleton-88HbrJU619doTzltW6lx",
+        "source_image_ids": [
+          "88HbrJU619doTzltW6lx"
+        ]
+      },
+      {
+        "group_id": "singleton-8JoO2wxDSeESnh5SmJpP",
+        "source_image_ids": [
+          "8JoO2wxDSeESnh5SmJpP"
+        ]
+      },
+      {
+        "group_id": "singleton-8LgvW2srLb751N5SJDxq",
+        "source_image_ids": [
+          "8LgvW2srLb751N5SJDxq"
+        ]
+      },
+      {
+        "group_id": "singleton-8NK1Ihm4MCS1gRXK4WzH",
+        "source_image_ids": [
+          "8NK1Ihm4MCS1gRXK4WzH"
+        ]
+      },
+      {
+        "group_id": "singleton-8O2JjSJCb1ylJibwosnA",
+        "source_image_ids": [
+          "8O2JjSJCb1ylJibwosnA"
+        ]
+      },
+      {
+        "group_id": "singleton-8Ru4Ji0Klp7qaNJNZXqv",
+        "source_image_ids": [
+          "8Ru4Ji0Klp7qaNJNZXqv"
+        ]
+      },
+      {
+        "group_id": "singleton-8kz63cbCBKbeeiebv7po",
+        "source_image_ids": [
+          "8kz63cbCBKbeeiebv7po"
+        ]
+      },
+      {
+        "group_id": "singleton-9ImTEhfk6VqdMSI01r6x",
+        "source_image_ids": [
+          "9ImTEhfk6VqdMSI01r6x"
+        ]
+      },
+      {
+        "group_id": "singleton-9RMi9YBhKa1nLz3ugIma",
+        "source_image_ids": [
+          "9RMi9YBhKa1nLz3ugIma"
+        ]
+      },
+      {
+        "group_id": "singleton-9T2zKDdtXzGyeq44pjGp",
+        "source_image_ids": [
+          "9T2zKDdtXzGyeq44pjGp"
+        ]
+      },
+      {
+        "group_id": "singleton-9V8ayqofeUijfaI5tMrr",
+        "source_image_ids": [
+          "9V8ayqofeUijfaI5tMrr"
+        ]
+      },
+      {
+        "group_id": "singleton-9VzteFV9D5SnmZlhQHfL",
+        "source_image_ids": [
+          "9VzteFV9D5SnmZlhQHfL"
+        ]
+      },
+      {
+        "group_id": "singleton-9jEW0aifcZKM5bRlaCWY",
+        "source_image_ids": [
+          "9jEW0aifcZKM5bRlaCWY"
+        ]
+      },
+      {
+        "group_id": "singleton-9koFugzZozUI9YIfWZk0",
+        "source_image_ids": [
+          "9koFugzZozUI9YIfWZk0"
+        ]
+      },
+      {
+        "group_id": "singleton-AIAwqRIKtkrSOj8atqNs",
+        "source_image_ids": [
+          "AIAwqRIKtkrSOj8atqNs"
+        ]
+      },
+      {
+        "group_id": "singleton-AvvR6iF4C7rqEdb4F2SB",
+        "source_image_ids": [
+          "AvvR6iF4C7rqEdb4F2SB"
+        ]
+      },
+      {
+        "group_id": "singleton-B28mQjiO7iQrGNpLEnKa",
+        "source_image_ids": [
+          "B28mQjiO7iQrGNpLEnKa"
+        ]
+      },
+      {
+        "group_id": "singleton-B2QiCIntf9RxLHCBKmVy",
+        "source_image_ids": [
+          "B2QiCIntf9RxLHCBKmVy"
+        ]
+      },
+      {
+        "group_id": "singleton-B2znvjHzOOKJdNuzNnwo",
+        "source_image_ids": [
+          "B2znvjHzOOKJdNuzNnwo"
+        ]
+      },
+      {
+        "group_id": "singleton-B809pvlQ32XXT2akrDG5",
+        "source_image_ids": [
+          "B809pvlQ32XXT2akrDG5"
+        ]
+      },
+      {
+        "group_id": "singleton-BKQc0VOlqhWGIuqGozuK",
+        "source_image_ids": [
+          "BKQc0VOlqhWGIuqGozuK"
+        ]
+      },
+      {
+        "group_id": "singleton-BTDhw7BCTG4sfwnaraKa",
+        "source_image_ids": [
+          "BTDhw7BCTG4sfwnaraKa"
+        ]
+      },
+      {
+        "group_id": "singleton-BZkvs1U3ZhiNDdJ7EitR",
+        "source_image_ids": [
+          "BZkvs1U3ZhiNDdJ7EitR"
+        ]
+      },
+      {
+        "group_id": "singleton-BgmyvUGHmaKd9YGpEfYd",
+        "source_image_ids": [
+          "BgmyvUGHmaKd9YGpEfYd"
+        ]
+      },
+      {
+        "group_id": "singleton-BqslKEg23m8hmDaQGJMo",
+        "source_image_ids": [
+          "BqslKEg23m8hmDaQGJMo"
+        ]
+      },
+      {
+        "group_id": "singleton-BwtdnuFIdhZLIWJuO3BZ",
+        "source_image_ids": [
+          "BwtdnuFIdhZLIWJuO3BZ"
+        ]
+      },
+      {
+        "group_id": "singleton-CF4PPPCAZgulnXoSl3hj",
+        "source_image_ids": [
+          "CF4PPPCAZgulnXoSl3hj"
+        ]
+      },
+      {
+        "group_id": "singleton-CGks86YYT3ldFKEyDmBe",
+        "source_image_ids": [
+          "CGks86YYT3ldFKEyDmBe"
+        ]
+      },
+      {
+        "group_id": "singleton-CVIS4alNHovwaIjoYMxe",
+        "source_image_ids": [
+          "CVIS4alNHovwaIjoYMxe"
+        ]
+      },
+      {
+        "group_id": "singleton-Cd1T5uyp8ZPWDdHbg0nr",
+        "source_image_ids": [
+          "Cd1T5uyp8ZPWDdHbg0nr"
+        ]
+      },
+      {
+        "group_id": "singleton-CoVIro6CIADvOn5LnoQw",
+        "source_image_ids": [
+          "CoVIro6CIADvOn5LnoQw"
+        ]
+      },
+      {
+        "group_id": "singleton-D2TlRBeF3Z3XnwTXgwdf",
+        "source_image_ids": [
+          "D2TlRBeF3Z3XnwTXgwdf"
+        ]
+      },
+      {
+        "group_id": "singleton-DOt8L8n8BNwvRpo1BFy7",
+        "source_image_ids": [
+          "DOt8L8n8BNwvRpo1BFy7"
+        ]
+      },
+      {
+        "group_id": "singleton-DQK6LrJqCXecgKPqH5UV",
+        "source_image_ids": [
+          "DQK6LrJqCXecgKPqH5UV"
+        ]
+      },
+      {
+        "group_id": "singleton-DcP4LlxYQwLImU646IZ7",
+        "source_image_ids": [
+          "DcP4LlxYQwLImU646IZ7"
+        ]
+      },
+      {
+        "group_id": "singleton-Df656VZ1wmrTjmmkqq3j",
+        "source_image_ids": [
+          "Df656VZ1wmrTjmmkqq3j"
+        ]
+      },
+      {
+        "group_id": "singleton-FbZqQM7gZbTKYNSbQPNc",
+        "source_image_ids": [
+          "FbZqQM7gZbTKYNSbQPNc"
+        ]
+      },
+      {
+        "group_id": "singleton-Fclex3JhZn6KA5UzhPqs",
+        "source_image_ids": [
+          "Fclex3JhZn6KA5UzhPqs"
+        ]
+      },
+      {
+        "group_id": "singleton-FdDCioACvsve0FOYsuw2",
+        "source_image_ids": [
+          "FdDCioACvsve0FOYsuw2"
+        ]
+      },
+      {
+        "group_id": "singleton-FnmvDGwRQ2lAaLFhuOWQ",
+        "source_image_ids": [
+          "FnmvDGwRQ2lAaLFhuOWQ"
+        ]
+      },
+      {
+        "group_id": "singleton-FxSzogHP5qjTmbBVRQ5K",
+        "source_image_ids": [
+          "FxSzogHP5qjTmbBVRQ5K"
+        ]
+      },
+      {
+        "group_id": "singleton-FyyZcyYXsPHz2XgfCwAs",
+        "source_image_ids": [
+          "FyyZcyYXsPHz2XgfCwAs"
+        ]
+      },
+      {
+        "group_id": "singleton-G4gekWExHFiC5oxkqJg6",
+        "source_image_ids": [
+          "G4gekWExHFiC5oxkqJg6"
+        ]
+      },
+      {
+        "group_id": "singleton-GAAQsDQ6cH9YB5cJ6aHb",
+        "source_image_ids": [
+          "GAAQsDQ6cH9YB5cJ6aHb"
+        ]
+      },
+      {
+        "group_id": "singleton-GI3xss1sRRS18wHohAkx",
+        "source_image_ids": [
+          "GI3xss1sRRS18wHohAkx"
+        ]
+      },
+      {
+        "group_id": "singleton-Gbgzj50ZzCdiYvoAOmpo",
+        "source_image_ids": [
+          "Gbgzj50ZzCdiYvoAOmpo"
+        ]
+      },
+      {
+        "group_id": "singleton-GgFocHO8SbtIBUGEFc8E",
+        "source_image_ids": [
+          "GgFocHO8SbtIBUGEFc8E"
+        ]
+      },
+      {
+        "group_id": "singleton-HKL8h8X9rHt0XCXlAVNL",
+        "source_image_ids": [
+          "HKL8h8X9rHt0XCXlAVNL"
+        ]
+      },
+      {
+        "group_id": "singleton-HY3Mq3OzeaAt6PXtTxKq",
+        "source_image_ids": [
+          "HY3Mq3OzeaAt6PXtTxKq"
+        ]
+      },
+      {
+        "group_id": "singleton-HYb9stwdqDCKBBrTeTLe",
+        "source_image_ids": [
+          "HYb9stwdqDCKBBrTeTLe"
+        ]
+      },
+      {
+        "group_id": "singleton-HYomb2CyhaWUoXglExmz",
+        "source_image_ids": [
+          "HYomb2CyhaWUoXglExmz"
+        ]
+      },
+      {
+        "group_id": "singleton-IGdAVWEbTKrgM8llrZbm",
+        "source_image_ids": [
+          "IGdAVWEbTKrgM8llrZbm"
+        ]
+      },
+      {
+        "group_id": "singleton-IdQmnhilWUB8CW2LFhdD",
+        "source_image_ids": [
+          "IdQmnhilWUB8CW2LFhdD"
+        ]
+      },
+      {
+        "group_id": "singleton-IdlpHmd45MACc3eXTRqN",
+        "source_image_ids": [
+          "IdlpHmd45MACc3eXTRqN"
+        ]
+      },
+      {
+        "group_id": "singleton-J3hznbBPysK0tWYT9WUi",
+        "source_image_ids": [
+          "J3hznbBPysK0tWYT9WUi"
+        ]
+      },
+      {
+        "group_id": "singleton-J43xY0jaSQexxzdN3Uoe",
+        "source_image_ids": [
+          "J43xY0jaSQexxzdN3Uoe"
+        ]
+      },
+      {
+        "group_id": "singleton-JFPLvXzjr38rcbgvCedz",
+        "source_image_ids": [
+          "JFPLvXzjr38rcbgvCedz"
+        ]
+      },
+      {
+        "group_id": "singleton-JQnSkF4L5Wmw2aJj0nae",
+        "source_image_ids": [
+          "JQnSkF4L5Wmw2aJj0nae"
+        ]
+      },
+      {
+        "group_id": "singleton-Jn53NESS4TbEWJbuvG70",
+        "source_image_ids": [
+          "Jn53NESS4TbEWJbuvG70"
+        ]
+      },
+      {
+        "group_id": "singleton-JtlLc8vU4kkL2Jz7ctjA",
+        "source_image_ids": [
+          "JtlLc8vU4kkL2Jz7ctjA"
+        ]
+      },
+      {
+        "group_id": "singleton-K0CnIma3AqzHtRo2VNdu",
+        "source_image_ids": [
+          "K0CnIma3AqzHtRo2VNdu"
+        ]
+      },
+      {
+        "group_id": "singleton-KMRRC0uoR29Yq6wEaJrP",
+        "source_image_ids": [
+          "KMRRC0uoR29Yq6wEaJrP"
+        ]
+      },
+      {
+        "group_id": "singleton-KN9YcUjf4MbiILNfF6d1",
+        "source_image_ids": [
+          "KN9YcUjf4MbiILNfF6d1"
+        ]
+      },
+      {
+        "group_id": "singleton-KyqVojaz6oaARWVjEAyG",
+        "source_image_ids": [
+          "KyqVojaz6oaARWVjEAyG"
+        ]
+      },
+      {
+        "group_id": "singleton-LUvZ2w5JsB8sHFevCPRy",
+        "source_image_ids": [
+          "LUvZ2w5JsB8sHFevCPRy"
+        ]
+      },
+      {
+        "group_id": "singleton-LgO9XnFYKArvgSB2viem",
+        "source_image_ids": [
+          "LgO9XnFYKArvgSB2viem"
+        ]
+      },
+      {
+        "group_id": "singleton-LkPWuopeX4IeCkstwBpU",
+        "source_image_ids": [
+          "LkPWuopeX4IeCkstwBpU"
+        ]
+      },
+      {
+        "group_id": "singleton-MUAB7pAwP5R5mAfVEWsH",
+        "source_image_ids": [
+          "MUAB7pAwP5R5mAfVEWsH"
+        ]
+      },
+      {
+        "group_id": "singleton-MkxXQ8wmfbTbRbgDBAK1",
+        "source_image_ids": [
+          "MkxXQ8wmfbTbRbgDBAK1"
+        ]
+      },
+      {
+        "group_id": "singleton-MqWRDetc1VZN6mHw7iwA",
+        "source_image_ids": [
+          "MqWRDetc1VZN6mHw7iwA"
+        ]
+      },
+      {
+        "group_id": "singleton-MvvtCo7VlWi4U7eiAk9x",
+        "source_image_ids": [
+          "MvvtCo7VlWi4U7eiAk9x"
+        ]
+      },
+      {
+        "group_id": "singleton-NCdN7Jz3Eoh0ICakh5Cx",
+        "source_image_ids": [
+          "NCdN7Jz3Eoh0ICakh5Cx"
+        ]
+      },
+      {
+        "group_id": "singleton-NL3zUnIqUyNKhcch1hNK",
+        "source_image_ids": [
+          "NL3zUnIqUyNKhcch1hNK"
+        ]
+      },
+      {
+        "group_id": "singleton-Npv1zPbAHshMBBa1mbY4",
+        "source_image_ids": [
+          "Npv1zPbAHshMBBa1mbY4"
+        ]
+      },
+      {
+        "group_id": "singleton-NtpAqzunm5la8DrZocsj",
+        "source_image_ids": [
+          "NtpAqzunm5la8DrZocsj"
+        ]
+      },
+      {
+        "group_id": "singleton-OQJwjQoYsf1KUgr9G0V8",
+        "source_image_ids": [
+          "OQJwjQoYsf1KUgr9G0V8"
+        ]
+      },
+      {
+        "group_id": "singleton-OnqsKM2CX6FubTfVtaAG",
+        "source_image_ids": [
+          "OnqsKM2CX6FubTfVtaAG"
+        ]
+      },
+      {
+        "group_id": "singleton-Onxr5fVm9Rf4SRgJSUwU",
+        "source_image_ids": [
+          "Onxr5fVm9Rf4SRgJSUwU"
+        ]
+      },
+      {
+        "group_id": "singleton-OugGxvkSv1brFNywY26P",
+        "source_image_ids": [
+          "OugGxvkSv1brFNywY26P"
+        ]
+      },
+      {
+        "group_id": "singleton-P7zAHwjb68yXM9zLAlb1",
+        "source_image_ids": [
+          "P7zAHwjb68yXM9zLAlb1"
+        ]
+      },
+      {
+        "group_id": "singleton-P9Jz8sNsaNTHaD6dqhKc",
+        "source_image_ids": [
+          "P9Jz8sNsaNTHaD6dqhKc"
+        ]
+      },
+      {
+        "group_id": "singleton-PIo6f9EGJ9nINHXHAGy7",
+        "source_image_ids": [
+          "PIo6f9EGJ9nINHXHAGy7"
+        ]
+      },
+      {
+        "group_id": "singleton-PTpMxjS814v4U28HlRcf",
+        "source_image_ids": [
+          "PTpMxjS814v4U28HlRcf"
+        ]
+      },
+      {
+        "group_id": "singleton-PqhswFNoQbq1qKOEBp5u",
+        "source_image_ids": [
+          "PqhswFNoQbq1qKOEBp5u"
+        ]
+      },
+      {
+        "group_id": "singleton-Pto3IbY2BV6RjJJsxw4T",
+        "source_image_ids": [
+          "Pto3IbY2BV6RjJJsxw4T"
+        ]
+      },
+      {
+        "group_id": "singleton-QUQENHzkWEHi5igbSpA1",
+        "source_image_ids": [
+          "QUQENHzkWEHi5igbSpA1"
+        ]
+      },
+      {
+        "group_id": "singleton-QVvTSJRWlcfwVnFYCOJ9",
+        "source_image_ids": [
+          "QVvTSJRWlcfwVnFYCOJ9"
+        ]
+      },
+      {
+        "group_id": "singleton-QiKJqc8mjFL8EnIf105y",
+        "source_image_ids": [
+          "QiKJqc8mjFL8EnIf105y"
+        ]
+      },
+      {
+        "group_id": "singleton-RGHYIrvH4ypjKeh0X9jI",
+        "source_image_ids": [
+          "RGHYIrvH4ypjKeh0X9jI"
+        ]
+      },
+      {
+        "group_id": "singleton-RL2s7RdAmeNec6fLrJez",
+        "source_image_ids": [
+          "RL2s7RdAmeNec6fLrJez"
+        ]
+      },
+      {
+        "group_id": "singleton-RdJdZdkvlh1EvYQcyy98",
+        "source_image_ids": [
+          "RdJdZdkvlh1EvYQcyy98"
+        ]
+      },
+      {
+        "group_id": "singleton-RpNbe3NA9Ewqpz10Tid7",
+        "source_image_ids": [
+          "RpNbe3NA9Ewqpz10Tid7"
+        ]
+      },
+      {
+        "group_id": "singleton-SAxTZz7s67P7PHgPiVQD",
+        "source_image_ids": [
+          "SAxTZz7s67P7PHgPiVQD"
+        ]
+      },
+      {
+        "group_id": "singleton-SJJJI5U15RfnloEUpsCl",
+        "source_image_ids": [
+          "SJJJI5U15RfnloEUpsCl"
+        ]
+      },
+      {
+        "group_id": "singleton-SPkjTewbo5B0mADZT61m",
+        "source_image_ids": [
+          "SPkjTewbo5B0mADZT61m"
+        ]
+      },
+      {
+        "group_id": "singleton-STq4QNtivjTEw93pnzUf",
+        "source_image_ids": [
+          "STq4QNtivjTEw93pnzUf"
+        ]
+      },
+      {
+        "group_id": "singleton-SoyYOpTgmlQWlluJOZEE",
+        "source_image_ids": [
+          "SoyYOpTgmlQWlluJOZEE"
+        ]
+      },
+      {
+        "group_id": "singleton-SurmZufksfn5NllTtjD8",
+        "source_image_ids": [
+          "SurmZufksfn5NllTtjD8"
+        ]
+      },
+      {
+        "group_id": "singleton-T6C7HiZwQDa07dlanhBF",
+        "source_image_ids": [
+          "T6C7HiZwQDa07dlanhBF"
+        ]
+      },
+      {
+        "group_id": "singleton-TRn9Bx3c2kyqm0x9Suct",
+        "source_image_ids": [
+          "TRn9Bx3c2kyqm0x9Suct"
+        ]
+      },
+      {
+        "group_id": "singleton-TfT34mr30shVLpJdQuu4",
+        "source_image_ids": [
+          "TfT34mr30shVLpJdQuu4"
+        ]
+      },
+      {
+        "group_id": "singleton-TqbtZYtTWiEhg5zB0duU",
+        "source_image_ids": [
+          "TqbtZYtTWiEhg5zB0duU"
+        ]
+      },
+      {
+        "group_id": "singleton-Tw3kcCGIMX2DmGQevfCR",
+        "source_image_ids": [
+          "Tw3kcCGIMX2DmGQevfCR"
+        ]
+      },
+      {
+        "group_id": "singleton-TypXpPM2GOKRXVcgFCjR",
+        "source_image_ids": [
+          "TypXpPM2GOKRXVcgFCjR"
+        ]
+      },
+      {
+        "group_id": "singleton-U0AseIcul3Oj2l27WnM8",
+        "source_image_ids": [
+          "U0AseIcul3Oj2l27WnM8"
+        ]
+      },
+      {
+        "group_id": "singleton-U1qd4okczSBsE3VT6pzg",
+        "source_image_ids": [
+          "U1qd4okczSBsE3VT6pzg"
+        ]
+      },
+      {
+        "group_id": "singleton-U8OKPL7BU1Y2lII5M7Ui",
+        "source_image_ids": [
+          "U8OKPL7BU1Y2lII5M7Ui"
+        ]
+      },
+      {
+        "group_id": "singleton-UCdf01APuQuNPLZxO7Vb",
+        "source_image_ids": [
+          "UCdf01APuQuNPLZxO7Vb"
+        ]
+      },
+      {
+        "group_id": "singleton-UUktj1unQEF7oxAAKuge",
+        "source_image_ids": [
+          "UUktj1unQEF7oxAAKuge"
+        ]
+      },
+      {
+        "group_id": "singleton-V2ZGAcXVfLD8h3Nv7zCq",
+        "source_image_ids": [
+          "V2ZGAcXVfLD8h3Nv7zCq"
+        ]
+      },
+      {
+        "group_id": "singleton-VKyk8uoMs024kVF0SQRN",
+        "source_image_ids": [
+          "VKyk8uoMs024kVF0SQRN"
+        ]
+      },
+      {
+        "group_id": "singleton-Vtt35PA66TdcCFU5LqWG",
+        "source_image_ids": [
+          "Vtt35PA66TdcCFU5LqWG"
+        ]
+      },
+      {
+        "group_id": "singleton-VzapfWdPlwdZ5ZjvR9Lz",
+        "source_image_ids": [
+          "VzapfWdPlwdZ5ZjvR9Lz"
+        ]
+      },
+      {
+        "group_id": "singleton-WDUbla9aKXNSFb1VPo3Y",
+        "source_image_ids": [
+          "WDUbla9aKXNSFb1VPo3Y"
+        ]
+      },
+      {
+        "group_id": "singleton-WK7rSXorlMi85h9asAR3",
+        "source_image_ids": [
+          "WK7rSXorlMi85h9asAR3"
+        ]
+      },
+      {
+        "group_id": "singleton-WfgDXbNWgS61DtELPPR9",
+        "source_image_ids": [
+          "WfgDXbNWgS61DtELPPR9"
+        ]
+      },
+      {
+        "group_id": "singleton-WiRPJkDVQdPSvkqMW8Rh",
+        "source_image_ids": [
+          "WiRPJkDVQdPSvkqMW8Rh"
+        ]
+      },
+      {
+        "group_id": "singleton-WmrVhZUFxNgrZvYUWnIJ",
+        "source_image_ids": [
+          "WmrVhZUFxNgrZvYUWnIJ"
+        ]
+      },
+      {
+        "group_id": "singleton-WrxzGNad1ocUQmr32npK",
+        "source_image_ids": [
+          "WrxzGNad1ocUQmr32npK"
+        ]
+      },
+      {
+        "group_id": "singleton-Wv9gMcKNBNTvFlSRuZe3",
+        "source_image_ids": [
+          "Wv9gMcKNBNTvFlSRuZe3"
+        ]
+      },
+      {
+        "group_id": "singleton-Wxlj5YOPuTXsUopMH7bg",
+        "source_image_ids": [
+          "Wxlj5YOPuTXsUopMH7bg"
+        ]
+      },
+      {
+        "group_id": "singleton-WzTgGIeyuH1B3BYfY7tf",
+        "source_image_ids": [
+          "WzTgGIeyuH1B3BYfY7tf"
+        ]
+      },
+      {
+        "group_id": "singleton-X5ZA7xQ8Kzl1xm0xBcdd",
+        "source_image_ids": [
+          "X5ZA7xQ8Kzl1xm0xBcdd"
+        ]
+      },
+      {
+        "group_id": "singleton-X8B97hWGbmozigS9fEf4",
+        "source_image_ids": [
+          "X8B97hWGbmozigS9fEf4"
+        ]
+      },
+      {
+        "group_id": "singleton-XJ12x7QMBoWQ5JDrvK1E",
+        "source_image_ids": [
+          "XJ12x7QMBoWQ5JDrvK1E"
+        ]
+      },
+      {
+        "group_id": "singleton-XQUau6Bs9iWpTYrXHtq0",
+        "source_image_ids": [
+          "XQUau6Bs9iWpTYrXHtq0"
+        ]
+      },
+      {
+        "group_id": "singleton-XR2eyVIj5HC0jcNt3TaF",
+        "source_image_ids": [
+          "XR2eyVIj5HC0jcNt3TaF"
+        ]
+      },
+      {
+        "group_id": "singleton-XakHn7NQJzcdCBMuA4V1",
+        "source_image_ids": [
+          "XakHn7NQJzcdCBMuA4V1"
+        ]
+      },
+      {
+        "group_id": "singleton-XglPXJS02oKjbtcYMeG1",
+        "source_image_ids": [
+          "XglPXJS02oKjbtcYMeG1"
+        ]
+      },
+      {
+        "group_id": "singleton-XvqBrAuKPXCrvqEIjBai",
+        "source_image_ids": [
+          "XvqBrAuKPXCrvqEIjBai"
+        ]
+      },
+      {
+        "group_id": "singleton-Y1meTyz9qAlTOKqcMF21",
+        "source_image_ids": [
+          "Y1meTyz9qAlTOKqcMF21"
+        ]
+      },
+      {
+        "group_id": "singleton-Y8Qx4RUxXlcq5dm2gx4n",
+        "source_image_ids": [
+          "Y8Qx4RUxXlcq5dm2gx4n"
+        ]
+      },
+      {
+        "group_id": "singleton-YEZrZA7GrbvlyKBA7z5q",
+        "source_image_ids": [
+          "YEZrZA7GrbvlyKBA7z5q"
+        ]
+      },
+      {
+        "group_id": "singleton-YUsaUSUsoTg1Dhf5PVRS",
+        "source_image_ids": [
+          "YUsaUSUsoTg1Dhf5PVRS"
+        ]
+      },
+      {
+        "group_id": "singleton-Ye8ccAU3zvBw2RWzUr4w",
+        "source_image_ids": [
+          "Ye8ccAU3zvBw2RWzUr4w"
+        ]
+      },
+      {
+        "group_id": "singleton-Yus4GG8O9bfML35pe2Xg",
+        "source_image_ids": [
+          "Yus4GG8O9bfML35pe2Xg"
+        ]
+      },
+      {
+        "group_id": "singleton-ZBOFTpRZenVU4pLo2qvs",
+        "source_image_ids": [
+          "ZBOFTpRZenVU4pLo2qvs"
+        ]
+      },
+      {
+        "group_id": "singleton-ZC5U6cHpgTUpFTtOQWiW",
+        "source_image_ids": [
+          "ZC5U6cHpgTUpFTtOQWiW"
+        ]
+      },
+      {
+        "group_id": "singleton-ZSEtO1xi7ojj6XTirEb1",
+        "source_image_ids": [
+          "ZSEtO1xi7ojj6XTirEb1"
+        ]
+      },
+      {
+        "group_id": "singleton-ZyE71IGsDLI6OG9aIUwV",
+        "source_image_ids": [
+          "ZyE71IGsDLI6OG9aIUwV"
+        ]
+      },
+      {
+        "group_id": "singleton-ajcbQPBpsaCua5ocPPgp",
+        "source_image_ids": [
+          "ajcbQPBpsaCua5ocPPgp"
+        ]
+      },
+      {
+        "group_id": "singleton-arsAD5W3OM2LZE59FvZO",
+        "source_image_ids": [
+          "arsAD5W3OM2LZE59FvZO"
+        ]
+      },
+      {
+        "group_id": "singleton-bQfpZl7W2IH4XyIddjOY",
+        "source_image_ids": [
+          "bQfpZl7W2IH4XyIddjOY"
+        ]
+      },
+      {
+        "group_id": "singleton-bQh3X6QEPcT50H0QeLPP",
+        "source_image_ids": [
+          "bQh3X6QEPcT50H0QeLPP"
+        ]
+      },
+      {
+        "group_id": "singleton-bya4T8yTfPXtyN71EGq6",
+        "source_image_ids": [
+          "bya4T8yTfPXtyN71EGq6"
+        ]
+      },
+      {
+        "group_id": "singleton-dOdZyD1R1kVyKKu9TD1D",
+        "source_image_ids": [
+          "dOdZyD1R1kVyKKu9TD1D"
+        ]
+      },
+      {
+        "group_id": "singleton-dYU1JnyrMTQu4U60pGK9",
+        "source_image_ids": [
+          "dYU1JnyrMTQu4U60pGK9"
+        ]
+      },
+      {
+        "group_id": "singleton-dcveFfgBcxZdfrcwfGt2",
+        "source_image_ids": [
+          "dcveFfgBcxZdfrcwfGt2"
+        ]
+      },
+      {
+        "group_id": "singleton-dwz8H6tUE91TOzWAqabt",
+        "source_image_ids": [
+          "dwz8H6tUE91TOzWAqabt"
+        ]
+      },
+      {
+        "group_id": "singleton-eAKrlJVl2YEdaogp9yez",
+        "source_image_ids": [
+          "eAKrlJVl2YEdaogp9yez"
+        ]
+      },
+      {
+        "group_id": "singleton-eZW0CBCWqoYoxqYPQphx",
+        "source_image_ids": [
+          "eZW0CBCWqoYoxqYPQphx"
+        ]
+      },
+      {
+        "group_id": "singleton-f0Z2QQcy1PolmwGQXPzx",
+        "source_image_ids": [
+          "f0Z2QQcy1PolmwGQXPzx"
+        ]
+      },
+      {
+        "group_id": "singleton-f1CUR1R0AXa8BF8OuBa2",
+        "source_image_ids": [
+          "f1CUR1R0AXa8BF8OuBa2"
+        ]
+      },
+      {
+        "group_id": "singleton-f9lN7loqzgrkrUl5cotk",
+        "source_image_ids": [
+          "f9lN7loqzgrkrUl5cotk"
+        ]
+      },
+      {
+        "group_id": "singleton-fACVNCxfZ1UpWLOyW5Un",
+        "source_image_ids": [
+          "fACVNCxfZ1UpWLOyW5Un"
+        ]
+      },
+      {
+        "group_id": "singleton-fCguAs4b5u4OAThWLpsh",
+        "source_image_ids": [
+          "fCguAs4b5u4OAThWLpsh"
+        ]
+      },
+      {
+        "group_id": "singleton-fLAAu4V914vaOBpzi2jz",
+        "source_image_ids": [
+          "fLAAu4V914vaOBpzi2jz"
+        ]
+      },
+      {
+        "group_id": "singleton-fUSboNBF7gsWxFhJcana",
+        "source_image_ids": [
+          "fUSboNBF7gsWxFhJcana"
+        ]
+      },
+      {
+        "group_id": "singleton-fVfuf7cWPnRyw4D9x1vo",
+        "source_image_ids": [
+          "fVfuf7cWPnRyw4D9x1vo"
+        ]
+      },
+      {
+        "group_id": "singleton-fZbJypRfWdeUfPmPJbv2",
+        "source_image_ids": [
+          "fZbJypRfWdeUfPmPJbv2"
+        ]
+      },
+      {
+        "group_id": "singleton-fh9ZLK61WWobTGZsxZtb",
+        "source_image_ids": [
+          "fh9ZLK61WWobTGZsxZtb"
+        ]
+      },
+      {
+        "group_id": "singleton-fttALlrksUCBwd1P1uxT",
+        "source_image_ids": [
+          "fttALlrksUCBwd1P1uxT"
+        ]
+      },
+      {
+        "group_id": "singleton-g1wRtvNq6gOrnSakm4aj",
+        "source_image_ids": [
+          "g1wRtvNq6gOrnSakm4aj"
+        ]
+      },
+      {
+        "group_id": "singleton-gPFGULsXJIadGfSxA0ZC",
+        "source_image_ids": [
+          "gPFGULsXJIadGfSxA0ZC"
+        ]
+      },
+      {
+        "group_id": "singleton-gYn6rlfE3jNZF4ue6QGT",
+        "source_image_ids": [
+          "gYn6rlfE3jNZF4ue6QGT"
+        ]
+      },
+      {
+        "group_id": "singleton-glS8kOIkWw2z5g9Jf0YI",
+        "source_image_ids": [
+          "glS8kOIkWw2z5g9Jf0YI"
+        ]
+      },
+      {
+        "group_id": "singleton-gtQyCqdKvXk2yIeURzCw",
+        "source_image_ids": [
+          "gtQyCqdKvXk2yIeURzCw"
+        ]
+      },
+      {
+        "group_id": "singleton-guTxd6qoSMleRrrzuudX",
+        "source_image_ids": [
+          "guTxd6qoSMleRrrzuudX"
+        ]
+      },
+      {
+        "group_id": "singleton-gwAoT5NhaRgUOaU5OHpI",
+        "source_image_ids": [
+          "gwAoT5NhaRgUOaU5OHpI"
+        ]
+      },
+      {
+        "group_id": "singleton-hRBalleqqyG7t2msbEJX",
+        "source_image_ids": [
+          "hRBalleqqyG7t2msbEJX"
+        ]
+      },
+      {
+        "group_id": "singleton-iJ4dUZWQCFaMhFRpxFFB",
+        "source_image_ids": [
+          "iJ4dUZWQCFaMhFRpxFFB"
+        ]
+      },
+      {
+        "group_id": "singleton-iYDeCo5SbjJugwsbVESB",
+        "source_image_ids": [
+          "iYDeCo5SbjJugwsbVESB"
+        ]
+      },
+      {
+        "group_id": "singleton-iaiWnIvvT5pVlhb0dKOl",
+        "source_image_ids": [
+          "iaiWnIvvT5pVlhb0dKOl"
+        ]
+      },
+      {
+        "group_id": "singleton-ifby7cAiqu9ONl1N8bBb",
+        "source_image_ids": [
+          "ifby7cAiqu9ONl1N8bBb"
+        ]
+      },
+      {
+        "group_id": "singleton-inWNXCMjoiZbYJ8VZYuO",
+        "source_image_ids": [
+          "inWNXCMjoiZbYJ8VZYuO"
+        ]
+      },
+      {
+        "group_id": "singleton-iubfYkjY0FQevxBHrSDF",
+        "source_image_ids": [
+          "iubfYkjY0FQevxBHrSDF"
+        ]
+      },
+      {
+        "group_id": "singleton-j62kdLyGTgOcZr6cFg4l",
+        "source_image_ids": [
+          "j62kdLyGTgOcZr6cFg4l"
+        ]
+      },
+      {
+        "group_id": "singleton-jB6vHTpd3bg6PYMbkqIa",
+        "source_image_ids": [
+          "jB6vHTpd3bg6PYMbkqIa"
+        ]
+      },
+      {
+        "group_id": "singleton-jDwIXNJBgF475XoAE6vp",
+        "source_image_ids": [
+          "jDwIXNJBgF475XoAE6vp"
+        ]
+      },
+      {
+        "group_id": "singleton-jMjBquUFO7RKmJoREtKf",
+        "source_image_ids": [
+          "jMjBquUFO7RKmJoREtKf"
+        ]
+      },
+      {
+        "group_id": "singleton-jZRJXWZrSuoa2xxRDSQL",
+        "source_image_ids": [
+          "jZRJXWZrSuoa2xxRDSQL"
+        ]
+      },
+      {
+        "group_id": "singleton-k5KncB0t5cKDlnJjjD7R",
+        "source_image_ids": [
+          "k5KncB0t5cKDlnJjjD7R"
+        ]
+      },
+      {
+        "group_id": "singleton-kTH5lgBkMr7IPrRdEdsH",
+        "source_image_ids": [
+          "kTH5lgBkMr7IPrRdEdsH"
+        ]
+      },
+      {
+        "group_id": "singleton-kd9SJdeJNaqWF3otEono",
+        "source_image_ids": [
+          "kd9SJdeJNaqWF3otEono"
+        ]
+      },
+      {
+        "group_id": "singleton-keYyPpX3glyxtyVpJW0h",
+        "source_image_ids": [
+          "keYyPpX3glyxtyVpJW0h"
+        ]
+      },
+      {
+        "group_id": "singleton-kfY9GYBFnMHnsmXlT7Pk",
+        "source_image_ids": [
+          "kfY9GYBFnMHnsmXlT7Pk"
+        ]
+      },
+      {
+        "group_id": "singleton-kusZ7rL0IJdPP025Z3VL",
+        "source_image_ids": [
+          "kusZ7rL0IJdPP025Z3VL"
+        ]
+      },
+      {
+        "group_id": "singleton-l3CKxvrKhNSJ5s7EZGYx",
+        "source_image_ids": [
+          "l3CKxvrKhNSJ5s7EZGYx"
+        ]
+      },
+      {
+        "group_id": "singleton-l6p3b5329wOTIlDWrxKz",
+        "source_image_ids": [
+          "l6p3b5329wOTIlDWrxKz"
+        ]
+      },
+      {
+        "group_id": "singleton-l9Dl2hgmgUUntj7KnCDr",
+        "source_image_ids": [
+          "l9Dl2hgmgUUntj7KnCDr"
+        ]
+      },
+      {
+        "group_id": "singleton-lHkj3xNmUL3G67dHG1Zr",
+        "source_image_ids": [
+          "lHkj3xNmUL3G67dHG1Zr"
+        ]
+      },
+      {
+        "group_id": "singleton-lgBtELsXF4mmvJVuTAhW",
+        "source_image_ids": [
+          "lgBtELsXF4mmvJVuTAhW"
+        ]
+      },
+      {
+        "group_id": "singleton-m2cPIgGRcvybNcEUB6QU",
+        "source_image_ids": [
+          "m2cPIgGRcvybNcEUB6QU"
+        ]
+      },
+      {
+        "group_id": "singleton-mGpEymQ65D2CMZ9cGGfq",
+        "source_image_ids": [
+          "mGpEymQ65D2CMZ9cGGfq"
+        ]
+      },
+      {
+        "group_id": "singleton-me3L0EvJNoTCq7JgLKP6",
+        "source_image_ids": [
+          "me3L0EvJNoTCq7JgLKP6"
+        ]
+      },
+      {
+        "group_id": "singleton-mlodMvChxLj1pS9RDfqi",
+        "source_image_ids": [
+          "mlodMvChxLj1pS9RDfqi"
+        ]
+      },
+      {
+        "group_id": "singleton-mp5LAcrQy7CC3sruY2wU",
+        "source_image_ids": [
+          "mp5LAcrQy7CC3sruY2wU"
+        ]
+      },
+      {
+        "group_id": "singleton-mzi1EX980oEaKVVulnGv",
+        "source_image_ids": [
+          "mzi1EX980oEaKVVulnGv"
+        ]
+      },
+      {
+        "group_id": "singleton-n3HmiRWyY5MKTrr6Vrd3",
+        "source_image_ids": [
+          "n3HmiRWyY5MKTrr6Vrd3"
+        ]
+      },
+      {
+        "group_id": "singleton-nQrqR72SD3sC9Hms1O9U",
+        "source_image_ids": [
+          "nQrqR72SD3sC9Hms1O9U"
+        ]
+      },
+      {
+        "group_id": "singleton-niY7CVigYcNQ0OdTBcor",
+        "source_image_ids": [
+          "niY7CVigYcNQ0OdTBcor"
+        ]
+      },
+      {
+        "group_id": "singleton-oC3kPMC7WbZm0vaMoq09",
+        "source_image_ids": [
+          "oC3kPMC7WbZm0vaMoq09"
+        ]
+      },
+      {
+        "group_id": "singleton-oJppm5xk3UqypLwM3EiO",
+        "source_image_ids": [
+          "oJppm5xk3UqypLwM3EiO"
+        ]
+      },
+      {
+        "group_id": "singleton-oL1x933NyN6wiKXhxOob",
+        "source_image_ids": [
+          "oL1x933NyN6wiKXhxOob"
+        ]
+      },
+      {
+        "group_id": "singleton-oNY9i1I2LbSYd4Zq924U",
+        "source_image_ids": [
+          "oNY9i1I2LbSYd4Zq924U"
+        ]
+      },
+      {
+        "group_id": "singleton-oTvvPXX0GF2JCGezEtXJ",
+        "source_image_ids": [
+          "oTvvPXX0GF2JCGezEtXJ"
+        ]
+      },
+      {
+        "group_id": "singleton-p0WuKqx9EeARevPPWyRq",
+        "source_image_ids": [
+          "p0WuKqx9EeARevPPWyRq"
+        ]
+      },
+      {
+        "group_id": "singleton-p96kP7xmkvs84TmnINFt",
+        "source_image_ids": [
+          "p96kP7xmkvs84TmnINFt"
+        ]
+      },
+      {
+        "group_id": "singleton-pE6UkMMWzcDOy86QHSoC",
+        "source_image_ids": [
+          "pE6UkMMWzcDOy86QHSoC"
+        ]
+      },
+      {
+        "group_id": "singleton-pIzGCRRLnf8bfGnx48Ka",
+        "source_image_ids": [
+          "pIzGCRRLnf8bfGnx48Ka"
+        ]
+      },
+      {
+        "group_id": "singleton-prVjNgHS0pAKIQUelidW",
+        "source_image_ids": [
+          "prVjNgHS0pAKIQUelidW"
+        ]
+      },
+      {
+        "group_id": "singleton-pwZkhgJcda4HLCsziTh1",
+        "source_image_ids": [
+          "pwZkhgJcda4HLCsziTh1"
+        ]
+      },
+      {
+        "group_id": "singleton-q2wyXKnABjAqqL0mLiG7",
+        "source_image_ids": [
+          "q2wyXKnABjAqqL0mLiG7"
+        ]
+      },
+      {
+        "group_id": "singleton-q96gkRtLhrZTtKhFqiQU",
+        "source_image_ids": [
+          "q96gkRtLhrZTtKhFqiQU"
+        ]
+      },
+      {
+        "group_id": "singleton-qEBVz8CKiWp4KmTFLCBu",
+        "source_image_ids": [
+          "qEBVz8CKiWp4KmTFLCBu"
+        ]
+      },
+      {
+        "group_id": "singleton-ql4CBoTCV3vDAYdQsYAA",
+        "source_image_ids": [
+          "ql4CBoTCV3vDAYdQsYAA"
+        ]
+      },
+      {
+        "group_id": "singleton-qx08jrWTs2SMpvKiaAT7",
+        "source_image_ids": [
+          "qx08jrWTs2SMpvKiaAT7"
+        ]
+      },
+      {
+        "group_id": "singleton-r3HWnAoRdj2C2qeAdFkr",
+        "source_image_ids": [
+          "r3HWnAoRdj2C2qeAdFkr"
+        ]
+      },
+      {
+        "group_id": "singleton-r3UicRnZtAlek7LbZebm",
+        "source_image_ids": [
+          "r3UicRnZtAlek7LbZebm"
+        ]
+      },
+      {
+        "group_id": "singleton-r4BbR2gJ7CPp1ObMrFIz",
+        "source_image_ids": [
+          "r4BbR2gJ7CPp1ObMrFIz"
+        ]
+      },
+      {
+        "group_id": "singleton-rE8YybvIjJNdTtORaoUg",
+        "source_image_ids": [
+          "rE8YybvIjJNdTtORaoUg"
+        ]
+      },
+      {
+        "group_id": "singleton-rGmTI5PGRqRSwShjd9Ud",
+        "source_image_ids": [
+          "rGmTI5PGRqRSwShjd9Ud"
+        ]
+      },
+      {
+        "group_id": "singleton-rH8exgws1DxUXM1Sl2EC",
+        "source_image_ids": [
+          "rH8exgws1DxUXM1Sl2EC"
+        ]
+      },
+      {
+        "group_id": "singleton-rTdiLvt8dIscf2PQBU1j",
+        "source_image_ids": [
+          "rTdiLvt8dIscf2PQBU1j"
+        ]
+      },
+      {
+        "group_id": "singleton-reY8VQLEFB5lzBT6SyIc",
+        "source_image_ids": [
+          "reY8VQLEFB5lzBT6SyIc"
+        ]
+      },
+      {
+        "group_id": "singleton-rgmMTV7vKJ6wlhm6IioB",
+        "source_image_ids": [
+          "rgmMTV7vKJ6wlhm6IioB"
+        ]
+      },
+      {
+        "group_id": "singleton-sRXEOujQOUMfRHzPXYsE",
+        "source_image_ids": [
+          "sRXEOujQOUMfRHzPXYsE"
+        ]
+      },
+      {
+        "group_id": "singleton-sSsfNfmuKklWQnB6wgFb",
+        "source_image_ids": [
+          "sSsfNfmuKklWQnB6wgFb"
+        ]
+      },
+      {
+        "group_id": "singleton-sl5odNB8YRmCtgwWD7pE",
+        "source_image_ids": [
+          "sl5odNB8YRmCtgwWD7pE"
+        ]
+      },
+      {
+        "group_id": "singleton-szhdyw6JE1HhJo9ILihS",
+        "source_image_ids": [
+          "szhdyw6JE1HhJo9ILihS"
+        ]
+      },
+      {
+        "group_id": "singleton-szjOIXL0vHTzXnHCk2QD",
+        "source_image_ids": [
+          "szjOIXL0vHTzXnHCk2QD"
+        ]
+      },
+      {
+        "group_id": "singleton-t3Bt4eQVavoJA4eXFvEO",
+        "source_image_ids": [
+          "t3Bt4eQVavoJA4eXFvEO"
+        ]
+      },
+      {
+        "group_id": "singleton-tAHPTKhPWsGlGkTWoapB",
+        "source_image_ids": [
+          "tAHPTKhPWsGlGkTWoapB"
+        ]
+      },
+      {
+        "group_id": "singleton-tgYP65AdeQ00p58sCuL0",
+        "source_image_ids": [
+          "tgYP65AdeQ00p58sCuL0"
+        ]
+      },
+      {
+        "group_id": "singleton-tqzQPhC5wHy3xDwCdFuo",
+        "source_image_ids": [
+          "tqzQPhC5wHy3xDwCdFuo"
+        ]
+      },
+      {
+        "group_id": "singleton-uZZkiFjkPxvryVuQh0S0",
+        "source_image_ids": [
+          "uZZkiFjkPxvryVuQh0S0"
+        ]
+      },
+      {
+        "group_id": "singleton-v1m3svUyUjC30E9pB92L",
+        "source_image_ids": [
+          "v1m3svUyUjC30E9pB92L"
+        ]
+      },
+      {
+        "group_id": "singleton-vYEZdbnXgIU3r7Aa4AWT",
+        "source_image_ids": [
+          "vYEZdbnXgIU3r7Aa4AWT"
+        ]
+      },
+      {
+        "group_id": "singleton-va1h7fuyzlYl8u8358Qx",
+        "source_image_ids": [
+          "va1h7fuyzlYl8u8358Qx"
+        ]
+      },
+      {
+        "group_id": "singleton-vh2ww5CJ1DQeofRTmQMg",
+        "source_image_ids": [
+          "vh2ww5CJ1DQeofRTmQMg"
+        ]
+      },
+      {
+        "group_id": "singleton-vhz25WpcjcQ6mGS8YP5I",
+        "source_image_ids": [
+          "vhz25WpcjcQ6mGS8YP5I"
+        ]
+      },
+      {
+        "group_id": "singleton-vz16uUIqOlsdLgROccQ3",
+        "source_image_ids": [
+          "vz16uUIqOlsdLgROccQ3"
+        ]
+      },
+      {
+        "group_id": "singleton-wFFDRQDkZr4rERlpbwFV",
+        "source_image_ids": [
+          "wFFDRQDkZr4rERlpbwFV"
+        ]
+      },
+      {
+        "group_id": "singleton-wYXa9TLh0h7ZFuKLZ9KA",
+        "source_image_ids": [
+          "wYXa9TLh0h7ZFuKLZ9KA"
+        ]
+      },
+      {
+        "group_id": "singleton-x9uzQ6SwddanWcvV1McI",
+        "source_image_ids": [
+          "x9uzQ6SwddanWcvV1McI"
+        ]
+      },
+      {
+        "group_id": "singleton-xCsoN8tQQsB259iyGJJD",
+        "source_image_ids": [
+          "xCsoN8tQQsB259iyGJJD"
+        ]
+      },
+      {
+        "group_id": "singleton-y3fseRK4akRrTNtrmPfb",
+        "source_image_ids": [
+          "y3fseRK4akRrTNtrmPfb"
+        ]
+      },
+      {
+        "group_id": "singleton-ySDlICqH087yeYmYSVbI",
+        "source_image_ids": [
+          "ySDlICqH087yeYmYSVbI"
+        ]
+      },
+      {
+        "group_id": "singleton-yeO7WH7v2BmSeIvpsQxr",
+        "source_image_ids": [
+          "yeO7WH7v2BmSeIvpsQxr"
+        ]
+      },
+      {
+        "group_id": "singleton-zIjMWx3EGNSbPhJ6eyDE",
+        "source_image_ids": [
+          "zIjMWx3EGNSbPhJ6eyDE"
+        ]
+      },
+      {
+        "group_id": "singleton-zs9Fbr1mSnefWqSSmWcg",
+        "source_image_ids": [
+          "zs9Fbr1mSnefWqSSmWcg"
+        ]
+      }
+    ],
+    "image_count": 303,
+    "non_singleton_group_count": 9
+  },
+  "validation": {
+    "group_count": 63,
+    "groups": [
+      {
+        "group_id": "manual_dup_003",
+        "source_image_ids": [
+          "L51HLb9pTcXWg0hlY2eI",
+          "WRFgtFooB6kjdViPXWHk"
+        ]
+      },
+      {
+        "group_id": "manual_dup_007",
+        "source_image_ids": [
+          "3LUOWEww9aCx2Cx4B38y",
+          "LVQG21gdyYgR1aZBE6h9"
+        ]
+      },
+      {
+        "group_id": "singleton-0OEuk7X9WrM64hqQbedA",
+        "source_image_ids": [
+          "0OEuk7X9WrM64hqQbedA"
+        ]
+      },
+      {
+        "group_id": "singleton-0sRAfq8grYqMA2xuCHP6",
+        "source_image_ids": [
+          "0sRAfq8grYqMA2xuCHP6"
+        ]
+      },
+      {
+        "group_id": "singleton-62UoaBv0beM5cBLCubmT",
+        "source_image_ids": [
+          "62UoaBv0beM5cBLCubmT"
+        ]
+      },
+      {
+        "group_id": "singleton-6fMvy2k97BSY0a3P9Fbg",
+        "source_image_ids": [
+          "6fMvy2k97BSY0a3P9Fbg"
+        ]
+      },
+      {
+        "group_id": "singleton-6hEWEvuUeZhYU514UX1O",
+        "source_image_ids": [
+          "6hEWEvuUeZhYU514UX1O"
+        ]
+      },
+      {
+        "group_id": "singleton-6lWV6Qw0w487DgkyyVX9",
+        "source_image_ids": [
+          "6lWV6Qw0w487DgkyyVX9"
+        ]
+      },
+      {
+        "group_id": "singleton-7VMQ21x6vDuAvoY6Ku2F",
+        "source_image_ids": [
+          "7VMQ21x6vDuAvoY6Ku2F"
+        ]
+      },
+      {
+        "group_id": "singleton-7fuygdEv6dS4UyQgImYj",
+        "source_image_ids": [
+          "7fuygdEv6dS4UyQgImYj"
+        ]
+      },
+      {
+        "group_id": "singleton-9uyGbpRuvoK6FWsiIhGx",
+        "source_image_ids": [
+          "9uyGbpRuvoK6FWsiIhGx"
+        ]
+      },
+      {
+        "group_id": "singleton-9xNY90loilCLVSX84iwp",
+        "source_image_ids": [
+          "9xNY90loilCLVSX84iwp"
+        ]
+      },
+      {
+        "group_id": "singleton-A2iSTnVfTHioOl73tkQd",
+        "source_image_ids": [
+          "A2iSTnVfTHioOl73tkQd"
+        ]
+      },
+      {
+        "group_id": "singleton-Ai3fqVHdn3cSDpuEaa5l",
+        "source_image_ids": [
+          "Ai3fqVHdn3cSDpuEaa5l"
+        ]
+      },
+      {
+        "group_id": "singleton-CDbWzCeakwV73xXd2qlq",
+        "source_image_ids": [
+          "CDbWzCeakwV73xXd2qlq"
+        ]
+      },
+      {
+        "group_id": "singleton-Dny3q3vJmCFOBIzhGir1",
+        "source_image_ids": [
+          "Dny3q3vJmCFOBIzhGir1"
+        ]
+      },
+      {
+        "group_id": "singleton-EdR5Rau43iqKaPKbjsHM",
+        "source_image_ids": [
+          "EdR5Rau43iqKaPKbjsHM"
+        ]
+      },
+      {
+        "group_id": "singleton-F75mTbxKUV3DbBpuTvZq",
+        "source_image_ids": [
+          "F75mTbxKUV3DbBpuTvZq"
+        ]
+      },
+      {
+        "group_id": "singleton-F9BUOPsajE69txpyePoP",
+        "source_image_ids": [
+          "F9BUOPsajE69txpyePoP"
+        ]
+      },
+      {
+        "group_id": "singleton-Foo1oq3oHF7pBhTWKpnL",
+        "source_image_ids": [
+          "Foo1oq3oHF7pBhTWKpnL"
+        ]
+      },
+      {
+        "group_id": "singleton-G6t1yK9gNn0LIS4hbciD",
+        "source_image_ids": [
+          "G6t1yK9gNn0LIS4hbciD"
+        ]
+      },
+      {
+        "group_id": "singleton-GKGcxwlCacsz6brHHLRV",
+        "source_image_ids": [
+          "GKGcxwlCacsz6brHHLRV"
+        ]
+      },
+      {
+        "group_id": "singleton-H6Qo9zKVlWVMqPD3713Z",
+        "source_image_ids": [
+          "H6Qo9zKVlWVMqPD3713Z"
+        ]
+      },
+      {
+        "group_id": "singleton-HvvG43BEgtvO5Az8qBX5",
+        "source_image_ids": [
+          "HvvG43BEgtvO5Az8qBX5"
+        ]
+      },
+      {
+        "group_id": "singleton-JSKtWAeEIHCqkNcipvGH",
+        "source_image_ids": [
+          "JSKtWAeEIHCqkNcipvGH"
+        ]
+      },
+      {
+        "group_id": "singleton-Mbgd4Kw22vX5vdWxqfRn",
+        "source_image_ids": [
+          "Mbgd4Kw22vX5vdWxqfRn"
+        ]
+      },
+      {
+        "group_id": "singleton-NSxOF60pUyiloAjZa1zY",
+        "source_image_ids": [
+          "NSxOF60pUyiloAjZa1zY"
+        ]
+      },
+      {
+        "group_id": "singleton-P2bOf45tvhUMqEYK8wqW",
+        "source_image_ids": [
+          "P2bOf45tvhUMqEYK8wqW"
+        ]
+      },
+      {
+        "group_id": "singleton-QYjn7wMnjUSLcCSRwwn1",
+        "source_image_ids": [
+          "QYjn7wMnjUSLcCSRwwn1"
+        ]
+      },
+      {
+        "group_id": "singleton-R32m4IeILycIsDayiufx",
+        "source_image_ids": [
+          "R32m4IeILycIsDayiufx"
+        ]
+      },
+      {
+        "group_id": "singleton-RRlPrUJXfRWGGJ6CeKIL",
+        "source_image_ids": [
+          "RRlPrUJXfRWGGJ6CeKIL"
+        ]
+      },
+      {
+        "group_id": "singleton-SA6z7RB5PM7Ij8AwZgp1",
+        "source_image_ids": [
+          "SA6z7RB5PM7Ij8AwZgp1"
+        ]
+      },
+      {
+        "group_id": "singleton-Sx8zzDNF7sd2E0aaDtN8",
+        "source_image_ids": [
+          "Sx8zzDNF7sd2E0aaDtN8"
+        ]
+      },
+      {
+        "group_id": "singleton-UzXLvGMEvzoOvv29dkyY",
+        "source_image_ids": [
+          "UzXLvGMEvzoOvv29dkyY"
+        ]
+      },
+      {
+        "group_id": "singleton-VBtNhSPdKWG9aB5UwSAp",
+        "source_image_ids": [
+          "VBtNhSPdKWG9aB5UwSAp"
+        ]
+      },
+      {
+        "group_id": "singleton-WeIamb2srt7SBgcfAFq1",
+        "source_image_ids": [
+          "WeIamb2srt7SBgcfAFq1"
+        ]
+      },
+      {
+        "group_id": "singleton-WvGmeXrUqULTXbaSGJgZ",
+        "source_image_ids": [
+          "WvGmeXrUqULTXbaSGJgZ"
+        ]
+      },
+      {
+        "group_id": "singleton-ZtkHwixUGYxprWRUjVfK",
+        "source_image_ids": [
+          "ZtkHwixUGYxprWRUjVfK"
+        ]
+      },
+      {
+        "group_id": "singleton-ahfMFVQYlwiC5qDCiYTe",
+        "source_image_ids": [
+          "ahfMFVQYlwiC5qDCiYTe"
+        ]
+      },
+      {
+        "group_id": "singleton-d1LRdQbKYoIKVWX76Mj1",
+        "source_image_ids": [
+          "d1LRdQbKYoIKVWX76Mj1"
+        ]
+      },
+      {
+        "group_id": "singleton-eK6ftnVVMa7WC57HMKWj",
+        "source_image_ids": [
+          "eK6ftnVVMa7WC57HMKWj"
+        ]
+      },
+      {
+        "group_id": "singleton-feq9UuxoWtVRBPUnMr4G",
+        "source_image_ids": [
+          "feq9UuxoWtVRBPUnMr4G"
+        ]
+      },
+      {
+        "group_id": "singleton-fl9aZo56CB47TAGghJlT",
+        "source_image_ids": [
+          "fl9aZo56CB47TAGghJlT"
+        ]
+      },
+      {
+        "group_id": "singleton-hKVfPWLhNq2uN8d3SJs1",
+        "source_image_ids": [
+          "hKVfPWLhNq2uN8d3SJs1"
+        ]
+      },
+      {
+        "group_id": "singleton-hn0aQnTlX2RCubxvozTD",
+        "source_image_ids": [
+          "hn0aQnTlX2RCubxvozTD"
+        ]
+      },
+      {
+        "group_id": "singleton-hsfBHYazMXnS3WJlQzR7",
+        "source_image_ids": [
+          "hsfBHYazMXnS3WJlQzR7"
+        ]
+      },
+      {
+        "group_id": "singleton-k9xkkgvQEhZ5r4UBzBLi",
+        "source_image_ids": [
+          "k9xkkgvQEhZ5r4UBzBLi"
+        ]
+      },
+      {
+        "group_id": "singleton-lSb8IK6pm0WEKyASISFH",
+        "source_image_ids": [
+          "lSb8IK6pm0WEKyASISFH"
+        ]
+      },
+      {
+        "group_id": "singleton-nTcgBq8KIfwkvtofPfOw",
+        "source_image_ids": [
+          "nTcgBq8KIfwkvtofPfOw"
+        ]
+      },
+      {
+        "group_id": "singleton-nXwfWz2We6dOnsyzeEno",
+        "source_image_ids": [
+          "nXwfWz2We6dOnsyzeEno"
+        ]
+      },
+      {
+        "group_id": "singleton-naWKv1VFkDVnpPnS59Bf",
+        "source_image_ids": [
+          "naWKv1VFkDVnpPnS59Bf"
+        ]
+      },
+      {
+        "group_id": "singleton-o0SiQwUZ5uRlCXASCtiR",
+        "source_image_ids": [
+          "o0SiQwUZ5uRlCXASCtiR"
+        ]
+      },
+      {
+        "group_id": "singleton-pMftFzW2M3bmHHBJOTG2",
+        "source_image_ids": [
+          "pMftFzW2M3bmHHBJOTG2"
+        ]
+      },
+      {
+        "group_id": "singleton-qm0fl8ee3HpSLSCrrqDG",
+        "source_image_ids": [
+          "qm0fl8ee3HpSLSCrrqDG"
+        ]
+      },
+      {
+        "group_id": "singleton-rYhDjwrXPlmdX7ft3uh3",
+        "source_image_ids": [
+          "rYhDjwrXPlmdX7ft3uh3"
+        ]
+      },
+      {
+        "group_id": "singleton-sCBw5cHMoREKazVjQfkj",
+        "source_image_ids": [
+          "sCBw5cHMoREKazVjQfkj"
+        ]
+      },
+      {
+        "group_id": "singleton-t92NygAuu8S9QMcR2Neh",
+        "source_image_ids": [
+          "t92NygAuu8S9QMcR2Neh"
+        ]
+      },
+      {
+        "group_id": "singleton-u4uGaDsy2tThEpOEs5TM",
+        "source_image_ids": [
+          "u4uGaDsy2tThEpOEs5TM"
+        ]
+      },
+      {
+        "group_id": "singleton-wS4knG95ig6T2ZEozbZe",
+        "source_image_ids": [
+          "wS4knG95ig6T2ZEozbZe"
+        ]
+      },
+      {
+        "group_id": "singleton-wfDgURKw6U5nt33bmej0",
+        "source_image_ids": [
+          "wfDgURKw6U5nt33bmej0"
+        ]
+      },
+      {
+        "group_id": "singleton-xEWKVpjbfnBH9kQEaUbB",
+        "source_image_ids": [
+          "xEWKVpjbfnBH9kQEaUbB"
+        ]
+      },
+      {
+        "group_id": "singleton-yE5PdkrjifxbV7QoD5xc",
+        "source_image_ids": [
+          "yE5PdkrjifxbV7QoD5xc"
+        ]
+      },
+      {
+        "group_id": "singleton-ywH2LFvRJto6sV68hk5v",
+        "source_image_ids": [
+          "ywH2LFvRJto6sV68hk5v"
+        ]
+      }
+    ],
+    "image_count": 65,
+    "non_singleton_group_count": 2
+  }
+}

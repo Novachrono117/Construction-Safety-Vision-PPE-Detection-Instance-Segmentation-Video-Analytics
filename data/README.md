@@ -20,8 +20,15 @@ re-derivable by running the scripts named in `scripts/README.md`. What is
 committed instead is the counts-only summary under `reports/`, together with the
 file hashes recorded in `reports/canonical_annotation_manifest.json`.
 
-`processed/` is **reserved and currently empty**. No split has been frozen and no
-model-ready dataset exists; phase 5B writes the first one.
+`processed/` is **reserved and currently empty**. The split *is* frozen (phase
+5C.2), but that phase froze **membership only**: it copied no image, wrote no
+label, resized nothing and created no directory here. The authoritative
+membership lives in `reports/split_manifest.json` and
+`reports/final_split_assignments.csv`, both committed because they are small text
+evidence. Phase 5D writes the first model-ready dataset under `processed/`, and
+must read the membership through
+`construction_safety_vision.data.split_freeze.load_frozen_splits` rather than
+re-deriving it.
 
 ## Rules
 
@@ -33,8 +40,13 @@ model-ready dataset exists; phase 5B writes the first one.
 3. Detection and segmentation datasets are two *views* of one canonical source.
    They share image IDs split by split; boxes are derived from polygons rather
    than annotated separately.
-4. The `test` split is a locked holdout. See `CLAUDE.md` and
-   `construction_safety_vision.splits`.
+4. The `test` split is a locked holdout, frozen by name in
+   `reports/split_manifest.json` since phase 5C.2. Reading it requires
+   `allow_test=True` in code **and** `CSVISION_ALLOW_TEST_SPLIT=1` in the
+   environment; neither alone is enough, and reading the manifest's `test`
+   section directly to avoid the guard defeats the point of having one. See
+   `CLAUDE.md`, `construction_safety_vision.splits` and
+   `construction_safety_vision.data.split_freeze`.
 5. Every acquisition and every derivation writes a `*.provenance.json` record
    (source URL, version, license, file hashes, code commit, configuration).
 

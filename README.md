@@ -1,13 +1,15 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: canonical modelling population defined (phase 5B of 14).** The
-> dataset is acquired, hashed, structurally verified, audited automatically (4A)
-> and reviewed visually by people (4B). The canonical annotation snapshot is
-> resolved (5A) and the modelling population and its indivisible split units are
-> built (5B). The provider's split was **rejected for the final protocol**; the
-> canonical split has **not** been created. **No split has been frozen, no model
-> has been trained, and no results exist yet.** Every metric section is
-> intentionally empty until a real, recorded run produces it.
+> **Status: split frozen and holdout locked (phase 5C.2 of 14).** The dataset is
+> acquired, hashed, structurally verified, audited automatically (4A) and
+> reviewed visually by people (4B). The canonical annotation snapshot is resolved
+> (5A), the modelling population and its indivisible split units are built (5B),
+> and the canonical **group-aware and class-aware constrained split is now frozen
+> at 303 / 65 / 65** over 433 modelling images (5C.2). The provider's split was
+> **rejected for the final protocol** and is not reused. The `test` split is a
+> **locked holdout**: it has never been evaluated or inspected. **No model has
+> been trained and no results exist yet.** Every metric section is intentionally
+> empty until a real, recorded run produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -85,8 +87,9 @@ Two design decisions define this architecture:
 | Canonical annotation snapshot | Done (phase 5A). The live source state, recovered read-only with complete geometry in original coordinates. |
 | Canonical modelling population | Done (phase 5B). 433 modelling images, 2031 annotations retained. |
 | Semantic duplicate groups | Done (phase 5B.1). All 11 near-duplicate candidates dispositioned; 11 groups, 422 split units. |
-| Split candidates | Phase 5C.1. Six provisional candidates generated and compared. **None selected, none frozen.** |
-| Splits | **Provider split rejected for the final protocol. No canonical split created, none frozen.** |
+| Split candidates | Done (phase 5C.1). Six provisional candidates generated and compared. |
+| Splits | **Frozen (phase 5C.2). `candidate_001` selected by human review; 303 / 65 / 65 images over 422 indivisible groups. Provider split not reused.** |
+| Holdout | **Frozen and locked.** Never evaluated, never inspected. Access needs two independent opt-ins. |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
 | Metrics | **None.** No evaluation has been run. |
@@ -98,8 +101,10 @@ configuration, the holdout protection guard, provenance primitives, a
 dependency-free Roboflow acquisition client, COCO structural inspection, the
 source audit / EDA / visual-review tooling, the phase 4B decision recorder, the
 phase 5A geometry recovery and canonical-snapshot resolution, the phase 5B
-modelling-population and grouping pipeline, the test suite, and the planning
-documents (`reports/rubric_contract.md`, `reports/roadmap.md`, `CLAUDE.md`).
+modelling-population and grouping pipeline, the phase 5C.1 split search, the
+phase 5C.2 split freeze with its fingerprinted manifest and guarded data access
+layer, the test suite, and the planning documents
+(`reports/rubric_contract.md`, `reports/roadmap.md`, `CLAUDE.md`).
 
 ### The dataset
 
@@ -223,12 +228,15 @@ and `reports/canonical_modeling_manifest.json`.
   materialised as four-corner rectangles clipped to the canvas and recorded as
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX` - a synthetic mask, labelled
   as one, never presented as a human-drawn outline.
-- **427 indivisible split units**: 421 singletons plus the 6 semantic duplicate
-  groups phase 4B confirmed. A further 5 perceptual near-duplicate chains that
-  nobody reviewed are recorded as `UNCONFIRMED_GROUP_CANDIDATE` and **not**
-  merged - a hash collision is not a confirmed duplicate.
-- **`vest_loose` is untouched**: 45 instances across 8 images, none of them in a
-  duplicate group.
+- **427 indivisible split units** at the time of phase 5B: 421 singletons plus
+  the 6 semantic duplicate groups phase 4B confirmed. A further 5 perceptual
+  near-duplicate chains that nobody had reviewed were recorded as
+  `UNCONFIRMED_GROUP_CANDIDATE` and **not** merged - a hash collision is not a
+  confirmed duplicate. **Superseded by phase 5B.1**, which reviewed those 5 and
+  confirmed them all, giving the current **422** units; quote 422, not 427.
+- **`vest_loose` is untouched**: 45 instances across 8 images. Phase 5B recorded
+  none of them as being in a duplicate group; **phase 5B.1 made that false** -
+  two are in `manual_dup_010`, so the class spans 7 indivisible units.
 - **The provider's rejected split appears in no artifact** a split designer
   reads.
 
@@ -294,9 +302,8 @@ there.
 ### Provisional split candidates (phase 5C.1)
 
 Phase 5C.1 searched for candidate train/validation/test assignments over the 422
-groups. It **selected nothing and froze nothing**: `final_selected_candidate` is
-`UNSELECTED_PENDING_REVIEW`, the holdout remains locked, and no candidate test
-set has been evaluated. Evidence in
+groups. It **selected nothing and froze nothing** - selection was a separate,
+later, human step (phase 5C.2, below). Evidence in
 [`reports/split_candidate_report.md`](reports/split_candidate_report.md) and
 `reports/split_candidates/`.
 
@@ -324,7 +331,66 @@ in chunks. All three declared allocation families remain feasible under that
 constraint; family B (5/2/1) is searched but rejected by the requirement that the
 holdout carry at least two images of the class.
 
-Phase 5C.2 selects one candidate and freezes it. No split exists yet.
+### The frozen split (phase 5C.2)
+
+**`candidate_001` was selected by human review and is now the project's
+authoritative split.** Evidence in
+[`reports/split_freeze_report.md`](reports/split_freeze_report.md), with the
+machine-readable membership in `reports/split_manifest.json` and
+`reports/final_split_assignments.csv`.
+
+| Split | Images | Groups | Non-singleton groups | Negatives | Annotations |
+| --- | --- | --- | --- | --- | --- |
+| train | 303 | 294 | 9 | 10 | 1422 |
+| validation | 65 | 63 | 2 | 2 | 304 |
+| test | 65 | 65 | 0 | 2 | 305 |
+| **total** | **433** | **422** | **11** | **14** | **2031** |
+
+- **Selection was a human decision, not an optimiser output.** The candidates
+  were predeclared and deterministically generated in phase 5C.1; a person then
+  chose among them after reviewing the rare-class and evaluation trade-offs. The
+  selection coincides with `algorithmic_best_candidate`, which does not remove
+  the review step - the two are recorded separately.
+- **All five classes appear in all three splits**, at image level and at instance
+  level. `vest_loose` is allocated **5 / 1 / 2 images** and **30 / 8 / 7
+  instances**.
+- **Call it a group-aware and class-aware constrained split**, never a perfectly
+  stratified one. Group indivisibility and the rare-class floors are hard
+  constraints; proportionality is a scored preference that the group structure
+  sometimes makes unreachable.
+- **`vest_loose` limitation.** Validation holds exactly **one** `vest_loose`
+  source image, so `vest_loose`-specific validation metrics carry high sampling
+  uncertainty and must not be used in isolation for model or hyperparameter
+  selection. The holdout holds two, so even the final per-class figures for that
+  class carry an explicit small-sample limitation.
+- **The provider's split is not reused** anywhere in the freeze, and no confirmed
+  duplicate or same-scene group crosses a split boundary.
+- **Fingerprints.** `split_assignment_sha256` covers every
+  `(group, image, split)` triple; `holdout_sha256` covers the holdout's
+  membership together with the population it was drawn from. Neither sees a
+  timestamp, a path, a label or a metric, so both move exactly when membership
+  moves.
+
+**The `test` split is a locked holdout from this point.** Reading it requires two
+independent opt-ins - `allow_test=True` in code **and**
+`CSVISION_ALLOW_TEST_SPLIT=1` in the environment - and neither alone is
+sufficient. It has not been evaluated, inspected, plotted, or used for any
+decision, and it may be read once, in the final-evaluation phase, after both
+models are frozen. `construction_safety_vision.data.split_freeze.FrozenSplits`
+routes every request through that guard:
+
+```python
+from construction_safety_vision.data.split_freeze import load_frozen_splits
+
+splits = load_frozen_splits("reports/split_manifest.json")
+train = splits.image_ids("train", purpose="training")  # 303 ids
+val = splits.image_ids("validation", purpose="model selection")  # 65 ids
+splits.image_ids("test", purpose="peeking")  # HoldoutViolationError
+```
+
+**Phase 5C.2 froze membership only.** No image was copied, moved, resized or
+preprocessed; no label file was written; `data/processed/` is untouched. Phase 5D
+materialises the detection and segmentation views from this membership.
 
 ## Academic requirements
 
@@ -384,7 +450,8 @@ Work proceeds through 14 gated phases (see
 ├── .gitattributes             # LF normalisation, binary declarations
 ├── configs/                   # Versioned experiment configuration (single source of settings)
 │   ├── project.yaml
-│   └── split_search.yaml      # Split-search protocol: targets, constraints, weights (5C.1)
+│   ├── split_search.yaml      # Split-search protocol: targets, constraints, weights (5C.1)
+│   └── split_freeze.yaml      # Which candidate was selected, and what it must reproduce (5C.2)
 ├── data/                      # Never committed; see data/README.md
 │   ├── external/              # Provider archive, source originals, provenance record
 │   ├── raw/                   # Extracted canonical export, untouched
@@ -408,7 +475,11 @@ Work proceeds through 14 gated phases (see
 │   ├── group_manifest.csv                 # Indivisible split units
 │   ├── group_split_features.csv           # One row per group, for phase 5C
 │   ├── split_candidate_report.md          # Provisional split candidates (phase 5C.1)
-│   ├── split_candidates/                  # One assignment per candidate, plus a summary
+│   ├── split_candidates/                  # One assignment per candidate, a summary, the selection
+│   ├── split_freeze_report.md             # Why this split, and what it cannot support (5C.2)
+│   ├── split_manifest.json                # THE frozen split: membership + fingerprints (5C.2)
+│   ├── final_split_assignments.csv        # The same membership, one row per image (5C.2)
+│   ├── split_freeze.provenance.json       # How the freeze was produced (5C.2)
 │   └── figures/               # Contact sheets and analytical plots
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -430,13 +501,15 @@ Work proceeds through 14 gated phases (see
 │   ├── analyze_fragment_rule.py   # Can a geometry rule identify the drifted annotations?
 │   ├── build_modeling_population.py # Eligible images/annotations + indivisible groups
 │   ├── build_remaining_duplicate_review.py # Candidates still awaiting a human decision
-│   └── optimize_split_candidates.py # Provisional split candidates over the groups
+│   ├── optimize_split_candidates.py # Provisional split candidates over the groups
+│   └── freeze_split.py            # Verify the selected candidate and freeze it + the holdout
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
 │   ├── provenance.py          # Hashing and run provenance records
 │   ├── splits.py              # Split identifiers and the holdout guard
-│   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision
+│   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
+│                              # split search, and the frozen split + its access layer
 └── tests/
 ```
 

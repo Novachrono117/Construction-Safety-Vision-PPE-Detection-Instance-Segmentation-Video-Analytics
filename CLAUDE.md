@@ -17,17 +17,25 @@ Repository: <https://github.com/Novachrono117/Construction-Safety-Vision-PPE-Det
 
 ## 1. Test data is protected
 
-The `test` split is a locked holdout.
+The `test` split is a locked holdout. Since phase 5C.2 it is a **frozen, named
+set of images**, recorded in `reports/split_manifest.json` under
+`holdout_sha256`. It is no longer a plan; it is protected data.
 
-- It may be read **once**, in phase 11, after both models are frozen.
+- It may be read **once**, in phase 11, after both models are frozen. Every phase
+  in between - 5D, 6, 7, 8, 9 and 10 - develops on `train` and `validation` only.
 - Until then: no training on it, no metrics from it, no threshold tuning on it,
   no "just to check" inspection, no plotting it, no looking at its images.
 - Model and hyperparameter selection use the **validation** split only.
 - Access goes through `construction_safety_vision.splits.assert_split_allowed`,
-  which requires two independent opt-ins: `allow_test=True` in code **and**
-  `CSVISION_ALLOW_TEST_SPLIT=1` in the environment. Never set that variable
-  "to make an error go away", never weaken the guard, and never bypass it with a
-  direct path read.
+  and to the frozen ids through
+  `construction_safety_vision.data.split_freeze.FrozenSplits`, which routes to
+  the same guard. Both require two independent opt-ins: `allow_test=True` in code
+  **and** `CSVISION_ALLOW_TEST_SPLIT=1` in the environment. Never set that
+  variable "to make an error go away", never weaken the guard, never add a
+  helper that bypasses it, and never bypass it by reading the `test` section of
+  `split_manifest.json` or the `test` rows of `final_split_assignments.csv`
+  directly. Those files record membership so it can be audited, not so it can be
+  used.
 - If the holdout is touched by accident, say so immediately and in full. A
   disclosed leak is a limitation; a hidden one is fraud.
 
@@ -183,10 +191,10 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5C.1 complete - six provisional split candidates generated and
-  compared. **No candidate is selected and no split is frozen**;
-  `final_selected_candidate` is `UNSELECTED_PENDING_REVIEW`. Phase 5C.2
-  (selection and freeze) has not started.
+- **Phase:** 5C.2 complete - **the split is frozen and the holdout is locked**.
+  `final_selected_candidate` is `candidate_001`, selected by human review of the
+  six predeclared phase 5C.1 candidates. Phase 5D (task-specific dataset
+  materialisation) has not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -249,8 +257,9 @@ uv run pytest
   `group_split_features.csv` deliberately omits it.
 - **Modelling population (phase 5B):** 433 eligible images (436 minus 3 confirmed
   out-of-domain, which stay on disk and in the provenance population), 2031
-  retained annotations, and **427 indivisible split units** (421 singletons + 6
-  confirmed semantic duplicate groups). Quote 433 for modelling and 436 for
+  retained annotations, and 427 indivisible split units at that time (421
+  singletons + 6 confirmed semantic duplicate groups). **The 427 is superseded by
+  phase 5B.1's 422** - quote 422. Quote 433 for modelling and 436 for
   provenance; they are different populations and must not be conflated.
 - **11 confirmed groups**, 411 singletons, **422 split units**. Phase 4B
   confirmed 6 cross-split pairs; phase 5B.1 confirmed 5 same-split pairs, because
@@ -273,21 +282,55 @@ uv run pytest
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`. Never describe them as
   human-drawn segmentation.
 - **Models:** none trained. No metrics exist.
-- **Holdout:** no holdout has been frozen. The provider ships a `test` split; it
-  is **not** the project's holdout. Phase 5C.1 produced *provisional* candidates
-  only - a candidate `test` set is not a holdout, must not be evaluated, and must
-  not be inspected for model-quality reasons. Treat all of it as protected.
-- **Split candidates are provisional.** The column is `provisional_split`, never
-  `split`. Six candidates hit 303/65/65 exactly with every hard constraint met.
-  Do not describe any as final, and do not create `reports/split_manifest.json`
-  or `data/processed/splits/` until phase 5C.2 selects one.
-- **The split search never reads the provider split** - not as input,
-  initialisation or target. `optimize_split_candidates.py` refuses to run if the
-  group feature table carries such a column. Keep it that way.
+- **The split is FROZEN (phase 5C.2).** `reports/split_manifest.json` is the
+  single authoritative membership: **303 / 65 / 65 images** over **294 / 63 / 65
+  groups**, 2031 annotations at 1422 / 304 / 305, negatives 10 / 2 / 2. Read it
+  through `construction_safety_vision.data.split_freeze.load_frozen_splits`,
+  never by parsing a candidate file or re-running the search. Changing it
+  invalidates every result produced under it.
+- **Fingerprints of the freeze:** `split_assignment_sha256`
+  `a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc`,
+  `holdout_sha256`
+  `bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00`. They differ
+  from `candidate_assignment_sha256` by design: the candidate digest covers
+  `(group, split)`, the freeze digest covers `(group, image, split)`.
+- **`test` IS NOW THE PROJECT'S HOLDOUT and it is LOCKED.** It has never been
+  evaluated, inspected or plotted. For the whole of phases 5D through 10 it must
+  not be used for model selection, architecture selection, hyperparameter
+  tuning, augmentation tuning, image-size tuning, threshold tuning, qualitative
+  model debugging or error-driven iteration - and it must not be looked at.
+  Phase 11 reads it once, after both models are frozen. Access needs
+  `allow_test=True` **and** `CSVISION_ALLOW_TEST_SPLIT=1`; never set that
+  variable, never weaken the guard, never add a helper that bypasses it, and
+  never read the frozen test ids straight out of the manifest to sidestep
+  `FrozenSplits`.
+- **The provider's `test` split is still not the holdout** and is still rejected.
+  Do not conflate the two.
+- **Candidates 002-006 are preserved as `NON_SELECTED_PROVISIONAL_CANDIDATE`**,
+  recorded in `reports/split_candidates/selection.csv`. Their column is still
+  `provisional_split` and their historical scores must never be rewritten. Do not
+  freeze, evaluate or partially adopt one.
+- **Neither the split search nor the freeze reads the provider split** - not as
+  input, initialisation or target. `optimize_split_candidates.py` refuses to run
+  if the group feature table carries such a column. Keep it that way.
 - **The rare class is named in configuration**, not hardcoded: `rare_class:
-  vest_loose` in `configs/split_search.yaml`. It occupies **7** indivisible units
-  over 8 images, because two of them sit in `manual_dup_010`, so it moves in
-  chunks and cannot be freely rebalanced.
+  vest_loose` in `configs/split_search.yaml` and `configs/split_freeze.yaml`. It
+  occupies **7** indivisible units over 8 images, because two of them sit in
+  `manual_dup_010`, so it moves in chunks and cannot be freely rebalanced.
+- **`vest_loose` in the frozen split: 5 / 1 / 2 images, 30 / 8 / 7 instances.**
+  Validation holds **one** image of it, so a `vest_loose` validation metric has
+  high sampling uncertainty and **must not be used on its own** to select a model
+  or a hyperparameter; rely on predeclared global/macro criteria and treat the
+  per-class number as supporting evidence. The holdout holds two, so even the
+  final per-class figure carries an explicit small-sample limitation.
+- **Call it a "group-aware and class-aware constrained split".** Never call it
+  perfectly stratified, and never claim statistical independence beyond the
+  duplicate screening actually performed: two perceptual fingerprints plus human
+  review of every candidate they raised. Nothing establishes that two images in
+  different splits do not share a site, a day, a camera or a worker.
+- **Phase 5C.2 froze membership only.** No image was copied, moved, resized or
+  preprocessed, no label file was written, and `data/processed/` is untouched.
+  Phase 5D materialises the detection and segmentation views.
 - **Long paths:** 137 of the export's 742 image files exceed the Windows
   `MAX_PATH` limit on this machine. Open them through
   `construction_safety_vision.paths.long_path`, never with a bare path.

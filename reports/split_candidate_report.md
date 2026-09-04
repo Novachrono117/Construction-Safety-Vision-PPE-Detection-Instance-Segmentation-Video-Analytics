@@ -2,7 +2,7 @@
 
 Generated: 2026-09-04T15:37:06+00:00 · Phase: 5C.1 · Commit: `c6a1eb44d80edd73cffd24480de4e5cdf6fb21f8`
 
-**No split is frozen and no candidate is selected.** Every assignment below is provisional. `final_selected_candidate` is `UNSELECTED_PENDING_REVIEW`; the holdout remains locked and no candidate test set has been evaluated.
+**The split is frozen.** `final_selected_candidate` is `candidate_001`, selected in phase 5C.2 by human review of these predeclared candidates; the other candidates remain as `NON_SELECTED_PROVISIONAL_CANDIDATE` and are kept for comparison. The scores, rankings and reasoning below are the phase 5C.1 measurements and are unchanged. The authoritative assignment is `reports/split_manifest.json`; the holdout is locked.
 
 ## 1. Objective and hard constraints
 
@@ -292,7 +292,7 @@ The rare class is where these differ most and where the scalar helps least. `ves
 
 ## 13. Limitations
 
-* **No candidate is selected.** `final_selected_candidate` is `UNSELECTED_PENDING_REVIEW`. `algorithmic_best_candidate` names only the lowest scorer under the predeclared objective, which is `candidate_001`.
+* **The selected candidate is `candidate_001`**, chosen in phase 5C.2. `algorithmic_best_candidate` named only the lowest scorer under the predeclared objective; the selection among the predeclared candidates was a human decision, recorded in `reports/split_freeze_report.md`.
 * **The objective is a proxy.** Balanced counts do not guarantee comparable difficulty. Nothing here measures how hard the images are.
 * **Local search is not exhaustive.** A better assignment may exist. The search is reproducible, not optimal, and the space was not brute-forced.
 * **Instance-level proportionality is not always reachable.** Objects co-occur inside images and images are bound into groups, so some deviation is structural rather than a search failure.

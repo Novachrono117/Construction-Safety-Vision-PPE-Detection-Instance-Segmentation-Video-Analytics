@@ -26,6 +26,7 @@ undocumented one-off shell invocation.
 | `build_modeling_population.py` | 5B | Decide which images and annotations may be modelled, materialise geometry-less records, and build the indivisible split units. Creates no split. |
 | `build_remaining_duplicate_review.py` | 5B.1 | Draw the near-duplicate candidates that still carry no human decision, so the gap is closed by looking. Merges nothing. |
 | `optimize_split_candidates.py` | 5C.1 | Search for provisional train/validation/test assignments over the canonical groups and compare them. Selects nothing and freezes nothing. |
+| `freeze_split.py` | 5C.2 | Re-verify the human-selected candidate, freeze it as the authoritative split, and lock the holdout. Freezes membership only. |
 
 ## Rules
 
@@ -86,8 +87,32 @@ can mistake a candidate for a frozen assignment. The protocol lives in
 `configs/split_search.yaml`, parsed strictly, and the whole search is a pure
 function of that file and the group features.
 
+`freeze_split.py` (phase 5C.2) promotes the human-selected candidate to the
+project's authoritative split and locks the holdout. It **selects nothing**: the
+selection is a human decision recorded in `configs/split_freeze.yaml`, which the
+script only enforces. Every expectation is declared in that file in advance -
+the candidate's assignment digest, the phase 5B population and group
+fingerprints, and the exact image, group, negative and rare-class counts - and
+verification runs to completion **before anything is written**. If the candidate
+no longer reproduces, the script writes nothing and exits non-zero rather than
+freezing a different assignment that happens to be feasible.
+
+It is idempotent by construction: no timestamp enters `split_manifest.json`,
+`final_split_assignments.csv`, `split_freeze_report.md` or
+`split_candidates/selection.csv`, so re-running over the same inputs reproduces
+them byte for byte. Only `split_freeze.provenance.json` changes, in its
+`created_at`, because that is what a run record is for. Use
+`--verify-only` to run every check and write nothing.
+
+It froze **membership only**. It copies no image, writes no label, resizes
+nothing and creates nothing under `data/processed/`; phase 5D does that. It never
+reads the provider's rejected split, and it touches the phase 5C.1 candidate
+files not at all - the one thing it rewrites in that phase's output is the
+status sentence in `split_candidate_report.md` that would otherwise still claim
+no candidate had been selected.
+
 ## Planned scripts
 
-Split selection and freeze, training, evaluation, error analysis and video
-inference scripts are added by their respective roadmap phases. None are stubbed
-in advance.
+Task-specific dataset materialisation, training, evaluation, error analysis and
+video inference scripts are added by their respective roadmap phases. None are
+stubbed in advance.
