@@ -1,0 +1,77 @@
+{
+  "config": {
+    "development_splits": [
+      "train",
+      "validation"
+    ],
+    "materialization_config_sha256": "352efcc105c295c17599fe73dda1506c61aa17de0f90bd3caa1612e40c44a541",
+    "task_materialization": "configs/task_materialization.yaml",
+    "test_materialization": "disabled_during_development"
+  },
+  "created_at": "2026-09-04T16:39:42+00:00",
+  "details": {
+    "canonical_detection_format": "COCO",
+    "canonical_segmentation_format": "COCO_INSTANCE_SEGMENTATION",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "development_totals": {
+      "annotations": 1726,
+      "images": 368
+    },
+    "holdout_accessed": false,
+    "model_specific_adapter": "NOT_YET_SELECTED",
+    "models_trained": 0,
+    "phase": "5D",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+    "status": "DEVELOPMENT_DATASETS_MATERIALIZED",
+    "test_status": "NOT_MATERIALIZED_PROTECTED_HOLDOUT",
+    "yolo_labels_written": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "c952b43a00168e198c190cd5798a8d2d1de2c488",
+  "inputs": [
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    },
+    {
+      "path": "reports/canonical_modeling_manifest.json",
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f",
+      "size_bytes": 6531
+    },
+    {
+      "path": "reports/canonical_modeling_population.csv",
+      "sha256": "147b4626229395b6b869ab0a52ca3673451a52630305513bbdeb76e46d29e0a3",
+      "size_bytes": 80923
+    },
+    {
+      "path": "reports/canonical_annotation_actions.csv",
+      "sha256": "ee019589952ed4f3f9d4a629e9238b373b3ecd945f8e0d1b3e6d36ecf6067d71",
+      "size_bytes": 340385
+    },
+    {
+      "path": "configs/task_materialization.yaml",
+      "sha256": "0f8e017480955567c25934f7f8c0ad0e3f3627bbff7ae67c35d5277c04ac5c7e",
+      "size_bytes": 4420
+    }
+  ],
+  "name": "task_dataset_materialization",
+  "outputs": [
+    {
+      "path": "reports/task_dataset_manifest.json",
+      "sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+      "size_bytes": 5389
+    },
+    {
+      "path": "reports/task_materialization_report.md",
+      "sha256": "17b88fa9eab0f56ca73eda0cc12d8ed107c7c64e3399fcd053b3d3eb83308028",
+      "size_bytes": 14053
+    }
+  ],
+  "phase": 5,
+  "schema_version": 1
+}

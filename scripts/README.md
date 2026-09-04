@@ -27,6 +27,7 @@ undocumented one-off shell invocation.
 | `build_remaining_duplicate_review.py` | 5B.1 | Draw the near-duplicate candidates that still carry no human decision, so the gap is closed by looking. Merges nothing. |
 | `optimize_split_candidates.py` | 5C.1 | Search for provisional train/validation/test assignments over the canonical groups and compare them. Selects nothing and freezes nothing. |
 | `freeze_split.py` | 5C.2 | Re-verify the human-selected candidate, freeze it as the authoritative split, and lock the holdout. Freezes membership only. |
+| `materialize_task_datasets.py` | 5D | Build the canonical COCO detection and instance-segmentation views of `train` and `validation`. Never materialises the holdout. |
 
 ## Rules
 
@@ -111,8 +112,36 @@ files not at all - the one thing it rewrites in that phase's output is the
 status sentence in `split_candidate_report.md` that would otherwise still claim
 no candidate had been selected.
 
+`materialize_task_datasets.py` (phase 5D) turns the frozen membership into two
+COCO views of the same data. Its whole claim is that it **adds nothing**: images
+are transferred with binary copy semantics and never routed through an image
+library, so no decoder can quietly re-encode them, and both sides are hashed
+after the copy so byte-identity is measured rather than asserted. Canonical
+geometry is carried through unchanged - a polygon stays a polygon, a compressed
+RLE stays a compressed RLE - and the emitted file is read back from disk and
+compared against the canonical state, RLE by decoded mask rather than by
+comparing `counts` strings.
+
+It writes **`train` and `validation` only**. The holdout is materialised by the
+same function with the same configuration, which is the point: it cannot receive
+different preprocessing than the data the models were developed on. Reaching it
+requires `allow_test=True` and `CSVISION_ALLOW_TEST_SPLIT=1`, and the code path
+is exercised only against synthetic fixtures until the final-evaluation phase.
+
+Two things it deliberately does not do. It writes **no YOLO labels**: only COCO
+carries both polygon and RLE natively, so a conversion now would approximate the
+ground truth before a model has been chosen, and a future adapter must first pass
+a documented mask-IoU fidelity audit. And it never reads the provider's rejected
+split - membership comes from `reports/split_manifest.json` alone, and the
+population loader names every column it consumes so a provenance column could not
+influence a destination even if one were added.
+
+The protocol lives in `configs/task_materialization.yaml`, parsed strictly. Use
+`--verify-only` to run every validator and write nothing. Re-running is
+byte-stable: no timestamp enters an emitted file and COCO ids come from a sorted
+canonical ordering rather than filesystem traversal.
+
 ## Planned scripts
 
-Task-specific dataset materialisation, training, evaluation, error analysis and
-video inference scripts are added by their respective roadmap phases. None are
-stubbed in advance.
+Training, evaluation, error analysis and video inference scripts are added by
+their respective roadmap phases. None are stubbed in advance.

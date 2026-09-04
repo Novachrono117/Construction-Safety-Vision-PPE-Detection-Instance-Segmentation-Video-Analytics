@@ -1,15 +1,17 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: split frozen and holdout locked (phase 5C.2 of 14).** The dataset is
-> acquired, hashed, structurally verified, audited automatically (4A) and
+> **Status: canonical task datasets materialised (phase 5D of 14).** The dataset
+> is acquired, hashed, structurally verified, audited automatically (4A) and
 > reviewed visually by people (4B). The canonical annotation snapshot is resolved
 > (5A), the modelling population and its indivisible split units are built (5B),
-> and the canonical **group-aware and class-aware constrained split is now frozen
-> at 303 / 65 / 65** over 433 modelling images (5C.2). The provider's split was
-> **rejected for the final protocol** and is not reused. The `test` split is a
-> **locked holdout**: it has never been evaluated or inspected. **No model has
-> been trained and no results exist yet.** Every metric section is intentionally
-> empty until a real, recorded run produces it.
+> the **group-aware and class-aware constrained split is frozen at 303 / 65 / 65**
+> over 433 modelling images (5C.2), and the **COCO detection and instance-
+> segmentation views of `train` and `validation` are reproducibly materialised**
+> (5D). The provider's split was **rejected for the final protocol** and is not
+> reused. The `test` split is a **locked holdout**: it has never been evaluated,
+> inspected or materialised. **No model has been trained and no results exist
+> yet.** Every metric section is intentionally empty until a real, recorded run
+> produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -89,7 +91,9 @@ Two design decisions define this architecture:
 | Semantic duplicate groups | Done (phase 5B.1). All 11 near-duplicate candidates dispositioned; 11 groups, 422 split units. |
 | Split candidates | Done (phase 5C.1). Six provisional candidates generated and compared. |
 | Splits | **Frozen (phase 5C.2). `candidate_001` selected by human review; 303 / 65 / 65 images over 422 indivisible groups. Provider split not reused.** |
-| Holdout | **Frozen and locked.** Never evaluated, never inspected. Access needs two independent opt-ins. |
+| Holdout | **Frozen and locked.** Never evaluated, inspected or materialised. Access needs two independent opt-ins. |
+| Task datasets | Done (phase 5D). COCO detection + instance segmentation for `train` and `validation`: 368 images, 1726 annotations, byte-identical images, geometry round-trip verified. |
+| Model-specific adapter | `NOT_YET_SELECTED`. No YOLO labels written; a future adapter must pass a geometry-fidelity audit first. |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
 | Metrics | **None.** No evaluation has been run. |
@@ -103,7 +107,8 @@ source audit / EDA / visual-review tooling, the phase 4B decision recorder, the
 phase 5A geometry recovery and canonical-snapshot resolution, the phase 5B
 modelling-population and grouping pipeline, the phase 5C.1 split search, the
 phase 5C.2 split freeze with its fingerprinted manifest and guarded data access
-layer, the test suite, and the planning documents
+layer, the phase 5D task-dataset materialiser with its geometry round-trip and
+cross-task alignment validators, the test suite, and the planning documents
 (`reports/rubric_contract.md`, `reports/roadmap.md`, `CLAUDE.md`).
 
 ### The dataset
@@ -389,8 +394,63 @@ splits.image_ids("test", purpose="peeking")  # HoldoutViolationError
 ```
 
 **Phase 5C.2 froze membership only.** No image was copied, moved, resized or
-preprocessed; no label file was written; `data/processed/` is untouched. Phase 5D
-materialises the detection and segmentation views from this membership.
+preprocessed; no label file was written. Phase 5D, below, materialises the
+detection and segmentation views from this membership.
+
+### Canonical task datasets (phase 5D)
+
+The frozen membership is materialised into two COCO views of the **same** images
+and the **same** objects. Evidence in
+[`reports/task_materialization_report.md`](reports/task_materialization_report.md),
+with the machine-readable record in `reports/task_dataset_manifest.json`.
+
+| Split | Images | Annotations | Zero-instance images | Status |
+| --- | --- | --- | --- | --- |
+| train | 303 | 1422 | 10 | materialised |
+| validation | 65 | 304 | 2 | materialised |
+| test | - | - | - | **`NOT_MATERIALIZED_PROTECTED_HOLDOUT`** |
+| **development total** | **368** | **1726** | **12** | |
+
+- **COCO is canonical for both tasks; no YOLO labels exist.** The canonical
+  annotation state holds polygon geometry *and* compressed RLE, and COCO carries
+  both natively. YOLO's segmentation format carries polygons only, so writing it
+  would mean rasterising and re-polygonising every RLE mask - an approximation
+  applied to the ground truth before a model has even been chosen.
+  `model_specific_adapter` is `NOT_YET_SELECTED`.
+- **Detection boxes are derived from the segmentation**, never copied from the
+  provider. As a cross-check, every derived box was compared against the box
+  phase 5A measured independently from the same geometry: **max delta 0.0 px**
+  across all 1726 development annotations.
+- **Images are copied byte-for-byte** - no resize, crop, re-encode, EXIF rotation
+  or colour conversion - and both sides are hashed after the copy, so
+  "byte-identical" is measured, not asserted: **368/368**.
+- **Geometry preservation is verified, not claimed.** The emitted segmentation
+  file is read back from disk and compared against the canonical state: RLE by
+  **decoded mask** (identical `counts` strings would only prove a copy happened),
+  polygons coordinate by coordinate. **1726 checked, 1726 matched, 0 mismatches**,
+  covering 843 polygons, 881 RLE masks and the 2 synthetic rectangles.
+- **The two views are aligned by an automated check**: same COCO image ids, same
+  source image ids, same annotation ids, same categories, same boxes. The only
+  intended difference is that the segmentation view carries mask geometry.
+- **Zero-instance images are retained** as image records with no annotations -
+  they are deliberate negatives, and dropping them would change the dataset.
+- **COCO numeric ids are global**, assigned from a sorted ordering of the whole
+  modelling population rather than per split, so the holdout can be materialised
+  later without renumbering anything.
+
+**The holdout was not materialised and nothing new was measured about it.** No
+test image directory, no test COCO file, no test statistic. The code path that
+will materialise it is the same one used here and requires both holdout opt-ins;
+it is exercised only against synthetic fixtures in the test suite.
+
+```bash
+uv run python scripts/materialize_task_datasets.py               # train + validation
+uv run python scripts/materialize_task_datasets.py --verify-only # validate, write nothing
+```
+
+Re-running is byte-stable: no timestamp enters any emitted file, ids come from a
+sorted canonical ordering, and JSON is written with sorted keys. The datasets
+themselves are git-ignored and re-derived by the command above.
 
 ## Academic requirements
 
@@ -451,12 +511,13 @@ Work proceeds through 14 gated phases (see
 ├── configs/                   # Versioned experiment configuration (single source of settings)
 │   ├── project.yaml
 │   ├── split_search.yaml      # Split-search protocol: targets, constraints, weights (5C.1)
-│   └── split_freeze.yaml      # Which candidate was selected, and what it must reproduce (5C.2)
+│   ├── split_freeze.yaml      # Which candidate was selected, and what it must reproduce (5C.2)
+│   └── task_materialization.yaml # Copy, naming, bbox and geometry policies (5D)
 ├── data/                      # Never committed; see data/README.md
 │   ├── external/              # Provider archive, source originals, provenance record
 │   ├── raw/                   # Extracted canonical export, untouched
 │   ├── interim/               # Derived representations (source geometry, image stats)
-│   └── processed/             # Reserved: model-ready datasets (phase 5B onward)
+│   └── processed/             # Canonical COCO task datasets for train + validation (5D)
 ├── notebooks/                 # Colab-executable notebooks (added by the phase that needs them)
 ├── reports/                   # The committed evidence; every number traces to a file here
 │   ├── rubric_contract.md     # Rubric as a verifiable contract
@@ -480,6 +541,9 @@ Work proceeds through 14 gated phases (see
 │   ├── split_manifest.json                # THE frozen split: membership + fingerprints (5C.2)
 │   ├── final_split_assignments.csv        # The same membership, one row per image (5C.2)
 │   ├── split_freeze.provenance.json       # How the freeze was produced (5C.2)
+│   ├── task_materialization_report.md     # How the task datasets were built (5D)
+│   ├── task_dataset_manifest.json         # Counts, fingerprints, holdout status (5D)
+│   ├── task_materialization.provenance.json
 │   └── figures/               # Contact sheets and analytical plots
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -502,7 +566,8 @@ Work proceeds through 14 gated phases (see
 │   ├── build_modeling_population.py # Eligible images/annotations + indivisible groups
 │   ├── build_remaining_duplicate_review.py # Candidates still awaiting a human decision
 │   ├── optimize_split_candidates.py # Provisional split candidates over the groups
-│   └── freeze_split.py            # Verify the selected candidate and freeze it + the holdout
+│   ├── freeze_split.py            # Verify the selected candidate and freeze it + the holdout
+│   └── materialize_task_datasets.py # Canonical COCO detection + segmentation views (5D)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling

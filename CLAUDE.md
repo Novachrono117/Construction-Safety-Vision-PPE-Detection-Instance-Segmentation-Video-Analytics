@@ -191,10 +191,9 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5C.2 complete - **the split is frozen and the holdout is locked**.
-  `final_selected_candidate` is `candidate_001`, selected by human review of the
-  six predeclared phase 5C.1 candidates. Phase 5D (task-specific dataset
-  materialisation) has not started; do not start it unprompted.
+- **Phase:** 5D complete - the split is frozen, the holdout is locked, and the
+  **canonical COCO task datasets for `train` and `validation` are materialised**.
+  Phase 6 (detection baseline) has not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -328,9 +327,30 @@ uv run pytest
   duplicate screening actually performed: two perceptual fingerprints plus human
   review of every candidate they raised. Nothing establishes that two images in
   different splits do not share a site, a day, a camera or a worker.
-- **Phase 5C.2 froze membership only.** No image was copied, moved, resized or
-  preprocessed, no label file was written, and `data/processed/` is untouched.
-  Phase 5D materialises the detection and segmentation views.
+- **Task datasets (phase 5D): COCO is canonical for both tasks.**
+  `canonical_detection_format: COCO`, `canonical_segmentation_format:
+  COCO_INSTANCE_SEGMENTATION`, `model_specific_adapter: NOT_YET_SELECTED`.
+  Materialised under `data/processed/canonical/` (git-ignored, re-derivable by
+  `scripts/materialize_task_datasets.py`): **train 303 images / 1422
+  annotations, validation 65 / 304**, totalling 368 / 1726.
+- **No YOLO labels exist, and none may be written casually.** The canonical state
+  holds polygon *and* compressed RLE; only COCO carries both. Any future
+  RLE-to-polygon adapter must first convert, rasterise, compare against the
+  canonical masks, report per-instance mask IoU and area error, and flag
+  disconnected-component and hole cases - and be rejected if the loss is
+  material. That is a phase 8 concern; it has not been done, so make no claim
+  about how lossy it would be.
+- **Detection boxes are derived from segmentation, never from the provider bbox.**
+  Verified against the independent phase 5A measurement at max delta 0.0 px over
+  all 1726 development annotations. Do not reintroduce the provider's box.
+- **Images in `data/processed/` are byte-identical copies**, 368/368 verified. No
+  resize, crop, re-encode, EXIF rotation or colour conversion happens anywhere in
+  the materialisation. Do not add one.
+- **The holdout is `NOT_MATERIALIZED_PROTECTED_HOLDOUT`.** There is no
+  `data/processed/canonical/images/test/` and no `*_test.coco.json`, and nothing
+  new has been measured about the test set. Materialising it runs the same
+  function with the same configuration - never a split-specific branch - and
+  needs both opt-ins.
 - **Long paths:** 137 of the export's 742 image files exceed the Windows
   `MAX_PATH` limit on this machine. Open them through
   `construction_safety_vision.paths.long_path`, never with a bare path.

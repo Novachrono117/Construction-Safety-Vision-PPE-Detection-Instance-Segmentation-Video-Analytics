@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.4 · Current phase: **5 - Split freeze and task-specific dataset generation** (5A/5B/5B.1/5C.1/5C.2 complete; 5D next)
+Version: 1.5 · Current phase: **6 - Detection baseline** (not started; phase 5 complete through 5D)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -19,8 +19,8 @@ change log at the bottom of this file.
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | 5A/5B/5B.1/5C.1 done · 5C.2 done (split frozen 303/65/65, holdout locked) · 5D **next**, not started |
-| 6 | Detection baseline | not started |
+| 5 | Split freeze and task-specific dataset generation | complete (5A, 5B, 5B.1, 5C.1, 5C.2 split frozen 303/65/65, 5D COCO development datasets materialised) |
+| 6 | Detection baseline | **next**, not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
 | 9 | Segmentation experiments and model freeze | not started |
@@ -309,21 +309,61 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   holdout inspection.
 - **Academic mapping.** C1.
 
-### Phase 5D - task-specific dataset generation (not started)
+### Phase 5D - task-specific dataset generation (complete)
 
-- **Entry conditions.** The frozen membership in `reports/split_manifest.json`,
-  read through `construction_safety_vision.data.split_freeze`; the 2031-annotation
-  canonical population; and the class map frozen in phase 5B.
-- **Outputs.** `data/processed/detection/` and `data/processed/segmentation/`;
-  the box-from-polygon derivation code; per-split manifests carrying image ID,
-  file hash and group ID; a provenance record for the materialisation.
-- **Validation gate.** Detection and segmentation views contain exactly the same
-  image IDs per split, verified by an automated check; boxes are verified to be
-  the tight bounds of their polygons on a sampled subset; the manifests are
-  hashed and committed. The holdout stays locked throughout, under the guard as
-  it stands; whether and when its view is materialised is a decision for that
-  phase to make and record, and the guard is not weakened to make it easier.
+- **What it did.** Materialised the frozen membership into two COCO views of the
+  same images and the same objects, for **`train` and `validation` only**. The
+  claim it makes is that it added nothing: same bytes, same annotations, same
+  class order.
+- **Result.** **368 development images and 1726 annotations** (train 303/1422,
+  validation 65/304), matching the frozen membership exactly. Zero-instance
+  images retained as annotation-free records (10 train, 2 validation).
+- **Canonical formats.** `canonical_detection_format: COCO`,
+  `canonical_segmentation_format: COCO_INSTANCE_SEGMENTATION`,
+  `model_specific_adapter: NOT_YET_SELECTED`. **No YOLO labels were written**:
+  the canonical state holds polygon *and* compressed RLE, and only COCO carries
+  both, so a YOLO conversion would approximate the ground truth before a model
+  had been chosen.
+- **Images byte-preserved.** 368/368 byte-identical, hashed on both sides after a
+  binary copy. No resize, crop, re-encode, EXIF rotation or colour conversion; a
+  destination holding different bytes is a hard failure, never a silent
+  overwrite.
+- **Boxes derived from segmentation.** Every detection box comes from the
+  canonical geometry through the phase 4A implementation. Cross-checked against
+  the box phase 5A measured independently from the same geometry: **max delta
+  0.0 px** over all 1726 annotations. The provider's bbox is used nowhere.
+- **Geometry round-trip verified.** The emitted segmentation file is read back
+  from disk and compared with the canonical state - RLE by decoded mask,
+  polygons coordinate by coordinate. **1726 checked, 1726 matched, 0
+  mismatches**: 843 polygons, 881 RLE masks, 2 synthetic rectangles.
+- **Cross-task alignment verified.** Both views hold the same COCO image ids,
+  source image ids, annotation ids, categories and boxes, per split.
+- **Deterministic.** COCO ids come from a sorted ordering of the whole modelling
+  population (so the holdout can be materialised later without renumbering), no
+  timestamp enters an emitted file, and re-running reproduces every artifact byte
+  for byte.
+- **Holdout untouched.** `test` is `NOT_MATERIALIZED_PROTECTED_HOLDOUT`. No test
+  image directory, COCO file, contact sheet or statistic was produced, and no new
+  knowledge about it was computed. The path that will materialise it is the same
+  function used here and needs both opt-ins; it is exercised only against
+  synthetic fixtures.
+- **Outputs.** [`task_materialization_report.md`](task_materialization_report.md),
+  `task_dataset_manifest.json`, `task_materialization.provenance.json`,
+  `configs/task_materialization.yaml`, the
+  `construction_safety_vision.data.materialization` and
+  `.coco_materialization` modules, and the git-ignored datasets under
+  `data/processed/canonical/`.
+- **Explicitly not done.** No model, no training framework installed, no
+  inference, no YOLO labels, no holdout materialisation.
 - **Academic mapping.** C1, and the alignment requirement of C3.
+
+> **Future model-adapter gate.** If a YOLO segmentation stack is selected later,
+> then before any training run the adapter must convert the canonical masks to
+> the required polygon format, rasterise the result, compare it against the
+> canonical masks, report per-instance mask IoU and area error, identify
+> disconnected-component and hole cases, and be rejected or reconsidered if the
+> loss is material. That audit is a phase 8 / model-adapter concern and has not
+> been performed.
 
 ## Phase 6 - Detection baseline
 
@@ -479,3 +519,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5B.1 closed. The final outstanding candidate (chain-007, `66p9gzaQFGcmQA2v40Of` ~ `pbOZlgeseTpoTXwVJjAh`) was decided NEAR_DUPLICATE_SAME_SCENE (MEDIUM, GROUP_TOGETHER): the same worker and scene at a different moment rather than the same frame, but correlated enough that separating them across splits would risk leakage. Grouping serves statistical independence, not image identity, so it is indivisible like an exact duplicate while being recorded as a different finding via `group_basis`. All 11 phase 4A candidates now carry a human disposition (6 in 4B, 5 in 5B.1); zero outstanding. Final structure: 433 modelling images, 2031 annotations, 11 confirmed groups (22 images) + 411 singletons = 422 split units, largest group 2 images. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES is CLOSED and phase 5C entry readiness is READY_FOR_SPLIT_OPTIMIZATION. No split, holdout or model exists. |
 | 2026-09-04 | Phase 5C.1 generated six provisional split candidates over the 422 indivisible groups. All reach the exact 70/15/15 target (303/65/65 images) with every hard constraint satisfied: five classes in all three splits at image and instance level, vest_loose 5/1/2 or 4/2/2, negatives 10/2/2. The objective is normalised per class and averaged so the frequent classes cannot outweigh the rare one, and each component is reported separately. Search is deterministic: 192 restarts seeded from the project seed 42, 49 feasible, 49 unique, re-run byte-identical. The provider split is read nowhere - the optimiser refuses to run if the feature table carries such a column. A correction: the brief stated no vest_loose image belongs to a duplicate group, which phase 5B.1 made false (two of the eight are in manual_dup_010), so the class occupies 7 indivisible units. Family B (5/2/1) is searched but rejected by the two-image holdout floor. algorithmic_best_candidate is candidate_001; final_selected_candidate remains UNSELECTED_PENDING_REVIEW. No split frozen, no holdout fingerprint, no model. |
 | 2026-09-04 | Phase 5C.2 froze the canonical split. `candidate_001` was selected by human review of the six predeclared deterministic candidates (`HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES`, `PROJECT_OWNER_REVIEW`); it coincides with `algorithmic_best_candidate`, and the two are recorded separately because a coincidence of outcome does not replace the review step. Frozen at 303/65/65 images over 294/63/65 groups (422 total, 11 non-singleton at 9/2/0), 2031 annotations at 1422/304/305, negatives 10/2/2, all five classes in all three splits at image and instance level, vest_loose 5/1/2 images and 30/8/7 instances. Verification ran before any write: the candidate re-derives its recorded digest, agrees with the phase 5C.1 summary, and matches the phase 5B population and group fingerprints. New fingerprints `split_assignment_sha256` `a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc` and `holdout_sha256` `bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00` cover membership only - no timestamp, path, label, metric or provider split - and the freeze is idempotent. Recorded as a protocol limitation: validation holds a single vest_loose image, so vest_loose validation metrics must not drive model selection on their own, and the split is a group-aware and class-aware constrained split, not a perfectly stratified one. **From this point the test split is a locked holdout**, requiring both `allow_test=True` and `CSVISION_ALLOW_TEST_SPLIT=1`; the variable was not set and the holdout has never been evaluated or inspected. Membership only: no image copied, no label written, `data/processed/` untouched, no model, no YOLO dataset, no inference. |
+| 2026-09-04 | Phase 5D materialised the canonical task datasets for the development splits only. Two COCO views of the same images and the same objects: `canonical_detection_format: COCO`, `canonical_segmentation_format: COCO_INSTANCE_SEGMENTATION`, `model_specific_adapter: NOT_YET_SELECTED`. **368 images and 1726 annotations** (train 303/1422, validation 65/304), derived from the frozen manifest and verified against the canonical population. Images copied byte-for-byte, 368/368 verified by hashing both sides - no resize, crop, re-encode, EXIF rotation or colour conversion. Detection boxes derived from the canonical segmentation, never from the provider's bbox, and cross-checked against the independent phase 5A measurement at **max delta 0.0 px**. Geometry preservation measured rather than claimed: the emitted segmentation file is read back from disk and compared with the canonical state, RLE by decoded mask and polygons coordinate by coordinate - **1726 checked, 1726 matched, 0 mismatches** across 843 polygons, 881 RLE masks and 2 synthetic rectangles. Cross-task alignment verified for both splits. COCO ids are global over the whole modelling population, so the holdout can be materialised later without renumbering; no timestamp enters an emitted file and re-running is byte-identical. **No YOLO labels were written**: only COCO carries both polygon and RLE natively, so converting now would approximate the ground truth before a model exists; a future adapter must pass a documented mask-IoU fidelity audit first. The holdout is `NOT_MATERIALIZED_PROTECTED_HOLDOUT` - no test directory, COCO file or statistic was produced and no new knowledge about it was computed; CSVISION_ALLOW_TEST_SPLIT was not set. No model trained, no framework installed, no inference. Phase 6 not started. |

@@ -10,7 +10,7 @@ small text provenance/manifest files are tracked (see `.gitignore`).
 | `external/` | Artifacts **as received from the external provider** - the downloaded export archive with its `*.provenance.json` record, and `source_images/`, the 436 source originals at full resolution. | Immutable. Never edited, never re-compressed. |
 | `raw/` | The **extracted canonical dataset representation**, exactly as it came out of the archive. Input to every later step. | Immutable. Never edited, never manually fixed. |
 | `interim/` | Derived and audited representations produced by the audit phase (parsed annotations, audit tables, duplicate reports). | Regenerable. |
-| `processed/` | Model-ready datasets: the detection and segmentation views of the frozen splits. | Regenerable. |
+| `processed/` | Model-ready datasets: the canonical COCO detection and instance-segmentation views of the frozen development splits. Images are byte-identical copies of the canonical originals. | Regenerable. |
 
 `interim/` currently holds `source_image_stats.jsonl` and `source_annotations.jsonl`
 (phase 4A measurements) and `source_geometry.jsonl` (phase 5A recovered annotation
@@ -20,15 +20,44 @@ re-derivable by running the scripts named in `scripts/README.md`. What is
 committed instead is the counts-only summary under `reports/`, together with the
 file hashes recorded in `reports/canonical_annotation_manifest.json`.
 
-`processed/` is **reserved and currently empty**. The split *is* frozen (phase
-5C.2), but that phase froze **membership only**: it copied no image, wrote no
-label, resized nothing and created no directory here. The authoritative
-membership lives in `reports/split_manifest.json` and
-`reports/final_split_assignments.csv`, both committed because they are small text
-evidence. Phase 5D writes the first model-ready dataset under `processed/`, and
-must read the membership through
-`construction_safety_vision.data.split_freeze.load_frozen_splits` rather than
-re-deriving it.
+`processed/` holds the canonical task datasets built by phase 5D:
+
+```text
+processed/canonical/
+├── images/
+│   ├── train/         303 source originals, byte-identical copies
+│   └── validation/     65 source originals, byte-identical copies
+└── annotations/
+    ├── detection_train.coco.json
+    ├── detection_validation.coco.json
+    ├── segmentation_train.coco.json
+    └── segmentation_validation.coco.json
+```
+
+**`train` and `validation` only.** There is no `images/test/` and no
+`*_test.coco.json`: the holdout is not materialised while the models are
+unfrozen. The final-evaluation phase materialises it through the same code path,
+which requires both holdout opt-ins.
+
+Images here are **binary copies** of the canonical originals in `external/` - no
+resize, crop, re-encode, EXIF rotation or colour conversion - and both sides are
+hashed after the copy, so byte-identity is measured rather than assumed. The COCO
+documents preserve the canonical geometry unchanged: a polygon stays a polygon
+and a compressed RLE stays a compressed RLE. Detection boxes are **derived from
+the segmentation**, never copied from the provider.
+
+All of it is git-ignored and re-derivable:
+
+```bash
+uv run python scripts/materialize_task_datasets.py
+```
+
+What is committed instead is `reports/task_dataset_manifest.json` and
+`reports/task_materialization_report.md`, which carry the counts, the
+fingerprints and the validation results. Membership always comes from
+`reports/split_manifest.json`, read through
+`construction_safety_vision.data.split_freeze.load_frozen_splits`, never
+re-derived.
 
 ## Rules
 

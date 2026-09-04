@@ -1,0 +1,88 @@
+# Task-dataset materialisation protocol for phase 5D.
+#
+# Loaded by `construction_safety_vision.data.materialization`.
+# Parsing is strict: an unknown key raises rather than being ignored.
+#
+# Every choice below is a decision about the ground truth, so none of them lives
+# only in code. A reader auditing the emitted datasets must be able to see, from
+# a file, that boxes came from segmentation rather than from the provider, that
+# images were copied rather than processed, and that the holdout was excluded by
+# policy rather than by accident.
+
+schema_version: 1
+
+# The annotation state being materialised: the phase 5A canonical snapshot as
+# filtered by the phase 5B modelling population. Not the v4 export, whose
+# geometry is expressed after a stretch resize to 640x640.
+source_representation: CANONICAL_MODELING_POPULATION
+
+# The single authoritative membership. Nothing else decides which image lands in
+# which split - in particular not the provider's split, which phase 4B rejected
+# as UNSUITABLE_FOR_FINAL_PROTOCOL.
+canonical_split_manifest: reports/split_manifest.json
+
+# The frozen class map. Its order was fixed in phase 5B and is not re-derived
+# here from dictionary iteration, provider category order or runtime sorting.
+category_map_source: reports/canonical_modeling_manifest.json
+
+# The splits a development run may write. The protected split is never one.
+development_splits:
+  - train
+  - validation
+
+# Policy for the holdout. The code path to materialise it exists and is
+# unit-tested against synthetic fixtures, but it is not invoked while the models
+# are unfrozen, and it requires both holdout opt-ins when it eventually is.
+# Changing this value alone does not unlock anything: the guard still applies.
+test_materialization: disabled_during_development
+
+# Images are transferred, not processed. No resize, no crop, no re-encode, no
+# EXIF-driven rotation, no colour-space change, no augmentation. Both sides are
+# hashed after the copy, so "byte-identical" is measured rather than asserted.
+image_copy_mode: BINARY_IDENTICAL
+
+# Destination file names come from the canonical source image id plus the
+# original extension. The provider's filenames are descriptive, long enough to
+# hit the Windows path limit on this machine, and are not guaranteed unique
+# across the population; the id is short, unique, and the key every artifact
+# already joins on.
+image_naming: SOURCE_IMAGE_ID_PLUS_ORIGINAL_EXTENSION
+
+# Detection boxes are derived from the canonical segmentation, never copied from
+# the provider. Phase 4A measured the provider's stored boxes disagreeing with
+# their own geometry by up to 123.5 px inside the v4 export.
+detection_bbox_source: DERIVED_FROM_CANONICAL_SEGMENTATION
+
+# Canonical geometry is carried through unchanged: a polygon stays a polygon and
+# a compressed RLE stays a compressed RLE. No RLE -> polygon conversion happens
+# here. That conversion is lossy, and if a future training stack needs it, it
+# belongs to a model-specific adapter that measures what it loses.
+segmentation_geometry_policy: PRESERVE_CANONICAL_REPRESENTATION
+
+# The COCO category id IS the frozen class index. A second numbering would create
+# two orderings to keep in step, and the frozen class_map_sha256 would stop
+# describing what the datasets contain.
+category_id_policy: CANONICAL_CLASS_INDEX
+
+# The canonical task format for both views. COCO carries polygon and RLE
+# natively; YOLO segmentation labels carry polygons only, so they are not the
+# canonical representation and are not written by this phase.
+output_format: COCO
+
+# Destination root, repository-relative. Git-ignored: bulk data is never
+# committed, only the manifests and reports that make it re-derivable.
+output_root: data/processed/canonical
+
+# Numeric slack allowed by the validators, in pixels.
+tolerances:
+  # A box derived from a rasterised RLE is quantised to whole pixels, so it can
+  # legitimately sit one pixel outside a fractional canvas edge.
+  bbox_canvas_px: 1.0
+  # Zero: polygons are copied, not recomputed. Any coordinate difference at all
+  # is a serialisation defect, not rounding.
+  polygon_coordinate_px: 0.0
+  # How far the box derived here may sit from the box phase 5A measured from the
+  # same geometry. Two independent implementations reading one geometry should
+  # agree; the tolerance exists so the check reports a number rather than
+  # asserting perfection.
+  bbox_agreement_px: 1.0

@@ -1,0 +1,142 @@
+{
+  "bulk_data_committed": false,
+  "canonical_detection_format": "COCO",
+  "canonical_id_assignment_sha256": "04101ab45cc7e40c7b2a5cd7d43124644cb5fe0c067b30abe2fb5233dd0854cb",
+  "canonical_segmentation_format": "COCO_INSTANCE_SEGMENTATION",
+  "canonical_split_manifest": "reports/split_manifest.json",
+  "class_map": {
+    "helmet_loose": 0,
+    "helmet_on_head": 1,
+    "person": 2,
+    "vest_loose": 3,
+    "vest_on_body": 4
+  },
+  "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+  "development_totals": {
+    "annotations": 1726,
+    "images": 368
+  },
+  "git_commit": "c952b43a00168e198c190cd5798a8d2d1de2c488",
+  "groups_sha256": "d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf",
+  "materialization_config": {
+    "canonical_split_manifest": "reports/split_manifest.json",
+    "category_id_policy": "CANONICAL_CLASS_INDEX",
+    "category_map_source": "reports/canonical_modeling_manifest.json",
+    "detection_bbox_source": "DERIVED_FROM_CANONICAL_SEGMENTATION",
+    "development_splits": [
+      "train",
+      "validation"
+    ],
+    "image_copy_mode": "BINARY_IDENTICAL",
+    "image_naming": "SOURCE_IMAGE_ID_PLUS_ORIGINAL_EXTENSION",
+    "output_format": "COCO",
+    "output_root": "data/processed/canonical",
+    "schema_version": 1,
+    "segmentation_geometry_policy": "PRESERVE_CANONICAL_REPRESENTATION",
+    "source_representation": "CANONICAL_MODELING_POPULATION",
+    "test_materialization": "disabled_during_development",
+    "tolerances": {
+      "bbox_agreement_px": 1.0,
+      "bbox_canvas_px": 1.0,
+      "polygon_coordinate_px": 0.0
+    }
+  },
+  "materialization_config_sha256": "352efcc105c295c17599fe73dda1506c61aa17de0f90bd3caa1612e40c44a541",
+  "model_specific_adapter": "NOT_YET_SELECTED",
+  "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+  "output_root": "data/processed/canonical",
+  "phase": "5D",
+  "schema_version": 1,
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "status": "DEVELOPMENT_DATASETS_MATERIALIZED",
+  "test": {
+    "reason": "the protected holdout is not materialised while the models are unfrozen. No image, annotation, identifier or statistic of it is recorded here. The final-evaluation phase materialises it through this same code path, with both holdout opt-ins present.",
+    "status": "NOT_MATERIALIZED_PROTECTED_HOLDOUT"
+  },
+  "train": {
+    "alignment": {
+      "aligned": true,
+      "annotation_ids_match": true,
+      "annotations": 1422,
+      "boxes_match": true,
+      "categories_match": true,
+      "image_ids_match": true,
+      "images": 303,
+      "split": "train"
+    },
+    "annotation_count": 1422,
+    "bbox_agreement": {
+      "annotations_compared": 1422,
+      "max_delta_px": 0.0,
+      "tolerance_px": 1.0,
+      "within_tolerance": true
+    },
+    "detection_document_sha256": "e17556634fe76304766ea143856777e1e1e3cf7c7ba2331a95eb47732f16ec1e",
+    "detection_file_sha256": "c677a1561bcdbf3cd84bb499e8d89203425699358e4ae5b276c353df5fa4ac22",
+    "geometry_round_trip": {
+      "annotations_checked": 1422,
+      "matches": 1422,
+      "max_polygon_coordinate_delta_px": 0.0,
+      "mismatches": 0,
+      "polygon_annotations_checked": 691,
+      "rle_annotations_checked": 729,
+      "synthetic_rectangles_checked": 2
+    },
+    "image_content_sha256": "78b392958070ab9ecb229cc9699bc54c92bf6a389511dadf582950963c07cb5f",
+    "image_count": 303,
+    "instances_by_class": {
+      "helmet_loose": 276,
+      "helmet_on_head": 220,
+      "person": 641,
+      "vest_loose": 30,
+      "vest_on_body": 255
+    },
+    "segmentation_document_sha256": "25fee62e589f84839b63d6dd5d8c3f6596dc155e0a5b86cc7b575cfb037955c8",
+    "segmentation_file_sha256": "907c02b0f6e6d67146a24917fe30e39775dd3a6c734667853ed8fa49456d6abc",
+    "status": "MATERIALIZED",
+    "zero_instance_images": 10
+  },
+  "validation": {
+    "alignment": {
+      "aligned": true,
+      "annotation_ids_match": true,
+      "annotations": 304,
+      "boxes_match": true,
+      "categories_match": true,
+      "image_ids_match": true,
+      "images": 65,
+      "split": "validation"
+    },
+    "annotation_count": 304,
+    "bbox_agreement": {
+      "annotations_compared": 304,
+      "max_delta_px": 0.0,
+      "tolerance_px": 1.0,
+      "within_tolerance": true
+    },
+    "detection_document_sha256": "3e95f7b39e86234e879eb63d5875c171fba4799086d2b0235eb4c593d52782f9",
+    "detection_file_sha256": "c64d7052d2affdfbd5dafe45fe600f5342a67a2c614d4e4b783d8226db151e9b",
+    "geometry_round_trip": {
+      "annotations_checked": 304,
+      "matches": 304,
+      "max_polygon_coordinate_delta_px": 0.0,
+      "mismatches": 0,
+      "polygon_annotations_checked": 152,
+      "rle_annotations_checked": 152,
+      "synthetic_rectangles_checked": 0
+    },
+    "image_content_sha256": "15b3d63745bcf06bd7a9ebbde490f91493e0d60256a16370ff26fefd3408f9ab",
+    "image_count": 65,
+    "instances_by_class": {
+      "helmet_loose": 57,
+      "helmet_on_head": 47,
+      "person": 137,
+      "vest_loose": 8,
+      "vest_on_body": 55
+    },
+    "segmentation_document_sha256": "3be5d29ac973bcd81e57307759175d2e857ed10ad05e4795675ce1e037839068",
+    "segmentation_file_sha256": "3565a5480452bc47d48ec4c672107a5cd53f5b6c3629557a5d6b2c3f9d37a62c",
+    "status": "MATERIALIZED",
+    "zero_instance_images": 2
+  }
+}
