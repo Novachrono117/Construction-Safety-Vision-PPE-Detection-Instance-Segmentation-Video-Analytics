@@ -1,6 +1,6 @@
 # Canonical Modelling Population
 
-Generated: 2026-09-04T12:39:31+00:00 · Phase: 5B · Commit: `10ff78972f857c97a1c56fe10249d95578f447e6`
+Generated: 2026-09-04T14:29:16+00:00 · Phase: 5B · Commit: `5197df5805a9452e585657dea268a52d025793d2`
 
 **Question.** Which images and annotations are eligible to enter a future split, and which images must stay together when one is designed?
 
@@ -68,13 +68,22 @@ The 34 annotations the evaluated rule would have selected carry `action = KEEP` 
 
 | | Count |
 | --- | --- |
-| Semantic duplicate groups | 6 |
-| Singleton groups | 421 |
-| **Total split units** | **427** |
+| Semantic duplicate groups | 11 |
+| Singleton groups | 411 |
+| **Total split units** | **422** |
 
-Every eligible image belongs to exactly one group. The six semantic duplicate groups are the pairs phase 4B visually confirmed; they must not be split apart.
+Every eligible image belongs to exactly one group, and every group is a connected component of the confirmed relations rather than a pair, so a chain A~B, B~C forms one group instead of two overlapping ones.
 
-5 further near-duplicate chains were raised by perceptual hashing in phase 4A and never reviewed by a person. They are **not** merged: a hash collision is not a confirmed duplicate, and merging on it would shrink the pool a split can draw from on evidence nobody checked. They are recorded in `unconfirmed_group_candidates.csv` for phase 5C to consider explicitly.
+Two different human findings make a group indivisible, and `group_manifest.csv` records which applies to each:
+
+| Basis | Groups | Meaning |
+| --- | --- | --- |
+| `EXACT_SEMANTIC_DUPLICATE` | 10 | the same frame, photographed once and stored twice |
+| `NEAR_DUPLICATE_SAME_SCENE` | 1 | the same subject and scene at a different moment - correlated, not identical |
+
+Both are grouped, because the purpose of grouping is statistical independence across splits rather than image identity.
+
+**Every** phase 4A near-duplicate candidate now carries an explicit human disposition; none was merged on perceptual evidence alone.
 
 ## Rare class (PHASE 5C INPUT)
 
@@ -84,11 +93,11 @@ Every eligible image belongs to exactly one group. The six semantic duplicate gr
 
 | Component | SHA-256 |
 | --- | --- |
-| `images_sha256` | `eaf2b5cf5f6e973dbf6197e11b949e78ee419ca556c1a6319f6cc2545ceead2c` |
+| `images_sha256` | `36a56bbf2a28b2c5d6a1cf8f1e82f33d0f5146acc25d1839346968fadeae952b` |
 | `annotations_sha256` | `1efa35fa4d6a229c16779aace5a60f58467f416fa04a657b27c4cd833e22b14e` |
-| `groups_sha256` | `687501a9db6173c58ac606e61f3af30dea32755c4ecb4c3c2b67e1e068b7cf88` |
+| `groups_sha256` | `d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf` |
 | `class_map_sha256` | `596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753` |
-| `modeling_population_sha256` | `d6bcd388feb799a951c2ba279e80cd75ec97066d5de38fc8087f7581d5816181` |
+| `modeling_population_sha256` | `afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7` |
 
 Computed over the semantic content only - image statuses, annotation actions, geometry digests, the class map and group membership. No timestamp or file path enters it, so re-running the pipeline on unchanged inputs reproduces it exactly.
 
@@ -96,9 +105,9 @@ Computed over the semantic content only - image statuses, annotation actions, ge
 
 ## Phase 5C entry gate (PHASE 5C INPUT)
 
-`MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - **open**.
+`MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - **closed**. Phase 5C entry readiness: `READY_FOR_SPLIT_OPTIMIZATION`.
 
-The 5 remaining phase 4A near-duplicate candidates have not received a complete human visual disposition. Phase 5B does not need them to complete, and they are deliberately not merged, but they **must be dispositioned before the final split is frozen**: if any turns out to be a real duplicate, a split frozen without it would leak content across a boundary.
+All 11 phase 4A near-duplicate candidates have been dispositioned by a person: 6 in phase 4B, 5 in phase 5B.1. Nothing was merged on perceptual distance alone, and nothing outstanding remains that could leak content across a split boundary.
 
 ## Validation (COMPUTED RESULT)
 

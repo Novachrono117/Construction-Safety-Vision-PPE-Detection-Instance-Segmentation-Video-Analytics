@@ -282,6 +282,10 @@ class Group:
         members: Source image ids, sorted.
         group_type: :data:`SINGLETON` or :data:`SEMANTIC_DUPLICATE`.
         group_origin: What established the grouping.
+        basis: The specific human verdict behind the grouping, when there is one.
+            Two different findings make a group indivisible - the same frame
+            photographed twice, and the same scene photographed at two moments -
+            and a reader must be able to tell which applies.
         notes: Remarks.
     """
 
@@ -289,6 +293,7 @@ class Group:
     members: list[str]
     group_type: str
     group_origin: str
+    basis: str = ""
     notes: str = ""
 
     @property
@@ -311,6 +316,7 @@ class Group:
                 "group_id": self.group_id,
                 "source_image_id": member,
                 "group_type": self.group_type,
+                "group_basis": self.basis,
                 "group_origin": self.group_origin,
                 "split_indivisible": "true",
                 "notes": self.notes,
@@ -319,16 +325,69 @@ class Group:
         ]
 
 
+def connected_components(relations: dict[str, list[str]]) -> list[tuple[str, list[str]]]:
+    """Merge overlapping confirmed relations into indivisible components.
+
+    A duplicate relation is transitive for the purpose of splitting: if A and B
+    show the same scene and B and C show the same scene, then all three must land
+    in the same split. Treating the relations as separate pairs would satisfy each
+    one individually while still separating A from C.
+
+    Args:
+        relations: Declared groups, keyed by the identifier the reviewers gave
+            them, each listing its member image ids.
+
+    Returns:
+        One ``(group id, sorted members)`` pair per component, ordered by group
+        id. The identifier of a merged component is the lowest of the declared
+        identifiers that produced it, so numbering stays stable and traceable.
+    """
+    parent: dict[str, str] = {}
+
+    def find(node: str) -> str:
+        parent.setdefault(node, node)
+        while parent[node] != node:
+            parent[node] = parent[parent[node]]
+            node = parent[node]
+        return node
+
+    def union(left: str, right: str) -> None:
+        left_root, right_root = find(left), find(right)
+        if left_root != right_root:
+            parent[max(left_root, right_root)] = min(left_root, right_root)
+
+    for members in relations.values():
+        listed = sorted(set(members))
+        for member in listed[1:]:
+            union(listed[0], member)
+
+    component_members: dict[str, set[str]] = {}
+    component_ids: dict[str, set[str]] = {}
+    for group_id, members in relations.items():
+        for member in members:
+            root = find(member)
+            component_members.setdefault(root, set()).add(member)
+            component_ids.setdefault(root, set()).add(group_id)
+
+    components = [
+        (min(component_ids[root]), sorted(members)) for root, members in component_members.items()
+    ]
+    return sorted(components, key=lambda entry: entry[0])
+
+
 def build_groups(
     eligible_image_ids: list[str],
     confirmed_duplicates: dict[str, list[str]],
+    bases: dict[str, str] | None = None,
 ) -> list[Group]:
     """Partition the eligible images into indivisible split units.
 
     Args:
         eligible_image_ids: Every image in the modelling population.
-        confirmed_duplicates: Manually confirmed groups, keyed by their phase 4B
-            group identifier, each listing its member image ids.
+        confirmed_duplicates: Manually confirmed groups, keyed by the identifier
+            the reviewers gave them, each listing its member image ids.
+        bases: The verdict behind each declared group, keyed the same way. A
+            merged component reports the verdicts that produced it.
 
     Returns:
         Every group, ordered by group id. Each eligible image appears in exactly
@@ -345,8 +404,7 @@ def build_groups(
 
     groups: list[Group] = []
     claimed: dict[str, str] = {}
-    for group_id in sorted(confirmed_duplicates):
-        members = sorted(set(confirmed_duplicates[group_id]))
+    for group_id, members in connected_components(confirmed_duplicates):
         if len(members) < 2:
             msg = f"Confirmed duplicate group {group_id!r} has {len(members)} member(s); need >= 2"
             raise PopulationError(msg)
@@ -358,16 +416,27 @@ def build_groups(
                 )
                 raise PopulationError(msg)
             if member in claimed:
+                # Unreachable while grouping goes through connected_components,
+                # which is exactly why the invariant is asserted rather than assumed.
                 msg = f"Image {member!r} is claimed by both {claimed[member]!r} and {group_id!r}"
                 raise PopulationError(msg)
             claimed[member] = group_id
+        contributing = sorted(
+            {
+                (bases or {}).get(declared, "")
+                for declared, listed in confirmed_duplicates.items()
+                if set(listed) & set(members)
+            }
+            - {""}
+        )
         groups.append(
             Group(
                 group_id=group_id,
                 members=members,
                 group_type=SEMANTIC_DUPLICATE,
-                group_origin="PHASE_4B_HUMAN_AUDIT",
-                notes="visually confirmed as the same content; must not be split apart",
+                group_origin="HUMAN_AUDIT",
+                basis="|".join(contributing),
+                notes="human-confirmed as one observation; must not be split apart",
             )
         )
 

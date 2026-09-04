@@ -159,3 +159,5 @@ RRlPrUJX,RRlPrUJXfRWGGJ6CeKIL,px_0139_8487333.jpg,train,annotation_drift,reports
 WvGmeXrU,WvGmeXrUqULTXbaSGJgZ,px_0080_34842258.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=1
 OQJwjQoY-I,OQJwjQoYsf1KUgr9G0V8,photo-1694521787162-5373b598945c.jpg,test,geometry_less_microannotation,reports/figures/review_m_microannotations.jpg,annotation I label=helmet_on_head no segmentation
 OQJwjQoY-J,OQJwjQoYsf1KUgr9G0V8,photo-1694521787162-5373b598945c.jpg,test,geometry_less_microannotation,reports/figures/review_m_microannotations.jpg,annotation J label=vest_on_body no segmentation
+66p9gzaQ,66p9gzaQFGcmQA2v40Of,,train,unresolved_near_duplicate_candidate,reports/figures/review_o_remaining_near_duplicates.jpg,chain-007 dhash=12 phash=9
+pbOZlges,pbOZlgeseTpoTXwVJjAh,,train,unresolved_near_duplicate_candidate,reports/figures/review_o_remaining_near_duplicates.jpg,chain-007 dhash=12 phash=9

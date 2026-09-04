@@ -165,7 +165,9 @@ def load_geometry(path: Path) -> dict[str, dict]:
     }
 
 
-def read_decisions(rows: list[dict]) -> tuple[dict[str, dict], dict[str, list[str]]]:
+def read_decisions(
+    rows: list[dict],
+) -> tuple[dict[str, dict], dict[str, list[str]], dict[str, str]]:
     """Extract the phase 4B judgements this phase acts on.
 
     Args:
@@ -173,24 +175,38 @@ def read_decisions(rows: list[dict]) -> tuple[dict[str, dict], dict[str, list[st
 
     Returns:
         Per-image zero-instance judgements keyed by image id, and the confirmed
-        semantic duplicate groups keyed by their phase 4B group id.
+        semantic duplicate groups keyed by the identifier the reviewers gave
+        them, and the verdict behind each. Both the cross-split pairs phase 4B
+        confirmed and the same-split pairs phase 5B.1 confirmed count: the
+        provider split was rejected, so a relation that happened to sit inside
+        one of its splits constrains the new split exactly as much as one that
+        crossed a boundary.
 
     Raises:
         PopulationError: If a confirmed duplicate group is malformed.
     """
     zero_instance: dict[str, dict] = {}
     duplicates: dict[str, list[str]] = {}
+    bases: dict[str, str] = {}
     for row in rows:
         if row["review_type"] == "zero_instance_image":
             zero_instance[row["subject_id_a"]] = row
-        elif row["review_type"] == "cross_split_near_duplicate":
-            group_id = row["group_id"].strip()
-            members = [row["subject_id_a"].strip(), row["subject_id_b"].strip()]
-            if not group_id or not all(members):
-                msg = f"Duplicate decision {row['decision_id']!r} is missing a group or a member"
-                raise PopulationError(msg)
-            duplicates.setdefault(group_id, []).extend(members)
-    return zero_instance, duplicates
+            continue
+        if "near_duplicate" not in row["review_type"]:
+            continue
+        # The action decides, not the verdict: a reviewer may find two images
+        # correlated without calling them the same frame, and both readings make
+        # the pair indivisible. A future NOT_DUPLICATE verdict must not group.
+        if row["phase5_action"] != "GROUP_TOGETHER":
+            continue
+        group_id = row["group_id"].strip()
+        members = [row["subject_id_a"].strip(), row["subject_id_b"].strip()]
+        if not group_id or not all(members):
+            msg = f"Duplicate decision {row['decision_id']!r} is missing a group or a member"
+            raise PopulationError(msg)
+        duplicates.setdefault(group_id, []).extend(members)
+        bases[group_id] = row["decision"]
+    return zero_instance, duplicates, bases
 
 
 def build_images(geometry: dict[str, dict], zero_instance: dict[str, dict]) -> list[ImageRecord]:
@@ -523,14 +539,36 @@ def build_report(
             f"| Singleton groups | {summary['groups_singleton']} |",
             f"| **Total split units** | **{summary['groups_total']}** |",
             "",
-            "Every eligible image belongs to exactly one group. The six semantic duplicate "
-            "groups are the pairs phase 4B visually confirmed; they must not be split apart.",
+            "Every eligible image belongs to exactly one group, and every group is a "
+            "connected component of the confirmed relations rather than a pair, so a chain "
+            "A~B, B~C forms one group instead of two overlapping ones.",
             "",
-            f"{len(unconfirmed)} further near-duplicate chains were raised by perceptual hashing "
-            "in phase 4A and never reviewed by a person. They are **not** merged: a hash "
-            "collision is not a confirmed duplicate, and merging on it would shrink the pool a "
-            "split can draw from on evidence nobody checked. They are recorded in "
-            "`unconfirmed_group_candidates.csv` for phase 5C to consider explicitly.",
+            "Two different human findings make a group indivisible, and `group_manifest.csv` "
+            "records which applies to each:",
+            "",
+            "| Basis | Groups | Meaning |",
+            "| --- | --- | --- |",
+            *(
+                f"| `{basis}` | {len(ids)} | "
+                + (
+                    "the same frame, photographed once and stored twice"
+                    if basis == "EXACT_SEMANTIC_DUPLICATE"
+                    else "the same subject and scene at a different moment - correlated, "
+                    "not identical"
+                )
+                + " |"
+                for basis, ids in manifest["groups"]["by_basis"].items()
+            ),
+            "",
+            "Both are grouped, because the purpose of grouping is statistical independence "
+            "across splits rather than image identity.",
+            "",
+            (
+                f"{len(unconfirmed)} near-duplicate candidates remain without a human disposition."
+                if unconfirmed
+                else "**Every** phase 4A near-duplicate candidate now carries an explicit human "
+                "disposition; none was merged on perceptual evidence alone."
+            ),
             "",
             "## Rare class (PHASE 5C INPUT)",
             "",
@@ -562,13 +600,19 @@ def build_report(
             "",
             "## Phase 5C entry gate (PHASE 5C INPUT)",
             "",
-            "`MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - **open**.",
+            f"`MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - "
+            f"**{'closed' if not unconfirmed else 'open'}**. Phase 5C entry readiness: "
+            f"`{manifest['phase_5c_entry_readiness']}`.",
             "",
-            f"The {len(unconfirmed)} remaining phase 4A near-duplicate candidates have not "
-            "received a complete human visual disposition. Phase 5B does not need them to "
-            "complete, and they are deliberately not merged, but they **must be dispositioned "
-            "before the final split is frozen**: if any turns out to be a real duplicate, a "
-            "split frozen without it would leak content across a boundary.",
+            (
+                "All 11 phase 4A near-duplicate candidates have been dispositioned by a person: "
+                "6 in phase 4B, 5 in phase 5B.1. Nothing was merged on perceptual distance "
+                "alone, and nothing outstanding remains that could leak content across a split "
+                "boundary."
+                if not unconfirmed
+                else f"{len(unconfirmed)} candidate(s) still lack a human disposition and must "
+                "be decided before the final split is frozen."
+            ),
             "",
             "## Validation (COMPUTED RESULT)",
             "",
@@ -630,12 +674,12 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     try:
-        zero_instance, confirmed = read_decisions(decisions)
+        zero_instance, confirmed, bases = read_decisions(decisions)
         images = build_images(geometry, zero_instance)
         by_id = {record.source_image_id: record for record in images}
         annotations = build_annotations(geometry, by_id, flagged)
         eligible_ids = [r.source_image_id for r in images if r.status == ELIGIBLE]
-        groups = build_groups(eligible_ids, confirmed)
+        groups = build_groups(eligible_ids, confirmed, bases)
     except PopulationError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 3
@@ -742,21 +786,40 @@ def main(argv: list[str] | None = None) -> int:
             "semantic_duplicate_ids": sorted(
                 g.group_id for g in groups if g.group_type == SEMANTIC_DUPLICATE
             ),
+            # Two different findings make a group indivisible. Both are recorded
+            # so a reader can tell which evidence supports which group.
+            "by_basis": {
+                basis: sorted(
+                    g.group_id
+                    for g in groups
+                    if g.group_type == SEMANTIC_DUPLICATE and g.basis == basis
+                )
+                for basis in sorted(
+                    {g.basis for g in groups if g.group_type == SEMANTIC_DUPLICATE and g.basis}
+                )
+            },
+            "largest_group_size": max((len(g.members) for g in groups), default=0),
             "unconfirmed_candidates": len(unconfirmed),
         },
         "phase_5b_classification": "READY_FOR_SPLIT_DESIGN",
         "phase_5c_entry_gates": [
             {
                 "gate": "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES",
-                "status": "OPEN",
-                "candidates": len(unconfirmed),
+                # Derived from what is actually outstanding, never asserted: the gate
+                # closes when the artifact it guards is empty, and not before.
+                "status": "CLOSED" if not unconfirmed else "OPEN",
+                "candidates_outstanding": len(unconfirmed),
+                "outstanding_ids": [row["candidate_id"] for row in unconfirmed],
                 "requirement": (
-                    "the remaining phase 4A near-duplicate candidates have not received a "
-                    "complete human visual disposition. They must be dispositioned before the "
-                    "final split is frozen; they are not merged automatically"
+                    "every phase 4A near-duplicate candidate must carry a human visual "
+                    "disposition before the final split is frozen. Candidates are never "
+                    "merged automatically"
                 ),
             }
         ],
+        "phase_5c_entry_readiness": (
+            "READY_FOR_SPLIT_OPTIMIZATION" if not unconfirmed else "BLOCKED_ON_MANUAL_DISPOSITION"
+        ),
         "split_assignment_created": False,
         "holdout_frozen": False,
         "fingerprints": fingerprints,
@@ -772,10 +835,10 @@ def main(argv: list[str] | None = None) -> int:
                 "review_flag, which is descriptive and asserts nothing about eligibility",
             ],
             "note": (
-                "recomputed after the owner's decision to retain all annotations. It is "
-                "unchanged from the previous run because that decision confirmed the "
-                "population rather than altering it: no image, action, geometry, group or "
-                "class index moved"
+                "images_sha256 covers each image's group assignment as well as its "
+                "eligibility, so confirming a duplicate pair moves it even though no image "
+                "entered or left the population. annotations_sha256 and class_map_sha256 "
+                "move only when an annotation or a class index does"
             ),
         },
         "validation_problems": problems,

@@ -5,6 +5,11 @@ manual_dup_003,2,0,SEMANTIC_DUPLICATE,true,false,false,false,false,4,0,0,0,0,4
 manual_dup_004,2,0,SEMANTIC_DUPLICATE,false,true,true,false,true,0,2,2,0,2,6
 manual_dup_005,2,0,SEMANTIC_DUPLICATE,true,false,true,false,false,2,0,2,0,0,4
 manual_dup_006,2,0,SEMANTIC_DUPLICATE,false,true,true,false,true,0,2,2,0,2,6
+manual_dup_007,2,0,SEMANTIC_DUPLICATE,false,false,true,false,false,0,0,2,0,0,2
+manual_dup_008,2,0,SEMANTIC_DUPLICATE,false,false,true,false,true,0,0,2,0,2,4
+manual_dup_009,2,0,SEMANTIC_DUPLICATE,true,false,false,false,false,2,0,0,0,0,2
+manual_dup_010,2,0,SEMANTIC_DUPLICATE,true,false,false,true,false,10,0,0,13,0,23
+manual_dup_011,2,0,SEMANTIC_DUPLICATE,true,false,false,false,false,83,0,0,0,0,83
 singleton-0CHrBSJAmY24quC0QSYA,1,0,SINGLETON,false,false,true,false,false,0,0,2,0,0,2
 singleton-0OEuk7X9WrM64hqQbedA,1,0,SINGLETON,true,false,true,false,true,1,0,1,0,1,3
 singleton-0Orp0pwbiOU0MIg0a28r,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
@@ -24,7 +29,6 @@ singleton-2estUvSXu4usdh4plcAm,1,0,SINGLETON,true,true,true,false,true,1,2,5,0,3
 singleton-2qD9FzEoqf4Rsihf6kf7,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-35kJU6sOxBnL8qucfgHx,1,0,SINGLETON,false,true,true,false,false,0,2,2,0,0,4
 singleton-3INKyAoeOEbPQKuxINbX,1,0,SINGLETON,false,false,true,false,true,0,0,18,0,7,25
-singleton-3LUOWEww9aCx2Cx4B38y,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-3wdTWWyA3a9YrQ9EfLc9,1,0,SINGLETON,false,true,true,false,true,0,1,2,0,1,4
 singleton-4XETInqs70Y4H9ry55k3,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-4ajEucaVD61th8hqHdux,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
@@ -38,7 +42,6 @@ singleton-5z8XJfD2gto4gT3gwPAK,1,0,SINGLETON,false,true,true,false,true,0,1,2,0,
 singleton-60TqAIaOldetEAmBqqMX,1,1,SINGLETON,false,false,false,false,false,0,0,0,0,0,0
 singleton-619mdz3TlcOedTGFv0za,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-62UoaBv0beM5cBLCubmT,1,1,SINGLETON,false,false,false,false,false,0,0,0,0,0,0
-singleton-66p9gzaQFGcmQA2v40Of,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-6B8gSWbJYQFfVadXSWxT,1,0,SINGLETON,false,false,true,false,false,0,0,4,0,0,4
 singleton-6R3F7WoZUjSohZEFSgXr,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-6ZHpQueANukCh7UeL4s5,1,0,SINGLETON,false,false,true,false,true,0,0,2,0,1,3
@@ -145,7 +148,6 @@ singleton-IUKDvF2wZjRXWHNvujtd,1,0,SINGLETON,false,false,true,false,true,0,0,2,0
 singleton-IdQmnhilWUB8CW2LFhdD,1,0,SINGLETON,true,false,false,false,false,1,0,0,0,0,1
 singleton-IdlpHmd45MACc3eXTRqN,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-IxZ3C1K7vs4I43UcFG63,1,0,SINGLETON,false,true,true,false,false,0,4,7,0,0,11
-singleton-IyVJr4DcosMWf0wZS1uN,1,0,SINGLETON,true,false,false,false,false,1,0,0,0,0,1
 singleton-J1TlMOzR3PfvLVrD3kL2,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-J3hznbBPysK0tWYT9WUi,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-J43xY0jaSQexxzdN3Uoe,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
@@ -162,7 +164,6 @@ singleton-KyqVojaz6oaARWVjEAyG,1,0,SINGLETON,false,true,true,false,true,0,3,3,0,
 singleton-LECJ0QrWJeyWICbOqamy,1,0,SINGLETON,false,true,true,false,false,0,4,4,0,0,8
 singleton-LSzsvsjaUz4782epO92M,1,0,SINGLETON,false,true,true,false,true,0,4,4,0,3,11
 singleton-LUvZ2w5JsB8sHFevCPRy,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
-singleton-LVQG21gdyYgR1aZBE6h9,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-LgO9XnFYKArvgSB2viem,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,1,3
 singleton-LkPWuopeX4IeCkstwBpU,1,0,SINGLETON,false,true,true,false,true,0,2,2,0,2,6
 singleton-MBuNKaZBdNlilQvSv3zC,1,0,SINGLETON,false,false,true,false,false,0,0,8,0,0,8
@@ -217,7 +218,6 @@ singleton-TRn9Bx3c2kyqm0x9Suct,1,0,SINGLETON,false,false,true,false,true,0,0,1,0
 singleton-TfT34mr30shVLpJdQuu4,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-TqbtZYtTWiEhg5zB0duU,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-Tw3kcCGIMX2DmGQevfCR,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
-singleton-TwF1Rahc7CIP2gpmlbLS,1,0,SINGLETON,true,false,false,true,false,5,0,0,6,0,11
 singleton-TypXpPM2GOKRXVcgFCjR,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,1,3
 singleton-U0AseIcul3Oj2l27WnM8,1,0,SINGLETON,false,true,true,false,false,0,1,1,0,0,2
 singleton-U1qd4okczSBsE3VT6pzg,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
@@ -301,7 +301,6 @@ singleton-g1wRtvNq6gOrnSakm4aj,1,0,SINGLETON,false,false,true,false,false,0,0,7,
 singleton-gNPDrOkY5ncvCstpk8Ir,1,0,SINGLETON,false,true,true,false,false,0,1,1,0,0,2
 singleton-gPFGULsXJIadGfSxA0ZC,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-gYn6rlfE3jNZF4ue6QGT,1,0,SINGLETON,true,false,true,false,false,1,0,2,0,0,3
-singleton-ghzZPWPu7P2hqWEVXzdK,1,0,SINGLETON,true,false,false,false,false,1,0,0,0,0,1
 singleton-glS8kOIkWw2z5g9Jf0YI,1,0,SINGLETON,false,false,true,false,false,0,0,2,0,0,2
 singleton-gtQyCqdKvXk2yIeURzCw,1,0,SINGLETON,true,false,true,false,false,1,0,1,0,0,2
 singleton-guTxd6qoSMleRrrzuudX,1,0,SINGLETON,false,true,true,false,true,0,2,3,0,2,7
@@ -357,14 +356,11 @@ singleton-oNY9i1I2LbSYd4Zq924U,1,0,SINGLETON,false,false,true,false,true,0,0,1,0
 singleton-oTvvPXX0GF2JCGezEtXJ,1,0,SINGLETON,false,true,true,false,false,0,1,2,0,0,3
 singleton-ojwkuYxr8Yg4pw09PSCT,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,1,3
 singleton-p0WuKqx9EeARevPPWyRq,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
-singleton-p5lxtMTKDL0gIgbqSrls,1,0,SINGLETON,true,false,false,false,false,48,0,0,0,0,48
 singleton-p96kP7xmkvs84TmnINFt,1,0,SINGLETON,true,false,false,false,false,1,0,0,0,0,1
 singleton-pE6UkMMWzcDOy86QHSoC,1,0,SINGLETON,false,false,true,false,false,0,0,33,0,0,33
 singleton-pIzGCRRLnf8bfGnx48Ka,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
 singleton-pMftFzW2M3bmHHBJOTG2,1,0,SINGLETON,false,false,true,false,false,0,0,7,0,0,7
 singleton-pb3x906Z3qhaYLgBVWrb,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
-singleton-pbOZlgeseTpoTXwVJjAh,1,0,SINGLETON,false,false,true,false,true,0,0,1,0,1,2
-singleton-pd0SyehnE6l5xoGZqJCt,1,0,SINGLETON,true,false,false,true,false,5,0,0,7,0,12
 singleton-prVjNgHS0pAKIQUelidW,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-pwZkhgJcda4HLCsziTh1,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-q2wyXKnABjAqqL0mLiG7,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,4,6
@@ -417,7 +413,6 @@ singleton-xCsoN8tQQsB259iyGJJD,1,0,SINGLETON,false,false,false,true,false,0,0,0,
 singleton-xEWKVpjbfnBH9kQEaUbB,1,0,SINGLETON,false,false,true,false,false,0,0,17,0,0,17
 singleton-xibnPIqURhNVJI3zP0bz,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,1,3
 singleton-xnxssvkuDMAznbmlK9z8,1,0,SINGLETON,true,false,true,false,true,1,0,1,0,1,3
-singleton-xwPbKAjD2vxaff0GdKp1,1,0,SINGLETON,true,false,false,false,false,35,0,0,0,0,35
 singleton-y3fseRK4akRrTNtrmPfb,1,0,SINGLETON,false,true,true,false,true,0,1,1,0,1,3
 singleton-yE5PdkrjifxbV7QoD5xc,1,0,SINGLETON,false,false,true,false,false,0,0,1,0,0,1
 singleton-ySDlICqH087yeYmYSVbI,1,0,SINGLETON,true,false,true,false,false,1,0,1,0,0,2

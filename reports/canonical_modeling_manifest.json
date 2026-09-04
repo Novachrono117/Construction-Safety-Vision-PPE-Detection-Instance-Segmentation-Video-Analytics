@@ -20,30 +20,53 @@
       "timestamps, file paths and run metadata",
       "review_flag, which is descriptive and asserts nothing about eligibility"
     ],
-    "note": "recomputed after the owner's decision to retain all annotations. It is unchanged from the previous run because that decision confirmed the population rather than altering it: no image, action, geometry, group or class index moved"
+    "note": "images_sha256 covers each image's group assignment as well as its eligibility, so confirming a duplicate pair moves it even though no image entered or left the population. annotations_sha256 and class_map_sha256 move only when an annotation or a class index does"
   },
   "fingerprints": {
     "annotations_sha256": "1efa35fa4d6a229c16779aace5a60f58467f416fa04a657b27c4cd833e22b14e",
     "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
-    "groups_sha256": "687501a9db6173c58ac606e61f3af30dea32755c4ecb4c3c2b67e1e068b7cf88",
-    "images_sha256": "eaf2b5cf5f6e973dbf6197e11b949e78ee419ca556c1a6319f6cc2545ceead2c",
-    "modeling_population_sha256": "d6bcd388feb799a951c2ba279e80cd75ec97066d5de38fc8087f7581d5816181"
+    "groups_sha256": "d6065c4e2adc56b5bcc6e027458807ef2f3281ed530915d690d55921a289faaf",
+    "images_sha256": "36a56bbf2a28b2c5d6a1cf8f1e82f33d0f5146acc25d1839346968fadeae952b",
+    "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7"
   },
-  "generated": "2026-09-04T12:39:31+00:00",
-  "git_commit": "10ff78972f857c97a1c56fe10249d95578f447e6",
+  "generated": "2026-09-04T14:29:16+00:00",
+  "git_commit": "5197df5805a9452e585657dea268a52d025793d2",
   "groups": {
-    "semantic_duplicate": 6,
+    "by_basis": {
+      "EXACT_SEMANTIC_DUPLICATE": [
+        "manual_dup_001",
+        "manual_dup_002",
+        "manual_dup_003",
+        "manual_dup_004",
+        "manual_dup_005",
+        "manual_dup_006",
+        "manual_dup_007",
+        "manual_dup_009",
+        "manual_dup_010",
+        "manual_dup_011"
+      ],
+      "NEAR_DUPLICATE_SAME_SCENE": [
+        "manual_dup_008"
+      ]
+    },
+    "largest_group_size": 2,
+    "semantic_duplicate": 11,
     "semantic_duplicate_ids": [
       "manual_dup_001",
       "manual_dup_002",
       "manual_dup_003",
       "manual_dup_004",
       "manual_dup_005",
-      "manual_dup_006"
+      "manual_dup_006",
+      "manual_dup_007",
+      "manual_dup_008",
+      "manual_dup_009",
+      "manual_dup_010",
+      "manual_dup_011"
     ],
-    "singleton": 421,
-    "total": 427,
-    "unconfirmed_candidates": 5
+    "singleton": 411,
+    "total": 422,
+    "unconfirmed_candidates": 0
   },
   "holdout_frozen": false,
   "image_exclusions": [
@@ -85,12 +108,14 @@
   "phase_5b_classification": "READY_FOR_SPLIT_DESIGN",
   "phase_5c_entry_gates": [
     {
-      "candidates": 5,
+      "candidates_outstanding": 0,
       "gate": "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES",
-      "requirement": "the remaining phase 4A near-duplicate candidates have not received a complete human visual disposition. They must be dispositioned before the final split is frozen; they are not merged automatically",
-      "status": "OPEN"
+      "outstanding_ids": [],
+      "requirement": "every phase 4A near-duplicate candidate must carry a human visual disposition before the final split is frozen. Candidates are never merged automatically",
+      "status": "CLOSED"
     }
   ],
+  "phase_5c_entry_readiness": "READY_FOR_SPLIT_OPTIMIZATION",
   "population": {
     "annotations_by_class": {
       "helmet_loose": 393,
@@ -105,9 +130,9 @@
     "annotations_materialised_from_bbox": 2,
     "canonical_annotations": 2031,
     "excluded_images": 3,
-    "groups_semantic_duplicate": 6,
-    "groups_singleton": 421,
-    "groups_total": 427,
+    "groups_semantic_duplicate": 11,
+    "groups_singleton": 411,
+    "groups_total": 422,
     "modeling_annotation_population": 2031,
     "modeling_image_population": 433,
     "modeling_images_by_class": {
@@ -124,7 +149,10 @@
     "affected_by_any_exclusion": false,
     "canonical_instances": 45,
     "class": "vest_loose",
-    "images_in_a_semantic_duplicate_group": [],
+    "images_in_a_semantic_duplicate_group": [
+      "TwF1Rahc7CIP2gpmlbLS",
+      "pd0SyehnE6l5xoGZqJCt"
+    ],
     "instances_lost_to_any_exclusion": 0,
     "modeling_images": 8,
     "retained_instances": 45

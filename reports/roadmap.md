@@ -19,7 +19,7 @@ change log at the bottom of this file.
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | 5A done · 5B done (`READY_FOR_SPLIT_DESIGN`) · 5C **next**, not started |
+| 5 | Split freeze and task-specific dataset generation | 5A done · 5B done · 5B.1 done (all candidates dispositioned) · 5C **next**, not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -199,10 +199,10 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   The 2 `VALID_BUT_UNSUPPORTED_GEOMETRY` records are materialised as four-corner
   rectangles clipped to the canvas and labelled
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`.
-- **Split units.** **427 groups**: 6 semantic duplicate groups confirmed by phase
-  4B (12 images) plus 421 singletons. 5 further perceptual near-duplicate chains
-  were never reviewed by a person and are recorded as
-  `UNCONFIRMED_GROUP_CANDIDATE` rather than merged.
+- **Split units.** After phase 5B.1: **422 groups**, being 11 confirmed groups
+  (22 images) plus 411 singletons. Groups are connected components of the
+  confirmed relations, so a transitive chain forms one group rather than
+  overlapping pairs.
 - **Rare class.** `vest_loose` is untouched: 45 instances across 8 images, none of
   them in a duplicate group.
 - **Nested annotations: all retained.** Phase 5B was asked to turn the phase 5A
@@ -225,13 +225,34 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   conversion, no model. The provider's rejected split appears in no artifact a
   split designer reads.
 
+### Phase 5B.1 - near-duplicate disposition (complete)
+
+- **Why.** Phase 4B reviewed only the cross-split candidates, then rejected the
+  provider split. With the split rebuilt from scratch, a same-split duplicate
+  constrains it just as much.
+- **Reconciliation.** Phase 4A raised 11 candidates: 6 cross-split, 5 same-split.
+  `review_h` showed all 6 cross-split pairs. `review_g` showed the 8 candidates
+  with the smallest perceptual distance - 4 of those 6 plus 4 same-split - so it
+  displayed 8 pairs of which only 4 were new. The 11th candidate has the largest
+  distance of all and fell outside the cap, appearing on neither sheet.
+- **Decided.** All 5 same-split pairs dispositioned as `manual_dup_007` to
+  `manual_dup_011` in [`manual_audit_decisions.csv`](manual_audit_decisions.csv),
+  addendum 14b in [`manual_audit_report.md`](manual_audit_report.md): 4
+  `EXACT_SEMANTIC_DUPLICATE` (HIGH) and 1 `NEAR_DUPLICATE_SAME_SCENE` (MEDIUM).
+- **The two findings differ and both group.** The same frame stored twice, versus
+  the same worker and scene at a different moment. Both are split-indivisible
+  because grouping serves statistical independence, not image identity; the
+  distinction is preserved in `group_basis`.
+- **The last candidate had never been shown to a reviewer.** It was drawn alone in
+  `figures/review_o_remaining_near_duplicates.jpg` and decided there.
+
 ### Phase 5C - split design and freeze (not started)
 
-- **Entry gate (must close before the split is frozen).**
-  `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES`: the 5 remaining
-  phase 4A near-duplicate candidates have had no human visual disposition. They
-  are not merged automatically, and a split frozen without dispositioning them
-  could leak content across a boundary.
+- **Entry gate: CLOSED.**
+  `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES` - all 11 phase 4A
+  near-duplicate candidates carry a human disposition, so no unreviewed
+  perceptual relation can leak content across a split boundary. Readiness:
+  `READY_FOR_SPLIT_OPTIMIZATION`.
 - **Entry conditions.** The 427 groups as the units a split assigns;
   `group_split_features.csv` as the optimiser's input; the full 2031-annotation
   population; and `vest_loose` at 45 instances over 8 images as the binding
@@ -400,3 +421,5 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5A completed: canonical annotation snapshot resolved as `CURRENT_COMPLETE_GEOMETRY`. The live source state was recovered read-only with complete geometry for 2029 of 2031 annotations in original image coordinates; phase 4A's "1022 annotations lack geometry" was a consumption gap, not a provider limitation. Decode verified against the provider's own areas and boxes (agreement 0.0 px on all 2029). Version 4 was viable - all 436 source images map to exactly one non-augmented representation - but was rejected because its geometry is expressed after a stretch resize to 640x640. Measured drift: net +70 (76 added, 6 removed) over 67 images, with every addition lying inside an existing same-class annotation and covering no new object. The two unrecognised records classified VALID_BUT_UNSUPPORTED_GEOMETRY. Two measured corrections to earlier figures: the v4 source-snapshot annotation total is 1961, not the 1955 previously inferred, and the drift is +70 net rather than +76. No split created, no image excluded, no geometry converted. |
 | 2026-09-04 | Phase 5B built the canonical modelling population: 433 modelling images (436 source minus 3 confirmed out-of-domain), 2031 annotations retained, 2 geometry-less records materialised as labelled synthetic rectangles, and 427 indivisible split units (421 singletons + 6 confirmed semantic duplicate groups). `vest_loose` untouched at 45 instances over 8 images. **One decision returned for review**: no deterministic geometry rule reproduces the 76 version-4 additions, because they are a mixture of degenerate slivers and legitimate re-annotations - the best rule reaches precision 0.97 but recall 0.43. This corrects the phase 5A reading that all 76 were coverage-free fragments. Nothing was excluded on that basis. Phase 5B classified NEEDS_FRAGMENT_RULE_REVIEW at that point and returned the question; no split, holdout or model exists. **Superseded by the next entry.** |
 | 2026-09-04 | Phase 5B closed as READY_FOR_SPLIT_DESIGN after owner review. Automatic nested-annotation filtering was **rejected** (`REJECTED_FOR_AUTOMATIC_FILTERING`): containment inside an older same-class annotation is not evidence of error, and the evaluated rules cannot separate fragments from legitimate instance splits, geometry refinements and corrections of previously merged objects. All 2031 canonical annotations retained, 0 excluded; the 34 evaluated candidates carry the descriptive flag NESTED_SAME_CLASS_CANDIDATE. Recorded explicitly: the 76 v4 additions are a historical annotation-drift reference set, not ground truth for bad annotations, so rule precision against them measures agreement with drift rather than annotation correctness. Phase 5C carries one open entry gate: manual disposition of the 5 remaining near-duplicate candidates before any split is frozen. |
+| 2026-09-04 | Phase 5B.1 dispositioned the outstanding near-duplicate candidates. Reconciled the counts: phase 4A raised 11 candidates (6 cross-split, 5 same-split); `review_h` showed all 6 cross-split pairs and `review_g` showed the 8 smallest-distance candidates, which were 4 of those 6 plus 4 same-split - so `review_g` held 8 pairs of which only 4 were novel, and the 11th candidate fell outside the cap and appeared on no sheet at all. The 4 novel same-split pairs were confirmed EXACT_SEMANTIC_DUPLICATE (HIGH) as manual_dup_007-010, giving 10 confirmed groups, 413 singletons and 423 split units; groups are now computed as connected components so a transitive chain forms one group. `chain-007` remains undecided and unmerged, drawn alone in figures/review_o_remaining_near_duplicates.jpg. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES stays OPEN and phase 5C is BLOCKED_ON_MANUAL_DISPOSITION. No split, holdout or model exists. |
+| 2026-09-04 | Phase 5B.1 closed. The final outstanding candidate (chain-007, `66p9gzaQFGcmQA2v40Of` ~ `pbOZlgeseTpoTXwVJjAh`) was decided NEAR_DUPLICATE_SAME_SCENE (MEDIUM, GROUP_TOGETHER): the same worker and scene at a different moment rather than the same frame, but correlated enough that separating them across splits would risk leakage. Grouping serves statistical independence, not image identity, so it is indivisible like an exact duplicate while being recorded as a different finding via `group_basis`. All 11 phase 4A candidates now carry a human disposition (6 in 4B, 5 in 5B.1); zero outstanding. Final structure: 433 modelling images, 2031 annotations, 11 confirmed groups (22 images) + 411 singletons = 422 split units, largest group 2 images. Gate MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES is CLOSED and phase 5C entry readiness is READY_FOR_SPLIT_OPTIMIZATION. No split, holdout or model exists. |

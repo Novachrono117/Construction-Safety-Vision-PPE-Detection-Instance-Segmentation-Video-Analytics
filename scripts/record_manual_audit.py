@@ -58,6 +58,85 @@ FIGURE_ZERO_INSTANCE = "reports/figures/review_f_zero_instance.jpg"
 FIGURE_GEOMETRY = "reports/figures/review_k_bbox_vs_segmentation.jpg"
 FIGURE_VEST_LOOSE = "reports/figures/review_b_class_vest_loose.jpg"
 FIGURE_OVERVIEW = "reports/figures/review_a_overview.jpg"
+FIGURE_SAME_SPLIT_DUPLICATES = "reports/figures/review_g_near_duplicates.jpg"
+FIGURE_REMAINING_CANDIDATES = "reports/figures/review_o_remaining_near_duplicates.jpg"
+
+SAME_SPLIT_DUPLICATE_VERDICTS: tuple[tuple[str, str, str, str, str], ...] = (
+    (
+        "3LUOWEww9aCx2Cx4B38y",
+        "LVQG21gdyYgR1aZBE6h9",
+        "EXACT_SEMANTIC_DUPLICATE",
+        "HIGH",
+        "orange forklift in front of stored material racks",
+    ),
+    (
+        "IyVJr4DcosMWf0wZS1uN",
+        "ghzZPWPu7P2hqWEVXzdK",
+        "EXACT_SEMANTIC_DUPLICATE",
+        "HIGH",
+        "single yellow hard hat resting on dark weathered beams",
+    ),
+    (
+        "TwF1Rahc7CIP2gpmlbLS",
+        "pd0SyehnE6l5xoGZqJCt",
+        "EXACT_SEMANTIC_DUPLICATE",
+        "HIGH",
+        "hanging white PPE garments with white helmets",
+    ),
+    (
+        "p5lxtMTKDL0gIgbqSrls",
+        "xwPbKAjD2vxaff0GdKp1",
+        "EXACT_SEMANTIC_DUPLICATE",
+        "HIGH",
+        "grid shelf holding many hard hats",
+    ),
+    (
+        "66p9gzaQFGcmQA2v40Of",
+        "pbOZlgeseTpoTXwVJjAh",
+        "NEAR_DUPLICATE_SAME_SCENE",
+        "MEDIUM",
+        "same worker shelving stock, same scene and framing, different moment",
+    ),
+)
+"""Same-split pairs the reviewers dispositioned, with the verdict each received.
+
+Phase 4B reviewed only the pairs that crossed a provider split boundary, because
+that was where leakage could occur under the provider's own split. That split has
+since been rejected, so a same-split relation matters just as much: the phase 5C
+split is built from scratch and would otherwise be free to separate these images.
+
+Two verdicts appear here and they are not the same finding.
+``EXACT_SEMANTIC_DUPLICATE`` means the two images show the same frame.
+``NEAR_DUPLICATE_SAME_SCENE`` means the same subject and scene photographed at a
+different moment - correlated, but not identical. Both make a pair indivisible for
+splitting, because the point of grouping is statistical independence across
+splits rather than image identity, and both are recorded distinctly so a reader
+can tell which evidence supports which group.
+
+The identifiers are the full provider ids taken from
+``reports/near_duplicate_candidates.csv``, not short ids transcribed from a
+rendered sheet. The scene text records which panel each verdict refers to and is
+checked against nothing - it is documentation, and the pair is the identity.
+"""
+
+SAME_SCENE_RATIONALE = (
+    "Reviewers judged the two images to show the same worker in the same scene with "
+    "highly similar framing, at different moments - a changed arm and body position "
+    "distinguishes them. They are therefore not the same frame, but they are strongly "
+    "correlated, and placing them in different splits would create an unnecessary "
+    "leakage risk. Grouping serves statistical independence across splits, not "
+    "byte-level or exact-image identity."
+)
+
+FIRST_SAME_SPLIT_GROUP_INDEX = 7
+"""Group numbering continues after the six groups phase 4B confirmed."""
+
+SAME_SPLIT_DUPLICATE_RATIONALE = (
+    "Reviewers judged the two images to show the same underlying scene. The provider "
+    "placed both in the same split, so this was not leakage under the provider's own "
+    "split and phase 4B did not review it; the provider split has since been rejected, "
+    "and the phase 5C split must not separate them."
+)
 
 DUPLICATE_RATIONALE = (
     "Reviewers judged the pair to depict the same source content rather than two "
@@ -332,6 +411,121 @@ def build_duplicate_decisions(
             ),
         )
     return [by_group[group_id] for group_id in sorted(by_group)]
+
+
+def same_split_pairs(candidates: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Select the near-duplicate candidate pairs that stay inside one provider split.
+
+    Args:
+        candidates: Rows of ``reports/near_duplicate_candidates.csv``.
+
+    Returns:
+        The rows whose pair does not cross a provider split boundary.
+    """
+    return [row for row in candidates if row["cross_split"] == "False"]
+
+
+def verdict_shown_on(first: str, second: str, shown: dict[str, set[str]]) -> str | None:
+    """Report which contact sheet showed both members of a pair.
+
+    A verdict may only cite a sheet the reviewers actually saw. Two sheets are
+    eligible here: the phase 4A near-duplicate sheet, and the phase 5B.1 sheet
+    drawn specifically for the candidates that sheet's eight-pair cap left out.
+
+    Args:
+        first: One member's provider image id.
+        second: The other member's provider image id.
+        shown: Image ids keyed by the contact sheet that displayed them.
+
+    Returns:
+        The path of a sheet showing both members, or ``None`` when no sheet did.
+    """
+    for sheet in (FIGURE_SAME_SPLIT_DUPLICATES, FIGURE_REMAINING_CANDIDATES):
+        members = shown.get(sheet, set())
+        if first in members and second in members:
+            return sheet
+    return None
+
+
+def build_same_split_duplicate_decisions(
+    candidates: list[dict[str, str]], review_index: dict[str, list[dict[str, str]]]
+) -> list[ManualDecision]:
+    """Record the same-split semantic duplicates confirmed in phase 5B.1.
+
+    Args:
+        candidates: All candidate rows from phase 4A.
+        review_index: Output of ``load_review_index``.
+
+    Returns:
+        One ``pair``-scoped decision per confirmed group, ordered by group id.
+
+    Raises:
+        ManualAuditError: If a declared verdict does not correspond to a
+            same-split candidate pair, or refers to a pair the reviewers were
+            never shown.
+    """
+    by_pair = {
+        frozenset((row["image_a_id"], row["image_b_id"])): row
+        for row in same_split_pairs(candidates)
+    }
+    shown: dict[str, set[str]] = {}
+    for image_id, entries in review_index.items():
+        for entry in entries:
+            sheet = entry.get("contact_sheet", "")
+            if sheet in (FIGURE_SAME_SPLIT_DUPLICATES, FIGURE_REMAINING_CANDIDATES):
+                shown.setdefault(sheet, set()).add(image_id)
+    for first, second, _decision, _confidence, scene in SAME_SPLIT_DUPLICATE_VERDICTS:
+        if frozenset((first, second)) not in by_pair:
+            msg = (
+                f"verdict for {scene!r} names {first}/{second}, which is not a same-split "
+                "near-duplicate candidate from phase 4A"
+            )
+            raise ManualAuditError(msg)
+        if verdict_shown_on(first, second, shown) is None:
+            msg = (
+                f"{first}/{second} appears on neither {FIGURE_SAME_SPLIT_DUPLICATES} nor "
+                f"{FIGURE_REMAINING_CANDIDATES}; the pair cannot carry a verdict from a sheet "
+                "the reviewers were never shown"
+            )
+            raise ManualAuditError(msg)
+
+    group_ids = assign_duplicate_group_ids(
+        [(first, second) for first, second, _d, _c, _s in SAME_SPLIT_DUPLICATE_VERDICTS],
+        start=FIRST_SAME_SPLIT_GROUP_INDEX,
+    )
+    decisions: dict[str, ManualDecision] = {}
+    for first, second, verdict, confidence, scene in SAME_SPLIT_DUPLICATE_VERDICTS:
+        members = tuple(sorted((first, second)))
+        group_id = group_ids[members]
+        row = by_pair[frozenset((first, second))]
+        splits = {
+            row["image_a_id"]: row["provider_split_a"],
+            row["image_b_id"]: row["provider_split_b"],
+        }
+        decisions[group_id] = ManualDecision(
+            decision_id=f"dup-{group_id.removeprefix('manual_dup_')}",
+            review_type="same_split_near_duplicate",
+            subject_scope="pair",
+            group_id=group_id,
+            subject_id_a=members[0],
+            subject_id_b=members[1],
+            provider_split_a=splits[members[0]],
+            provider_split_b=splits[members[1]],
+            decision=verdict,
+            confidence=confidence,
+            rationale=(
+                SAME_SCENE_RATIONALE
+                if verdict == "NEAR_DUPLICATE_SAME_SCENE"
+                else SAME_SPLIT_DUPLICATE_RATIONALE
+            ),
+            evidence_figure=verdict_shown_on(first, second, shown) or "",
+            phase5_action="GROUP_TOGETHER",
+            notes=(
+                f"scene={scene}; byte_duplicate=NO; semantic_duplicate=YES; "
+                f"dhash={row['dhash_distance']}; phash={row['phash_distance']}"
+            ),
+        )
+    return [decisions[group_id] for group_id in sorted(decisions)]
 
 
 def build_zero_instance_decisions(
@@ -1094,6 +1288,67 @@ been acted on.
         + _table(("Id", "Constraint"), [(f"**{key}**", text) for key, text in PHASE5_CONSTRAINTS])
     )
 
+    same_split = [item for item in decisions if item.review_type == "same_split_near_duplicate"]
+    if same_split:
+        parts.append(
+            """## 14b. Addendum - phase 5B.1: same-split semantic duplicates
+
+**This section records a later review. It adds to the phase 4B decisions above
+and rewrites none of them.**
+
+Phase 4B reviewed only the near-duplicate candidates that crossed a *provider*
+split boundary, because that was where leakage could occur under the provider's
+own split. Phase 4B then rejected that split. Once the split is rebuilt from
+scratch, a duplicate pair that happened to sit inside one of the provider's
+splits constrains the new split exactly as much as one that crossed a boundary -
+nothing stops an optimiser putting the two halves of such a pair on opposite
+sides. The reviewers therefore looked at the same-split candidates as well.
+
+"""
+            + _table(
+                ("Group", "Image A", "Image B", "Provider splits", "Scene", "Decision"),
+                [
+                    (
+                        f"`{item.group_id}`",
+                        f"`{item.subject_id_a[:8]}`",
+                        f"`{item.subject_id_b[:8]}`",
+                        f"{item.provider_split_a} / {item.provider_split_b}",
+                        item.notes.split("scene=", 1)[1].split(";", 1)[0],
+                        f"`{item.decision}` ({item.confidence})",
+                    )
+                    for item in same_split
+                ],
+            )
+            + """
+
+**FACT.** These are semantic duplicates, not byte duplicates. Every source image
+has a distinct SHA-256; the phase 4A result that there are no exact duplicates
+stands unchanged.
+
+**FACT.** Group numbering continues from the phase 4B sequence rather than
+restarting, so the identifiers already published for groups 001-006 keep pointing
+at the same images.
+
+**Two findings, both indivisible.** `EXACT_SEMANTIC_DUPLICATE` means the same
+frame stored twice. `NEAR_DUPLICATE_SAME_SCENE` means the same subject and scene
+at a different moment - here a changed arm and body position - which is
+correlated but not identical. Both make a pair indivisible for splitting, because
+grouping serves statistical independence across splits rather than image
+identity, and they are recorded distinctly so the evidence behind each group
+stays visible.
+
+**Reconciliation of the candidate count.** Phase 4A raised 11 near-duplicate
+candidates: 6 crossing a provider split and 5 inside one. `review_h` showed all 6
+cross-split pairs, which phase 4B decided. `review_g` showed the 8 candidates
+with the smallest perceptual distance, which happened to be 4 of those 6 plus 4
+of the same-split pairs - so it displayed 8 pairs of which only 4 were new. The
+11th candidate had the largest distance of all and fell outside that cap, so it
+appeared on neither sheet; it was drawn on its own sheet and decided here. **All
+11 candidates now carry an explicit human disposition.**
+
+"""
+        )
+
     parts.append(
         """## 15. Limitations of this review
 
@@ -1150,7 +1405,8 @@ def main(argv: list[str] | None = None) -> int:
         review_index = load_review_index(reports / "manual_review_manifest.csv")
         audit = load_json(reports / "dataset_audit.json")
         bbox = load_json(reports / "bbox_consistency_audit.json")
-        pairs = cross_split_pairs(read_csv_rows(reports / "near_duplicate_candidates.csv"))
+        candidates = read_csv_rows(reports / "near_duplicate_candidates.csv")
+        pairs = cross_split_pairs(candidates)
         empty_rows = read_csv_rows(reports / "empty_image_audit.csv")
 
         expected_pairs = audit["near_duplicates"]["cross_split_candidates"]
@@ -1163,6 +1419,7 @@ def main(argv: list[str] | None = None) -> int:
         zero_decisions, resolutions = build_zero_instance_decisions(empty_rows, review_index)
         decisions = [
             *build_duplicate_decisions(pairs, review_index),
+            *build_same_split_duplicate_decisions(candidates, review_index),
             *zero_decisions,
             *build_geometry_decisions(panels),
             *build_remaining_decisions(audit, microannotations[0], microannotations[1]),

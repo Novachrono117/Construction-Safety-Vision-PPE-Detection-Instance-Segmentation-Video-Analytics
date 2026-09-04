@@ -183,9 +183,10 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5B complete (`READY_FOR_SPLIT_DESIGN`). Phase 5C (split design and
-  freeze) has not started, and has one open entry gate: the 5 remaining
-  near-duplicate candidates need a human disposition before any split is frozen.
+- **Phase:** 5B complete (`READY_FOR_SPLIT_DESIGN`) and 5B.1 complete - all 11
+  near-duplicate candidates dispositioned, gate CLOSED,
+  `phase_5c_entry_readiness = READY_FOR_SPLIT_OPTIMIZATION`. Phase 5C (split
+  design and freeze) has not started.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -251,9 +252,22 @@ uv run pytest
   retained annotations, and **427 indivisible split units** (421 singletons + 6
   confirmed semantic duplicate groups). Quote 433 for modelling and 436 for
   provenance; they are different populations and must not be conflated.
-- **5 near-duplicate chains are UNCONFIRMED** and deliberately not merged. A
-  perceptual-hash collision is not a confirmed duplicate; only phase 4B's six
-  visually confirmed pairs group images together.
+- **11 confirmed groups**, 411 singletons, **422 split units**. Phase 4B
+  confirmed 6 cross-split pairs; phase 5B.1 confirmed 5 same-split pairs, because
+  the provider split was rejected and a same-split relation constrains the new
+  split just as much. Group numbering continues rather than restarting: 001-006
+  still mean what they meant.
+- **Two grouping bases, both indivisible, recorded in `group_manifest.csv`:**
+  `EXACT_SEMANTIC_DUPLICATE` (10 groups, same frame stored twice) and
+  `NEAR_DUPLICATE_SAME_SCENE` (1 group, `manual_dup_008`, same worker and scene at
+  a different moment). Do not call the second an exact duplicate; do not treat it
+  as separable either. Grouping serves statistical independence across splits,
+  not image identity.
+- **Zero unresolved near-duplicate candidates.** All 11 carry a human decision;
+  none was merged on perceptual distance alone.
+- **Duplicate groups are connected components**, not pairs. If A~B and B~C are
+  both confirmed, they are one group {A, B, C}; grouping pairwise would let a
+  split separate A from C while honouring each relation.
 - **The 2 geometry-less records are materialised**, not dropped: four-corner
   rectangles clipped to the canvas, marked
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`. Never describe them as

@@ -5,7 +5,7 @@ Recorded: 2026-09-02 · Reviewers: project owner with a technical reviewer · Ev
 Phase 4A measured the dataset and deliberately answered no semantic question.
 This document records the answers a person gave after looking at the contact
 sheets phase 4A produced. Machine-readable form:
-[`manual_audit_decisions.csv`](manual_audit_decisions.csv); 32 decisions.
+[`manual_audit_decisions.csv`](manual_audit_decisions.csv); 37 decisions.
 
 Every statement below is tagged:
 
@@ -326,6 +326,54 @@ been acted on.
 | **P5-10** | The two unknown microannotations require explicit disposition. |
 | **P5-11** | Final test must contain defensible class coverage subject to grouping constraints. |
 | **P5-12** | The final holdout must remain protected after freeze. |
+
+## 14b. Addendum - phase 5B.1: same-split semantic duplicates
+
+**This section records a later review. It adds to the phase 4B decisions above
+and rewrites none of them.**
+
+Phase 4B reviewed only the near-duplicate candidates that crossed a *provider*
+split boundary, because that was where leakage could occur under the provider's
+own split. Phase 4B then rejected that split. Once the split is rebuilt from
+scratch, a duplicate pair that happened to sit inside one of the provider's
+splits constrains the new split exactly as much as one that crossed a boundary -
+nothing stops an optimiser putting the two halves of such a pair on opposite
+sides. The reviewers therefore looked at the same-split candidates as well.
+
+| Group | Image A | Image B | Provider splits | Scene | Decision |
+| --- | --- | --- | --- | --- | --- |
+| `manual_dup_007` | `3LUOWEww` | `LVQG21gd` | train / train | orange forklift in front of stored material racks | `EXACT_SEMANTIC_DUPLICATE` (HIGH) |
+| `manual_dup_008` | `66p9gzaQ` | `pbOZlges` | train / train | same worker shelving stock, same scene and framing, different moment | `NEAR_DUPLICATE_SAME_SCENE` (MEDIUM) |
+| `manual_dup_009` | `IyVJr4Dc` | `ghzZPWPu` | train / train | single yellow hard hat resting on dark weathered beams | `EXACT_SEMANTIC_DUPLICATE` (HIGH) |
+| `manual_dup_010` | `TwF1Rahc` | `pd0Syehn` | train / train | hanging white PPE garments with white helmets | `EXACT_SEMANTIC_DUPLICATE` (HIGH) |
+| `manual_dup_011` | `p5lxtMTK` | `xwPbKAjD` | train / train | grid shelf holding many hard hats | `EXACT_SEMANTIC_DUPLICATE` (HIGH) |
+
+**FACT.** These are semantic duplicates, not byte duplicates. Every source image
+has a distinct SHA-256; the phase 4A result that there are no exact duplicates
+stands unchanged.
+
+**FACT.** Group numbering continues from the phase 4B sequence rather than
+restarting, so the identifiers already published for groups 001-006 keep pointing
+at the same images.
+
+**Two findings, both indivisible.** `EXACT_SEMANTIC_DUPLICATE` means the same
+frame stored twice. `NEAR_DUPLICATE_SAME_SCENE` means the same subject and scene
+at a different moment - here a changed arm and body position - which is
+correlated but not identical. Both make a pair indivisible for splitting, because
+grouping serves statistical independence across splits rather than image
+identity, and they are recorded distinctly so the evidence behind each group
+stays visible.
+
+**Reconciliation of the candidate count.** Phase 4A raised 11 near-duplicate
+candidates: 6 crossing a provider split and 5 inside one. `review_h` showed all 6
+cross-split pairs, which phase 4B decided. `review_g` showed the 8 candidates
+with the smallest perceptual distance, which happened to be 4 of those 6 plus 4
+of the same-split pairs - so it displayed 8 pairs of which only 4 were new. The
+11th candidate had the largest distance of all and fell outside that cap, so it
+appeared on neither sheet; it was drawn on its own sheet and decided here. **All
+11 candidates now carry an explicit human disposition.**
+
+
 
 ## 15. Limitations of this review
 

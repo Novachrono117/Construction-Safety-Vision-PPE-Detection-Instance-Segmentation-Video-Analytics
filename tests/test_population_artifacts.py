@@ -31,8 +31,8 @@ from construction_safety_vision.paths import ProjectPaths
 SOURCE_POPULATION = 436
 """The independent source population every phase must preserve."""
 
-CONFIRMED_DUPLICATE_GROUPS = 6
-"""Semantic duplicate groups phase 4B confirmed."""
+CONFIRMED_DUPLICATE_GROUPS_PHASE_4B = 6
+"""Semantic duplicate groups phase 4B confirmed. Later reviews add to this."""
 
 REPORTS = ProjectPaths.from_root().reports
 """Directory holding the committed evidence."""
@@ -159,13 +159,13 @@ def test_the_retained_population_is_the_full_canonical_snapshot() -> None:
     assert summary["modeling_annotation_population"] == summary["canonical_annotations"]
 
 
-def test_the_phase_5c_entry_gate_is_recorded_and_open() -> None:
+def test_the_phase_5c_entry_gate_is_recorded() -> None:
     gates = manifest()["phase_5c_entry_gates"]
     names = {gate["gate"] for gate in gates}
     assert "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES" in names
     gate = next(g for g in gates if g["gate"].startswith("MANUAL_DISPOSITION"))
-    assert gate["status"] == "OPEN"
-    assert gate["candidates"] == len(rows("unconfirmed_group_candidates.csv"))
+    assert gate["status"] in ("OPEN", "CLOSED")
+    assert gate["candidates_outstanding"] == len(rows("unconfirmed_group_candidates.csv"))
 
 
 def test_the_phase_is_classified_ready_for_split_design() -> None:
@@ -188,13 +188,15 @@ def test_excluded_images_appear_in_no_group() -> None:
     assert not (excluded & {row["source_image_id"] for row in groups})
 
 
-def test_the_six_confirmed_duplicate_groups_are_represented() -> None:
+def test_confirmed_duplicate_groups_are_represented_and_indivisible() -> None:
     groups = rows("group_manifest.csv")
     duplicates: dict[str, list[str]] = {}
     for row in groups:
         if row["group_type"] == SEMANTIC_DUPLICATE:
             duplicates.setdefault(row["group_id"], []).append(row["source_image_id"])
-    assert len(duplicates) == CONFIRMED_DUPLICATE_GROUPS
+    # Derived from the recorded decisions rather than hardcoded: phase 5B.1 added
+    # four groups to the six phase 4B confirmed, and more reviews may follow.
+    assert len(duplicates) >= CONFIRMED_DUPLICATE_GROUPS_PHASE_4B
     assert all(len(members) >= 2 for members in duplicates.values())
     assert all(row["split_indivisible"] == "true" for row in groups)
 
@@ -302,3 +304,187 @@ def test_committed_phase_5b_artifacts_carry_no_secret_or_local_path(name: str) -
     if not path.is_file():
         pytest.skip(f"{name} not generated yet")
     assert scan_for_sensitive(path.read_text(encoding="utf-8")) == []
+
+
+# --- phase 5B.1: near-duplicate disposition ----------------------------------
+
+
+def test_every_confirmed_duplicate_relation_sits_inside_one_group() -> None:
+    # The property a split relies on: a confirmed pair must never straddle a
+    # group boundary, however many decisions were recorded or when.
+    decisions = rows("manual_audit_decisions.csv")
+    groups = rows("group_manifest.csv")
+    owner = {row["source_image_id"]: row["group_id"] for row in groups}
+    confirmed = [
+        row
+        for row in decisions
+        if row["review_type"] in ("cross_split_near_duplicate", "same_split_near_duplicate")
+    ]
+    assert confirmed
+    for row in confirmed:
+        first, second = row["subject_id_a"], row["subject_id_b"]
+        assert owner[first] == owner[second], f"{row['decision_id']} straddles two groups"
+
+
+def test_confirmed_group_ids_are_unique_and_never_renumbered() -> None:
+    decisions = rows("manual_audit_decisions.csv")
+    confirmed = [
+        row
+        for row in decisions
+        if row["review_type"] in ("cross_split_near_duplicate", "same_split_near_duplicate")
+    ]
+    ids = [row["group_id"] for row in confirmed]
+    assert len(ids) == len(set(ids))
+    # The six groups phase 4B published keep their identifiers.
+    cross = sorted(
+        row["group_id"] for row in confirmed if row["review_type"] == "cross_split_near_duplicate"
+    )
+    assert cross == [f"manual_dup_{index:03d}" for index in range(1, len(cross) + 1)]
+
+
+def test_the_candidate_count_reconciles_across_artifacts() -> None:
+    # Every phase 4A candidate is either decided or still outstanding, never both
+    # and never neither.
+    candidates = rows("near_duplicate_candidates.csv")
+    decisions = rows("manual_audit_decisions.csv")
+    outstanding = rows("unconfirmed_group_candidates.csv")
+
+    decided = {
+        frozenset((row["subject_id_a"], row["subject_id_b"]))
+        for row in decisions
+        if row["review_type"] in ("cross_split_near_duplicate", "same_split_near_duplicate")
+    }
+    pending = {frozenset(row["source_image_ids"].split(";")) for row in outstanding}
+    everything = {frozenset((row["image_a_id"], row["image_b_id"])) for row in candidates}
+
+    assert decided | pending == everything
+    assert not (decided & pending)
+    assert len(decided) + len(pending) == len(everything)
+
+
+def test_outstanding_candidates_are_not_grouped_together() -> None:
+    outstanding = rows("unconfirmed_group_candidates.csv")
+    groups = rows("group_manifest.csv")
+    owner = {row["source_image_id"]: row["group_id"] for row in groups}
+    for row in outstanding:
+        members = [m for m in row["source_image_ids"].split(";") if m in owner]
+        if len(members) == 2:
+            assert owner[members[0]] != owner[members[1]], (
+                f"{row['candidate_id']} was merged without a human decision"
+            )
+
+
+def test_the_gate_status_matches_what_is_outstanding() -> None:
+    gate = next(
+        entry
+        for entry in manifest()["phase_5c_entry_gates"]
+        if entry["gate"] == "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES"
+    )
+    outstanding = rows("unconfirmed_group_candidates.csv")
+    assert gate["candidates_outstanding"] == len(outstanding)
+    assert gate["status"] == ("CLOSED" if not outstanding else "OPEN")
+    assert sorted(gate["outstanding_ids"]) == sorted(r["candidate_id"] for r in outstanding)
+
+
+def test_split_optimisation_readiness_follows_the_gate() -> None:
+    document = manifest()
+    gate = next(
+        entry
+        for entry in document["phase_5c_entry_gates"]
+        if entry["gate"] == "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES"
+    )
+    expected = (
+        "READY_FOR_SPLIT_OPTIMIZATION"
+        if gate["status"] == "CLOSED"
+        else "BLOCKED_ON_MANUAL_DISPOSITION"
+    )
+    assert document["phase_5c_entry_readiness"] == expected
+
+
+def test_semantic_duplicate_groups_reconcile_with_the_decisions() -> None:
+    decisions = rows("manual_audit_decisions.csv")
+    confirmed_ids = {
+        row["group_id"]
+        for row in decisions
+        if row["review_type"] in ("cross_split_near_duplicate", "same_split_near_duplicate")
+    }
+    document = manifest()
+    assert set(document["groups"]["semantic_duplicate_ids"]) == confirmed_ids
+    assert document["groups"]["semantic_duplicate"] == len(confirmed_ids)
+
+
+def test_all_near_duplicate_candidates_have_a_human_disposition() -> None:
+    # The gate's substance: nothing perceptual was left undecided.
+    candidates = rows("near_duplicate_candidates.csv")
+    decisions = rows("manual_audit_decisions.csv")
+    decided = {
+        frozenset((row["subject_id_a"], row["subject_id_b"]))
+        for row in decisions
+        if "near_duplicate" in row["review_type"]
+    }
+    everything = {frozenset((row["image_a_id"], row["image_b_id"])) for row in candidates}
+    assert decided == everything
+    assert not rows("unconfirmed_group_candidates.csv")
+
+
+def test_the_gate_is_closed_and_phase_5c_is_ready() -> None:
+    document = manifest()
+    gate = next(
+        entry
+        for entry in document["phase_5c_entry_gates"]
+        if entry["gate"] == "MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES"
+    )
+    assert gate["status"] == "CLOSED"
+    assert gate["candidates_outstanding"] == 0
+    assert document["phase_5c_entry_readiness"] == "READY_FOR_SPLIT_OPTIMIZATION"
+
+
+def test_both_grouping_bases_are_recorded_and_distinguished() -> None:
+    groups = rows("group_manifest.csv")
+    bases = {row["group_basis"] for row in groups if row["group_type"] == SEMANTIC_DUPLICATE}
+    assert bases <= {"EXACT_SEMANTIC_DUPLICATE", "NEAR_DUPLICATE_SAME_SCENE"}
+    assert bases, "a confirmed group must record what it was based on"
+    # The manifest breakdown must agree with the manifest file.
+    by_basis = manifest()["groups"]["by_basis"]
+    for basis, ids in by_basis.items():
+        from_file = {row["group_id"] for row in groups if row["group_basis"] == basis}
+        assert from_file == set(ids)
+
+
+def test_a_near_duplicate_group_is_still_split_indivisible() -> None:
+    groups = rows("group_manifest.csv")
+    near = [row for row in groups if row["group_basis"] == "NEAR_DUPLICATE_SAME_SCENE"]
+    assert near, "expected the same-scene pair to be grouped"
+    assert all(row["split_indivisible"] == "true" for row in near)
+    assert len({row["group_id"] for row in near}) == 1
+    assert len(near) == 2
+
+
+def test_the_group_basis_matches_the_recorded_decision() -> None:
+    decisions = {
+        row["group_id"]: row["decision"]
+        for row in rows("manual_audit_decisions.csv")
+        if "near_duplicate" in row["review_type"]
+    }
+    for row in rows("group_manifest.csv"):
+        if row["group_type"] != SEMANTIC_DUPLICATE:
+            continue
+        # A merged component may carry several; each must be a real verdict.
+        for basis in row["group_basis"].split("|"):
+            assert basis in set(decisions.values())
+
+
+def test_no_group_is_larger_than_its_evidence_supports() -> None:
+    # Every group of n images needs at least n-1 confirmed relations behind it.
+    groups: dict[str, set[str]] = {}
+    for row in rows("group_manifest.csv"):
+        if row["group_type"] == SEMANTIC_DUPLICATE:
+            groups.setdefault(row["group_id"], set()).add(row["source_image_id"])
+    relations = [
+        frozenset((row["subject_id_a"], row["subject_id_b"]))
+        for row in rows("manual_audit_decisions.csv")
+        if "near_duplicate" in row["review_type"] and row["phase5_action"] == "GROUP_TOGETHER"
+    ]
+    for members in groups.values():
+        inside = [r for r in relations if r <= members]
+        assert len(inside) >= len(members) - 1

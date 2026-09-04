@@ -48,6 +48,7 @@ FIELDNAMES: tuple[str, ...] = (
 REVIEW_TYPES: frozenset[str] = frozenset(
     {
         "cross_split_near_duplicate",
+        "same_split_near_duplicate",
         "zero_instance_image",
         "bbox_vs_segmentation",
         "class_semantics",
@@ -66,6 +67,7 @@ SUBJECT_SCOPES: frozenset[str] = frozenset({"pair", "image", "annotation", "set"
 DECISIONS: frozenset[str] = frozenset(
     {
         "EXACT_SEMANTIC_DUPLICATE",
+        "NEAR_DUPLICATE_SAME_SCENE",
         "OUT_OF_DOMAIN",
         "NO_OBVIOUS_MISSING_TARGET_LABEL",
         "SEGMENTATION_GEOMETRY_PREFERRED",
@@ -302,15 +304,22 @@ def resolve_short_id(transcription: str, pool: dict[str, str]) -> ShortIdMatch:
     )
 
 
-def assign_duplicate_group_ids(groups: Iterable[Sequence[str]]) -> dict[tuple[str, ...], str]:
+def assign_duplicate_group_ids(
+    groups: Iterable[Sequence[str]], *, start: int = 1
+) -> dict[tuple[str, ...], str]:
     """Assign deterministic identifiers to semantic-duplicate groups.
 
     The identifier is a function of the sorted member ids alone, so the same
     set of confirmed duplicates always produces the same numbering, whatever
     order the reviewers listed them in.
 
+    A later review that confirms further groups continues the sequence rather
+    than renumbering it: identifiers already committed are referenced elsewhere,
+    and silently reassigning them would rewrite settled history.
+
     Args:
         groups: Iterable of member-id sequences.
+        start: First index to assign. Defaults to 1.
 
     Returns:
         Mapping from the sorted member tuple to its group id.
@@ -337,7 +346,7 @@ def assign_duplicate_group_ids(groups: Iterable[Sequence[str]]) -> dict[tuple[st
         raise ManualAuditError(msg)
     return {
         members: f"{DUPLICATE_GROUP_PREFIX}{index:03d}"
-        for index, members in enumerate(sorted(normalised), start=1)
+        for index, members in enumerate(sorted(normalised), start=start)
     }
 
 

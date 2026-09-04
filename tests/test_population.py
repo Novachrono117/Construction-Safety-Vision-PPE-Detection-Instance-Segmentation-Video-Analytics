@@ -29,6 +29,7 @@ from construction_safety_vision.data.population import (
     PopulationError,
     build_class_map,
     build_groups,
+    connected_components,
     fingerprint_population,
     group_features,
     rectangle_polygon,
@@ -209,9 +210,13 @@ def test_a_confirmed_group_naming_an_excluded_image_is_rejected() -> None:
         build_groups(["a"], {"manual_dup_001": ["a", "excluded"]})
 
 
-def test_an_image_cannot_be_claimed_by_two_groups() -> None:
-    with pytest.raises(PopulationError, match="claimed by both"):
-        build_groups(["a", "b", "c"], {"g1": ["a", "b"], "g2": ["a", "c"]})
+def test_two_declarations_sharing_an_image_merge_rather_than_conflict() -> None:
+    # Superseded behaviour: this used to raise. Sharing an image means the two
+    # declarations describe one group, which is what connected components give.
+    groups = build_groups(["a", "b", "c"], {"g1": ["a", "b"], "g2": ["a", "c"]})
+    duplicates = [g for g in groups if g.group_type == SEMANTIC_DUPLICATE]
+    assert len(duplicates) == 1
+    assert duplicates[0].members == ["a", "b", "c"]
 
 
 # --- group features ----------------------------------------------------------
@@ -366,3 +371,118 @@ def test_changing_the_class_map_changes_the_fingerprint() -> None:
     baseline = fingerprint_population(images, annotations, groups, class_map)
     reordered = build_class_map(tuple(reversed(CLASS_ORDER)))
     assert fingerprint_population(images, annotations, groups, reordered) != baseline
+
+
+# --- connected components (phase 5B.1) ---------------------------------------
+
+
+def test_disjoint_relations_stay_separate_groups() -> None:
+    components = connected_components({"g1": ["a", "b"], "g2": ["c", "d"]})
+    assert components == [("g1", ["a", "b"]), ("g2", ["c", "d"])]
+
+
+def test_transitive_relations_merge_into_one_component() -> None:
+    # A~B and B~C means one group {A, B, C}. Two overlapping pairs would let a
+    # split separate A from C while honouring each relation individually.
+    components = connected_components({"g1": ["a", "b"], "g2": ["b", "c"]})
+    assert components == [("g1", ["a", "b", "c"])]
+
+
+def test_a_merged_component_keeps_the_lowest_declared_id() -> None:
+    components = connected_components({"g9": ["b", "c"], "g2": ["a", "b"]})
+    assert components == [("g2", ["a", "b", "c"])]
+
+
+def test_a_long_chain_collapses_to_a_single_component() -> None:
+    components = connected_components(
+        {"g1": ["a", "b"], "g2": ["b", "c"], "g3": ["c", "d"], "g4": ["d", "e"]}
+    )
+    assert components == [("g1", ["a", "b", "c", "d", "e"])]
+
+
+def test_components_are_independent_of_declaration_order() -> None:
+    forward = connected_components({"g1": ["a", "b"], "g2": ["b", "c"], "g3": ["x", "y"]})
+    backward = connected_components({"g3": ["y", "x"], "g2": ["c", "b"], "g1": ["b", "a"]})
+    assert forward == backward
+
+
+def test_transitive_relations_produce_one_group_not_two() -> None:
+    groups = build_groups(["a", "b", "c", "d"], {"g1": ["a", "b"], "g2": ["b", "c"]})
+    duplicates = [g for g in groups if g.group_type == SEMANTIC_DUPLICATE]
+    assert len(duplicates) == 1
+    assert duplicates[0].members == ["a", "b", "c"]
+    members = [m for g in groups for m in g.members]
+    assert sorted(members) == ["a", "b", "c", "d"]
+    assert len(members) == len(set(members))
+
+
+def test_a_transitively_merged_group_passes_validation() -> None:
+    images = [
+        image("a", group_id="g1"),
+        image("b", group_id="g1"),
+        image("c", group_id="g1"),
+        image("d", group_id="singleton-d"),
+    ]
+    groups = build_groups(["a", "b", "c", "d"], {"g1": ["a", "b"], "g2": ["b", "c"]})
+    annotations = [annotation(name) for name in ("a", "b", "c", "d")]
+    assert validate_population(images, annotations, groups) == []
+
+
+def test_group_features_aggregate_a_three_member_component() -> None:
+    groups = build_groups(["a", "b", "c"], {"g1": ["a", "b"], "g2": ["b", "c"]})
+    row = group_features(
+        groups[0],
+        {"a": [annotation("a")], "b": [annotation("b", label="vest_loose")], "c": []},
+    )
+    assert row["image_count"] == 3
+    assert row["zero_instance_image_count"] == 1
+    assert row["instances_person"] == 1
+    assert row["instances_vest_loose"] == 1
+
+
+def test_confirming_a_duplicate_pair_changes_the_group_fingerprint() -> None:
+    images, annotations, groups, class_map = _population()
+    baseline = fingerprint_population(images, annotations, groups, class_map)
+    merged = build_groups(["a", "b"], {"manual_dup_007": ["a", "b"]})
+    after = fingerprint_population(images, annotations, merged, class_map)
+    assert after["groups_sha256"] != baseline["groups_sha256"]
+    assert after["modeling_population_sha256"] != baseline["modeling_population_sha256"]
+    # No annotation and no class index moved, so those digests must not move.
+    assert after["annotations_sha256"] == baseline["annotations_sha256"]
+    assert after["class_map_sha256"] == baseline["class_map_sha256"]
+
+
+def test_a_group_records_the_verdict_behind_it() -> None:
+    groups = build_groups(
+        ["a", "b", "c"],
+        {"g1": ["a", "b"]},
+        {"g1": "NEAR_DUPLICATE_SAME_SCENE"},
+    )
+    duplicate = next(g for g in groups if g.group_type == SEMANTIC_DUPLICATE)
+    assert duplicate.basis == "NEAR_DUPLICATE_SAME_SCENE"
+    assert duplicate.csv_rows()[0]["group_basis"] == "NEAR_DUPLICATE_SAME_SCENE"
+
+
+def test_a_merged_component_reports_every_verdict_that_produced_it() -> None:
+    # A component built from two different findings must not claim only one.
+    groups = build_groups(
+        ["a", "b", "c"],
+        {"g1": ["a", "b"], "g2": ["b", "c"]},
+        {"g1": "EXACT_SEMANTIC_DUPLICATE", "g2": "NEAR_DUPLICATE_SAME_SCENE"},
+    )
+    duplicate = next(g for g in groups if g.group_type == SEMANTIC_DUPLICATE)
+    assert duplicate.members == ["a", "b", "c"]
+    assert duplicate.basis == "EXACT_SEMANTIC_DUPLICATE|NEAR_DUPLICATE_SAME_SCENE"
+
+
+def test_a_group_without_a_declared_basis_is_left_empty() -> None:
+    groups = build_groups(["a", "b"], {"g1": ["a", "b"]})
+    duplicate = next(g for g in groups if g.group_type == SEMANTIC_DUPLICATE)
+    assert duplicate.basis == ""
+
+
+def test_a_near_duplicate_group_is_as_indivisible_as_an_exact_one() -> None:
+    groups = build_groups(["a", "b"], {"g1": ["a", "b"]}, {"g1": "NEAR_DUPLICATE_SAME_SCENE"})
+    duplicate = next(g for g in groups if g.group_type == SEMANTIC_DUPLICATE)
+    assert duplicate.split_indivisible
+    assert duplicate.csv_rows()[0]["split_indivisible"] == "true"

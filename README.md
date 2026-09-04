@@ -83,7 +83,8 @@ Two design decisions define this architecture:
 | Automated audit + source EDA | Done (phase 4A). 436 originals acquired, measured and screened. |
 | Manual visual audit | Done (phase 4B). 32 human decisions recorded and validated against the phase 4A manifests. |
 | Canonical annotation snapshot | Done (phase 5A). The live source state, recovered read-only with complete geometry in original coordinates. |
-| Canonical modelling population | Done (phase 5B). 433 modelling images, 2031 annotations retained, 427 indivisible split units. |
+| Canonical modelling population | Done (phase 5B). 433 modelling images, 2031 annotations retained. |
+| Semantic duplicate groups | Done (phase 5B.1). All 11 near-duplicate candidates dispositioned; 11 groups, 422 split units. |
 | Splits | **Provider split rejected for the final protocol. No canonical split created, none frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
@@ -255,9 +256,41 @@ defect. The failed experiment is preserved as negative evidence in
 > reference set*, not ground truth for bad annotations. Precision against them
 > measures agreement with drift, not detection of error.
 
-**Phase 5C entry gate:** the 5 remaining near-duplicate candidates have no human
-disposition yet and must get one **before the split is frozen**. Phase 5C then
-designs and freezes the split from the 427 groups.
+### Semantic duplicate groups (phase 5B.1)
+
+Phase 4B reviewed only the near-duplicate candidates that crossed a *provider*
+split boundary, and then rejected that split. Once the split is rebuilt from
+scratch, a duplicate pair that happened to sit inside one of the provider's
+splits constrains the new split just as much, so the same-split candidates were
+reviewed too.
+
+- **All 11 phase 4A near-duplicate candidates now carry a human decision**: 6 in
+  phase 4B, 5 in phase 5B.1. None was merged on perceptual distance alone.
+- **11 confirmed groups** and **411 singletons** = **422 split units** covering
+  all 433 modelling images. Groups are connected components of the confirmed
+  relations, so a chain A~B, B~C forms one group rather than two overlapping
+  pairs.
+- **Two findings, both indivisible**, recorded distinctly in
+  `group_manifest.csv`:
+  - `EXACT_SEMANTIC_DUPLICATE` (10 groups) - the same frame stored twice;
+  - `NEAR_DUPLICATE_SAME_SCENE` (1 group) - the same worker and scene at a
+    different moment, correlated but not identical.
+
+  Both are grouped because the point of grouping is statistical independence
+  across splits, not image identity. All are **semantic**, not byte duplicates -
+  the 436 source images still have distinct SHA-256 hashes.
+- Group numbering continues from the phase 4B sequence; identifiers 001-006 still
+  point at the same images.
+
+**Phase 5C entry gate `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES`
+is CLOSED**, and `phase_5c_entry_readiness` is `READY_FOR_SPLIT_OPTIMIZATION`.
+The last candidate had never been shown to a reviewer - it is the weakest of the
+11 by perceptual distance, so it fell outside the phase 4A sheet's eight-pair cap,
+and being same-split it was not on the cross-split sheet either. It was drawn on
+its own in `reports/figures/review_o_remaining_near_duplicates.jpg` and decided
+there.
+
+Phase 5C designs and freezes the split from the 422 groups. No split exists yet.
 
 ## Academic requirements
 
@@ -358,7 +391,8 @@ Work proceeds through 14 gated phases (see
 │   ├── build_drift_figures.py     # Review sheets for the drift and the odd records
 │   ├── resolve_canonical_snapshot.py # The canonical-snapshot decision + manifest
 │   ├── analyze_fragment_rule.py   # Can a geometry rule identify the drifted annotations?
-│   └── build_modeling_population.py # Eligible images/annotations + indivisible groups
+│   ├── build_modeling_population.py # Eligible images/annotations + indivisible groups
+│   └── build_remaining_duplicate_review.py # Candidates still awaiting a human decision
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -454,6 +488,7 @@ Build the canonical modelling population (phase 5B). Fully offline:
 ```bash
 uv run python scripts/analyze_fragment_rule.py
 uv run python scripts/build_modeling_population.py
+uv run python scripts/build_remaining_duplicate_review.py
 ```
 
 Checks:
