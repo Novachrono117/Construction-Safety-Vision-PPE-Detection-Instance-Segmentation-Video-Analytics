@@ -1,8 +1,21 @@
-"""Dataset acquisition and structural inspection.
+"""Dataset acquisition, inspection, audit and canonical-snapshot resolution.
 
-Phase 3 scope: obtain the canonical instance-segmentation export from the
-provider, record its provenance, and verify that it is internally consistent.
-No annotation is modified, no split is created and no image is analysed here.
+Nothing in this package modifies an annotation, creates a split or trains a
+model. It obtains what the provider holds, measures it, and records what was
+decided about it.
+
+Re-exported below is the acquisition and inspection surface established in phase
+3, which other packages call directly. The later modules are imported by their
+own path rather than re-exported here, because they are used by a small number
+of scripts and flattening them would say less about where each belongs:
+
+* ``fingerprint``, ``imagestats``, ``source`` - the phase 4A source audit;
+* ``geometry`` - boxes derived from segmentation, used by every later phase;
+* ``manualaudit`` - the phase 4B human decisions;
+* ``sourcegeometry`` - complete live geometry, recovered and verified (5A);
+* ``v4mapping`` - source images to their non-augmented export representation (5A);
+* ``drift`` - live annotations versus the version-4 snapshot (5A);
+* ``canonical`` - the canonical-snapshot decision and its manifest (5A).
 """
 
 from __future__ import annotations

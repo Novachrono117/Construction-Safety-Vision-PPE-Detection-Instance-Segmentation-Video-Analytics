@@ -7,13 +7,20 @@ small text provenance/manifest files are tracked (see `.gitignore`).
 
 | Directory | Contents | Mutability |
 | --- | --- | --- |
-| `external/` | The immutable artifact **as received from the external provider** - the downloaded export archive, plus its `*.provenance.json` record. | Immutable. Never edited, never re-compressed. |
+| `external/` | Artifacts **as received from the external provider** - the downloaded export archive with its `*.provenance.json` record, and `source_images/`, the 436 source originals at full resolution. | Immutable. Never edited, never re-compressed. |
 | `raw/` | The **extracted canonical dataset representation**, exactly as it came out of the archive. Input to every later step. | Immutable. Never edited, never manually fixed. |
 | `interim/` | Derived and audited representations produced by the audit phase (parsed annotations, audit tables, duplicate reports). | Regenerable. |
 | `processed/` | Model-ready datasets: the detection and segmentation views of the frozen splits. | Regenerable. |
 
-`interim/` and `processed/` are **reserved and currently empty**. Phase 3 does not
-write to them, and no derived detection labels exist yet.
+`interim/` currently holds `source_image_stats.jsonl` and `source_annotations.jsonl`
+(phase 4A measurements) and `source_geometry.jsonl` (phase 5A recovered annotation
+geometry, in original image coordinates). All three are bulk data: git-ignored and
+re-derivable by running the scripts named in `scripts/README.md`. What is
+committed instead is the counts-only summary under `reports/`, together with the
+file hashes recorded in `reports/canonical_annotation_manifest.json`.
+
+`processed/` is **reserved and currently empty**. No split has been frozen and no
+model-ready dataset exists; phase 5B writes the first one.
 
 ## Rules
 

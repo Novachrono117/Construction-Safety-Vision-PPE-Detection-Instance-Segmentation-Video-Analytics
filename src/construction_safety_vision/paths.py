@@ -19,9 +19,47 @@ PROJECT_ROOT_ENV_VAR = "CSVISION_PROJECT_ROOT"
 ROOT_MARKERS: tuple[str, ...] = ("pyproject.toml",)
 """Files whose presence identifies the repository root."""
 
+WINDOWS_EXTENDED_PREFIX = "\\\\?\\"
+"""Prefix that lifts the Win32 ``MAX_PATH`` limit for a fully qualified path."""
+
+WINDOWS_MAX_PATH = 259
+"""Longest path the Win32 API accepts without the extended-length prefix."""
+
 
 class ProjectRootNotFoundError(RuntimeError):
     """Raised when the repository root cannot be resolved."""
+
+
+def long_path(path: str | Path) -> str:
+    """Return a filesystem path that is openable regardless of its length.
+
+    Windows rejects paths longer than 260 characters unless long-path support is
+    enabled system-wide, and the relative form is no escape: the API resolves it
+    against the working directory before applying the limit. This repository hits
+    that ceiling for real - the provider's export uses descriptive filenames, and
+    137 of its 742 images exceed it once nested under a project directory with a
+    long name. Those files list fine and open never.
+
+    The extended-length prefix lifts the limit without touching the machine's
+    configuration. It is applied only where it is needed and only on Windows,
+    because the prefix also disables path normalisation.
+
+    Args:
+        path: Path to open. May be relative.
+
+    Returns:
+        The path as a string, prefixed only when required.
+    """
+    text = os.fspath(path)
+    if os.name != "nt" or text.startswith(WINDOWS_EXTENDED_PREFIX):
+        return text
+    # Path.absolute rather than Path.resolve: the prefix requires a normalised
+    # absolute path, but resolve() walks the filesystem to expand symlinks, and
+    # doing that to a path the API cannot open yet is exactly what must be avoided.
+    absolute = str(Path(os.path.normpath(Path(text).absolute())))
+    if len(absolute) <= WINDOWS_MAX_PATH:
+        return text
+    return WINDOWS_EXTENDED_PREFIX + absolute
 
 
 def in_colab() -> bool:

@@ -2,15 +2,19 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
 
 from construction_safety_vision.paths import (
     PROJECT_ROOT_ENV_VAR,
+    WINDOWS_EXTENDED_PREFIX,
+    WINDOWS_MAX_PATH,
     ProjectPaths,
     ProjectRootNotFoundError,
     find_project_root,
+    long_path,
 )
 
 
@@ -87,3 +91,37 @@ def test_real_repository_layout_exists() -> None:
 
     for directory in (paths.configs, paths.notebooks, paths.reports, paths.scripts):
         assert directory.is_dir(), f"missing repository directory: {directory}"
+
+
+def test_a_short_path_is_returned_unchanged() -> None:
+    assert long_path("data/raw/thing.jpg") == "data/raw/thing.jpg"
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the MAX_PATH ceiling is Windows-only")
+def test_a_long_windows_path_gains_the_extended_prefix() -> None:
+    # 137 of the export's 742 images exceed the Win32 limit once nested under a
+    # project directory with a long name; without the prefix they list fine and
+    # open never. scripts/map_v4_sources.py reads every one of them, so the
+    # end-to-end behaviour is exercised there; what is checked here is the rule.
+    result = long_path(Path("C:/") / ("x" * 300) / "image.jpg")
+
+    assert result.startswith(WINDOWS_EXTENDED_PREFIX)
+    assert len(result) > WINDOWS_MAX_PATH
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the MAX_PATH ceiling is Windows-only")
+def test_an_already_prefixed_path_is_not_prefixed_twice() -> None:
+    already = WINDOWS_EXTENDED_PREFIX + "C:" + chr(92) + "y" * 300 + chr(92) + "image.jpg"
+
+    assert long_path(already) == already
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the MAX_PATH ceiling is Windows-only")
+def test_a_path_just_under_the_limit_is_left_alone() -> None:
+    # Applying the prefix everywhere would also disable path normalisation, so
+    # it is applied only where the limit actually bites.
+    root = "C:/"
+    padding = WINDOWS_MAX_PATH - len(root) - len("/f.jpg") - 1
+    result = long_path(Path(root) / ("z" * padding) / "f.jpg")
+
+    assert not result.startswith(WINDOWS_EXTENDED_PREFIX)

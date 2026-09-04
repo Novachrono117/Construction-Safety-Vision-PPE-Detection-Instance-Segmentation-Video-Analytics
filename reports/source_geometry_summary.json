@@ -1,0 +1,82 @@
+{
+  "annotations": 2031,
+  "annotations_per_provider_split": {
+    "test": 179,
+    "train": 1479,
+    "valid": 373
+  },
+  "annotations_with_mask_geometry": 2029,
+  "class_counts": {
+    "helmet_loose": 393,
+    "helmet_on_head": 314,
+    "person": 914,
+    "vest_loose": 45,
+    "vest_on_body": 365
+  },
+  "coordinate_frame": "original source image pixels",
+  "geometry_kind_counts": {
+    "BITMASK_OR_MASK_ASSET": 0,
+    "OTHER_SUPPORTED": 0,
+    "POLYGON": 1007,
+    "RLE": 1022,
+    "UNSUPPORTED": 2
+  },
+  "git_commit": "2d446f79cdc5508c90384b1f011e7308fc1da995",
+  "images_per_provider_split": {
+    "test": 43,
+    "train": 306,
+    "valid": 87
+  },
+  "provider_type_counts": {
+    "<none>": 2,
+    "mask": 1022,
+    "polygon": 1007
+  },
+  "recovery_method": "read-only GET {workspace}/{project}/images/{id}; polygon boxes from 'points', mask boxes from base64(zlib(COCO compressed RLE counts)) in 'mask', decoded against the full original canvas in [height, width] order",
+  "source_images": 436,
+  "stored_box_vs_recovered_geometry": {
+    "POLYGON": {
+      "agree_within_1px": 1007,
+      "max_delta_px": 0.0,
+      "mean_delta_px": 0.0,
+      "measured": 1007
+    },
+    "RLE": {
+      "agree_within_1px": 1022,
+      "max_delta_px": 0.0,
+      "mean_delta_px": 0.0,
+      "measured": 1022
+    }
+  },
+  "unsupported_annotations": [
+    {
+      "annotation_id": "I",
+      "bbox": [
+        921.3,
+        0.3,
+        7.9,
+        6.0
+      ],
+      "confidence": null,
+      "image_id": "OQJwjQoYsf1KUgr9G0V8",
+      "label": "helmet_on_head",
+      "notes": "provider type '' carries no geometry field",
+      "provider_type": ""
+    },
+    {
+      "annotation_id": "J",
+      "bbox": [
+        909.29,
+        6.01,
+        13.3,
+        15.42
+      ],
+      "confidence": null,
+      "image_id": "OQJwjQoYsf1KUgr9G0V8",
+      "label": "vest_on_body",
+      "notes": "provider type '' carries no geometry field",
+      "provider_type": ""
+    }
+  ],
+  "verification": "every recovered instance re-measured with pycocotools; measured area and derived bbox checked against the provider's declared area and box"
+}

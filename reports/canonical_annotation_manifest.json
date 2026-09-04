@@ -1,0 +1,168 @@
+{
+  "acquisition_method": {
+    "authentication": "Authorization: Bearer, key read from the environment only",
+    "endpoint": "GET {workspace}/{project}/images/{image_id}",
+    "geometry_decoding": "read-only GET {workspace}/{project}/images/{id}; polygon boxes from 'points', mask boxes from base64(zlib(COCO compressed RLE counts)) in 'mask', decoded against the full original canvas in [height, width] order",
+    "mutating_calls": 0,
+    "stored_box_vs_recovered_geometry": {
+      "POLYGON": {
+        "agree_within_1px": 1007,
+        "max_delta_px": 0.0,
+        "mean_delta_px": 0.0,
+        "measured": 1007
+      },
+      "RLE": {
+        "agree_within_1px": 1022,
+        "max_delta_px": 0.0,
+        "mean_delta_px": 0.0,
+        "measured": 1022
+      }
+    },
+    "verification": "every recovered instance re-measured with pycocotools; measured area and derived bbox checked against the provider's declared area and box"
+  },
+  "annotation_count": 2031,
+  "annotations_with_mask_geometry": 2029,
+  "artifact_fingerprints": {
+    "data/interim/source_geometry.jsonl": "a1c5aef3af5456860c4e40fb41e924a205a01a851bf94d8aa4825c8cd962a905",
+    "reports/annotation_drift.csv": "1820d292198b3a1ea1e4fdb592a1b0f1784cb6ec61e325cbc03c6221eb7d1f34",
+    "reports/source_geometry_summary.json": "f60e1066655065c8144a3160fe3bbe1c4256a165a998fdb6cf329d87765a8c95",
+    "reports/v4_source_mapping.csv": "0585a81067633e68e1a85baebe888eda85d380abb64485eeabdcac291b3068f8"
+  },
+  "canonical_snapshot": {
+    "coordinate_frame": "original source image pixels",
+    "is_frozen_export": false,
+    "older_than_live_state_by": null,
+    "state": "live source project, read-only recovery",
+    "version_4_relationship": "version 4 is an older annotation snapshot of the same 436 source images; it is retained as the acquisition record and as the drift reference, not as the canonical annotation source"
+  },
+  "category_map": {
+    "helmet_loose": 0,
+    "helmet_on_head": 1,
+    "person": 2,
+    "vest_loose": 3,
+    "vest_on_body": 4
+  },
+  "class_counts": {
+    "helmet_loose": 393,
+    "helmet_on_head": 314,
+    "person": 914,
+    "vest_loose": 45,
+    "vest_on_body": 365
+  },
+  "decision": "CURRENT_COMPLETE_GEOMETRY",
+  "drift_summary": {
+    "added_by_class": {
+      "helmet_loose": 1,
+      "person": 33,
+      "vest_on_body": 42
+    },
+    "compared_against": "version-4 non-augmented representation of each source image",
+    "current_annotations": 2031,
+    "gross_added": 76,
+    "gross_removed": 6,
+    "images_compared": 436,
+    "images_with_negative_delta": 0,
+    "images_with_positive_delta": 21,
+    "images_with_unchanged_count": 415,
+    "net_delta": 70,
+    "removed_by_class": {
+      "person": 1,
+      "vest_on_body": 5
+    },
+    "v4_annotations": 1961
+  },
+  "excluded_provider_category": {
+    "name": "object",
+    "reason": "placeholder category declared by the export with zero annotations"
+  },
+  "generated": "2026-09-04T11:48:57+00:00",
+  "geometry_representation_counts": {
+    "BITMASK_OR_MASK_ASSET": 0,
+    "OTHER_SUPPORTED": 0,
+    "POLYGON": 1007,
+    "RLE": 1022,
+    "UNSUPPORTED": 2
+  },
+  "git_commit": "2d446f79cdc5508c90384b1f011e7308fc1da995",
+  "limitations": [
+    "Two live-source records (image OQJwjQoYsf1KUgr9G0V8, annotations I and J) carry a class and a bounding box but no segmentation geometry. Visual review shows both fall on a real distant worker, so they are valid objects with unsupported geometry. They are counted in the 2031 total and must be handled explicitly by phase 5B, not silently dropped.",
+    "All 76 annotations added since version 4 lie at least 80% inside an existing annotation of their own class and are under half its area (median 0.44%). None covers a previously unlabelled object. Visual review indicates they are fragments drawn on details such as a bracelet, glove lettering and a hard hat. Phase 5B must decide, as an explicit and recorded pipeline step, whether to retain them.",
+    "The canonical state is the provider's live project, which can change again. Its reproducibility rests on the recorded recovery method plus the committed artifact hashes, not on the provider freezing anything.",
+    "The provider's stored bounding boxes agree with the recovered geometry to 0.0 px in the live state, but phase 4B measured them disagreeing by up to 123.5 px inside the version-4 export. Detection boxes must still be derived from segmentation, as the constitution requires.",
+    "Annotation correctness itself was not assessed against any independent ground truth. No such reference exists for this dataset."
+  ],
+  "phase": "5A",
+  "phase_classification": "COMPLETE_CURRENT",
+  "provider_version_reference": {
+    "archive_sha256": "",
+    "export_format": "coco-segmentation",
+    "images_in_export": 742,
+    "independent_source_images": 436,
+    "non_augmented_representations_identified": 436,
+    "version": 4
+  },
+  "source_image_count": 436,
+  "source_project": {
+    "licence": "CC BY 4.0",
+    "project": "construction-ppe-compliance-detection",
+    "provider": "roboflow_universe",
+    "public_url": "https://universe.roboflow.com/agis-workspace-8gs52/construction-ppe-compliance-detection/dataset/4",
+    "workspace": "agis-workspace-8gs52"
+  },
+  "unsupported_annotations": [
+    {
+      "annotation_id": "I",
+      "bbox": [
+        921.3,
+        0.3,
+        7.9,
+        6.0
+      ],
+      "classification": "VALID_BUT_UNSUPPORTED_GEOMETRY",
+      "classification_basis": "the coordinates fall on a real, small, distant worker (see reports/figures/review_m_microannotations.jpg); the box is non-degenerate and inside the canvas; the version-4 counterpart's polygon is a rectangle derived from the same box, not an annotated mask, so no mask information exists in either state",
+      "confidence": null,
+      "evidence_figure": "reports/figures/review_m_microannotations.jpg",
+      "image_id": "OQJwjQoYsf1KUgr9G0V8",
+      "label": "helmet_on_head",
+      "notes": "provider type '' carries no geometry field",
+      "provider_type": "",
+      "version_4_counterpart": {
+        "annotation_id": 112,
+        "area": 10.112,
+        "found": true,
+        "geometry": "polygon",
+        "iou": 1.0,
+        "is_box_derived_rectangle": true,
+        "label": "helmet_on_head",
+        "polygon_vertices": 5
+      }
+    },
+    {
+      "annotation_id": "J",
+      "bbox": [
+        909.29,
+        6.01,
+        13.3,
+        15.42
+      ],
+      "classification": "VALID_BUT_UNSUPPORTED_GEOMETRY",
+      "classification_basis": "the coordinates fall on a real, small, distant worker (see reports/figures/review_m_microannotations.jpg); the box is non-degenerate and inside the canvas; the version-4 counterpart's polygon is a rectangle derived from the same box, not an annotated mask, so no mask information exists in either state",
+      "confidence": null,
+      "evidence_figure": "reports/figures/review_m_microannotations.jpg",
+      "image_id": "OQJwjQoYsf1KUgr9G0V8",
+      "label": "vest_on_body",
+      "notes": "provider type '' carries no geometry field",
+      "provider_type": "",
+      "version_4_counterpart": {
+        "annotation_id": 113,
+        "area": 43.73,
+        "found": true,
+        "geometry": "polygon",
+        "iou": 0.9999,
+        "is_box_derived_rectangle": true,
+        "label": "vest_on_body",
+        "polygon_vertices": 5
+      }
+    }
+  ]
+}

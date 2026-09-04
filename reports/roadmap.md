@@ -18,8 +18,8 @@ change log at the bottom of this file.
 | 1 | Scope and rubric contract | done |
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
-| 4 | Dataset/annotation audit and EDA | done (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | **next** · not started |
+| 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
+| 5 | Split freeze and task-specific dataset generation | 5A done (canonical annotation snapshot) · 5B **next**, not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -155,9 +155,44 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   `split_ratios` and `seed` from the configuration.
 - **Entry conditions.** The twelve constraints `P5-01` to `P5-12` recorded in
   [`manual_audit_report.md`](manual_audit_report.md). In particular the provider
-  split is not reusable, the six confirmed semantic-duplicate groups must stay
-  intact, and the current-source-vs-v4 annotation drift must be resolved before
-  anything is frozen.
+  split is not reusable and the six confirmed semantic-duplicate groups must stay
+  intact. The current-source-vs-v4 annotation drift was the remaining blocker and
+  is now resolved by subphase 5A.
+
+### Phase 5A - canonical annotation snapshot (complete)
+
+- **Question.** Which reproducible annotation state becomes the source of truth?
+  Not which images, not which split - only which annotations are authoritative.
+- **Outcome.** `CURRENT_COMPLETE_GEOMETRY`. The live source project was recovered
+  read-only: 436 source images, 2031 annotations, 2029 of them carrying complete
+  instance-segmentation geometry (1007 polygon, 1022 RLE) in **original image
+  coordinates**. Phase 4A's "1022 annotations lack geometry" was a consumption
+  gap; the geometry travels inline as base64-wrapped zlib-compressed COCO RLE.
+- **Verification.** Every recovered instance was re-measured and checked against
+  the provider's declared area and box; all 2029 agree to 0.0 px.
+- **Version 4 was viable and was not chosen.** All 436 source images map to
+  exactly one non-augmented v4 representation, so option A was available. It was
+  rejected because v4 geometry is expressed after a stretch resize to 640x640
+  that would have to be inverted for every annotation.
+- **Drift.** Net +70 annotations (76 added, 6 removed) across 67 images. Every
+  addition lies at least 80% inside an existing same-class annotation at a median
+  0.44% of its area, so none covers a previously unlabelled object. `vest_loose`
+  is unchanged.
+- **Outputs.** [`canonical_annotation_decision.md`](canonical_annotation_decision.md),
+  `canonical_annotation_manifest.json`,
+  [`annotation_drift_report.md`](annotation_drift_report.md),
+  `annotation_drift.csv`, `v4_source_mapping.csv`, `source_geometry_summary.json`,
+  and review sheets L, M and N under `figures/`.
+- **Explicitly not done.** No split, no exclusion, no duplicate grouping, no
+  holdout freeze, no YOLO labels, no coordinate conversion, no model.
+
+### Phase 5B - modelling population and split freeze (next)
+
+- **Entry conditions carried from 5A.** Decide the disposition of the 76 fragment
+  additions as an explicit, recorded pipeline step; materialise the two
+  `VALID_BUT_UNSUPPORTED_GEOMETRY` records as box-derived rectangles rather than
+  dropping them; apply the three out-of-domain exclusion candidates; keep the six
+  semantic duplicate groups inside one split.
 - **Outputs.** `data/processed/splits/{train,val,test}.manifest.csv` (image ID,
   file hash, group ID); `data/processed/detection/` and
   `data/processed/segmentation/`; the box-from-polygon derivation code; a
@@ -319,3 +354,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-02 | Phase 4A completed: 436 source originals acquired and audited. No exact duplicates; 6 cross-split near-duplicate candidates pending visual confirmation; vest_loose present in only 8 images and absent from the provider test split; source project has drifted 76 annotations ahead of the frozen v4 export. Provider split classified UNDETERMINED_PENDING_VISUAL_REVIEW. |
 | 2026-09-02 | Phase 4B completed, closing phase 4: the manual visual audit was recorded in `manual_audit_decisions.csv` (32 decisions) and `manual_audit_report.md`. Six cross-split pairs confirmed as semantic duplicates; three zero-instance images marked out-of-domain exclusion candidates; segmentation-derived boxes preferred but not applied; provider split reclassified UNSUITABLE_FOR_FINAL_PROTOCOL; dataset ACCEPTED_WITH_DOCUMENTED_LIMITATIONS. Twelve entry constraints handed to phase 5. |
 | 2026-09-01 | Phases 2 and 3 completed. Phase 3 established that version 4 holds 436 independent source images plus offline-augmented train variants; phase 4 gates updated to work from that population. |
+| 2026-09-04 | Phase 5A completed: canonical annotation snapshot resolved as `CURRENT_COMPLETE_GEOMETRY`. The live source state was recovered read-only with complete geometry for 2029 of 2031 annotations in original image coordinates; phase 4A's "1022 annotations lack geometry" was a consumption gap, not a provider limitation. Decode verified against the provider's own areas and boxes (agreement 0.0 px on all 2029). Version 4 was viable - all 436 source images map to exactly one non-augmented representation - but was rejected because its geometry is expressed after a stretch resize to 640x640. Measured drift: net +70 (76 added, 6 removed) over 67 images, with every addition lying inside an existing same-class annotation and covering no new object. The two unrecognised records classified VALID_BUT_UNSUPPORTED_GEOMETRY. Two measured corrections to earlier figures: the v4 source-snapshot annotation total is 1961, not the 1955 previously inferred, and the drift is +70 net rather than +76. No split created, no image excluded, no geometry converted. |

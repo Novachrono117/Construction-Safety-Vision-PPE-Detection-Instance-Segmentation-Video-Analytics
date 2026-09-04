@@ -183,32 +183,60 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 3 complete (dataset acquisition and provenance). Phase 4 (audit and
-  EDA) is next and has not started.
+- **Phase:** 5A complete (canonical annotation snapshot). Phase 5B (modelling
+  population and split freeze) is next and has not started.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
   `5c0c35f79be251af349f289ab300a8c706f260f9a5b52f66facfbd23466538f6`. Evidence in
   `reports/dataset_provenance.md`.
 - **`dataset.verified: true` means provenance only.** Source, license, format,
-  class list and artifact integrity were verified. Annotation *quality*,
-  duplicates, near duplicates and frame leakage were **not** examined and must
-  not be described as verified.
+  class list and artifact integrity were verified. It is not a statement about
+  annotation quality; phases 4 and 5A examined that separately and their findings
+  are below.
 - **436, not 742.** The export contains 742 images, of which only **436 are
   independent source images**; the train split is offline-augmented x2 (306 ->
   612). Never quote 742 as a sample count, never let augmented variants of one
   source image land in different splits, and never treat them as independent in
   any statistic.
-- **Known open items for phase 4:** segmentation geometry mixes polygon (1570)
-  and RLE (1803) - code that handles only polygons will silently drop
-  annotations; `vest_loose` has zero annotations in the provider's test split;
-  28 image records carry no annotations while the provider reports
-  `unannotated: 0`; the export declares a placeholder category `object` with no
-  annotations that must be excluded from the class map without shifting indices.
+- **Canonical annotations are the LIVE source project, not the v4 export.**
+  Decision `CURRENT_COMPLETE_GEOMETRY`, recorded in
+  `reports/canonical_annotation_manifest.json`. 436 source images, **2031
+  annotations**, of which 2029 carry complete geometry (1007 polygon, 1022 RLE)
+  in **original image coordinates**. Quote these numbers, not the export's.
+- **The v4 export's 3373 annotations are not the annotation count.** That figure
+  counts the augmented copies too. The v4 *source snapshot* - one non-augmented
+  representation per source image - holds **1961**, measured in phase 5A. An
+  earlier inferred value of 1955 was superseded.
+- **Geometry is recovered, not missing.** Phase 4A's "1022 annotations expose no
+  geometry" was a consumption gap. A `mask`-type annotation carries its geometry
+  inline as base64(zlib(COCO RLE counts)) against the full original canvas. Code
+  that reads only `points` will silently drop half the dataset.
+- **Two annotations have no segmentation at all** (image `OQJwjQoYsf1KUgr9G0V8`,
+  ids `I` and `J`), classified `VALID_BUT_UNSUPPORTED_GEOMETRY`. They are real
+  objects. Never drop them silently; phase 5B must materialise them explicitly.
+- **76 additions since v4 are fragments, not coverage.** Every one lies at least
+  80% inside an existing annotation of its own class at a median 0.44% of its
+  area. Phase 5B decides their disposition as a recorded pipeline step. Do not
+  describe the live annotations as "better" because they are newer.
+- **Known dataset limitations:** `vest_loose` is rare (45 instances, 8 images)
+  and absent from the provider's test split; six confirmed semantic-duplicate
+  groups must stay inside one split; three zero-instance images are out-of-domain
+  exclusion candidates; the export declares a placeholder category `object` with
+  no annotations that must be excluded from the class map without shifting
+  indices; the provider's stored boxes disagree with its own geometry inside the
+  v4 export by up to 123.5 px, so detection boxes are always derived from
+  segmentation.
+- **Provider split is rejected** for the final protocol
+  (`UNSUITABLE_FOR_FINAL_PROTOCOL`), but the dataset is accepted with documented
+  limitations.
 - **Models:** none trained. No metrics exist.
-- **Holdout:** the provider ships a `test` split, but it is **not yet the frozen
-  holdout** - phase 5 decides whether to adopt or re-split. Treat it as protected
-  in the meantime.
-- **Credentials:** `ROBOFLOW_API_KEY` is required by `scripts/download_dataset.py`
-  and is read from the environment only. It must never be written to `.env.example`,
-  a provenance record, a log line, or any committed file.
+- **Holdout:** no holdout has been frozen. The provider ships a `test` split; it
+  is **not** the project's holdout and phase 5B decides the real partition. Treat
+  it as protected in the meantime.
+- **Long paths:** 137 of the export's 742 image files exceed the Windows
+  `MAX_PATH` limit on this machine. Open them through
+  `construction_safety_vision.paths.long_path`, never with a bare path.
+- **Credentials:** `ROBOFLOW_API_KEY` is required by the provider-facing scripts
+  and is read from the environment only. It must never be written to
+  `.env.example`, a provenance record, a log line, or any committed file.

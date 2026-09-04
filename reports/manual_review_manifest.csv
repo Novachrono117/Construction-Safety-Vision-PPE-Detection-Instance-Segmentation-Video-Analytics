@@ -145,3 +145,17 @@ ann1,v4-image-0,valid ann=1 polygon delta=0.01px (representative),polygon,bbox_s
 ann4,v4-image-1,valid ann=4 rle delta=1.00px (representative),rle,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_rle
 ann1,v4-image-0,test ann=1 polygon delta=0.00px (representative),polygon,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_polygon
 ann2,v4-image-0,test ann=2 rle delta=1.00px (representative),rle,bbox_segmentation_discrepancy,reports/figures/review_k_bbox_vs_segmentation.jpg,representative_rle
+ljmzAWSj,ljmzAWSjDGWvNtmeIhi5,px_0013_8487363.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=17 removed=0
+dwz8H6tU,dwz8H6tUE91TOzWAqabt,px_0025_8486901.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=10 removed=0
+qpGvhFrN,qpGvhFrN8YelHx1yTsM9,px_0008_34670926.jpg,test,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=6 removed=0
+lHkj3xNm,lHkj3xNmUL3G67dHG1Zr,px_0003_8487362.jpg,test,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=5 removed=0
+CDbWzCea,CDbWzCeakwV73xXd2qlq,px_0039_8961018.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=4 removed=1
+MkxXQ8wm,MkxXQ8wmfbTbRbgDBAK1,px_0061_8486926.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=0
+Y1meTyz9,Y1meTyz9qAlTOKqcMF21,px_0026_8961128.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=4 removed=1
+q2wyXKnA,q2wyXKnABjAqqL0mLiG7,tu_px_09179_20379378.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=0
+zIjMWx3E,zIjMWx3EGNSbPhJ6eyDE,px_0060_8853470.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=0
+EMcfZIuO,EMcfZIuO2gmvi4krBUxS,pb_0038_4754307.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=1
+RRlPrUJX,RRlPrUJXfRWGGJ6CeKIL,px_0139_8487333.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=1
+WvGmeXrU,WvGmeXrUqULTXbaSGJgZ,px_0080_34842258.jpg,train,annotation_drift,reports/figures/review_l_annotation_drift.jpg,added=3 removed=1
+OQJwjQoY-I,OQJwjQoYsf1KUgr9G0V8,photo-1694521787162-5373b598945c.jpg,test,geometry_less_microannotation,reports/figures/review_m_microannotations.jpg,annotation I label=helmet_on_head no segmentation
+OQJwjQoY-J,OQJwjQoYsf1KUgr9G0V8,photo-1694521787162-5373b598945c.jpg,test,geometry_less_microannotation,reports/figures/review_m_microannotations.jpg,annotation J label=vest_on_body no segmentation
