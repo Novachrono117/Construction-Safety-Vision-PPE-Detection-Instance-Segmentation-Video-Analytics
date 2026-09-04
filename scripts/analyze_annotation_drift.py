@@ -523,24 +523,36 @@ def build_report(
             f"quantisation cannot be the explanation. This is not a controlled test, so the "
             f"attribution stays LIKELY rather than FACT.",
             "",
-            f"**FACT.** None of the {summary['gross_added']} additions covers an object the "
-            f"snapshot had left unlabelled. Every one lies at least 80% inside an existing "
-            f"annotation of its own class, and every one is under half that annotation's area "
-            f"(median "
-            f"{summary['addition_placement']['median_area_fraction_of_container']:.2%}). The "
-            f"drift therefore adds no class coverage.",
+            f"**FACT.** Every one of the {summary['gross_added']} additions lies at least 80% "
+            f"inside an annotation of its own class that the snapshot already had, and every "
+            f"one is under half that annotation's area (median "
+            f"{summary['addition_placement']['median_area_fraction_of_container']:.2%}).",
             "",
-            "**LIKELY.** The additions are annotation fragments rather than objects. The "
-            "measurement above establishes that they subdivide already-labelled objects; the "
-            "review sheet shows boxes drawn on a bracelet, on glove lettering, on a hard hat "
-            "and on a cheek. Calling them erroneous is a judgement from that evidence, not a "
-            "measurement against a ground truth, so it is LIKELY and not FACT.",
+            "**CORRECTION (phase 5B).** An earlier version of this report inferred from the "
+            "measurement above that the additions therefore add no class coverage and are "
+            "fragments. **That inference was wrong and is withdrawn.** The measurement stands; "
+            "what does not follow from it is the conclusion. Phase 5B inspected the affected "
+            "images and found the additions include legitimate corrections:",
+            "",
+            "* a single oversized `person` box covering **two** people, replaced by one box "
+            "per person - which is new instance coverage;",
+            "* a coarse `vest_on_body` polygon replaced by several tighter ones covering the "
+            "parts of the vest actually visible;",
+            "* geometry refinements.",
+            "",
+            "Containment inside an older same-class annotation looked like evidence of "
+            "redundancy, but a coarse over-merged parent contains its own corrections by "
+            "definition. See `reports/fragment_rule_report.md`.",
+            "",
+            "**FACT.** Some additions are genuinely degenerate - a few dozen pixels on a "
+            "bracelet, on glove lettering, on a hard hat. Both kinds are present, and no "
+            "geometric rule separates them, which is why no automatic filter was adopted and "
+            "all 2031 annotations are retained.",
             "",
             "**UNKNOWN.** Whether the live annotations are *more correct* than the snapshot's "
             "overall. They are newer, and newer is not a measurement. Nothing here compares "
             "either state against an independent ground truth, and no such reference exists "
-            "for this dataset. What is established is narrower and stated above: the drift "
-            "adds no coverage.",
+            "for this dataset.",
             "",
         ]
     )

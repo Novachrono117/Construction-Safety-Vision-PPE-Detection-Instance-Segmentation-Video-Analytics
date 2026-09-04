@@ -14,7 +14,8 @@ small text provenance/manifest files are tracked (see `.gitignore`).
 
 `interim/` currently holds `source_image_stats.jsonl` and `source_annotations.jsonl`
 (phase 4A measurements) and `source_geometry.jsonl` (phase 5A recovered annotation
-geometry, in original image coordinates). All three are bulk data: git-ignored and
+geometry, in original image coordinates) and `modeling_annotations.jsonl` (phase
+5B eligible annotations with their canonical class index). All are bulk data: git-ignored and
 re-derivable by running the scripts named in `scripts/README.md`. What is
 committed instead is the counts-only summary under `reports/`, together with the
 file hashes recorded in `reports/canonical_annotation_manifest.json`.

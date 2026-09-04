@@ -419,11 +419,14 @@ LIMITATIONS = [
     "and a bounding box but no segmentation geometry. Visual review shows both fall on a real "
     "distant worker, so they are valid objects with unsupported geometry. They are counted in "
     "the 2031 total and must be handled explicitly by phase 5B, not silently dropped.",
-    "All 76 annotations added since version 4 lie at least 80% inside an existing annotation "
-    "of their own class and are under half its area (median 0.44%). None covers a previously "
-    "unlabelled object. Visual review indicates they are fragments drawn on details such as a "
-    "bracelet, glove lettering and a hard hat. Phase 5B must decide, as an explicit and "
-    "recorded pipeline step, whether to retain them.",
+    "All 76 annotations added since version 4 lie at least 80% inside an annotation of their "
+    "own class that the snapshot already had, and are under half its area (median 0.44%). "
+    "RESOLVED IN PHASE 5B: this was originally read as evidence that they add no coverage and "
+    "are fragments, and that reading was withdrawn. They are a mixture of degenerate slivers "
+    "and legitimate corrections - instance splits, coarse annotations replaced by several "
+    "precise ones, and geometry refinements - which no geometric rule separates. Automatic "
+    "filtering was rejected (fragment_rule_status = REJECTED_FOR_AUTOMATIC_FILTERING) and all "
+    "2031 annotations are retained.",
     "The canonical state is the provider's live project, which can change again. Its "
     "reproducibility rests on the recorded recovery method plus the committed artifact "
     "hashes, not on the provider freezing anything.",
@@ -528,16 +531,25 @@ def build_report(manifest: dict[str, Any], reasons: list[str]) -> str:
             f"the deterministic preprocessing re-render closely and the other does not. So "
             f"option A was viable, and was not rejected for being unavailable.",
             "",
-            "### The drift adds no coverage (FACT)",
+            "### What the drift actually is (FACT, corrected in phase 5B)",
             "",
             f"The live state holds {drift['net_delta']:+d} annotations relative to the "
             f"snapshot, which conceals {drift['gross_added']} additions and "
             f"{drift['gross_removed']} removals across "
             f"{drift['images_with_positive_delta']} images with a positive delta. Every one of "
-            f"the {drift['gross_added']} additions lies at least 80% inside an existing "
-            f"annotation of its own class and is under half its area. None covers an object "
-            f"the snapshot had left unlabelled. `vest_loose`, the rare class the split design "
-            f"turns on, is identical in both states.",
+            f"the {drift['gross_added']} additions lies at least 80% inside an annotation of "
+            f"its own class that the snapshot already had, and is under half its area. "
+            f"`vest_loose`, the rare class the split design turns on, is identical in both "
+            f"states.",
+            "",
+            "**This report originally concluded from that measurement that the additions add "
+            "no coverage and are fragments. That conclusion was withdrawn in phase 5B.** The "
+            "measurement is correct; the inference was not. The additions include legitimate "
+            "instance splits - in one image a single oversized `person` box covering two "
+            "people, replaced by one box per person - alongside genuinely degenerate slivers. "
+            "A coarse over-merged parent contains its own corrections by definition, so "
+            "containment could not distinguish the two. No automatic filter was adopted and "
+            "all annotations are retained; see `reports/fragment_rule_report.md`.",
             "",
             "See `reports/annotation_drift_report.md` and "
             "`reports/figures/review_n_added_annotations.jpg`.",

@@ -183,8 +183,9 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5A complete (canonical annotation snapshot). Phase 5B (modelling
-  population and split freeze) is next and has not started.
+- **Phase:** 5B complete (`READY_FOR_SPLIT_DESIGN`). Phase 5C (split design and
+  freeze) has not started, and has one open entry gate: the 5 remaining
+  near-duplicate candidates need a human disposition before any split is frozen.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -215,10 +216,24 @@ uv run pytest
 - **Two annotations have no segmentation at all** (image `OQJwjQoYsf1KUgr9G0V8`,
   ids `I` and `J`), classified `VALID_BUT_UNSUPPORTED_GEOMETRY`. They are real
   objects. Never drop them silently; phase 5B must materialise them explicitly.
-- **76 additions since v4 are fragments, not coverage.** Every one lies at least
-  80% inside an existing annotation of its own class at a median 0.44% of its
-  area. Phase 5B decides their disposition as a recorded pipeline step. Do not
-  describe the live annotations as "better" because they are newer.
+- **The 76 additions since v4 are NOT all fragments, and all are retained.**
+  Phase 5A said they were fragments; phase 5B measured otherwise and that reading
+  is withdrawn. About half are degenerate slivers; the rest are corrections that
+  *improve* the labels (a coarse polygon replaced by several tighter ones; one
+  oversized `person` box covering two people replaced by one box each - which is
+  new instance coverage). No deterministic rule separates them, so the owner set
+  `fragment_rule_status = REJECTED_FOR_AUTOMATIC_FILTERING`. **All 2031
+  annotations are retained; 0 excluded.** Never re-propose an automatic filter
+  here, and never describe the live annotations as "better" merely for being
+  newer.
+- **The v4 drift set is NOT error ground truth.** The 76 additions are a
+  *historical annotation-drift reference set*. Precision or recall measured
+  against them describes agreement with drift, not annotation correctness. A rule
+  at precision 1.0 selects annotations that all changed since v4 - not
+  annotations that are all wrong. Do not make that inference.
+- **Terminology:** the flag is `NESTED_SAME_CLASS_CANDIDATE` and it is
+  descriptive. Do not call these annotations fragments unless a specific one has
+  been established as such by manual review.
 - **Known dataset limitations:** `vest_loose` is rare (45 instances, 8 images)
   and absent from the provider's test split; six confirmed semantic-duplicate
   groups must stay inside one split; three zero-instance images are out-of-domain
@@ -229,7 +244,20 @@ uv run pytest
   segmentation.
 - **Provider split is rejected** for the final protocol
   (`UNSUITABLE_FOR_FINAL_PROTOCOL`), but the dataset is accepted with documented
-  limitations.
+  limitations. It must not appear in any artifact a split designer reads;
+  `group_split_features.csv` deliberately omits it.
+- **Modelling population (phase 5B):** 433 eligible images (436 minus 3 confirmed
+  out-of-domain, which stay on disk and in the provenance population), 2031
+  retained annotations, and **427 indivisible split units** (421 singletons + 6
+  confirmed semantic duplicate groups). Quote 433 for modelling and 436 for
+  provenance; they are different populations and must not be conflated.
+- **5 near-duplicate chains are UNCONFIRMED** and deliberately not merged. A
+  perceptual-hash collision is not a confirmed duplicate; only phase 4B's six
+  visually confirmed pairs group images together.
+- **The 2 geometry-less records are materialised**, not dropped: four-corner
+  rectangles clipped to the canvas, marked
+  `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`. Never describe them as
+  human-drawn segmentation.
 - **Models:** none trained. No metrics exist.
 - **Holdout:** no holdout has been frozen. The provider ships a `test` split; it
   is **not** the project's holdout and phase 5B decides the real partition. Treat

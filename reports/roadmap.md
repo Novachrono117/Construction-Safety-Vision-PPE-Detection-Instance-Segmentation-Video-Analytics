@@ -19,7 +19,7 @@ change log at the bottom of this file.
 | 2 | Repository foundation | done |
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
-| 5 | Split freeze and task-specific dataset generation | 5A done (canonical annotation snapshot) · 5B **next**, not started |
+| 5 | Split freeze and task-specific dataset generation | 5A done · 5B done (`READY_FOR_SPLIT_DESIGN`) · 5C **next**, not started |
 | 6 | Detection baseline | not started |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
@@ -186,13 +186,56 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 - **Explicitly not done.** No split, no exclusion, no duplicate grouping, no
   holdout freeze, no YOLO labels, no coordinate conversion, no model.
 
-### Phase 5B - modelling population and split freeze (next)
+### Phase 5B - canonical modelling population (complete)
 
-- **Entry conditions carried from 5A.** Decide the disposition of the 76 fragment
-  additions as an explicit, recorded pipeline step; materialise the two
-  `VALID_BUT_UNSUPPORTED_GEOMETRY` records as box-derived rectangles rather than
-  dropping them; apply the three out-of-domain exclusion candidates; keep the six
-  semantic duplicate groups inside one split.
+- **Question.** Which images and annotations may enter a future split, and which
+  images must stay together when one is designed? No split is created here.
+- **Population.** 436 source images minus 3 out-of-domain exclusions confirmed by
+  phase 4B = **433 modelling images**, of which 14 carry no annotation and are
+  retained deliberately as negatives. The 3 excluded images stay on disk and stay
+  in the source provenance population; exclusion is logical, never physical.
+- **Annotations.** All 2031 canonical annotations are accounted for. The 3
+  excluded images were zero-instance, so **0** annotations were lost with them.
+  The 2 `VALID_BUT_UNSUPPORTED_GEOMETRY` records are materialised as four-corner
+  rectangles clipped to the canvas and labelled
+  `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`.
+- **Split units.** **427 groups**: 6 semantic duplicate groups confirmed by phase
+  4B (12 images) plus 421 singletons. 5 further perceptual near-duplicate chains
+  were never reviewed by a person and are recorded as
+  `UNCONFIRMED_GROUP_CANDIDATE` rather than merged.
+- **Rare class.** `vest_loose` is untouched: 45 instances across 8 images, none of
+  them in a duplicate group.
+- **Nested annotations: all retained.** Phase 5B was asked to turn the phase 5A
+  observation about the 76 annotations added since version 4 into a deterministic
+  geometric rule. No rule reaches an acceptable precision and recall together,
+  because the 76 are **not one kind of thing**: roughly half are degenerate
+  slivers, and the rest are corrections that *improve* the labels. This corrects
+  the phase 5A reading, which called all 76 fragments adding no coverage. The
+  owner set `fragment_rule_status = REJECTED_FOR_AUTOMATIC_FILTERING`: **0
+  excluded, all 2031 retained**, with the 34 evaluated candidates carrying the
+  descriptive flag `NESTED_SAME_CLASS_CANDIDATE`. The failed experiment is kept
+  as negative evidence in [`fragment_rule_report.md`](fragment_rule_report.md).
+  Note that the 76 are a historical drift reference set, not error ground truth.
+- **Outputs.** [`canonical_modeling_population_report.md`](canonical_modeling_population_report.md),
+  `canonical_modeling_manifest.json`, `canonical_modeling_population.csv`,
+  `canonical_annotation_actions.csv`, `group_manifest.csv`,
+  `group_split_features.csv`, `unconfirmed_group_candidates.csv`,
+  `fragment_rule_analysis.csv`, and `figures/fragment_rule_distribution.png`.
+- **Explicitly not done.** No split, no holdout, no YOLO labels, no coordinate
+  conversion, no model. The provider's rejected split appears in no artifact a
+  split designer reads.
+
+### Phase 5C - split design and freeze (not started)
+
+- **Entry gate (must close before the split is frozen).**
+  `MANUAL_DISPOSITION_OF_REMAINING_NEAR_DUPLICATE_CANDIDATES`: the 5 remaining
+  phase 4A near-duplicate candidates have had no human visual disposition. They
+  are not merged automatically, and a split frozen without dispositioning them
+  could leak content across a boundary.
+- **Entry conditions.** The 427 groups as the units a split assigns;
+  `group_split_features.csv` as the optimiser's input; the full 2031-annotation
+  population; and `vest_loose` at 45 instances over 8 images as the binding
+  rare-class constraint.
 - **Outputs.** `data/processed/splits/{train,val,test}.manifest.csv` (image ID,
   file hash, group ID); `data/processed/detection/` and
   `data/processed/segmentation/`; the box-from-polygon derivation code; a
@@ -355,3 +398,5 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-02 | Phase 4B completed, closing phase 4: the manual visual audit was recorded in `manual_audit_decisions.csv` (32 decisions) and `manual_audit_report.md`. Six cross-split pairs confirmed as semantic duplicates; three zero-instance images marked out-of-domain exclusion candidates; segmentation-derived boxes preferred but not applied; provider split reclassified UNSUITABLE_FOR_FINAL_PROTOCOL; dataset ACCEPTED_WITH_DOCUMENTED_LIMITATIONS. Twelve entry constraints handed to phase 5. |
 | 2026-09-01 | Phases 2 and 3 completed. Phase 3 established that version 4 holds 436 independent source images plus offline-augmented train variants; phase 4 gates updated to work from that population. |
 | 2026-09-04 | Phase 5A completed: canonical annotation snapshot resolved as `CURRENT_COMPLETE_GEOMETRY`. The live source state was recovered read-only with complete geometry for 2029 of 2031 annotations in original image coordinates; phase 4A's "1022 annotations lack geometry" was a consumption gap, not a provider limitation. Decode verified against the provider's own areas and boxes (agreement 0.0 px on all 2029). Version 4 was viable - all 436 source images map to exactly one non-augmented representation - but was rejected because its geometry is expressed after a stretch resize to 640x640. Measured drift: net +70 (76 added, 6 removed) over 67 images, with every addition lying inside an existing same-class annotation and covering no new object. The two unrecognised records classified VALID_BUT_UNSUPPORTED_GEOMETRY. Two measured corrections to earlier figures: the v4 source-snapshot annotation total is 1961, not the 1955 previously inferred, and the drift is +70 net rather than +76. No split created, no image excluded, no geometry converted. |
+| 2026-09-04 | Phase 5B built the canonical modelling population: 433 modelling images (436 source minus 3 confirmed out-of-domain), 2031 annotations retained, 2 geometry-less records materialised as labelled synthetic rectangles, and 427 indivisible split units (421 singletons + 6 confirmed semantic duplicate groups). `vest_loose` untouched at 45 instances over 8 images. **One decision returned for review**: no deterministic geometry rule reproduces the 76 version-4 additions, because they are a mixture of degenerate slivers and legitimate re-annotations - the best rule reaches precision 0.97 but recall 0.43. This corrects the phase 5A reading that all 76 were coverage-free fragments. Nothing was excluded on that basis. Phase 5B classified NEEDS_FRAGMENT_RULE_REVIEW at that point and returned the question; no split, holdout or model exists. **Superseded by the next entry.** |
+| 2026-09-04 | Phase 5B closed as READY_FOR_SPLIT_DESIGN after owner review. Automatic nested-annotation filtering was **rejected** (`REJECTED_FOR_AUTOMATIC_FILTERING`): containment inside an older same-class annotation is not evidence of error, and the evaluated rules cannot separate fragments from legitimate instance splits, geometry refinements and corrections of previously merged objects. All 2031 canonical annotations retained, 0 excluded; the 34 evaluated candidates carry the descriptive flag NESTED_SAME_CLASS_CANDIDATE. Recorded explicitly: the 76 v4 additions are a historical annotation-drift reference set, not ground truth for bad annotations, so rule precision against them measures agreement with drift rather than annotation correctness. Phase 5C carries one open entry gate: manual disposition of the 5 remaining near-duplicate candidates before any split is frozen. |

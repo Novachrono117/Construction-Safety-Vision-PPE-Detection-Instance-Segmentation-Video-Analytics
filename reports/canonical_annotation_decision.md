@@ -1,6 +1,6 @@
 # Canonical Annotation Snapshot Decision
 
-Generated: 2026-09-04T11:48:57+00:00 · Phase: 5A · Commit: `2d446f79cdc5508c90384b1f011e7308fc1da995`
+Generated: 2026-09-04T12:36:12+00:00 · Phase: 5A · Commit: `10ff78972f857c97a1c56fe10249d95578f447e6`
 
 ## Decision: `CURRENT_COMPLETE_GEOMETRY`
 
@@ -51,9 +51,11 @@ Exact agreement on every one of the 2,029 annotations that carry geometry is wha
 
 All 436 source images map to exactly one non-augmented version-4 representation (436 of 436), 435 by exact filename and one after Unicode normalisation. The export README states that augmentation produced two versions of each source image; measurement contradicts that wording - in every train pair one record reproduces the deterministic preprocessing re-render closely and the other does not. So option A was viable, and was not rejected for being unavailable.
 
-### The drift adds no coverage (FACT)
+### What the drift actually is (FACT, corrected in phase 5B)
 
-The live state holds +70 annotations relative to the snapshot, which conceals 76 additions and 6 removals across 21 images with a positive delta. Every one of the 76 additions lies at least 80% inside an existing annotation of its own class and is under half its area. None covers an object the snapshot had left unlabelled. `vest_loose`, the rare class the split design turns on, is identical in both states.
+The live state holds +70 annotations relative to the snapshot, which conceals 76 additions and 6 removals across 21 images with a positive delta. Every one of the 76 additions lies at least 80% inside an annotation of its own class that the snapshot already had, and is under half its area. `vest_loose`, the rare class the split design turns on, is identical in both states.
+
+**This report originally concluded from that measurement that the additions add no coverage and are fragments. That conclusion was withdrawn in phase 5B.** The measurement is correct; the inference was not. The additions include legitimate instance splits - in one image a single oversized `person` box covering two people, replaced by one box per person - alongside genuinely degenerate slivers. A coarse over-merged parent contains its own corrections by definition, so containment could not distinguish the two. No automatic filter was adopted and all annotations are retained; see `reports/fragment_rule_report.md`.
 
 See `reports/annotation_drift_report.md` and `reports/figures/review_n_added_annotations.jpg`.
 
@@ -84,7 +86,7 @@ Newer is not treated as more correct. Nothing in this phase measures either stat
 ## Limitations carried into phase 5B
 
 * Two live-source records (image OQJwjQoYsf1KUgr9G0V8, annotations I and J) carry a class and a bounding box but no segmentation geometry. Visual review shows both fall on a real distant worker, so they are valid objects with unsupported geometry. They are counted in the 2031 total and must be handled explicitly by phase 5B, not silently dropped.
-* All 76 annotations added since version 4 lie at least 80% inside an existing annotation of their own class and are under half its area (median 0.44%). None covers a previously unlabelled object. Visual review indicates they are fragments drawn on details such as a bracelet, glove lettering and a hard hat. Phase 5B must decide, as an explicit and recorded pipeline step, whether to retain them.
+* All 76 annotations added since version 4 lie at least 80% inside an annotation of their own class that the snapshot already had, and are under half its area (median 0.44%). RESOLVED IN PHASE 5B: this was originally read as evidence that they add no coverage and are fragments, and that reading was withdrawn. They are a mixture of degenerate slivers and legitimate corrections - instance splits, coarse annotations replaced by several precise ones, and geometry refinements - which no geometric rule separates. Automatic filtering was rejected (fragment_rule_status = REJECTED_FOR_AUTOMATIC_FILTERING) and all 2031 annotations are retained.
 * The canonical state is the provider's live project, which can change again. Its reproducibility rests on the recorded recovery method plus the committed artifact hashes, not on the provider freezing anything.
 * The provider's stored bounding boxes agree with the recovered geometry to 0.0 px in the live state, but phase 4B measured them disagreeing by up to 123.5 px inside the version-4 export. Detection boxes must still be derived from segmentation, as the constitution requires.
 * Annotation correctness itself was not assessed against any independent ground truth. No such reference exists for this dataset.

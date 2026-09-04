@@ -1,12 +1,13 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: dataset audit complete (phase 4 of 14).** The dataset is acquired,
-> hashed, structurally verified, and its 436 original source images have been
-> audited automatically (4A) and reviewed visually by people (4B). The provider's
-> split was **rejected for the final protocol**; the canonical split has not been
-> created. **No split has been frozen, no model has been trained, and no results
-> exist yet.** Every metric section is intentionally empty until a real, recorded
-> run produces it.
+> **Status: canonical modelling population defined (phase 5B of 14).** The
+> dataset is acquired, hashed, structurally verified, audited automatically (4A)
+> and reviewed visually by people (4B). The canonical annotation snapshot is
+> resolved (5A) and the modelling population and its indivisible split units are
+> built (5B). The provider's split was **rejected for the final protocol**; the
+> canonical split has **not** been created. **No split has been frozen, no model
+> has been trained, and no results exist yet.** Every metric section is
+> intentionally empty until a real, recorded run produces it.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -82,6 +83,7 @@ Two design decisions define this architecture:
 | Automated audit + source EDA | Done (phase 4A). 436 originals acquired, measured and screened. |
 | Manual visual audit | Done (phase 4B). 32 human decisions recorded and validated against the phase 4A manifests. |
 | Canonical annotation snapshot | Done (phase 5A). The live source state, recovered read-only with complete geometry in original coordinates. |
+| Canonical modelling population | Done (phase 5B). 433 modelling images, 2031 annotations retained, 427 indivisible split units. |
 | Splits | **Provider split rejected for the final protocol. No canonical split created, none frozen.** |
 | Detection model | Not trained. |
 | Segmentation model | Not trained. |
@@ -93,9 +95,9 @@ What exists today: the project layout, a pinned environment, strict typed
 configuration, the holdout protection guard, provenance primitives, a
 dependency-free Roboflow acquisition client, COCO structural inspection, the
 source audit / EDA / visual-review tooling, the phase 4B decision recorder, the
-phase 5A geometry recovery and canonical-snapshot resolution, the test suite, and
-the planning documents (`reports/rubric_contract.md`, `reports/roadmap.md`,
-`CLAUDE.md`).
+phase 5A geometry recovery and canonical-snapshot resolution, the phase 5B
+modelling-population and grouping pipeline, the test suite, and the planning
+documents (`reports/rubric_contract.md`, `reports/roadmap.md`, `CLAUDE.md`).
 
 ### The dataset
 
@@ -186,13 +188,13 @@ and `reports/canonical_annotation_manifest.json`.
   option A was available. It was rejected because v4 geometry is expressed after
   a stretch resize to 640x640, which would have to be inverted for every
   annotation and cannot recover what rasterisation discarded.
-- **The drift adds no coverage.** The live state has 76 more annotations and 6
-  fewer than v4 (net +70), but **every one of the 76 additions lies at least 80%
-  inside an existing annotation of its own class**, at a median 0.44% of its
-  area. None labels a previously unlabelled object; visual review indicates they
-  are fragments drawn on details such as a bracelet and glove lettering. Phase 5B
-  must decide their disposition as an explicit, recorded pipeline step.
-  `vest_loose` is identical in both states.
+- **The drift is measured, and its meaning was corrected in phase 5B.** The live
+  state has 76 more annotations and 6 fewer than v4 (net +70), and every one of
+  the 76 additions lies at least 80% inside an annotation of its own class that
+  v4 already had, at a median 0.44% of its area. This report originally inferred
+  that they therefore add no coverage and are fragments; **that inference was
+  withdrawn**. They are a mixture of degenerate slivers and legitimate
+  corrections. `vest_loose` is identical in both states.
 - **The two unrecognised annotations are resolved** as
   `VALID_BUT_UNSUPPORTED_GEOMETRY`: both fall on a real distant worker, and their
   v4 counterparts are rectangles the exporter derived from the same boxes, not
@@ -201,10 +203,61 @@ and `reports/canonical_annotation_manifest.json`.
 Newer is not treated as more correct. Neither state was compared against an
 independent ground truth, because none exists for this dataset.
 
-Open for phase 5B: building the modelling population - applying the three
-out-of-domain exclusion candidates, keeping the six semantic duplicate groups
-inside one split, deciding the 76 fragment additions, and designing the split
-itself.
+### What may be modelled (phase 5B)
+
+Phase 5B decided which images and annotations are eligible for a future split,
+and which images must stay together in one. It created **no split**. Evidence in
+[`reports/canonical_modeling_population_report.md`](reports/canonical_modeling_population_report.md)
+and `reports/canonical_modeling_manifest.json`.
+
+- **433 modelling images.** The 436 source images minus the 3 that phase 4B
+  confirmed out of domain. Exclusion is logical: the files stay on disk and stay
+  in the source provenance population, marked ineligible with a reason and a
+  decision source. **0 annotations** were lost with them - all three were
+  zero-instance, which was computed rather than assumed.
+- **14 zero-instance images are retained**, not excluded. A person found no
+  missing target label on them, so they are usable as negatives.
+- **2031 annotations retained.** The 2 records with no provider segmentation are
+  materialised as four-corner rectangles clipped to the canvas and recorded as
+  `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX` - a synthetic mask, labelled
+  as one, never presented as a human-drawn outline.
+- **427 indivisible split units**: 421 singletons plus the 6 semantic duplicate
+  groups phase 4B confirmed. A further 5 perceptual near-duplicate chains that
+  nobody reviewed are recorded as `UNCONFIRMED_GROUP_CANDIDATE` and **not**
+  merged - a hash collision is not a confirmed duplicate.
+- **`vest_loose` is untouched**: 45 instances across 8 images, none of them in a
+  duplicate group.
+- **The provider's rejected split appears in no artifact** a split designer
+  reads.
+
+**All 2031 annotations are retained; no automatic filter was adopted.** Phase 5B
+was asked to turn the phase 5A observation about the 76 annotations added since
+version 4 into a deterministic geometric rule. No rule works, because the 76 are
+not one kind of thing: about half are degenerate slivers, and the rest are
+**corrections that improve the labels** - a coarse polygon replaced by several
+tighter ones, and in one image a single oversized `person` box covering two
+people replaced by one box per person, which *is* new instance coverage.
+
+This corrects the phase 5A reading, which described all 76 as fragments adding no
+coverage; the containment measurement behind that was right, the inference from
+it was not. Containment inside an older same-class annotation is not evidence of
+error, because a coarse over-merged parent contains its own corrections by
+definition.
+
+The project owner therefore set `fragment_rule_status =
+REJECTED_FOR_AUTOMATIC_FILTERING`. The 34 annotations the evaluated rule would
+have selected keep `action = KEEP` and carry the **descriptive** flag
+`NESTED_SAME_CLASS_CANDIDATE` - it records a geometric relationship, not a
+defect. The failed experiment is preserved as negative evidence in
+[`reports/fragment_rule_report.md`](reports/fragment_rule_report.md).
+
+> **Reading the rule scores.** The 76 additions are a *historical annotation-drift
+> reference set*, not ground truth for bad annotations. Precision against them
+> measures agreement with drift, not detection of error.
+
+**Phase 5C entry gate:** the 5 remaining near-duplicate candidates have no human
+disposition yet and must get one **before the split is frozen**. Phase 5C then
+designs and freezes the split from the 427 groups.
 
 ## Academic requirements
 
@@ -281,6 +334,11 @@ Work proceeds through 14 gated phases (see
 │   ├── annotation_drift_report.md # Live source vs v4 snapshot (phase 5A)
 │   ├── canonical_annotation_decision.md   # Which annotations are canonical (phase 5A)
 │   ├── canonical_annotation_manifest.json # The same decision, machine-readable
+│   ├── fragment_rule_report.md            # Can a rule identify the drifted annotations? (5B)
+│   ├── canonical_modeling_population_report.md  # What may be modelled (phase 5B)
+│   ├── canonical_modeling_manifest.json   # The population, machine-readable
+│   ├── group_manifest.csv                 # Indivisible split units
+│   ├── group_split_features.csv           # One row per group, for phase 5C
 │   └── figures/               # Contact sheets and analytical plots
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -298,7 +356,9 @@ Work proceeds through 14 gated phases (see
 │   ├── map_v4_sources.py          # Source images -> non-augmented v4 representations
 │   ├── analyze_annotation_drift.py # Live source vs v4 snapshot, per image
 │   ├── build_drift_figures.py     # Review sheets for the drift and the odd records
-│   └── resolve_canonical_snapshot.py # The canonical-snapshot decision + manifest
+│   ├── resolve_canonical_snapshot.py # The canonical-snapshot decision + manifest
+│   ├── analyze_fragment_rule.py   # Can a geometry rule identify the drifted annotations?
+│   └── build_modeling_population.py # Eligible images/annotations + indivisible groups
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -387,6 +447,13 @@ uv run python scripts/map_v4_sources.py
 uv run python scripts/analyze_annotation_drift.py
 uv run python scripts/build_drift_figures.py
 uv run python scripts/resolve_canonical_snapshot.py
+```
+
+Build the canonical modelling population (phase 5B). Fully offline:
+
+```bash
+uv run python scripts/analyze_fragment_rule.py
+uv run python scripts/build_modeling_population.py
 ```
 
 Checks:

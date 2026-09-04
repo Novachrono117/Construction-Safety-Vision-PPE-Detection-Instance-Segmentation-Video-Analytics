@@ -1,6 +1,6 @@
 # Annotation Drift: live source project vs version-4 snapshot
 
-Generated: 2026-09-04T11:48:57+00:00 · Phase: 5A · Commit: `2d446f79cdc5508c90384b1f011e7308fc1da995`
+Generated: 2026-09-04T12:36:12+00:00 · Phase: 5A · Commit: `10ff78972f857c97a1c56fe10249d95578f447e6`
 
 **Question.** The live source project holds more annotations than the frozen version-4 export. Is that difference a set of pure additions, does it conceal removals, and does it change what the dataset can teach?
 
@@ -145,9 +145,17 @@ The provider's split was rejected for the final protocol in phase 4B. It is repo
 
 **LIKELY.** Most of the 220 matched pairs below IoU 0.95 reflect the export's 640x640 rasterisation rather than editing. The size breakdown is the evidence: overlap degrades sharply as objects get smaller, which is what quantisation does and what editing has no reason to do. Only 8 large objects fall below IoU 0.80, where quantisation cannot be the explanation. This is not a controlled test, so the attribution stays LIKELY rather than FACT.
 
-**FACT.** None of the 76 additions covers an object the snapshot had left unlabelled. Every one lies at least 80% inside an existing annotation of its own class, and every one is under half that annotation's area (median 0.44%). The drift therefore adds no class coverage.
+**FACT.** Every one of the 76 additions lies at least 80% inside an annotation of its own class that the snapshot already had, and every one is under half that annotation's area (median 0.44%).
 
-**LIKELY.** The additions are annotation fragments rather than objects. The measurement above establishes that they subdivide already-labelled objects; the review sheet shows boxes drawn on a bracelet, on glove lettering, on a hard hat and on a cheek. Calling them erroneous is a judgement from that evidence, not a measurement against a ground truth, so it is LIKELY and not FACT.
+**CORRECTION (phase 5B).** An earlier version of this report inferred from the measurement above that the additions therefore add no class coverage and are fragments. **That inference was wrong and is withdrawn.** The measurement stands; what does not follow from it is the conclusion. Phase 5B inspected the affected images and found the additions include legitimate corrections:
 
-**UNKNOWN.** Whether the live annotations are *more correct* than the snapshot's overall. They are newer, and newer is not a measurement. Nothing here compares either state against an independent ground truth, and no such reference exists for this dataset. What is established is narrower and stated above: the drift adds no coverage.
+* a single oversized `person` box covering **two** people, replaced by one box per person - which is new instance coverage;
+* a coarse `vest_on_body` polygon replaced by several tighter ones covering the parts of the vest actually visible;
+* geometry refinements.
+
+Containment inside an older same-class annotation looked like evidence of redundancy, but a coarse over-merged parent contains its own corrections by definition. See `reports/fragment_rule_report.md`.
+
+**FACT.** Some additions are genuinely degenerate - a few dozen pixels on a bracelet, on glove lettering, on a hard hat. Both kinds are present, and no geometric rule separates them, which is why no automatic filter was adopted and all 2031 annotations are retained.
+
+**UNKNOWN.** Whether the live annotations are *more correct* than the snapshot's overall. They are newer, and newer is not a measurement. Nothing here compares either state against an independent ground truth, and no such reference exists for this dataset.
 

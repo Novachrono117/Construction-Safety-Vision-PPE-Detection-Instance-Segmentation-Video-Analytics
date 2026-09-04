@@ -22,6 +22,8 @@ undocumented one-off shell invocation.
 | `analyze_annotation_drift.py` | 5A | Per-image comparison of the live annotations against the version-4 snapshot, counting additions and removals separately. |
 | `build_drift_figures.py` | 5A | Review sheets L, M and N: the drift, the geometry-less records, and every added annotation. |
 | `resolve_canonical_snapshot.py` | 5A | Apply the decision rule and write `reports/canonical_annotation_{decision.md,manifest.json}`. |
+| `analyze_fragment_rule.py` | 5B | Test whether a geometry rule computed from the current state alone can identify the annotations added since version 4. Scores candidates against the v4 diff; exits non-zero when none is acceptable. |
+| `build_modeling_population.py` | 5B | Decide which images and annotations may be modelled, materialise geometry-less records, and build the indivisible split units. Creates no split. |
 
 ## Rules
 
@@ -61,6 +63,18 @@ summary to `reports/`.
 inconsistent or that contains a signed URL, a credential or an absolute local
 path. That check is a gate, not a formality: the manifest is the evidence a
 reader checks the project's headline numbers against.
+
+Phase 5B scripts run in this order: `analyze_fragment_rule` ->
+`build_modeling_population`. Both are offline and read only committed artifacts,
+so every decision they encode is traceable to a file rather than to a list typed
+into the script. `analyze_fragment_rule.py` uses the version-4 export **only** to
+score candidate rules; no rule it evaluates may read the export, the provider
+split, or a list of identifiers.
+
+`build_modeling_population.py` excludes logically and never deletes: an excluded
+image keeps its file, keeps its place in the source provenance population of 436,
+and gains a reason and a decision source. It refuses to write a manifest whose
+invariants are broken.
 
 ## Planned scripts
 
