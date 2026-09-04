@@ -30,6 +30,7 @@ undocumented one-off shell invocation.
 | `materialize_task_datasets.py` | 5D | Build the canonical COCO detection and instance-segmentation views of `train` and `validation`. Never materialises the holdout. |
 | `build_detection_adapter.py` | 6A | Derive YOLO detection labels from the canonical COCO detection dataset, with a per-box fidelity audit. Detection only. |
 | `detection_runtime_check.py` | 6A | Verify the CUDA runtime by executing real kernels, fingerprint the pretrained weights, and optionally run a minimal smoke test. |
+| `train_detection_baseline.py` | 6B | Verify every frozen input, record the protocol, run the single D0 training, select the checkpoint by the predeclared rule and validate it once. |
 
 ## Rules
 
@@ -160,7 +161,26 @@ falling back to CPU, because a CPU baseline is not the same experiment. Its
 `--smoke-test` runs one epoch purely to prove the stack executes; those metrics
 are marked `NON_EXPERIMENTAL` and never recorded as results.
 
+`train_detection_baseline.py` (phase 6B) runs one predeclared experiment and is
+ordered so that the protocol demonstrably precedes the result: every frozen
+fingerprint is re-checked first (a mismatch is `PROTOCOL_INPUT_MISMATCH` and
+nothing runs), a pre-run provenance record is written **before the first
+optimisation step**, and only then does training start. It refuses to reuse or
+overwrite an existing `D0` directory, because one experiment means one run.
+
+Two habits in it are worth knowing about. The protocol declares
+`optimizer: auto`, so the script reads the framework's *resolved* arguments back
+off disk and reports those - quoting the configuration file's `lr0` would
+describe a learning rate the run never used. And the headline metric is
+cross-checked against `results.csv` at the independently recomputed best epoch
+before anything is published, so a number belonging to `last.pt` or to an
+earlier run cannot be reported as D0's.
+
+`--resume` exists for operational interruptions only: it continues the same run
+from its checkpoint with identical hyperparameters and records that it did. It
+is not a way to restart a failed experiment with different settings.
+
 ## Planned scripts
 
-Training, evaluation, error analysis and video inference scripts are added by
-their respective roadmap phases. None are stubbed in advance.
+Evaluation, error analysis and video inference scripts are added by their
+respective roadmap phases. None are stubbed in advance.

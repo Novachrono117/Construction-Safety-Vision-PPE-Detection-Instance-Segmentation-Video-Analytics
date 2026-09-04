@@ -1,0 +1,72 @@
+{
+  "config": {
+    "baseline_config_sha256": "ebff2d461d877f327ba2e707451c24a7a3d0df432447317cf8820ef224ddc3c6",
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "experiment_id": "D0"
+  },
+  "created_at": "2026-09-04T18:00:37+00:00",
+  "details": {
+    "best_checkpoint_sha256": "30288fbc3abe60ce1713fdb430feb2e1a3716dcf4b52b80d26a9b2aea1ca5c34",
+    "best_epoch": 67,
+    "d0_experiment_sha256": "cbd79fd2f2f70eb31ede61b813f991e973bb5d2f69c223a3826ee6aeadd0ffb3",
+    "epochs_completed": 100,
+    "holdout_accessed": false,
+    "last_checkpoint_sha256": "d0d9f4f0bd80c3677f6b5a03fc3179c66c35c016edbc02f322c8557611e029bc",
+    "phase": "6B",
+    "resolved_optimizer": "AdamW",
+    "runs_performed": 1,
+    "stage": "RESULT",
+    "status": "D0_BASELINE_COMPLETE",
+    "test_status": "PROTECTED_NOT_ACCESSED",
+    "validation_metrics": {
+      "mAP@0.50": 0.619373,
+      "mAP@0.50:0.95": 0.464429,
+      "precision": 0.85568,
+      "recall": 0.539992
+    },
+    "weights_committed": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "2a53c2bf413bf221936299a919554d28db8cccea",
+  "inputs": [
+    {
+      "path": "reports/detection_adapter_manifest.json",
+      "sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "size_bytes": 4261
+    },
+    {
+      "path": "reports/detection_runtime.provenance.json",
+      "sha256": "e8140979f24d80f8f19f65219f34a313bd824dd20903995d7c291842933d764f",
+      "size_bytes": 3101
+    },
+    {
+      "path": "reports/detection_D0_prerun.provenance.json",
+      "sha256": "d634e73d81a88b89933b4dc83608c6d95696183a58b1a41c06cc3659c9c6fd25",
+      "size_bytes": 3140
+    },
+    {
+      "path": "configs/detection_baseline.yaml",
+      "sha256": "6c8b59854795be3ca06fd2f0c5f4261834545e8ac3522f2f3d4200256efef4c7",
+      "size_bytes": 5214
+    }
+  ],
+  "name": "detection_baseline_d0",
+  "outputs": [
+    {
+      "path": "reports/detection_D0_manifest.json",
+      "sha256": "52239d617272495a063662b133868130cc00666bf798780eec97e73be83713dc",
+      "size_bytes": 10077
+    },
+    {
+      "path": "reports/detection_D0_report.md",
+      "sha256": "eda8abd8ddc2fd6e1de32234f679a76823cda586cd302017bd69e30c6ddc53cd",
+      "size_bytes": 14075
+    }
+  ],
+  "phase": 6,
+  "schema_version": 1
+}

@@ -191,11 +191,10 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 6A complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, and the **YOLO detection
-  adapter, GPU runtime and D0 baseline protocol are ready**. **D0 has not been
-  run and no model result exists.** Phase 6B (the D0 run) has not started; do not
-  start it unprompted.
+- **Phase:** 6B complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, and the **D0 detection baseline
+  has been trained and validated**. Phase 7 (controlled detection experiments)
+  has not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -282,10 +281,28 @@ uv run pytest
   rectangles clipped to the canvas, marked
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`. Never describe them as
   human-drawn segmentation.
-- **Models:** none trained. No metrics exist. A one-epoch smoke test ran in phase
-  6A purely to prove the stack executes; it is `NON_EXPERIMENTAL` /
-  `DO_NOT_REPORT_AS_MODEL_RESULT` and **none of its numbers were recorded**. Never
-  quote a smoke-test figure as a result, and never compare against one.
+- **Models:** **D0 exists** (detection). No segmentation model. The phase 6A
+  one-epoch smoke test is `NON_EXPERIMENTAL` / `DO_NOT_REPORT_AS_MODEL_RESULT`
+  and none of its numbers were recorded - never quote it as a result.
+- **D0 result (validation only):** primary **mAP@0.50:0.95 0.464429**,
+  mAP@0.50 0.619373, precision 0.85568, recall 0.539992.
+  100/100 epochs, best epoch 67, `d0_experiment_sha256`
+  `cbd79fd2f2f70eb31ede61b813f991e973bb5d2f69c223a3826ee6aeadd0ffb3`. **Every one of these is a validation number and
+  says nothing about test performance.** Quote them only with that qualifier.
+- **D0 was run once and must not be re-run to improve it.** It is the baseline
+  reference for phase 7. Do not retune it, do not swap the model, and do not
+  average several runs - `deterministic: true` reduces variance but does not
+  remove it, so a second run would measure noise.
+- **`optimizer: auto` resolved to AdamW at lr0
+  0.001111**, not the file's
+  `lr0: 0.01`. Ultralytics persists neither, so the manifest records the value
+  together with how it was established
+  (`resolved_optimizer_determination.source`). Never quote a config value as
+  "what the run used" when the protocol declares a policy.
+- **`vest_loose` scored precision 1.0 with recall 0.0 on 1 validation image.**
+  That is what one image's evidence looks like, not a finding. It is marked
+  `HIGH_SAMPLING_UNCERTAINTY`; never rank it against the other classes and never
+  tune against it.
 - **The split is FROZEN (phase 5C.2).** `reports/split_manifest.json` is the
   single authoritative membership: **303 / 65 / 65 images** over **294 / 63 / 65
   groups**, 2031 annotations at 1422 / 304 / 305, negatives 10 / 2 / 2. Read it
@@ -382,6 +399,13 @@ uv run pytest
 - **`artifacts/` is git-ignored and holds weights and runs.** Never commit
   `best.pt`, `last.pt`, optimizer state or caches. A report references a
   checkpoint by SHA-256 and by its provenance record.
+- **Metric figures only in `reports/figures/`.** The framework also writes
+  `train_batch*.jpg`, `val_batch*.jpg` and `labels.jpg`, which render dataset
+  imagery and prediction montages. Those stay in `artifacts/`. Committing them
+  would publish dataset images and pre-empt the deliberate error-analysis stage.
+- **No image-level error analysis has been done.** Confusion-matrix counts are
+  fair game; opening a validation image to explain an individual failure is a
+  later, deliberate phase. Do not start it early.
 - **Long paths:** 137 of the export's 742 image files exceed the Windows
   `MAX_PATH` limit on this machine. Open them through
   `construction_safety_vision.paths.long_path`, never with a bare path.

@@ -1,0 +1,87 @@
+{
+  "config": {
+    "baseline_config_sha256": "ebff2d461d877f327ba2e707451c24a7a3d0df432447317cf8820ef224ddc3c6",
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "experiment_id": "D0"
+  },
+  "created_at": "2026-09-04T18:00:29+00:00",
+  "details": {
+    "batch": 16,
+    "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+    "dataset_fingerprints": {
+      "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+      "adapter_manifest_sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+      "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+      "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+      "yolo_label_sha256": {
+        "train": "6237624f585f8e9f7ac2565be1eacf4140f6d55ad2de5d3c85f2972efa649e5f",
+        "validation": "d9ac55c70918b7ad7621ad6f7849d70c15f66585ec6b66f97b07fedfe6102c4b"
+      }
+    },
+    "declared_optimizer_policy": "auto",
+    "device": "cuda:0",
+    "epochs_configured": 100,
+    "experiment_id": "D0",
+    "imgsz": 640,
+    "metrics": {
+      "artifacts": [
+        "precision_recall_curve",
+        "confusion_matrix",
+        "training_loss_curves",
+        "validation_loss_curves"
+      ],
+      "per_class": [
+        "AP@0.50",
+        "AP@0.50:0.95",
+        "precision",
+        "recall"
+      ],
+      "primary": "mAP@0.50:0.95",
+      "secondary": [
+        "mAP@0.50",
+        "precision",
+        "recall"
+      ]
+    },
+    "phase": "6B",
+    "pretrained_weights_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "runtime": {
+      "cuda_runtime": "12.8",
+      "cudnn": 91900,
+      "gpu_arch": "sm_120",
+      "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "gpu_total_memory_bytes": 8546484224,
+      "python": "3.12.13",
+      "torch": "2.11.0+cu128",
+      "torchvision": "0.26.0+cu128",
+      "ultralytics": "8.4.138"
+    },
+    "seed": 42,
+    "stage": "PRE_RUN",
+    "started_at": "2026-09-04T18:00:29+00:00",
+    "test_status": "PROTECTED_NOT_ACCESSED"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "2a53c2bf413bf221936299a919554d28db8cccea",
+  "inputs": [
+    {
+      "path": "configs/detection_baseline.yaml",
+      "sha256": "6c8b59854795be3ca06fd2f0c5f4261834545e8ac3522f2f3d4200256efef4c7",
+      "size_bytes": 5214
+    },
+    {
+      "path": "reports/detection_adapter_manifest.json",
+      "sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "size_bytes": 4261
+    }
+  ],
+  "name": "detection_baseline_prerun",
+  "outputs": [],
+  "phase": 6,
+  "schema_version": 1
+}

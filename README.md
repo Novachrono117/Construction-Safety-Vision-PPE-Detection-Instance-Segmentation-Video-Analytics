@@ -1,19 +1,18 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detection baseline prepared, not yet run (phase 6A of 14).** The
+> **Status: D0 detection baseline trained and validated (phase 6B of 14).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
 > built (5B), the **group-aware and class-aware constrained split is frozen at
 > 303 / 65 / 65** over 433 modelling images (5C.2), and the COCO detection and
-> instance-segmentation views of `train` and `validation` are reproducibly
-> materialised (5D). Phase 6A adds a **GPU runtime, a lossless YOLO detection
-> adapter and the frozen D0 baseline protocol**. The provider's split was
-> **rejected for the final protocol** and is not reused. The `test` split is a
-> **locked holdout**: it has never been evaluated, inspected, materialised or
-> adapted. **No model has been trained and no results exist yet** - the D0
-> baseline is specified but deliberately not run. Every metric section is
-> intentionally empty until a real, recorded run produces it.
+> instance-segmentation views of `train` and `validation` are materialised (5D).
+> Phase 6A added a verified GPU runtime, a lossless YOLO detection adapter and
+> the frozen D0 protocol; **phase 6B ran D0 once and reports its validation
+> metrics**. The provider's split was **rejected for the final protocol** and is
+> not reused. The `test` split is a **locked holdout**: it has never been
+> evaluated, inspected, materialised or adapted, and **every number below is a
+> validation number**. No segmentation model exists yet.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -98,9 +97,9 @@ Two design decisions define this architecture:
 | Model-specific adapter | Done for detection (phase 6A). Lossless YOLO detection adapter, 1726/1726 boxes round-trip within 1e-4 px. **No segmentation adapter**; that one still needs a geometry-fidelity audit first. |
 | GPU runtime | Done (phase 6A). torch 2.11.0+cu128 on an RTX 5070 Laptop (sm_120), verified by executing real kernels. |
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
-| Detection model | Not trained. D0 is specified but has not been run. |
+| Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
 | Segmentation model | Not trained. |
-| Metrics | **None.** No evaluation has been run. |
+| Metrics | **Validation only** (phase 6B): D0 mAP@0.50:0.95 = 0.4644. No test metric exists. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -114,6 +113,7 @@ phase 5C.2 split freeze with its fingerprinted manifest and guarded data access
 layer, the phase 5D task-dataset materialiser with its geometry round-trip and
 cross-task alignment validators, the phase 6A YOLO detection adapter with its
 box-fidelity audit, the GPU runtime preflight, the frozen D0 baseline protocol,
+the phase 6B D0 training and validation pipeline with its result bookkeeping,
 the test suite, and the planning documents (`reports/rubric_contract.md`,
 `reports/roadmap.md`, `CLAUDE.md`).
 
@@ -521,6 +521,65 @@ would be inventing a finding.
 The holdout took no part in any of this: it has no adapter, no directory, no
 label and no key in the Ultralytics dataset descriptor.
 
+### D0 detection baseline (phase 6B)
+
+**The first real model result, and it is a validation result.** D0 was specified
+in full before it ran and was not tuned afterwards. Evidence in
+[`reports/detection_D0_report.md`](reports/detection_D0_report.md), with the
+machine-readable record in `reports/detection_D0_manifest.json`.
+
+| Validation metric | D0 |
+| --- | --- |
+| **mAP@0.50:0.95** (primary) | **0.464429** |
+| mAP@0.50 | 0.619373 |
+| precision | 0.85568 |
+| recall | 0.539992 |
+
+| Class | AP@0.50 | AP@0.50:0.95 | precision | recall |
+| --- | --- | --- | --- | --- |
+| `helmet_loose` | 0.879592 | 0.792559 | 0.898364 | 0.807018 |
+| `helmet_on_head` | 0.735806 | 0.561699 | 0.887663 | 0.672636 |
+| `person` | 0.68902 | 0.491618 | 0.792384 | 0.583942 |
+| `vest_loose` *(1 val image)* | 0.131486 | 0.041575 | 1.0 | 0.0 |
+| `vest_on_body` | 0.660959 | 0.434691 | 0.699987 | 0.636364 |
+
+- **One run, no tuning.** YOLO11n pretrained, 640 px, batch 16, seed 42, 100
+  epochs completed. The checkpoint is the one the predeclared rule selected
+  (best validation fitness, epoch 67), not one picked by comparing
+  epochs afterwards. No second run was launched to see whether the number moved.
+- **Declared policy is not effective configuration.** The protocol declares
+  `optimizer: auto`; Ultralytics resolved that to **AdamW at lr0 ≈
+  0.001111**, overriding the
+  file's generic `lr0: 0.01`. The report states what actually ran and how that
+  was established.
+- **`vest_loose` carries a small-sample warning.** It has **1 validation image
+  with 8 instances**; its precision of 1.0 alongside a recall of 0.0 is what one
+  image's worth of evidence looks like, not a finding about the class. This
+  limitation was recorded *before* the run.
+- **Errors are about finding objects, not naming them.** The validation confusion
+  matrix shows 96 undetected ground-truth objects and 71 unmatched predictions
+  against only 3 class-to-class confusions - consistent with precision
+  (0.85568) sitting well above recall (0.539992).
+- **D0 is a reference point, not the project's detector.** No alternative model,
+  image size or augmentation has been tried; phase 7 defines that comparison
+  before running it.
+
+**The holdout was not touched.** Every number here is from the 65-image
+validation split. The test split has no labels, no adapter and no key in the
+dataset descriptor, and `CSVISION_ALLOW_TEST_SPLIT` was never set. D0's
+validation performance is **not** an estimate of its test performance.
+
+Metric curves, the PR/P/R/F1 curves and both confusion matrices are committed
+under `reports/figures/detection/D0/`. Checkpoints are not committed: `best.pt`
+is referenced by SHA-256 in the manifest and regenerated by re-running the
+command.
+
+```bash
+uv run python scripts/train_detection_baseline.py --verify-only  # pre-flight only
+uv run python scripts/train_detection_baseline.py                # the D0 experiment
+```
+
+
 ## Academic requirements
 
 The assignment requires all of the following. Each is mapped to a verifiable
@@ -585,6 +644,7 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_adapter.yaml    # COCO -> YOLO detection adapter protocol (6A)
 │   ├── detection_dataset.template.yaml # Portable Ultralytics dataset descriptor (6A)
 │   └── detection_baseline.yaml   # D0 protocol: model, hyperparameters, metrics (6A)
+│                                  #   frozen before the run; parser rejects a test reference
 ├── data/                      # Never committed; see data/README.md
 │   ├── external/              # Provider archive, source originals, provenance record
 │   ├── raw/                   # Extracted canonical export, untouched
@@ -619,7 +679,9 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_adapter_report.md        # YOLO detection adapter + fidelity audit (6A)
 │   ├── detection_adapter_manifest.json    # Adapter counts and fingerprints (6A)
 │   ├── detection_runtime_report.md        # GPU runtime, weights, smoke test (6A)
-│   └── figures/               # Contact sheets and analytical plots
+│   ├── detection_D0_report.md             # D0 baseline result and its limits (6B)
+│   ├── detection_D0_manifest.json         # D0 metrics, fingerprints, checkpoints (6B)
+│   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
 │   ├── download_dataset.py        # Acquire + hash + extract the canonical export
@@ -644,13 +706,15 @@ Work proceeds through 14 gated phases (see
 │   ├── freeze_split.py            # Verify the selected candidate and freeze it + the holdout
 │   ├── materialize_task_datasets.py # Canonical COCO detection + segmentation views (5D)
 │   ├── build_detection_adapter.py # COCO -> YOLO detection labels + fidelity audit (6A)
-│   └── detection_runtime_check.py # GPU preflight, weight provenance, smoke test (6A)
+│   ├── detection_runtime_check.py # GPU preflight, weight provenance, smoke test (6A)
+│   └── train_detection_baseline.py # Run and record the D0 detection baseline (6B)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
 │   ├── provenance.py          # Hashing and run provenance records
 │   ├── splits.py              # Split identifiers and the holdout guard
 │   ├── experiment.py          # Experiment protocols, declared before they run
+│   ├── detection_results.py   # Result manifests, metric extraction, experiment fingerprints
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,
 │                              # task materialisation and the YOLO detection adapter
