@@ -1,0 +1,100 @@
+{
+  "config": {
+    "baseline_protocol_sha256": "ebff2d461d877f327ba2e707451c24a7a3d0df432447317cf8820ef224ddc3c6",
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "experiment_id": "D0"
+  },
+  "created_at": "2026-09-04T17:15:16+00:00",
+  "details": {
+    "environment_fingerprint": "c15c5b9303ef5c339ed3579033cd3bb62367793af7740a65464ff118120e4651",
+    "execution_hardware": {
+      "device_count": 1,
+      "gpu_compute_capability": "12.0",
+      "gpu_multi_processor_count": 36,
+      "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "gpu_total_memory_bytes": 8546484224,
+      "nvidia_driver": "610.88"
+    },
+    "full_baseline_run": false,
+    "gpu_probe": {
+      "amp_autocast_backward": "OK",
+      "arch_kernels_present": true,
+      "compiled_arch_list": [
+        "sm_75",
+        "sm_80",
+        "sm_86",
+        "sm_90",
+        "sm_100",
+        "sm_120"
+      ],
+      "cuda_available": true,
+      "fp32_matmul_max_abs_error_vs_cpu": 9.918212890625e-05,
+      "kernel_execution": "OK",
+      "status": "GPU_READY"
+    },
+    "holdout_accessed": false,
+    "phase": "6A",
+    "pretrained_weights": {
+      "committed": false,
+      "identifier": "yolo11n.pt",
+      "relative_path": "artifacts/weights/yolo11n.pt",
+      "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "size_bytes": 5613764,
+      "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+      "ultralytics_version": "8.4.138"
+    },
+    "smoke_metrics_recorded": false,
+    "smoke_test": {
+      "batch": 16,
+      "checkpoint_written": true,
+      "classification": "NON_EXPERIMENTAL",
+      "device": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "epochs": 1,
+      "imgsz": 640,
+      "metrics_recorded": false,
+      "note": "no AP, loss or any other quality number from this run is recorded, reported or compared. The run exists to prove the stack executes.",
+      "peak_memory_mib": 2394.9,
+      "peak_reserved_mib": 2952.0,
+      "reporting": "DO_NOT_REPORT_AS_MODEL_RESULT",
+      "result": "OK",
+      "run_directory": "artifacts/detection/smoke",
+      "seconds": 62.0,
+      "splits": [
+        "train",
+        "validation"
+      ],
+      "weights_committed": false
+    },
+    "software_environment": {
+      "cuda_runtime": "12.8",
+      "cudnn": 91900,
+      "python": "3.12.13",
+      "torch": "2.11.0+cu128",
+      "torchvision": "0.26.0+cu128",
+      "ultralytics": "8.4.138"
+    }
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "33430b10835fd3383e14de8a37a5f6052035cc35",
+  "inputs": [
+    {
+      "path": "configs/detection_baseline.yaml",
+      "sha256": "6c8b59854795be3ca06fd2f0c5f4261834545e8ac3522f2f3d4200256efef4c7",
+      "size_bytes": 5214
+    }
+  ],
+  "name": "detection_runtime_check",
+  "outputs": [
+    {
+      "path": "reports/detection_runtime_report.md",
+      "sha256": "f8989016be1193752763c6aa5a1686690a936fc527cfb543078f72df51d76c48",
+      "size_bytes": 3860
+    }
+  ],
+  "phase": 6,
+  "schema_version": 1
+}

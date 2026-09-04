@@ -28,6 +28,8 @@ undocumented one-off shell invocation.
 | `optimize_split_candidates.py` | 5C.1 | Search for provisional train/validation/test assignments over the canonical groups and compare them. Selects nothing and freezes nothing. |
 | `freeze_split.py` | 5C.2 | Re-verify the human-selected candidate, freeze it as the authoritative split, and lock the holdout. Freezes membership only. |
 | `materialize_task_datasets.py` | 5D | Build the canonical COCO detection and instance-segmentation views of `train` and `validation`. Never materialises the holdout. |
+| `build_detection_adapter.py` | 6A | Derive YOLO detection labels from the canonical COCO detection dataset, with a per-box fidelity audit. Detection only. |
+| `detection_runtime_check.py` | 6A | Verify the CUDA runtime by executing real kernels, fingerprint the pretrained weights, and optionally run a minimal smoke test. |
 
 ## Rules
 
@@ -140,6 +142,23 @@ The protocol lives in `configs/task_materialization.yaml`, parsed strictly. Use
 `--verify-only` to run every validator and write nothing. Re-running is
 byte-stable: no timestamp enters an emitted file and COCO ids come from a sorted
 canonical ordering rather than filesystem traversal.
+
+`build_detection_adapter.py` (phase 6A) produces a **derived** representation.
+Canonical COCO remains the ground truth, and the script exists together with the
+audit that proves it changed nothing: every box is converted, written, read back
+from disk and decoded, because comparing against the in-memory boxes would prove
+nothing about the files a trainer loads. It writes detection labels only - RLE
+masks cannot become YOLO polygons without loss - and it never reads the
+provider's bbox or the holdout.
+
+`detection_runtime_check.py` (phase 6A) refuses to trust
+`torch.cuda.is_available()`. A torch build can report a device it has no kernels
+for, which is a live risk on a Blackwell GPU, so the preflight runs a matmul
+checked against the CPU, a convolution backward pass and an AMP step. If a GPU is
+visible through the driver but unusable, it reports `BLOCKED_FOR_GPU` rather than
+falling back to CPU, because a CPU baseline is not the same experiment. Its
+`--smoke-test` runs one epoch purely to prove the stack executes; those metrics
+are marked `NON_EXPERIMENTAL` and never recorded as results.
 
 ## Planned scripts
 

@@ -20,18 +20,51 @@ dependencies = [
     # with it and is used for the mask arithmetic.
     "numpy>=2.1",
     "pycocotools>=2.0.8",
+    # Installed by phase 6A, the phase that needs them, per the dependency rule
+    # in CLAUDE.md. Every phase from 6 onward trains or runs a model, so these
+    # are runtime dependencies rather than an optional extra.
+    #
+    # ultralytics is the reference implementation of the YOLO11 family chosen as
+    # the detection baseline; reimplementing its training loop, loss and NMS
+    # would be a correctness risk with no benefit to the experiment.
+    #
+    # The torch floor is 2.7 for a hardware reason, not a preference: this
+    # machine's GPU is Blackwell (compute capability 12.0 / sm_120), and 2.7 is
+    # the first release whose CUDA 12.8 build carries sm_120 kernels. An older
+    # build sees the device and cannot run on it. torch and torchvision are
+    # resolved from the CUDA 12.8 index declared below rather than from PyPI,
+    # whose default wheel is not guaranteed to be cu128.
+    "torch>=2.7",
+    "torchvision>=0.22",
+    "ultralytics>=8.3",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.3",
     "ruff>=0.9",
-    # Analysis-only: decoding source images and rendering report figures and
-    # contact sheets. Deliberately NOT runtime dependencies - training and
-    # inference must never import them.
+    # Analysis tooling: decoding source images and rendering report figures and
+    # contact sheets. This project's own analysis code imports them only from
+    # scripts under `scripts/`, never from a training or inference path. They
+    # are listed here rather than as runtime dependencies for that reason; note
+    # that since phase 6A ultralytics pulls both in transitively anyway, so the
+    # separation is now about which of *our* modules may import them, not about
+    # what ends up installed.
     "pillow>=11.0",
     "matplotlib>=3.9",
 ]
+
+# torch and torchvision come from the CUDA 12.8 build index. `explicit = true`
+# means only the packages mapped to it below are taken from here, so every other
+# dependency still resolves from PyPI.
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+torchvision = [{ index = "pytorch-cu128" }]
 
 [build-system]
 requires = ["hatchling"]

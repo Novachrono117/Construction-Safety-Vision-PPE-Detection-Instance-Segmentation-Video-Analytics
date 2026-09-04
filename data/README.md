@@ -46,10 +46,24 @@ documents preserve the canonical geometry unchanged: a polygon stays a polygon
 and a compressed RLE stays a compressed RLE. Detection boxes are **derived from
 the segmentation**, never copied from the provider.
 
+Phase 6A adds a derived model-specific view alongside it:
+
+```text
+processed/adapters/yolo_detection/
+├── images/{train,val}/     byte-identical copies of the canonical images
+├── labels/{train,val}/     YOLO detection labels, empty file = valid negative
+└── dataset.yaml            Ultralytics descriptor, resolved paths, no `test` key
+```
+
+That adapter is **derived, never canonical**: if it and the COCO file disagree,
+the COCO file is right. It carries detection boxes only - no segmentation labels
+exist in any model format - and there is no `test` directory in it either.
+
 All of it is git-ignored and re-derivable:
 
 ```bash
-uv run python scripts/materialize_task_datasets.py
+uv run python scripts/materialize_task_datasets.py   # canonical COCO datasets
+uv run python scripts/build_detection_adapter.py     # derived YOLO detection view
 ```
 
 What is committed instead is `reports/task_dataset_manifest.json` and

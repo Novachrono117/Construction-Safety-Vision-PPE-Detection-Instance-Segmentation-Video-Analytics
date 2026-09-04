@@ -191,9 +191,11 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 5D complete - the split is frozen, the holdout is locked, and the
-  **canonical COCO task datasets for `train` and `validation` are materialised**.
-  Phase 6 (detection baseline) has not started; do not start it unprompted.
+- **Phase:** 6A complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, and the **YOLO detection
+  adapter, GPU runtime and D0 baseline protocol are ready**. **D0 has not been
+  run and no model result exists.** Phase 6B (the D0 run) has not started; do not
+  start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -280,7 +282,10 @@ uv run pytest
   rectangles clipped to the canvas, marked
   `geometry_origin = SYNTHETIC_FROM_PROVIDER_BBOX`. Never describe them as
   human-drawn segmentation.
-- **Models:** none trained. No metrics exist.
+- **Models:** none trained. No metrics exist. A one-epoch smoke test ran in phase
+  6A purely to prove the stack executes; it is `NON_EXPERIMENTAL` /
+  `DO_NOT_REPORT_AS_MODEL_RESULT` and **none of its numbers were recorded**. Never
+  quote a smoke-test figure as a result, and never compare against one.
 - **The split is FROZEN (phase 5C.2).** `reports/split_manifest.json` is the
   single authoritative membership: **303 / 65 / 65 images** over **294 / 63 / 65
   groups**, 2031 annotations at 1422 / 304 / 305, negatives 10 / 2 / 2. Read it
@@ -351,6 +356,32 @@ uv run pytest
   new has been measured about the test set. Materialising it runs the same
   function with the same configuration - never a split-specific branch - and
   needs both opt-ins.
+- **Detection adapter (phase 6A) is DERIVED, never canonical.** YOLO labels live
+  under `data/processed/adapters/yolo_detection/` (git-ignored). If a YOLO label
+  and the canonical COCO file ever disagree, **the COCO file is right and the
+  adapter is broken** - regenerate it, never edit it. It was proven lossless:
+  1726/1726 boxes round-trip within 1e-4 px, max observed 1.47e-06 px.
+- **Still no YOLO segmentation labels, and none may be written casually.** The
+  RLE-to-polygon fidelity audit (convert, rasterise, compare, per-instance mask
+  IoU and area error, disconnected components and holes) has **not** been done.
+  Make no claim about how lossy it would be.
+- **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
+  CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
+  the device but have no kernels for it. If CUDA ever reports unavailable, that
+  is `BLOCKED_FOR_GPU` - **never fall back to CPU and call it the same
+  experiment**.
+- **D0 is frozen in `configs/detection_baseline.yaml` and has not been run.**
+  YOLO11n, imgsz 640, batch 16, seed 42, primary metric `mAP@0.50:0.95`,
+  checkpoint rule predeclared. Do not swap the model for a larger one because it
+  might score better - that is a phase 7 controlled experiment. Do not tune any
+  hyperparameter against validation, and do not add a metric after seeing
+  results; the parser rejects both.
+- **`vest_loose` has 1 validation image and 8 instances.** Its validation AP is
+  not a usable selection signal. Never tune against it, never prefer a model
+  because it improved, and always report it with an explicit small-sample caveat.
+- **`artifacts/` is git-ignored and holds weights and runs.** Never commit
+  `best.pt`, `last.pt`, optimizer state or caches. A report references a
+  checkpoint by SHA-256 and by its provenance record.
 - **Long paths:** 137 of the export's 742 image files exceed the Windows
   `MAX_PATH` limit on this machine. Open them through
   `construction_safety_vision.paths.long_path`, never with a bare path.

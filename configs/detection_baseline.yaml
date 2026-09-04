@@ -1,0 +1,133 @@
+# D0 - detection baseline protocol, frozen in phase 6A before any training run.
+#
+# Loaded by `construction_safety_vision.experiment`.
+# Parsing is strict: an unknown key raises, a missing hyperparameter raises, and
+# any reference to the protected split raises.
+#
+# This file is written BEFORE the experiment. That is the point: a protocol
+# recorded afterwards is not a protocol, it is a description of whatever
+# happened. Nothing here was chosen by trying values against validation.
+
+schema_version: 1
+
+experiment_id: D0
+task: detection
+
+description: >-
+  What does a small pretrained YOLO11 detector achieve under this project's
+  frozen data protocol, before any model-size, resolution or augmentation
+  experiment? D0 is a reference point, not an attempt at a good score.
+
+# Deliberately the smallest model in the family. Larger variants are Phase 7
+# controlled experiments; picking one here because it might score better would
+# make D0 a tuned result rather than a baseline.
+model: YOLO11n
+weights: pretrained
+weight_identifier: yolo11n.pt
+
+# The derived YOLO detection view of the frozen development splits. It carries
+# no `test` key, and this protocol may not name one either.
+dataset_config: data/processed/adapters/yolo_detection/dataset.yaml
+
+splits:
+  - train
+  - validation
+
+# The project's single global seed, as used by every earlier stochastic step.
+seed: 42
+
+# The full run requires a CUDA GPU. Recorded as a requirement rather than a
+# preference: a CPU run of this baseline would not be the same experiment, and
+# silently falling back to one would make the result incomparable to Phase 7.
+device_requirement: CUDA_GPU_REQUIRED
+
+training:
+  # Enough to leave the warm-up regime on 303 training images without turning
+  # the baseline into a long run. Not tuned - no other value was tried.
+  epochs: 100
+
+  # Model input size. This is a model-input decision, not a canonical-data
+  # resize: Ultralytics letterboxes at load time and the source images on disk
+  # are untouched. Phase 7 may test another size as a controlled experiment,
+  # motivated by the prevalence of small PPE objects.
+  imgsz: 640
+
+  # Starting candidate, chosen for feasibility on an 8 GiB GPU rather than for
+  # performance. If it exhausts memory it is reduced as an execution fix and the
+  # change is recorded; it is never searched over for a better score.
+  batch: 16
+
+  # Ultralytics' own default policy: it selects SGD or AdamW and an initial
+  # learning rate from the dataset and epoch count. Named explicitly here so the
+  # resolved values can be logged and reported rather than left implicit.
+  optimizer: auto
+  lr0: 0.01
+  lrf: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3.0
+  cos_lr: false
+
+  # Early stopping. Part of the protocol, so stopping is a rule rather than a
+  # judgement made while watching curves.
+  patience: 50
+
+  # The library defaults for this version, frozen by recording the exact
+  # installed Ultralytics version alongside the resolved arguments. These are
+  # MODEL TRAINING transformations, not canonical preprocessing, and they are
+  # not applied to validation. Not tuned in this phase.
+  augmentation: ULTRALYTICS_DEFAULT
+  close_mosaic: 10
+
+  # Mixed precision, verified working on this GPU during the phase 6A runtime
+  # check rather than assumed.
+  amp: true
+
+  # Requested. Note the honest limitation: cuDNN and some CUDA kernels remain
+  # non-deterministic in practice, so this reduces run-to-run variance without
+  # eliminating it. Two runs differing by a fraction of a point still do not
+  # establish an ordering.
+  deterministic: true
+
+  workers: 8
+  pretrained: true
+  val: true
+
+# Fixed before training so no checkpoint is chosen after the fact by comparing
+# several and keeping the flattering one.
+checkpoint_selection: >-
+  ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes
+  according to its own predeclared validation fitness, computed on the frozen
+  validation split only. No other checkpoint is inspected, compared or reported,
+  and the holdout takes no part in the selection.
+
+# The metric hierarchy is declared here, before the experiment, so the headline
+# number cannot be chosen once the results are visible. Phase 7 comparisons use
+# this same hierarchy.
+metrics:
+  primary: mAP@0.50:0.95
+  secondary:
+    - mAP@0.50
+    - precision
+    - recall
+  per_class:
+    - AP@0.50
+    - AP@0.50:0.95
+    - precision
+    - recall
+  artifacts:
+    - precision_recall_curve
+    - confusion_matrix
+    - training_loss_curves
+    - validation_loss_curves
+
+# The rare class, and the limitation attached to it before any number exists.
+rare_class: vest_loose
+rare_class_limitation: >-
+  vest_loose occupies 1 validation source image carrying 8 instances under the
+  frozen split, so its validation AP has high sampling uncertainty and is not a
+  usable selection signal. Therefore: do not tune hyperparameters against
+  vest_loose validation AP; do not prefer a model because vest_loose improved;
+  interpret this class qualitatively and always report it with an explicit
+  small-sample caveat. The holdout holds 2 vest_loose images and remains
+  protected, so it cannot be consulted to resolve the uncertainty either.

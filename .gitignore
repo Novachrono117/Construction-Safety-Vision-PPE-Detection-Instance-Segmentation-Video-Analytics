@@ -45,6 +45,10 @@ data/external/**
 !data/**/*.manifest.csv
 
 # --- Model and experiment artifacts (tracked only via provenance records) ---
+# artifacts/ holds pretrained weights, training runs and checkpoints from phase
+# 6 onward. Never committed: a report references a checkpoint by SHA-256 and by
+# the provenance record that explains how to reproduce it, not by carrying it.
+artifacts/
 runs/
 outputs/
 wandb/

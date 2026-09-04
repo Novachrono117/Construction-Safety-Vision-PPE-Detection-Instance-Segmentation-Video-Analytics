@@ -1,0 +1,116 @@
+{
+  "adapter_config": {
+    "adapter_type": "YOLO_DETECTION",
+    "bbox_source": "CANONICAL_COCO_DETECTION_BBOX",
+    "canonical_annotations_root": "data/processed/canonical/annotations",
+    "canonical_images_root": "data/processed/canonical/images",
+    "canonical_task_manifest": "reports/task_dataset_manifest.json",
+    "image_copy_mode": "BINARY_IDENTICAL",
+    "label_precision": 9,
+    "normalisation": "SOURCE_IMAGE_WIDTH_HEIGHT",
+    "output_root": "data/processed/adapters/yolo_detection",
+    "schema_version": 1,
+    "split_directories": {
+      "train": "train",
+      "validation": "val"
+    },
+    "test_adapter": "disabled_during_development",
+    "tolerances": {
+      "normalised_bound_epsilon": 1e-09,
+      "round_trip_px": 0.0001
+    },
+    "zero_instance_policy": "EMPTY_LABEL_FILE"
+  },
+  "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+  "adapter_type": "YOLO_DETECTION",
+  "bbox_source": "CANONICAL_COCO_DETECTION_BBOX",
+  "bulk_data_committed": false,
+  "canonical_detection_format": "COCO",
+  "canonical_task_manifest": "reports/task_dataset_manifest.json",
+  "class_map": {
+    "helmet_loose": 0,
+    "helmet_on_head": 1,
+    "person": 2,
+    "vest_loose": 3,
+    "vest_on_body": 4
+  },
+  "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+  "derived_representation": true,
+  "development_totals": {
+    "annotations": 1726,
+    "images": 368,
+    "negative_images": 12
+  },
+  "git_commit": "33430b10835fd3383e14de8a37a5f6052035cc35",
+  "ground_truth": "reports/task_dataset_manifest.json (canonical COCO detection)",
+  "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+  "output_root": "data/processed/adapters/yolo_detection",
+  "phase": "6A",
+  "provider_bbox_used": false,
+  "round_trip_totals": {
+    "annotations_checked": 1726,
+    "exact_matches": 32,
+    "max_delta_px": 1.4739998732693493e-06,
+    "mismatches": 0,
+    "tolerance_px": 0.0001,
+    "within_tolerance": 1726
+  },
+  "schema_version": 1,
+  "segmentation_labels_generated": false,
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "status": "DEVELOPMENT_ADAPTER_BUILT",
+  "test": {
+    "reason": "the protected holdout gets no adapter while the models are unfrozen. No test image, label, directory, dataset entry or statistic exists. The final-evaluation phase builds it through this same code, with both holdout opt-ins present.",
+    "status": "NOT_MATERIALIZED_PROTECTED_HOLDOUT"
+  },
+  "train": {
+    "adapter_directory": "train",
+    "annotation_count": 1422,
+    "canonical_image_content_sha256": "78b392958070ab9ecb229cc9699bc54c92bf6a389511dadf582950963c07cb5f",
+    "image_content_sha256": "78b392958070ab9ecb229cc9699bc54c92bf6a389511dadf582950963c07cb5f",
+    "image_count": 303,
+    "instances_by_class": {
+      "helmet_loose": 276,
+      "helmet_on_head": 220,
+      "person": 641,
+      "vest_loose": 30,
+      "vest_on_body": 255
+    },
+    "negative_images": 10,
+    "round_trip": {
+      "annotations_checked": 1422,
+      "exact_matches": 24,
+      "max_delta_px": 1.4739998732693493e-06,
+      "mean_delta_px": 2.0989935291249406e-07,
+      "mismatches": 0,
+      "within_tolerance": 1422
+    },
+    "status": "ADAPTED",
+    "yolo_label_sha256": "6237624f585f8e9f7ac2565be1eacf4140f6d55ad2de5d3c85f2972efa649e5f"
+  },
+  "validation": {
+    "adapter_directory": "val",
+    "annotation_count": 304,
+    "canonical_image_content_sha256": "15b3d63745bcf06bd7a9ebbde490f91493e0d60256a16370ff26fefd3408f9ab",
+    "image_content_sha256": "15b3d63745bcf06bd7a9ebbde490f91493e0d60256a16370ff26fefd3408f9ab",
+    "image_count": 65,
+    "instances_by_class": {
+      "helmet_loose": 57,
+      "helmet_on_head": 47,
+      "person": 137,
+      "vest_loose": 8,
+      "vest_on_body": 55
+    },
+    "negative_images": 2,
+    "round_trip": {
+      "annotations_checked": 304,
+      "exact_matches": 8,
+      "max_delta_px": 1.3600000556834857e-06,
+      "mean_delta_px": 2.1100041425046647e-07,
+      "mismatches": 0,
+      "within_tolerance": 304
+    },
+    "status": "ADAPTED",
+    "yolo_label_sha256": "d9ac55c70918b7ad7621ad6f7849d70c15f66585ec6b66f97b07fedfe6102c4b"
+  }
+}

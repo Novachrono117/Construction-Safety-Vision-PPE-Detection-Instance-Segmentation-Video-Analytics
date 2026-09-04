@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.5 · Current phase: **6 - Detection baseline** (not started; phase 5 complete through 5D)
+Version: 1.6 · Current phase: **6 - Detection baseline** (6A complete: adapter, runtime and D0 protocol frozen; 6B - the D0 run - next)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -20,7 +20,7 @@ change log at the bottom of this file.
 | 3 | Dataset acquisition and provenance | done |
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
 | 5 | Split freeze and task-specific dataset generation | complete (5A, 5B, 5B.1, 5C.1, 5C.2 split frozen 303/65/65, 5D COCO development datasets materialised) |
-| 6 | Detection baseline | **next**, not started |
+| 6 | Detection baseline | 6A complete (YOLO detection adapter, GPU runtime, D0 protocol frozen, smoke test passed) · 6B **next**: run D0. Not run, no metrics |
 | 7 | Detection experiments and model freeze | not started |
 | 8 | Segmentation baseline | not started |
 | 9 | Segmentation experiments and model freeze | not started |
@@ -380,6 +380,70 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   collapse, degenerate predictions).
 - **Academic mapping.** C2.
 
+### Phase 6A - adapter, runtime and baseline protocol (complete)
+
+- **What it did.** Prepared the first detection experiment and **deliberately did
+  not run it**: a working GPU runtime, a lossless model-specific detection
+  adapter, the frozen D0 protocol, and a minimal smoke test.
+- **ML dependencies installed.** torch 2.11.0+cu128, torchvision 0.26.0+cu128,
+  ultralytics 8.4.138, locked in `uv.lock`. torch resolves from the CUDA 12.8
+  build index declared in `pyproject.toml`, for a hardware reason rather than a
+  preference: the GPU here is Blackwell (`sm_120`) and only cu128 builds carry
+  kernels for it.
+- **Runtime verified, not assumed.** `torch.cuda.is_available()` is a weak claim,
+  so the preflight executes a matmul checked against the CPU, a convolution
+  backward pass and an AMP autocast step. RTX 5070 Laptop, `sm_120`, 7.96 GiB,
+  driver 610.88, `sm_120` present in the compiled arch list, AMP working. A GPU
+  visible but unusable would have been reported `BLOCKED_FOR_GPU` rather than
+  silently downgraded to CPU.
+- **Lossless detection adapter.** 368 images and 1726 labels derived from the
+  canonical COCO detection dataset. Every box converted, written, **read back
+  from the label file on disk**, decoded and compared: **1726/1726 within
+  tolerance, 0 mismatches, max delta 1.47e-06 px** against a declared 1e-4 px.
+  Adapter images byte-identical to the canonical ones; class indices the frozen
+  map, verified against `class_map_sha256`; `object` absent; the 12 negatives
+  preserved as empty label files.
+- **Detection only.** No YOLO segmentation labels were written. RLE masks cannot
+  become YOLO polygons without loss, and that conversion needs its own fidelity
+  audit; a box has no such problem, which is why this adapter can be *proven*
+  lossless rather than assumed to be.
+- **D0 protocol frozen before the experiment** in
+  `configs/detection_baseline.yaml`: YOLO11n pretrained (`yolo11n.pt`,
+  fingerprinted), imgsz 640, batch 16, 100 epochs, seed 42, every hyperparameter
+  stated, checkpoint rule `ULTRALYTICS_BEST_ON_VALIDATION_FITNESS` fixed in
+  advance, and the metric hierarchy declared - primary `mAP@0.50:0.95`, then
+  `mAP@0.50`, precision, recall. The parser rejects a protocol that names the
+  holdout or invents a primary metric.
+- **`vest_loose` limitation recorded before any number exists.** 1 validation
+  image, 8 instances: not a usable selection signal, never tuned against, always
+  reported with an explicit small-sample caveat.
+- **Smoke test, not an experiment.** One epoch on train and validation: OK in
+  62 s, 2.4 GiB peak, checkpoints written. Marked `NON_EXPERIMENTAL` /
+  `DO_NOT_REPORT_AS_MODEL_RESULT`; **no metric from it is recorded anywhere** and
+  nothing was tuned from it. batch 16 needed no reduction.
+- **Outputs.** [`detection_adapter_report.md`](detection_adapter_report.md),
+  `detection_adapter_manifest.json`,
+  [`detection_runtime_report.md`](detection_runtime_report.md), the two
+  provenance records, `configs/detection_adapter.yaml`,
+  `configs/detection_dataset.template.yaml`, `configs/detection_baseline.yaml`,
+  and the `yolo_detection_adapter` and `experiment` modules.
+- **Explicitly not done.** The full D0 run, any hyperparameter tuning, any
+  segmentation work, any holdout access. The holdout has no adapter, no
+  directory, no label and no key in the Ultralytics dataset descriptor.
+- **Academic mapping.** C2, and the reproducibility requirement of C6.
+
+### Phase 6B - D0 detection baseline run (not started)
+
+- **Entry conditions.** The frozen D0 protocol, the audited adapter, and a
+  verified GPU runtime - all delivered by 6A.
+- **Outputs.** The D0 run under the git-ignored `artifacts/`, its metrics against
+  the predeclared hierarchy, PR curve, confusion matrix and loss curves, a
+  provenance record, and a written baseline report.
+- **Validation gate.** Trained on `train` only; every reported metric computed on
+  `validation` only; the checkpoint chosen by the predeclared rule rather than by
+  inspection; the resolved Ultralytics arguments logged in full; `vest_loose`
+  reported with its small-sample caveat. The holdout is not touched.
+
 ## Phase 7 - Detection experiments and model freeze
 
 - **Objective.** Improve on the baseline through controlled variations, then
@@ -520,3 +584,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5C.1 generated six provisional split candidates over the 422 indivisible groups. All reach the exact 70/15/15 target (303/65/65 images) with every hard constraint satisfied: five classes in all three splits at image and instance level, vest_loose 5/1/2 or 4/2/2, negatives 10/2/2. The objective is normalised per class and averaged so the frequent classes cannot outweigh the rare one, and each component is reported separately. Search is deterministic: 192 restarts seeded from the project seed 42, 49 feasible, 49 unique, re-run byte-identical. The provider split is read nowhere - the optimiser refuses to run if the feature table carries such a column. A correction: the brief stated no vest_loose image belongs to a duplicate group, which phase 5B.1 made false (two of the eight are in manual_dup_010), so the class occupies 7 indivisible units. Family B (5/2/1) is searched but rejected by the two-image holdout floor. algorithmic_best_candidate is candidate_001; final_selected_candidate remains UNSELECTED_PENDING_REVIEW. No split frozen, no holdout fingerprint, no model. |
 | 2026-09-04 | Phase 5C.2 froze the canonical split. `candidate_001` was selected by human review of the six predeclared deterministic candidates (`HUMAN_REVIEW_OF_PREDECLARED_DETERMINISTIC_CANDIDATES`, `PROJECT_OWNER_REVIEW`); it coincides with `algorithmic_best_candidate`, and the two are recorded separately because a coincidence of outcome does not replace the review step. Frozen at 303/65/65 images over 294/63/65 groups (422 total, 11 non-singleton at 9/2/0), 2031 annotations at 1422/304/305, negatives 10/2/2, all five classes in all three splits at image and instance level, vest_loose 5/1/2 images and 30/8/7 instances. Verification ran before any write: the candidate re-derives its recorded digest, agrees with the phase 5C.1 summary, and matches the phase 5B population and group fingerprints. New fingerprints `split_assignment_sha256` `a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc` and `holdout_sha256` `bb7ed43b20a84644d5a3917c6d0ead688132f82a30052b06ae7ad121e4851a00` cover membership only - no timestamp, path, label, metric or provider split - and the freeze is idempotent. Recorded as a protocol limitation: validation holds a single vest_loose image, so vest_loose validation metrics must not drive model selection on their own, and the split is a group-aware and class-aware constrained split, not a perfectly stratified one. **From this point the test split is a locked holdout**, requiring both `allow_test=True` and `CSVISION_ALLOW_TEST_SPLIT=1`; the variable was not set and the holdout has never been evaluated or inspected. Membership only: no image copied, no label written, `data/processed/` untouched, no model, no YOLO dataset, no inference. |
 | 2026-09-04 | Phase 5D materialised the canonical task datasets for the development splits only. Two COCO views of the same images and the same objects: `canonical_detection_format: COCO`, `canonical_segmentation_format: COCO_INSTANCE_SEGMENTATION`, `model_specific_adapter: NOT_YET_SELECTED`. **368 images and 1726 annotations** (train 303/1422, validation 65/304), derived from the frozen manifest and verified against the canonical population. Images copied byte-for-byte, 368/368 verified by hashing both sides - no resize, crop, re-encode, EXIF rotation or colour conversion. Detection boxes derived from the canonical segmentation, never from the provider's bbox, and cross-checked against the independent phase 5A measurement at **max delta 0.0 px**. Geometry preservation measured rather than claimed: the emitted segmentation file is read back from disk and compared with the canonical state, RLE by decoded mask and polygons coordinate by coordinate - **1726 checked, 1726 matched, 0 mismatches** across 843 polygons, 881 RLE masks and 2 synthetic rectangles. Cross-task alignment verified for both splits. COCO ids are global over the whole modelling population, so the holdout can be materialised later without renumbering; no timestamp enters an emitted file and re-running is byte-identical. **No YOLO labels were written**: only COCO carries both polygon and RLE natively, so converting now would approximate the ground truth before a model exists; a future adapter must pass a documented mask-IoU fidelity audit first. The holdout is `NOT_MATERIALIZED_PROTECTED_HOLDOUT` - no test directory, COCO file or statistic was produced and no new knowledge about it was computed; CSVISION_ALLOW_TEST_SPLIT was not set. No model trained, no framework installed, no inference. Phase 6 not started. |
+| 2026-09-04 | Phase 6A prepared the detection baseline without running it. Installed and locked torch 2.11.0+cu128, torchvision 0.26.0+cu128 and ultralytics 8.4.138; torch comes from the CUDA 12.8 index for a hardware reason, not a preference - the GPU is Blackwell (sm_120) and only cu128 builds carry its kernels. The runtime was verified by executing real kernels (matmul checked against CPU, conv backward, AMP autocast) rather than by reading `torch.cuda.is_available()`: RTX 5070 Laptop, sm_120, 7.96 GiB, driver 610.88, AMP OK. Built a **lossless** YOLO detection adapter over 368 images and 1726 labels: every box converted, written, read back from the label file on disk, decoded and compared against canonical - **1726/1726 within tolerance, 0 mismatches, max delta 1.47e-06 px** against a declared 1e-4 px. Adapter images byte-identical to canonical, class indices the frozen map verified against class_map_sha256, placeholder `object` absent, 12 negatives preserved as empty label files, and no YOLO segmentation labels written anywhere. Froze the D0 protocol before the experiment: YOLO11n pretrained (yolo11n.pt fingerprinted 0ebbc80d..., 5613764 B), imgsz 640, batch 16, 100 epochs, seed 42, every hyperparameter stated, checkpoint rule fixed in advance, metric hierarchy declared with primary mAP@0.50:0.95, and the vest_loose small-sample limitation (1 validation image, 8 instances) recorded before any number exists. A one-epoch smoke test proved the stack executes (OK, 62 s, 2.4 GiB peak, checkpoints written) and is marked NON_EXPERIMENTAL / DO_NOT_REPORT_AS_MODEL_RESULT - no metric from it is recorded and nothing was tuned from it. **The full D0 run was not performed**; no model result exists. The holdout has no adapter, no directory, no label and no key in the dataset descriptor; CSVISION_ALLOW_TEST_SPLIT was not set. Phase 6B not started. |

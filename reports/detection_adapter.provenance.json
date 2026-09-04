@@ -1,0 +1,75 @@
+{
+  "config": {
+    "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+    "detection_adapter": "configs/detection_adapter.yaml",
+    "test_adapter": "disabled_during_development"
+  },
+  "created_at": "2026-09-04T17:18:25+00:00",
+  "details": {
+    "adapter_type": "YOLO_DETECTION",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "development_totals": {
+      "annotations": 1726,
+      "images": 368,
+      "negative_images": 12
+    },
+    "holdout_accessed": false,
+    "models_trained": 0,
+    "phase": "6A",
+    "round_trip_totals": {
+      "annotations_checked": 1726,
+      "exact_matches": 32,
+      "max_delta_px": 1.4739998732693493e-06,
+      "mismatches": 0,
+      "tolerance_px": 0.0001,
+      "within_tolerance": 1726
+    },
+    "segmentation_labels_generated": false,
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+    "status": "DEVELOPMENT_ADAPTER_BUILT",
+    "test_status": "NOT_MATERIALIZED_PROTECTED_HOLDOUT"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "33430b10835fd3383e14de8a37a5f6052035cc35",
+  "inputs": [
+    {
+      "path": "reports/task_dataset_manifest.json",
+      "sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+      "size_bytes": 5389
+    },
+    {
+      "path": "reports/canonical_modeling_manifest.json",
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f",
+      "size_bytes": 6531
+    },
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    },
+    {
+      "path": "configs/detection_adapter.yaml",
+      "sha256": "81263816539c7a6ccc0a6b1fb76b5ccfffe56d489fe84e13e09dcbdc76d823c1",
+      "size_bytes": 3721
+    }
+  ],
+  "name": "yolo_detection_adapter",
+  "outputs": [
+    {
+      "path": "reports/detection_adapter_manifest.json",
+      "sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "size_bytes": 4261
+    },
+    {
+      "path": "reports/detection_adapter_report.md",
+      "sha256": "171f016069d11f33925a864cae34caa95c5f01e4c9d045dde960fb459a128dc6",
+      "size_bytes": 8137
+    }
+  ],
+  "phase": 6,
+  "schema_version": 1
+}

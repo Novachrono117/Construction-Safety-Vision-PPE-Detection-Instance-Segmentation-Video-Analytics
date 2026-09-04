@@ -1,0 +1,75 @@
+# YOLO detection adapter protocol for phase 6A.
+#
+# Loaded by `construction_safety_vision.data.yolo_detection_adapter`.
+# Parsing is strict: an unknown key raises rather than being ignored.
+#
+# This file describes a DERIVED representation. The canonical COCO detection
+# dataset frozen in phase 5D remains the ground truth; the adapter exists only
+# because Ultralytics reads labels in its own format. If the two ever disagree,
+# the COCO file is right and the adapter is broken.
+
+schema_version: 1
+
+adapter_type: YOLO_DETECTION
+
+# The phase 5D record this adapter is derived from. Its fingerprints are checked
+# before anything is written.
+canonical_task_manifest: reports/task_dataset_manifest.json
+canonical_annotations_root: data/processed/canonical/annotations
+canonical_images_root: data/processed/canonical/images
+
+# Adapter directory names per canonical split. Ultralytics conventionally calls
+# the validation split `val`; the canonical layout spells it `validation`. The
+# mapping is declared here so neither name has to be inferred.
+# There is deliberately no `test` entry, and the loader rejects one.
+split_directories:
+  train: train
+  validation: val
+
+# The input box is the segmentation-derived detection box frozen in phase 5D.
+# The provider's supplied bbox is not read here and was never ground truth:
+# phase 4A measured it disagreeing with its own geometry by up to 123.5 px.
+bbox_source: CANONICAL_COCO_DETECTION_BBOX
+normalisation: SOURCE_IMAGE_WIDTH_HEIGHT
+
+# Adapter images are binary copies of the canonical materialised images, which
+# are themselves binary copies of the source originals. No resize, no
+# re-encode: Ultralytics letterboxes at runtime, which is a model-input
+# transformation and must not be baked into the data.
+image_copy_mode: BINARY_IDENTICAL
+
+# Decimal places written per normalised coordinate. Nine rather than the
+# conventional six for a measured reason: the largest source image here is 1880
+# px wide, so one unit in the ninth decimal is about 2e-6 px, which puts the
+# serialisation error far below any tolerance a box could matter at. Fixed-point
+# rather than a shortest-repr float, so the files are byte-identical between
+# runs and between machines.
+label_precision: 9
+
+# An image with no annotation gets an empty label file. That is Ultralytics' own
+# representation of a background image, and its dataset scan counts such an
+# image as a negative rather than as a missing label. The 12 development
+# negatives were confirmed by the phase 4B audit and must not be dropped.
+zero_instance_policy: EMPTY_LABEL_FILE
+
+# The protected split gets no adapter while the models are unfrozen. Changing
+# this value alone unlocks nothing: split resolution still routes through the
+# holdout guard, which needs both opt-ins.
+test_adapter: disabled_during_development
+
+# Destination root, repository-relative. Git-ignored: derived bulk data is never
+# committed, only the manifest and report that make it re-derivable.
+output_root: data/processed/adapters/yolo_detection
+
+tolerances:
+  # Largest per-coordinate difference accepted between a canonical box and the
+  # same box decoded back out of its written label file. 1e-4 px is roughly two
+  # orders of magnitude below the scale at which any box difference could
+  # matter, and four orders above the serialisation error above, so a failure
+  # here means a real defect rather than rounding.
+  round_trip_px: 0.0001
+  # Floating-point slack on the [0, 1] bound check. Tiny on purpose: it absorbs
+  # representation error in the division, not real geometry outside the canvas.
+  # Every canonical development box was measured to lie strictly inside its
+  # canvas, so nothing is clamped.
+  normalised_bound_epsilon: 1.0e-9
