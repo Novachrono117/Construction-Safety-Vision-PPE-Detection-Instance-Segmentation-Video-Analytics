@@ -191,11 +191,11 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 7A complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, the **D0 detection baseline has
-  been trained and validated**, and the **phase 7 comparison protocol is frozen
-  with D1 and D2 specified but not run**. Phase 7B (train D1) has not started;
-  do not start it unprompted.
+- **Phase:** 7B complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, **D0 and D1 have both been
+  trained and validated**, and the phase 7 comparison protocol is frozen. **D2 is
+  frozen and NOT trained, so no Phase 7 winner exists.** Phase 7C (train D2) has
+  not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -419,14 +419,40 @@ uv run pytest
   not do is decide a winner: never tune for it, never prefer or reject a model
   because it moved, never rank it against the supported classes, never consult
   the holdout to resolve its uncertainty.
-- **D1 and D2 are frozen and NOT TRAINED.** D1 varies `MODEL_CAPACITY` (YOLO11s,
-  `yolo11s.pt`, which is `NOT_YET_FINGERPRINTED` and must be fingerprinted before
-  D1 runs); D2 varies `INPUT_RESOLUTION` (imgsz 768). Both inherit D0's protocol
+- **D1 exists; D2 is frozen and NOT TRAINED.** D1 varied `MODEL_CAPACITY`
+  (YOLO11s from `yolo11s.pt`, SHA-256 `85a76fe8...`, 19313732 B); D2 varies
+  `INPUT_RESOLUTION` (imgsz 768) and has no result. Both inherit D0's protocol
   from `configs/detection_baseline.yaml` and declare only an override set, so the
   one-variable discipline is enforced by the parser. Batch stays 16 for all
   three: a genuine CUDA OOM **stops** the experiment as
   `MEMORY_CONSTRAINT_REVIEW_REQUIRED` and is never rescued by a smaller batch,
   auto-batch, gradient accumulation, a different imgsz or a different model.
+- **D1 result (validation only): `supported_macro_map50_95` 0.560017, delta
+  -0.010125 vs D0, classified `BELOW_D0`.** All-class `mAP@0.50:0.95` 0.471114
+  (+0.006685), mAP@0.50 0.618243, precision 0.85964, recall 0.527798. 100/100
+  epochs, best epoch 73, `D1_experiment_sha256`
+  `0589d4c0dabedfe0e6c72da3d248883d750347ce60b122b71aaa44e939158503`. **D1 was
+  run once and must not be re-run, retuned or averaged.**
+- **The two D1 metrics moved in OPPOSITE directions, and the reason is
+  arithmetic, not a paradox.** Both are unweighted means over the same per-class
+  APs; they differ only in which classes they average. `vest_loose` (excluded,
+  one validation image) gained +0.073925 and so contributes +0.014785 to the
+  five-class mean; remove that and the all-class delta is **-0.008100**, agreeing
+  with the selection metric. **Never quote D1's all-class improvement as evidence
+  it beat D0** - that is the metric-shopping the phase 7A policy forbids - and
+  never suppress the all-class figure either.
+- **The substantive D1 finding is `vest_on_body`, not the aggregate.** Three of
+  four supported classes improved (helmet_on_head +0.032401, helmet_loose
+  +0.005802, person +0.004585); `vest_on_body` fell -0.083287 with recall
+  -0.111868, more than the other gains combined. **Why is UNKNOWN** - one run
+  cannot separate it from run-to-run variance, and diagnosing it needs the
+  image-level error analysis that is a later phase. Do not explain it; do not
+  fix it.
+- **`optimizer: auto` resolved to AdamW at lr0 0.001111 for BOTH D0 and D1**, so
+  the optimizer does not confound the comparison. D1's value was read
+  **directly** from the framework log (`FRAMEWORK_LOG_LINE_DIRECT_CAPTURE`); D0's
+  was inferred, because its run predates the log capture. When adding an
+  experiment, prefer direct capture and label an inference as inferred.
 - **Selection is decided in advance: margin 0.005, four cases.** A - nothing
   clears D0 by more than the margin, retain D0. B - one candidate clears D0 and
   separates from the runner-up, it leads. C - a candidate clears D0 but does not
@@ -434,6 +460,24 @@ uv run pytest
   failure, protocol review, **never** read as model inferiority. The margin is an
   engineering threshold, **not a significance test**; run-to-run variance on this
   setup is UNKNOWN because nothing is repeated.
+- **No Phase 7 winner exists and the selection logic has NOT been applied.**
+  `reports/detection_experiment_results.json` records D2 as `FROZEN_NOT_EXECUTED`
+  with a `null` metrics block. Do not assign a case, do not call D0 or D1 the
+  winner, and do not invent a placeholder for D2. D0 remains preferred **by
+  default, not by comparison**.
+- **Run primitives shared by phase 7 live in
+  `src/construction_safety_vision/detection_run.py`**, and
+  `scripts/train_detection_baseline.py` still carries its own older copies -
+  including an optimizer regex that cannot match, because it does not strip the
+  ANSI codes Ultralytics wraps its log label in. That defect cannot affect D0's
+  published numbers (D0 is frozen and never re-run) and is left deliberately
+  rather than modifying a reported experiment's script; classified `LOW`, to
+  converge in a later cleanup phase, never inside an experiment phase.
+- **Ultralytics diverts a run to `<id>-2` if its output directory already
+  exists**, and attaching the log handler creates that directory. The runner
+  therefore passes `exist_ok=True` and relies on its own pre-run existence check,
+  then verifies after training that the run landed where the result is read from.
+  Do not "fix" this by setting `exist_ok=False`.
 - **No D3 is authorised.** After a D1 or D2 result appears, do not try YOLO11m,
   imgsz 896/960, optimizer or LR tuning, augmentation changes, oversampling, loss
   weighting or class weighting, and do not add a metric or tie-breaker. Any

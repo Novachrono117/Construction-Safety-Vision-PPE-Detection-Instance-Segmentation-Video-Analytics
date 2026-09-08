@@ -348,19 +348,50 @@ def test_d2_resolves_to_768_on_the_baseline_model(policy):
 # --- no result exists yet -----------------------------------------------------
 
 
-def test_neither_candidate_has_been_executed(policy, paths):
+def test_the_policy_still_records_the_statuses_it_was_frozen_with(policy):
+    # The policy is a phase 7A artifact and its `status` fields say what was true
+    # when it was frozen, not what is true now. It must NOT be regenerated as
+    # experiments run: later result manifests reference its digest, so rewriting
+    # it would invalidate their recorded provenance. Live status lives in
+    # reports/detection_experiment_results.json instead.
     statuses = {
         item["experiment_id"]: item["status"]
         for item in policy["experiments"]
         if item["role"] == "CONTROLLED_EXPERIMENT"
     }
     assert statuses == {"D1": "FROZEN_NOT_EXECUTED", "D2": "FROZEN_NOT_EXECUTED"}
+
+
+def test_the_frozen_policy_digest_still_matches_what_results_reference(policy, paths):
+    import hashlib
+
+    digest = hashlib.sha256(
+        (paths.reports / "detection_comparison_policy.json").read_bytes()
+    ).hexdigest()
     for experiment_id in ("D1", "D2"):
+        manifest = paths.reports / f"detection_{experiment_id}_manifest.json"
+        if not manifest.is_file():
+            continue
+        recorded = json.loads(manifest.read_text(encoding="utf-8"))["phase7_policy_sha256"]
+        assert recorded == digest, (
+            f"{experiment_id} was judged under a different policy file than the one committed"
+        )
+
+
+def test_no_result_exists_for_an_unexecuted_candidate(paths):
+    results_path = paths.reports / "detection_experiment_results.json"
+    if not results_path.is_file():
+        pending = {"D1", "D2"}
+    else:
+        results = json.loads(results_path.read_text(encoding="utf-8"))
+        pending = set(results["pending_experiments"])
+    for experiment_id in sorted(pending):
         assert not (paths.reports / f"detection_{experiment_id}_manifest.json").exists()
         assert not (paths.reports / f"detection_{experiment_id}_report.md").exists()
+        assert not (paths.root / "artifacts" / "detection" / experiment_id).exists()
 
 
-def test_no_candidate_metric_is_recorded_anywhere(policy):
+def test_the_frozen_policy_carries_no_candidate_metric(policy):
     for item in policy["experiments"]:
         if item["role"] != "CONTROLLED_EXPERIMENT":
             continue

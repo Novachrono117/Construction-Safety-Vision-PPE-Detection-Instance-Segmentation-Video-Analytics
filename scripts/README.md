@@ -32,6 +32,7 @@ undocumented one-off shell invocation.
 | `detection_runtime_check.py` | 6A | Verify the CUDA runtime by executing real kernels, fingerprint the pretrained weights, and optionally run a minimal smoke test. |
 | `train_detection_baseline.py` | 6B | Verify every frozen input, record the protocol, run the single D0 training, select the checkpoint by the predeclared rule and validate it once. |
 | `freeze_detection_experiments.py` | 7A | Freeze how D1 and D2 will be judged, before either exists: derive the class-support rule's verdict, compute D0's selection metric, resolve both candidate protocols and prove each is a one-variable comparison. Trains nothing. |
+| `train_detection_experiment.py` | 7B+ | Run one frozen Phase 7 candidate. Takes an experiment id, never hyperparameters: the protocol is resolved by inheriting D0's and applying the declared override set. Proves the one-variable contract before fetching weights. |
 
 ## Rules
 
@@ -196,6 +197,38 @@ that enters the selection metric is *derived* from the frozen split manifest by
 applying the support thresholds - no class is named in the code - which is what
 makes the exclusion of the rare class a consequence of its evidence rather than
 a decision about the class.
+
+`train_detection_experiment.py` (phase 7B onward) is the general runner for a
+Phase 7 candidate, and its ordering is the point. Before a single weight is
+downloaded: the holdout guard is checked, the committed policy is verified
+against the configuration it names, the D0 reference is validated from its
+committed manifest, and the candidate's protocol is resolved and **proven** to
+differ from D0 only where it declared. A candidate that differs anywhere else
+exits non-zero and trains nothing.
+
+It accepts no hyperparameter flags, because a Phase 7 candidate has none of its
+own - `--experiment D1` is the whole specification. `--verify-only` runs every
+pre-flight check and stops; `--memory-preflight` proves the frozen batch fits by
+taking one throwaway optimisation step in a separate directory that is deleted
+afterwards (marked `NON_EXPERIMENTAL`, validation disabled, no metric recorded).
+
+Three refusals worth knowing about. A genuine CUDA OOM at the frozen batch stops
+the experiment as `MEMORY_CONSTRAINT_REVIEW_REQUIRED` rather than reducing the
+batch, because batch is a controlled variable. `--resume` requires
+`--resume-reason` and continues the same run with identical settings; it is for
+operational interruptions, not for restarting a failed experiment differently.
+And after training it re-checks that the framework wrote into the directory the
+result is read from - Ultralytics silently diverts to `<id>-2` if the directory
+already exists, which would otherwise publish metrics under an experiment id
+they did not come from.
+
+The optimizer is established rather than assumed. `optimizer: auto` is the
+frozen policy, so the run tees the framework's log to `train_console.log` and
+reads the line where it names the optimizer it built. That line is colourised,
+so the escape codes are stripped before parsing; without that step the parse
+fails on the real format and the run falls back to inference for no reason. The
+manifest records which of the two happened, and an inferred value is labelled
+`inferred`.
 
 ## Planned scripts
 

@@ -385,6 +385,24 @@ def test_resolved_optimizer_must_be_recorded():
 def test_experiment_fingerprint_must_not_be_empty():
     manifest = make_manifest(d0_experiment_sha256="")
     assert any(
-        "d0_experiment_sha256 is empty" in problem
+        "no experiment fingerprint recorded" in problem
+        for problem in validate_result_manifest(manifest, class_names=CLASS_NAMES)
+    )
+
+
+def test_experiment_fingerprint_may_use_the_generic_key():
+    # A phase 7 candidate records `experiment_sha256` rather than claiming to be
+    # D0, and that must validate exactly the same.
+    manifest = make_manifest(d0_experiment_sha256="")
+    del manifest["d0_experiment_sha256"]
+    manifest["experiment_sha256"] = "f" * 64
+    assert validate_result_manifest(manifest, class_names=CLASS_NAMES) == []
+
+
+def test_two_disagreeing_fingerprints_are_refused():
+    manifest = make_manifest()
+    manifest["experiment_sha256"] = "a" * 64
+    assert any(
+        "two different experiment fingerprints" in problem
         for problem in validate_result_manifest(manifest, class_names=CLASS_NAMES)
     )

@@ -1308,6 +1308,41 @@ def flatten_protocol(protocol: Mapping[str, Any], *, prefix: str = "") -> dict[s
     return flat
 
 
+def unflatten_protocol(flat: Mapping[str, Any]) -> dict[str, Any]:
+    """Rebuild a nested protocol mapping from dotted leaf paths.
+
+    The inverse of :func:`flatten_protocol`, for callers that need to *run* a
+    resolved protocol rather than compare it: a training call wants
+    ``training["imgsz"]``, not ``"training.imgsz"``.
+
+    Args:
+        flat: Leaf values keyed by dotted path.
+
+    Returns:
+        The nested mapping.
+
+    Raises:
+        ComparisonError: If two paths disagree about whether a segment is a leaf
+            or a branch, which would silently drop one of them.
+    """
+    nested: dict[str, Any] = {}
+    for path in sorted(flat):
+        segments = path.split(".")
+        cursor = nested
+        for segment in segments[:-1]:
+            existing = cursor.setdefault(segment, {})
+            if not isinstance(existing, dict):
+                msg = f"unflatten_protocol: {path!r} conflicts with a leaf at {segment!r}"
+                raise ComparisonError(msg)
+            cursor = existing
+        leaf = segments[-1]
+        if isinstance(cursor.get(leaf), dict):
+            msg = f"unflatten_protocol: {path!r} conflicts with a branch at {leaf!r}"
+            raise ComparisonError(msg)
+        cursor[leaf] = flat[path]
+    return nested
+
+
 def resolve_candidate_protocol(
     reference_protocol: Mapping[str, Any],
     declaration: ExperimentDeclaration,

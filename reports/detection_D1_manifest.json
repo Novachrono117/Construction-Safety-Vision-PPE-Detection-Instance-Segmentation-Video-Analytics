@@ -1,0 +1,543 @@
+{
+  "adapter_manifest_sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+  "baseline_config_sha256": "ebff2d461d877f327ba2e707451c24a7a3d0df432447317cf8820ef224ddc3c6",
+  "best_checkpoint": {
+    "committed": false,
+    "relative_path": "artifacts/detection/D1/weights/best.pt",
+    "sha256": "a933196ee15bc369fa1ea682986d892f06b52ebd8086ce027ae4604856640717",
+    "size_bytes": 19193809
+  },
+  "best_epoch": 73,
+  "best_validation_fitness": 0.485745,
+  "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+  "class_map": {
+    "helmet_loose": 0,
+    "helmet_on_head": 1,
+    "person": 2,
+    "vest_loose": 3,
+    "vest_on_body": 4
+  },
+  "class_support": [
+    {
+      "class_index": 0,
+      "class_name": "helmet_loose",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 57,
+      "validation_positive_images": 11
+    },
+    {
+      "class_index": 1,
+      "class_name": "helmet_on_head",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 47,
+      "validation_positive_images": 26
+    },
+    {
+      "class_index": 2,
+      "class_name": "person",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 137,
+      "validation_positive_images": 55
+    },
+    {
+      "class_index": 3,
+      "class_name": "vest_loose",
+      "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "validation_instances": 8,
+      "validation_positive_images": 1
+    },
+    {
+      "class_index": 4,
+      "class_name": "vest_on_body",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 55,
+      "validation_positive_images": 31
+    }
+  ],
+  "committed_figures": [
+    "reports/figures/detection/D1/BoxF1_curve.png",
+    "reports/figures/detection/D1/BoxPR_curve.png",
+    "reports/figures/detection/D1/BoxP_curve.png",
+    "reports/figures/detection/D1/BoxR_curve.png",
+    "reports/figures/detection/D1/confusion_matrix.png",
+    "reports/figures/detection/D1/confusion_matrix_normalized.png",
+    "reports/figures/detection/D1/results.png"
+  ],
+  "confusion_matrix": [
+    [
+      48,
+      1,
+      0,
+      1,
+      0,
+      9
+    ],
+    [
+      0,
+      31,
+      0,
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      95,
+      0,
+      2,
+      26
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      33,
+      21
+    ],
+    [
+      9,
+      15,
+      42,
+      7,
+      20,
+      0
+    ]
+  ],
+  "confusion_matrix_axes": {
+    "columns": "ground truth",
+    "labels": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body",
+      "background"
+    ],
+    "rows": "predicted"
+  },
+  "consequential_fields": [
+    "weight_identifier"
+  ],
+  "dataset_fingerprints": {
+    "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+    "task_materialization_config_sha256": "352efcc105c295c17599fe73dda1506c61aa17de0f90bd3caa1612e40c44a541",
+    "yolo_label_sha256": {
+      "train": "6237624f585f8e9f7ac2565be1eacf4140f6d55ad2de5d3c85f2972efa649e5f",
+      "validation": "d9ac55c70918b7ad7621ad6f7849d70c15f66585ec6b66f97b07fedfe6102c4b"
+    }
+  },
+  "declared_optimizer_policy": "auto",
+  "early_stopped": false,
+  "epochs_completed": 100,
+  "epochs_configured": 100,
+  "experiment_id": "D1",
+  "experiment_matrix_sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+  "experiment_sha256": "0589d4c0dabedfe0e6c72da3d248883d750347ce60b122b71aaa44e939158503",
+  "framework_validation_speed_ms_per_image": {
+    "inference": 5.181,
+    "loss": 0.022,
+    "postprocess": 1.391,
+    "preprocess": 0.93
+  },
+  "git_commit": "3a23042cfbe52047505f5082ea942342a2ec456a",
+  "headline_metric_cross_check": {
+    "authoritative": 0.471114,
+    "delta": 7.4e-05,
+    "history": 0.47104,
+    "last_epoch": 0.45275,
+    "tolerance": 0.02
+  },
+  "hypothesis": "HYPOTHESIS, untested. A larger backbone may fit this 303-image training set better, or may overfit it; 303 images is small enough that neither outcome is the obvious one. No prediction is recorded as expected, and the result is not interpreted as confirming a preference either way.",
+  "inherits": "D0",
+  "intentional_fields": [
+    "model"
+  ],
+  "intentional_variable": "MODEL_CAPACITY",
+  "last_checkpoint": {
+    "committed": false,
+    "relative_path": "artifacts/detection/D1/weights/last.pt",
+    "sha256": "792a03b16a485a0f29d9052eb11adbb94de81f92fcf58c2033c0da839ce715a1",
+    "size_bytes": 19193809
+  },
+  "memory_preflight": {
+    "batch": 16,
+    "classification": "NON_EXPERIMENTAL_ENGINEERING_PREFLIGHT",
+    "epochs": 1,
+    "imgsz": 640,
+    "note": "One optimisation step in a throwaway directory, to establish that the frozen batch fits. DO_NOT_REPORT_AS_MODEL_RESULT: validation was disabled, no metric was computed and the directory was deleted.",
+    "peak_allocated_bytes": 4281785344,
+    "peak_reserved_bytes": 4441767936,
+    "status": "FEASIBLE_AT_FROZEN_BATCH"
+  },
+  "metric_hierarchy": {
+    "artifacts": [
+      "precision_recall_curve",
+      "confusion_matrix",
+      "training_loss_curves",
+      "validation_loss_curves"
+    ],
+    "per_class": [
+      "AP@0.50",
+      "AP@0.50:0.95",
+      "precision",
+      "recall"
+    ],
+    "primary": "mAP@0.50:0.95",
+    "secondary": [
+      "mAP@0.50",
+      "precision",
+      "recall"
+    ]
+  },
+  "model": "YOLO11s",
+  "model_complexity": {
+    "gflops": 21.836,
+    "layers": 319,
+    "parameters": 9458752,
+    "source": "ULTRALYTICS_TORCH_UTILS"
+  },
+  "overrides": {
+    "model": "YOLO11s",
+    "weight_identifier": "yolo11s.pt"
+  },
+  "peak_gpu_memory": {
+    "allocated_bytes": 4359202816,
+    "reserved_bytes": 4544528384,
+    "source": "TORCH_CUDA_MAX_MEMORY_ALLOCATED"
+  },
+  "per_class_metrics": {
+    "helmet_loose": {
+      "AP@0.50": 0.862006,
+      "AP@0.50:0.95": 0.798361,
+      "precision": 0.907613,
+      "recall": 0.824561
+    },
+    "helmet_on_head": {
+      "AP@0.50": 0.734993,
+      "AP@0.50:0.95": 0.5941,
+      "precision": 0.872208,
+      "recall": 0.659574
+    },
+    "person": {
+      "AP@0.50": 0.706444,
+      "AP@0.50:0.95": 0.496203,
+      "precision": 0.860498,
+      "recall": 0.630357
+    },
+    "vest_loose": {
+      "AP@0.50": 0.165,
+      "AP@0.50:0.95": 0.1155,
+      "precision": 1.0,
+      "recall": 0.0
+    },
+    "vest_on_body": {
+      "AP@0.50": 0.622773,
+      "AP@0.50:0.95": 0.351404,
+      "precision": 0.65788,
+      "recall": 0.524496
+    }
+  },
+  "phase": "7B",
+  "phase7_comparison": {
+    "delta_classification": "REGRESSED_BEYOND_MARGIN",
+    "delta_supported_macro_vs_reference": -0.010125,
+    "deltas_vs_reference": {
+      "mAP@0.50": -0.00113,
+      "mAP@0.50:0.95": 0.006685,
+      "precision": 0.00396,
+      "recall": -0.012194
+    },
+    "descriptive_classes": [
+      "vest_loose"
+    ],
+    "margin_status": "BELOW_D0",
+    "official_all_class_metric": "mAP@0.50:0.95",
+    "practical_equivalence_margin": "0.005",
+    "primary_selection_metric": "supported_macro_map50_95",
+    "reference_supported_macro_map50_95": 0.570142,
+    "selection_metric_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "selection_pending": true,
+    "selection_pending_reason": "D2 has not been executed, so the frozen phase 7 A/B/C selection logic is not applied and no final detector is declared.",
+    "supported_macro_exact": "0.560017",
+    "supported_macro_map50_95": 0.560017
+  },
+  "phase7_policy_sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+  "pretrained_weights": {
+    "committed": false,
+    "identifier": "yolo11s.pt",
+    "relative_path": "artifacts/weights/yolo11s.pt",
+    "sha256": "85a76fe86dd8afe384648546b56a7a78580c7cb7b404fc595f97969322d502d5",
+    "size_bytes": 19313732,
+    "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+    "ultralytics_version": "8.4.138"
+  },
+  "protocol_compatibility": {
+    "compatible": true,
+    "declared_fields": [
+      "model",
+      "weight_identifier"
+    ],
+    "experiment_id": "D1",
+    "intentional_variable": "MODEL_CAPACITY",
+    "observed_differences": [
+      "model",
+      "weight_identifier"
+    ],
+    "reference_experiment": "D0",
+    "unapplied_declarations": [],
+    "undeclared_differences": []
+  },
+  "question": "Does increasing model capacity improve detection under the same input resolution and training protocol?",
+  "rare_class": {
+    "classes": [
+      "vest_loose"
+    ],
+    "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+    "limitation": "Every class listed here failed the frozen support rule on the validation split, so its AP is reported in full but excluded from the selection metric. It must not be tuned for, must not decide between models, and must be quoted with an explicit small-sample caveat. The holdout remains protected and cannot be consulted to resolve the uncertainty.",
+    "name": "vest_loose",
+    "warning": "HIGH_SAMPLING_UNCERTAINTY"
+  },
+  "reference_experiment": "D0",
+  "resolved_config_sha256": "69db53b64c1342fe40240e50b7990db6490be0ae55bbf04e4cb07ba6e1fbe96c",
+  "resolved_optimizer": "AdamW",
+  "resolved_optimizer_determination": {
+    "effective_lr0": 0.001111,
+    "effective_momentum": 0.9,
+    "evidence": "optimizer: AdamW(lr=0.001111, momentum=0.9)",
+    "inferred": false,
+    "log": "D1/train_console.log",
+    "optimizer": "AdamW",
+    "source": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE"
+  },
+  "resolved_protocol": {
+    "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+    "dataset_config": "data/processed/adapters/yolo_detection/dataset.yaml",
+    "device_requirement": "CUDA_GPU_REQUIRED",
+    "metrics.artifacts": [
+      "precision_recall_curve",
+      "confusion_matrix",
+      "training_loss_curves",
+      "validation_loss_curves"
+    ],
+    "metrics.per_class": [
+      "AP@0.50",
+      "AP@0.50:0.95",
+      "precision",
+      "recall"
+    ],
+    "metrics.primary": "mAP@0.50:0.95",
+    "metrics.secondary": [
+      "mAP@0.50",
+      "precision",
+      "recall"
+    ],
+    "model": "YOLO11s",
+    "rare_class": "vest_loose",
+    "rare_class_limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so its validation AP has high sampling uncertainty and is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose validation AP; do not prefer a model because vest_loose improved; interpret this class qualitatively and always report it with an explicit small-sample caveat. The holdout holds 2 vest_loose images and remains protected, so it cannot be consulted to resolve the uncertainty either.",
+    "schema_version": 1,
+    "seed": 42,
+    "splits": [
+      "train",
+      "validation"
+    ],
+    "task": "detection",
+    "training.amp": true,
+    "training.augmentation": "ULTRALYTICS_DEFAULT",
+    "training.batch": 16,
+    "training.close_mosaic": 10,
+    "training.cos_lr": false,
+    "training.deterministic": true,
+    "training.epochs": 100,
+    "training.imgsz": 640,
+    "training.lr0": 0.01,
+    "training.lrf": 0.01,
+    "training.momentum": 0.937,
+    "training.optimizer": "auto",
+    "training.patience": 50,
+    "training.pretrained": true,
+    "training.val": true,
+    "training.warmup_epochs": 3.0,
+    "training.weight_decay": 0.0005,
+    "training.workers": 8,
+    "weight_identifier": "yolo11s.pt",
+    "weights": "pretrained"
+  },
+  "resolved_training_arguments": {
+    "agnostic_nms": false,
+    "amp": true,
+    "angle": 1.0,
+    "augment": false,
+    "auto_augment": "randaugment",
+    "batch": 16,
+    "bgr": 0.0,
+    "box": 7.5,
+    "cache": false,
+    "cfg": null,
+    "channels_last": null,
+    "classes": null,
+    "close_mosaic": 10,
+    "cls": 0.5,
+    "cls_pw": 0.0,
+    "cls_remap": true,
+    "compile": false,
+    "conf": null,
+    "copy_paste": 0.0,
+    "copy_paste_mode": "flip",
+    "cos_lr": false,
+    "cutmix": 0.0,
+    "degrees": 0.0,
+    "deterministic": true,
+    "device": "0",
+    "dfl": 1.5,
+    "dgrad": 0.5,
+    "dis": 6.0,
+    "distill_model": null,
+    "dlam": 1.0,
+    "dlog": 1.0,
+    "dnn": false,
+    "dropout": 0.0,
+    "dynamic": false,
+    "embed": null,
+    "end2end": null,
+    "epochs": 100,
+    "erasing": 0.4,
+    "exist_ok": true,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "format": "torchscript",
+    "fraction": 1.0,
+    "freeze": null,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "imgsz": 640,
+    "iou": 0.7,
+    "keras": false,
+    "kobj": 1.0,
+    "line_width": null,
+    "lr0": 0.01,
+    "lrf": 0.01,
+    "mask_ratio": 4,
+    "max_det": 300,
+    "mixup": 0.0,
+    "mode": "train",
+    "momentum": 0.937,
+    "mosaic": 1.0,
+    "multi_scale": 0.0,
+    "nbs": 64,
+    "nms": false,
+    "opset": null,
+    "optimize": false,
+    "optimizer": "auto",
+    "overlap_mask": true,
+    "patience": 50,
+    "perspective": 0.0,
+    "plots": true,
+    "pose": 12.0,
+    "pretrained": true,
+    "profile": false,
+    "quantize": null,
+    "rect": false,
+    "resume": false,
+    "retina_masks": false,
+    "rle": 1.0,
+    "save": true,
+    "save_conf": false,
+    "save_crop": false,
+    "save_frames": false,
+    "save_json": false,
+    "save_period": -1,
+    "save_txt": false,
+    "scale": 0.5,
+    "seed": 42,
+    "shear": 0.0,
+    "show": false,
+    "show_boxes": true,
+    "show_conf": true,
+    "show_labels": true,
+    "simplify": true,
+    "single_cls": false,
+    "source": null,
+    "split": "val",
+    "stream_buffer": false,
+    "task": "detect",
+    "time": null,
+    "tracker": "tracktrack.yaml",
+    "translate": 0.1,
+    "val": true,
+    "verbose": true,
+    "vid_stride": 1,
+    "visualize": false,
+    "warmup_bias_lr": 0.1,
+    "warmup_epochs": 3.0,
+    "warmup_momentum": 0.8,
+    "weight_decay": 0.0005,
+    "workers": 8,
+    "workspace": null
+  },
+  "resume_reason": null,
+  "resumed": false,
+  "role": "CONTROLLED_EXPERIMENT",
+  "runtime": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu_arch": "sm_120",
+    "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "gpu_total_memory_bytes": 8546484224,
+    "python": "3.12.13",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "ultralytics": "8.4.138"
+  },
+  "schema_version": 1,
+  "split_reference": {
+    "manifest": "reports/split_manifest.json",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc"
+  },
+  "status": "DETECTION_EXPERIMENT_COMPLETE",
+  "task": "detection",
+  "termination_mode": "COMPLETED_ALL_EPOCHS",
+  "test": {
+    "reason": "the holdout was not adapted, loaded, evaluated or measured in this experiment. It has no labels, no dataset entry and no result.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "train_annotations": 1422,
+  "train_images": 303,
+  "training_duration_seconds": 1187.8,
+  "validation_annotations": 304,
+  "validation_configuration": {
+    "batch": 16,
+    "conf": 0.001,
+    "device": "cuda:0",
+    "imgsz": 640,
+    "iou": 0.7,
+    "max_det": 300,
+    "note": "Ultralytics validation defaults for the pinned version, identical to the reference experiment's; no threshold, IoU or image-size variant was explored",
+    "split": "val"
+  },
+  "validation_images": 65,
+  "validation_metrics": {
+    "mAP@0.50": 0.618243,
+    "mAP@0.50:0.95": 0.471114,
+    "precision": 0.85964,
+    "recall": 0.527798
+  },
+  "weights_committed": false
+}

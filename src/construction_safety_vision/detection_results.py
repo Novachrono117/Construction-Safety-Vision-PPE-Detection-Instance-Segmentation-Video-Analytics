@@ -41,6 +41,14 @@ TEST_PROTECTED = "PROTECTED_NOT_ACCESSED"
 HIGH_SAMPLING_UNCERTAINTY = "HIGH_SAMPLING_UNCERTAINTY"
 """Marker attached to a class whose validation support is too small to trust."""
 
+EXPERIMENT_COMPLETE = "DETECTION_EXPERIMENT_COMPLETE"
+"""Status of a completed phase 7 controlled experiment.
+
+Distinct from :data:`COMPLETE`, which names the phase 6B baseline specifically.
+A D1 or D2 manifest carrying "D0_BASELINE_COMPLETE" would be claiming to be the
+baseline, so the generic status exists rather than being reused.
+"""
+
 COMPLETE = "D0_BASELINE_COMPLETE"
 """Status of a finished, validated baseline run."""
 
@@ -50,7 +58,12 @@ TRAINING_FAILED = "TRAINING_FAILED"
 PROTOCOL_INPUT_MISMATCH = "PROTOCOL_INPUT_MISMATCH"
 """Status when a frozen input fingerprint no longer matches."""
 
-STATUSES: tuple[str, ...] = (COMPLETE, TRAINING_FAILED, PROTOCOL_INPUT_MISMATCH)
+STATUSES: tuple[str, ...] = (
+    COMPLETE,
+    EXPERIMENT_COMPLETE,
+    TRAINING_FAILED,
+    PROTOCOL_INPUT_MISMATCH,
+)
 """Every status a result manifest may declare."""
 
 FORBIDDEN_SPLIT = "test"
@@ -133,9 +146,17 @@ REQUIRED_MANIFEST_FIELDS: tuple[str, ...] = (
     "per_class_metrics",
     "rare_class",
     "training_duration_seconds",
-    "d0_experiment_sha256",
 )
-"""Fields a result manifest must carry."""
+"""Fields a result manifest must carry.
+
+The experiment fingerprint is required too, but under either of
+:data:`EXPERIMENT_FINGERPRINT_KEYS` rather than a fixed name: ``d0_...`` is the
+phase 6B spelling, and a phase 7 candidate records the generic key instead of
+pretending to be D0.
+"""
+
+EXPERIMENT_FINGERPRINT_KEYS: tuple[str, ...] = ("experiment_sha256", "d0_experiment_sha256")
+"""Accepted spellings of a result manifest's experiment fingerprint."""
 
 
 class ResultError(RuntimeError):
@@ -361,8 +382,16 @@ def validate_result_manifest(
     problems.extend(_validate_metrics(manifest, class_names))
     problems.extend(_validate_checkpoints(manifest))
 
-    if not manifest["d0_experiment_sha256"]:
-        problems.append("d0_experiment_sha256 is empty")
+    fingerprints = [manifest[key] for key in EXPERIMENT_FINGERPRINT_KEYS if manifest.get(key)]
+    if not fingerprints:
+        problems.append(
+            "no experiment fingerprint recorded; expected one of "
+            f"{list(EXPERIMENT_FINGERPRINT_KEYS)}"
+        )
+    elif len({str(value) for value in fingerprints}) > 1:
+        problems.append(
+            "the manifest records two different experiment fingerprints; a result has one identity"
+        )
     if manifest["resolved_optimizer"] in (None, "", NOT_EXPOSED):
         problems.append("resolved_optimizer was not recorded; optimizer=auto must resolve")
     return problems

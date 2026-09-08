@@ -1,0 +1,156 @@
+{
+  "descriptive_classes": [
+    "vest_loose"
+  ],
+  "experiments": [
+    {
+      "delta_supported_macro_vs_reference": 0.0,
+      "experiment_id": "D0",
+      "experiment_sha256": "cbd79fd2f2f70eb31ede61b813f991e973bb5d2f69c223a3826ee6aeadd0ffb3",
+      "imgsz": 640,
+      "intentional_variable": "NONE_REFERENCE",
+      "margin_status": "REFERENCE",
+      "metrics": {
+        "mAP@0.50": 0.619373,
+        "mAP@0.50:0.95": 0.464429,
+        "precision": 0.85568,
+        "recall": 0.539992,
+        "supported_macro_map50_95": 0.570142
+      },
+      "model": "YOLO11n",
+      "per_class_metrics": {
+        "helmet_loose": {
+          "AP@0.50": 0.879592,
+          "AP@0.50:0.95": 0.792559,
+          "precision": 0.898364,
+          "recall": 0.807018
+        },
+        "helmet_on_head": {
+          "AP@0.50": 0.735806,
+          "AP@0.50:0.95": 0.561699,
+          "precision": 0.887663,
+          "recall": 0.672636
+        },
+        "person": {
+          "AP@0.50": 0.68902,
+          "AP@0.50:0.95": 0.491618,
+          "precision": 0.792384,
+          "recall": 0.583942
+        },
+        "vest_loose": {
+          "AP@0.50": 0.131486,
+          "AP@0.50:0.95": 0.041575,
+          "precision": 1.0,
+          "recall": 0.0
+        },
+        "vest_on_body": {
+          "AP@0.50": 0.660959,
+          "AP@0.50:0.95": 0.434691,
+          "precision": 0.699987,
+          "recall": 0.636364
+        }
+      },
+      "role": "REFERENCE_BASELINE",
+      "status": "COMPLETE"
+    },
+    {
+      "delta_supported_macro_vs_reference": -0.010125,
+      "experiment_id": "D1",
+      "experiment_sha256": "0589d4c0dabedfe0e6c72da3d248883d750347ce60b122b71aaa44e939158503",
+      "imgsz": 640,
+      "intentional_variable": "MODEL_CAPACITY",
+      "margin_status": "BELOW_D0",
+      "metrics": {
+        "mAP@0.50": 0.618243,
+        "mAP@0.50:0.95": 0.471114,
+        "precision": 0.85964,
+        "recall": 0.527798,
+        "supported_macro_map50_95": 0.560017
+      },
+      "model": "YOLO11s",
+      "per_class_metrics": {
+        "helmet_loose": {
+          "AP@0.50": 0.862006,
+          "AP@0.50:0.95": 0.798361,
+          "precision": 0.907613,
+          "recall": 0.824561
+        },
+        "helmet_on_head": {
+          "AP@0.50": 0.734993,
+          "AP@0.50:0.95": 0.5941,
+          "precision": 0.872208,
+          "recall": 0.659574
+        },
+        "person": {
+          "AP@0.50": 0.706444,
+          "AP@0.50:0.95": 0.496203,
+          "precision": 0.860498,
+          "recall": 0.630357
+        },
+        "vest_loose": {
+          "AP@0.50": 0.165,
+          "AP@0.50:0.95": 0.1155,
+          "precision": 1.0,
+          "recall": 0.0
+        },
+        "vest_on_body": {
+          "AP@0.50": 0.622773,
+          "AP@0.50:0.95": 0.351404,
+          "precision": 0.65788,
+          "recall": 0.524496
+        }
+      },
+      "role": "CONTROLLED_EXPERIMENT",
+      "status": "COMPLETE"
+    },
+    {
+      "delta_supported_macro_vs_reference": null,
+      "experiment_id": "D2",
+      "experiment_sha256": null,
+      "imgsz": null,
+      "intentional_variable": "INPUT_RESOLUTION",
+      "margin_status": null,
+      "metrics": null,
+      "model": null,
+      "per_class_metrics": null,
+      "role": "CONTROLLED_EXPERIMENT",
+      "status": "FROZEN_NOT_EXECUTED"
+    }
+  ],
+  "metrics_are_validation_only": true,
+  "official_all_class_metric": "mAP@0.50:0.95",
+  "pending_experiments": [
+    "D2"
+  ],
+  "phase": "7B",
+  "practical_equivalence_margin": "0.005",
+  "primary_selection_metric": "supported_macro_map50_95",
+  "reference_experiment": "D0",
+  "schema_version": 1,
+  "selection": {
+    "case": null,
+    "preferred_experiment": null,
+    "reason": "the frozen selection logic is applied only once every declared candidate has a result. Still outstanding: ['D2']. No case is assigned and no final detector is declared.",
+    "status": "PENDING_INCOMPLETE_MATRIX"
+  },
+  "selection_metric_classes": [
+    "helmet_loose",
+    "helmet_on_head",
+    "person",
+    "vest_on_body"
+  ],
+  "support_rule": {
+    "classifications": [
+      "COMPARISON_SUPPORTED",
+      "DESCRIPTIVE_HIGH_UNCERTAINTY"
+    ],
+    "min_validation_instances": 20,
+    "min_validation_positive_images": 5,
+    "split": "validation"
+  },
+  "task": "detection",
+  "test": {
+    "reason": "the holdout was not adapted, loaded, evaluated or measured in this experiment. It has no labels, no dataset entry and no result.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  }
+}
