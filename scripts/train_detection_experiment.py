@@ -61,6 +61,7 @@ import json
 import shutil
 import sys
 import time
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -83,7 +84,9 @@ from construction_safety_vision.detection_comparison import (
     check_protocol_compatibility,
     class_support,
     classify_delta,
+    compare,
     descriptive_class_names,
+    flatten_protocol,
     load_experiment_matrix,
     resolve_candidate_protocol,
     supported_class_names,
@@ -141,12 +144,23 @@ DATASET_DESCRIPTOR = "data/processed/adapters/yolo_detection/dataset.yaml"
 
 MEMORY_PREFLIGHT_NAME = "_memory_preflight"
 
-EXPERIMENT_COMPLETE = "D1_CAPACITY_EXPERIMENT_COMPLETE"
+EXPERIMENT_COMPLETE_TEMPLATE = "{experiment_id}_EXPERIMENT_COMPLETE"
 MEMORY_CONSTRAINT = "MEMORY_CONSTRAINT_REVIEW_REQUIRED"
 TRAINING_FAILED = "TRAINING_FAILED"
 PROTOCOL_MISMATCH = "COMPARISON_PROTOCOL_MISMATCH"
 PROTOCOL_VIOLATION = "PROTOCOL_VIOLATION"
 BLOCKED = "BLOCKED"
+
+DEFAULT_PHASE = "7"
+"""Roadmap phase recorded when no sub-phase is named.
+
+Deliberately the bare phase number rather than a guess at the sub-phase: a
+manifest labelled with the wrong sub-phase is a provenance error, and the runner
+cannot infer it from the frozen matrix, whose own `phase` records when the
+*protocol* was frozen rather than when a run happened.
+"""
+
+UNSELECTED = "UNSELECTED_PENDING_REVIEW"
 
 IMPROVES = "IMPROVES_D0_BEYOND_MARGIN"
 EQUIVALENT = "PRACTICALLY_EQUIVALENT_TO_D0"
@@ -464,6 +478,7 @@ def write_prerun_record(
     runtime: dict[str, Any],
     policy_sha256: str,
     matrix_sha256: str,
+    phase: str,
 ) -> Path:
     """Record what is about to run, before the first optimisation step.
 
@@ -480,6 +495,7 @@ def write_prerun_record(
         runtime: The runtime facts.
         policy_sha256: Digest of the committed phase 7 policy.
         matrix_sha256: Digest of the experiment matrix configuration.
+        phase: Roadmap sub-phase label.
 
     Returns:
         The record path.
@@ -502,7 +518,7 @@ def write_prerun_record(
             "resolved_config_sha256": digest(flat),
         },
         details={
-            "phase": "7B",
+            "phase": phase,
             "stage": "PRE_RUN",
             "experiment_id": experiment_id,
             "intentional_variable": declaration.intentional_variable,
@@ -544,6 +560,73 @@ def write_prerun_record(
     destination = paths.reports / f"detection_{experiment_id}_prerun.provenance.json"
     write_json(destination, record.to_dict())
     return destination
+
+
+def verify_inherited_weights(
+    declaration: ExperimentDeclaration,
+    weights: dict[str, Any],
+    reference_manifest: dict[str, Any],
+) -> str:
+    """Check the starting checkpoint against the identity the candidate declared.
+
+    A candidate that does not override ``weight_identifier`` is asserting that it
+    starts from the *same bytes* the reference started from. Checking only the
+    file name would miss a silently re-downloaded or replaced asset, which would
+    add an undeclared variable to a comparison that claims to have one.
+
+    A candidate that *does* override it is expected to differ, and the digest is
+    simply recorded.
+
+    Args:
+        declaration: The candidate declaration.
+        weights: The weight provenance record for this run.
+        reference_manifest: The reference experiment's committed manifest.
+
+    Returns:
+        A short classification of the identity relationship, for the log and the
+        manifest.
+
+    Raises:
+        ExperimentRunError: If an inherited checkpoint does not match the bytes
+            the reference recorded.
+    """
+    reference_weights = reference_manifest.get("pretrained_weights") or {}
+    reference_sha = reference_weights.get("sha256")
+    if "weight_identifier" in declaration.overrides:
+        if reference_sha and weights["sha256"] == reference_sha:
+            msg = (
+                f"{declaration.experiment_id} declares a different pretrained checkpoint but "
+                f"its bytes are identical to the reference's; the declared override was not "
+                "actually applied"
+            )
+            raise ExperimentRunError(msg)
+        return "DECLARED_OVERRIDE_DIFFERS_FROM_REFERENCE"
+
+    if not reference_sha:
+        return "REFERENCE_DIGEST_NOT_RECORDED_CANNOT_VERIFY"
+    if weights["identifier"] != reference_weights.get("identifier"):
+        msg = (
+            f"{declaration.experiment_id} inherits the reference's weight_identifier but "
+            f"resolved to {weights['identifier']!r} instead of "
+            f"{reference_weights.get('identifier')!r}"
+        )
+        raise ExperimentRunError(msg)
+    if weights["sha256"] != reference_sha:
+        msg = (
+            f"{declaration.experiment_id} inherits the reference's pretrained checkpoint, but "
+            f"{weights['identifier']} on disk digests to {weights['sha256']} while the "
+            f"reference recorded {reference_sha}. The asset changed; refusing to run a "
+            "comparison that would silently differ in its starting weights."
+        )
+        raise ExperimentRunError(msg)
+    if weights["size_bytes"] != reference_weights.get("size_bytes"):
+        msg = (
+            f"{declaration.experiment_id}: {weights['identifier']} is "
+            f"{weights['size_bytes']} bytes, the reference recorded "
+            f"{reference_weights.get('size_bytes')}"
+        )
+        raise ExperimentRunError(msg)
+    return "IDENTICAL_TO_REFERENCE_VERIFIED_BY_DIGEST"
 
 
 def memory_preflight(
@@ -859,6 +942,14 @@ def main(argv: list[str] | None = None) -> int:
         help="prove the frozen batch fits before the full run; non-experimental",
     )
     parser.add_argument(
+        "--phase",
+        default=None,
+        help=(
+            "roadmap sub-phase this run belongs to, e.g. 7C. Recorded as provenance metadata; "
+            "with --rebuild-report it corrects that label in a committed manifest"
+        ),
+    )
+    parser.add_argument(
         "--rebuild-report",
         action="store_true",
         help=(
@@ -927,10 +1018,11 @@ def main(argv: list[str] | None = None) -> int:
     verdict = resolved["verdict"]
     experiment_id = declaration.experiment_id
     policy_sha256 = sha256_bytes(paths.reports / POLICY_JSON)
+    phase = args.phase or DEFAULT_PHASE
 
     if args.rebuild_report:
         try:
-            rebuilt = rebuild_report(paths, matrix, declaration, reference)
+            rebuilt = rebuild_report(paths, matrix, declaration, reference, phase=args.phase)
         except ExperimentRunError as exc:
             print(f"{BLOCKED}: {exc}", file=sys.stderr)
             return 2
@@ -970,10 +1062,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{BLOCKED}: {exc}", file=sys.stderr)
         return 2
     weights_path = paths.root / weights["relative_path"]
+    try:
+        weight_identity = verify_inherited_weights(declaration, weights, reference["manifest"])
+    except ExperimentRunError as exc:
+        print(f"{PROTOCOL_VIOLATION}: {exc}", file=sys.stderr)
+        return 2
     print(
         f"  weights {weights['identifier']}  {weights['sha256']}  {weights['size_bytes']} B  "
         f"via {weights['source_mechanism']}"
     )
+    print(f"  weight identity        {weight_identity}")
 
     preflight: dict[str, Any] | None = None
     if args.memory_preflight:
@@ -997,6 +1095,7 @@ def main(argv: list[str] | None = None) -> int:
         runtime=runtime,
         policy_sha256=policy_sha256,
         matrix_sha256=verified["matrix_sha256"],
+        phase=phase,
     )
     print(f"  pre-run record         {prerun.relative_to(paths.root).as_posix()}")
 
@@ -1043,18 +1142,21 @@ def main(argv: list[str] | None = None) -> int:
             preflight=preflight,
             policy_sha256=policy_sha256,
             matrix_sha256=verified["matrix_sha256"],
+            weight_identity=weight_identity,
+            phase=phase,
         )
     except (ExperimentRunError, ResultError, ComparisonError) as exc:
         print(f"{TRAINING_FAILED}: {exc}", file=sys.stderr)
         return 4
 
-    print(EXPERIMENT_COMPLETE)
+    print(EXPERIMENT_COMPLETE_TEMPLATE.format(experiment_id=experiment_id))
     for line in outcome:
         print(f"  {line}")
     return 0
 
 
 def build_report(
+    paths: ProjectPaths,
     manifest: dict[str, Any],
     matrix: ExperimentMatrix,
     declaration: ExperimentDeclaration,
@@ -1063,6 +1165,7 @@ def build_report(
     """Render the human-readable experiment report.
 
     Args:
+        paths: Project layout, used to see which candidates have results yet.
         manifest: The emitted result manifest.
         matrix: The parsed experiment matrix.
         declaration: The candidate declaration.
@@ -1500,6 +1603,37 @@ def build_report(
         )
         add("")
 
+    peers = comparison.get("deltas_vs_peers") or {}
+    if peers:
+        add("## 11c. Comparison with the other candidate")
+        add("")
+        add(
+            f"`CONTROLLED_COMPARISON` Recorded for completeness. The frozen policy ranks "
+            f"candidates **against {reference_id}**, not against each other, so what follows "
+            "is a difference and not a verdict - and it orders nothing."
+        )
+        add("")
+        add(
+            f"| Against | intentional variable | `{PRIMARY_SELECTION_METRIC}` delta | "
+            f"`{OFFICIAL_ALL_CLASS_METRIC}` delta | recall delta |"
+        )
+        add("| --- | --- | --- | --- | --- |")
+        for peer_id in sorted(peers):
+            entry = peers[peer_id]
+            add(
+                f"| {peer_id} | `{entry['intentional_variable']}` | "
+                f"{entry[PRIMARY_SELECTION_METRIC]:+f} | "
+                f"{entry[OFFICIAL_ALL_CLASS_METRIC]:+f} | {entry['recall']:+f} |"
+            )
+        add("")
+        add(
+            "`LIMITATION` These two candidates differ from each other in **two** things at "
+            "once - each varies a different field relative to the reference - so no difference "
+            "between them is attributable to either variable. Only each candidate's comparison "
+            "with the reference is a controlled one."
+        )
+        add("")
+
     add("## 12. Per-class metrics")
     add("")
     add(
@@ -1551,6 +1685,136 @@ def build_report(
         "recall-weighted composite is introduced."
     )
     add("")
+    add(
+        "`LIMITATION` These two numbers deserve more caution than the AP figures. Ultralytics "
+        "reports a single precision and recall taken at the operating point that maximises F1, "
+        "not at a fixed confidence threshold, so a large move in one of them can partly reflect "
+        "*where that point landed* rather than a uniform change in behaviour. They are read as "
+        "a hint about the precision/recall balance, never as a threshold-independent property "
+        "of the model - and no threshold was tuned in either direction."
+    )
+    add("")
+
+    if declaration.intentional_variable == "INPUT_RESOLUTION":
+        add("## 14b. The small-object hypothesis")
+        add("")
+        add(
+            "`PREDECLARED_PROTOCOL` This experiment was motivated by a measurement already in "
+            "the repository, not by intuition: phase 4A's `reports/eda_source.json` records, "
+            "over all 2031 canonical annotations at a small-object threshold of 0.01 relative "
+            "box area, helmet_on_head 52.87% small, helmet_loose 45.29%, person 27.57%, "
+            "vest_on_body 25.21% and vest_loose 4.44%, with a median relative box area of "
+            "0.0301. The hypothesis was that raising the input from 640 to 768 preserves more "
+            "spatial information per object and *may* help the smallest instances."
+        )
+        add("")
+        add(
+            "`LIMITATION` No new EDA was performed for this section, and none may be: the "
+            "figures above are the frozen source measurement, computed over the whole canonical "
+            "population rather than per split, and the 0.01 threshold is this project's own "
+            "convention rather than the COCO small-object definition."
+        )
+        add("")
+        small_object_rank = ("helmet_on_head", "helmet_loose", "person", "vest_on_body")
+        available = [name for name in small_object_rank if name in per_class]
+        if available:
+            add(
+                "`OBSERVATION` What the result shows, ordered by each class's small-object "
+                "fraction in that frozen measurement (most small first):"
+            )
+            add("")
+            add("| Class | small fraction (frozen EDA) | `AP@0.50:0.95` delta | recall delta |")
+            add("| --- | --- | --- | --- |")
+            fractions = {
+                "helmet_on_head": "52.87%",
+                "helmet_loose": "45.29%",
+                "person": "27.57%",
+                "vest_on_body": "25.21%",
+            }
+            for name in available:
+                prior = reference_per_class.get(name, {}).get("AP@0.50:0.95")
+                current = per_class.get(name, {}).get("AP@0.50:0.95")
+                prior_recall = reference_per_class.get(name, {}).get("recall")
+                current_recall = per_class.get(name, {}).get("recall")
+                if not all(
+                    isinstance(value, (int, float))
+                    for value in (prior, current, prior_recall, current_recall)
+                ):
+                    continue
+                add(
+                    f"| `{name}` | {fractions[name]} | {current - prior:+f} | "
+                    f"{current_recall - prior_recall:+f} |"
+                )
+            add("")
+        # State the verdict rather than leaving the table to imply one. Ranking
+        # both columns is the cheapest way to avoid reading the two rows that
+        # agree with the hypothesis and ignoring the two that do not.
+        ranked = [
+            (
+                name,
+                fractions[name],
+                per_class[name]["AP@0.50:0.95"] - reference_per_class[name]["AP@0.50:0.95"],
+            )
+            for name in available
+            if isinstance(reference_per_class.get(name, {}).get("AP@0.50:0.95"), (int, float))
+            and isinstance(per_class.get(name, {}).get("AP@0.50:0.95"), (int, float))
+        ]
+        if len(ranked) >= 3:
+            size_rank = {
+                name: index + 1
+                for index, (name, _, _) in enumerate(
+                    sorted(ranked, key=lambda row: -float(row[1].rstrip("%")))
+                )
+            }
+            delta_rank = {
+                name: index + 1
+                for index, (name, _, _) in enumerate(sorted(ranked, key=lambda row: -row[2]))
+            }
+            count = len(ranked)
+            squared = sum((size_rank[name] - delta_rank[name]) ** 2 for name, _, _ in ranked)
+            rho = 1 - 6 * squared / (count * (count * count - 1))
+            best = max(ranked, key=lambda row: row[2])
+            worst = min(ranked, key=lambda row: row[2])
+            consistent = rho > 0.5
+            add(
+                f"`OBSERVATION` **The result does not track the small-object fraction.** "
+                f"Ranking the {count} supported classes by that fraction and by their AP change "
+                f"gives a rank correlation of {rho:+.2f}. The largest gain went to "
+                f"`{best[0]}` ({best[1]} small, {best[2]:+f}) - the *least* small-object-heavy "
+                f"of them - and the only class to decline was `{worst[0]}` ({worst[1]} small, "
+                f"{worst[2]:+f})."
+            )
+            add("")
+            add(
+                f"`OBSERVATION` So on this evidence the outcome is "
+                f"**{'consistent' if consistent else 'NOT consistent'}** with the specific "
+                "story the hypothesis told - that the benefit would concentrate in the classes "
+                "holding the most small objects. Resolution did improve the selection metric "
+                "beyond the margin, which is the controlled claim; *why* it improved is not "
+                "explained by the small-object account as stated. Both halves of that are "
+                "recorded because reporting only the first would make a predeclared hypothesis "
+                "look confirmed by a result that does not support its mechanism."
+            )
+            add("")
+            add(
+                f"`LIMITATION` A rank correlation over {count} points establishes nothing on its "
+                "own - it is a compact way of stating the ordering, not a test. It is reported "
+                "to stop the two agreeing rows being read as confirmation while the two "
+                "disagreeing rows go unmentioned."
+            )
+            add("")
+        add(
+            "`LIMITATION` Whether this table is consistent or inconsistent with the hypothesis "
+            "is a **reading of four numbers from one run**, and it is not evidence about "
+            "causation. The classes differ in more than their object-size distribution, the "
+            "small-object fractions are population-level rather than per-split, and a "
+            "monotonic relationship between that fraction and the AP change would be "
+            "suggestive at best. Establishing that resolution helps small objects would need a "
+            "size-stratified evaluation, which this phase does not perform. The controlled "
+            "claim available here is narrower and is stated in section 10: what changing "
+            "resolution alone did to the selection metric."
+        )
+        add("")
 
     add("## 15. Training dynamics")
     add("")
@@ -1633,10 +1897,14 @@ def build_report(
 
     add("## 19. Interpretation")
     add("")
+    reference_protocol = flatten_protocol(reference["baseline"].as_dict())
+    changes = ", ".join(
+        f"`{field}` {reference_protocol.get(field)!r} -> {value!r}"
+        for field, value in sorted(manifest["overrides"].items())
+    )
     add(
-        f"`CONTROLLED_COMPARISON` Increasing capacity from YOLO11n to YOLO11s, with the data, "
-        f"image size, batch and training protocol held fixed by inheritance, moved "
-        f"`{PRIMARY_SELECTION_METRIC}` by "
+        f"`CONTROLLED_COMPARISON` Changing {changes} and nothing else - everything else held "
+        f"fixed by inheritance from {reference_id} - moved `{PRIMARY_SELECTION_METRIC}` by "
         f"{comparison['delta_supported_macro_vs_reference']:+f}, which the frozen margin "
         f"classifies as `{comparison['margin_status']}`."
     )
@@ -1702,10 +1970,11 @@ def build_report(
             )
             add("")
     add(
-        "`LIMITATION` This is one run of each configuration on a 65-image validation split. It "
-        "establishes what these two runs scored; it does not establish that capacity causes the "
-        "difference in general, and it cannot separate a real effect from run-to-run variance, "
-        "because neither experiment was repeated."
+        f"`LIMITATION` This is one run of each configuration on a "
+        f"{manifest['validation_images']}-image validation split. It establishes what these two "
+        f"runs scored; it does not establish that `{declaration.intentional_variable}` causes "
+        "the difference in general, and it cannot separate a real effect from run-to-run "
+        "variance, because neither experiment was repeated."
     )
     add("")
     add(
@@ -1715,17 +1984,40 @@ def build_report(
     )
     add("")
 
-    add("## 20. D2 remains pending")
+    outstanding = [
+        item.experiment_id
+        for item in matrix.candidates
+        if item.experiment_id != experiment_id
+        and not (paths.reports / f"detection_{item.experiment_id}_manifest.json").is_file()
+    ]
+    add("## 20. Final Phase 7 comparison still pending")
     add("")
-    add(
-        "`PENDING_EXPERIMENT` D2 (`INPUT_RESOLUTION`, imgsz 768) is frozen and "
-        "**not executed**. Until it has a result:"
-    )
+    if outstanding:
+        add(
+            "`PENDING_EXPERIMENT` Still frozen and **not executed**: "
+            + ", ".join(f"`{name}`" for name in outstanding)
+            + ". Until every declared candidate has a result the frozen selection logic cannot "
+            "run at all."
+        )
+    else:
+        add(
+            "`PENDING_EXPERIMENT` Every declared candidate now has a result, so the frozen "
+            "selection logic *could* be evaluated - and this phase still does not apply it. "
+            "Freezing the project's detector is a reviewed decision, so "
+            f"`reports/{RESULTS_JSON}` records the computed case as a "
+            "`policy_case_candidate` marked `advisory_only`, with "
+            f"`final_selected_detector: {UNSELECTED}`."
+        )
     add("")
-    add("- the Phase 7 A/B/C selection logic is not applied;")
+    add("Either way, and regardless of what the numbers above show:")
+    add("")
     add(f"- no experiment is called the Phase 7 winner, {experiment_id} included;")
-    add("- the reference remains the preferred detector by default, not by comparison;")
-    add("- no efficiency or latency benchmark is run to break any tie.")
+    add(f"- {reference_id} remains the preferred detector **by default, not by comparison**;")
+    add("- no efficiency or latency benchmark is run to break any tie;")
+    add(
+        "- no further experiment is authorised - not another resolution, another capacity, a "
+        "combination of the two, or any tuning prompted by this result."
+    )
     add("")
     add(f"Committed metric-only figures: `reports/figures/detection/{experiment_id}/`.")
     add("")
@@ -1737,20 +2029,29 @@ def rebuild_report(
     matrix: ExperimentMatrix,
     declaration: ExperimentDeclaration,
     reference: dict[str, Any],
+    *,
+    phase: str | None = None,
 ) -> list[str]:
     """Re-render the report and results table from the committed manifest.
 
     For correcting or extending the prose around a result without touching the
     result. It reads the committed manifest and writes only the report and the
     results table: it does not train, does not validate, does not load a
-    checkpoint and does not recompute a metric. The manifest is left byte-identical,
-    which is what makes this safe to run on a published experiment.
+    checkpoint and does not recompute a metric.
+
+    ``phase`` is the one exception, and it is fenced in. A manifest that names
+    the wrong roadmap sub-phase carries a provenance error, and the label is
+    metadata rather than a measurement - so it may be corrected here. The
+    correction is proved rather than trusted: the rewritten manifest is diffed
+    against the committed one and refused unless ``phase`` is the *only* key
+    that moved. Without ``phase``, the manifest must come out byte-identical.
 
     Args:
         paths: Project layout.
         matrix: The parsed experiment matrix.
         declaration: The candidate declaration.
         reference: The verified reference facts.
+        phase: Corrected roadmap sub-phase label, or ``None`` to change nothing.
 
     Returns:
         Summary lines for the console.
@@ -1766,13 +2067,38 @@ def rebuild_report(
         raise ExperimentRunError(msg)
     before = manifest_path.read_bytes()
     manifest = read_json(manifest_path)
+    committed = json.loads(before.decode("utf-8"))
 
     problems = validate_result_manifest(manifest, class_names=reference["class_names"])
     if problems:
         msg = f"the committed {experiment_id} manifest is not valid: {'; '.join(problems)}"
         raise ExperimentRunError(msg)
 
-    report = build_report(manifest, matrix, declaration, reference)
+    corrected: list[str] = []
+    manifest_corrected = False
+    if phase is not None:
+        # Independent of whether the manifest itself needs changing: the records
+        # can already disagree with it if an earlier correction touched only one.
+        corrected.extend(correct_provenance_phase(paths, experiment_id, phase))
+    if phase is not None and phase != manifest.get("phase"):
+        manifest_corrected = True
+        manifest["phase"] = phase
+        moved = sorted(
+            key for key in set(manifest) | set(committed) if manifest.get(key) != committed.get(key)
+        )
+        if moved != ["phase"]:
+            msg = (
+                f"a metadata correction must move exactly the 'phase' key; this one moved "
+                f"{moved}. Refusing to rewrite a published manifest."
+            )
+            raise ExperimentRunError(msg)
+        write_json(manifest_path, manifest)
+        corrected.append(
+            f"phase corrected               {committed.get('phase')!r} -> {phase!r} "
+            "(metadata only; every metric and fingerprint unchanged)"
+        )
+
+    report = build_report(paths, manifest, matrix, declaration, reference)
     unsafe = scan_for_sensitive(report)
     if unsafe:
         msg = f"the re-rendered {experiment_id} report is not fit to commit: {'; '.join(unsafe)}"
@@ -1782,20 +2108,150 @@ def rebuild_report(
     )
     update_results_artifact(paths, matrix, manifest, reference)
 
-    if manifest_path.read_bytes() != before:
+    # Keyed on whether the *manifest* was deliberately corrected, not on whether
+    # anything at all was: a provenance-only correction must not switch off the
+    # guard that proves the manifest was left alone.
+    if not manifest_corrected and manifest_path.read_bytes() != before:
         msg = (
             f"re-rendering changed detection_{experiment_id}_manifest.json; a report rebuild "
             "must never touch a published metric"
         )
         raise ExperimentRunError(msg)
     comparison = manifest["phase7_comparison"]
+    state = "metadata-corrected" if manifest_corrected else "unchanged      "
     return [
-        f"manifest unchanged           {manifest_path.name}",
+        *corrected,
+        f"manifest {state}   {manifest_path.name}",
         f"{PRIMARY_SELECTION_METRIC}  {comparison['supported_macro_map50_95']} "
         f"(delta {comparison['delta_supported_macro_vs_reference']:+f})",
         f"margin status                {comparison['margin_status']}",
         "no training, no validation, no metric recomputed",
     ]
+
+
+def peer_deltas(
+    paths: ProjectPaths,
+    matrix: ExperimentMatrix,
+    declaration: ExperimentDeclaration,
+    macro: Any,
+    global_metrics_now: Mapping[str, Any],
+    supported: Sequence[str],
+) -> dict[str, Any]:
+    """Record this experiment's difference from every other completed candidate.
+
+    So a later three-way comparison reads recorded numbers instead of being
+    reassembled by hand. These are differences, not a ranking: the frozen policy
+    ranks against the reference, and a peer delta carries no verdict.
+
+    A peer whose data fingerprints differ is refused rather than compared, for
+    the same reason the reference comparison is: two runs that saw different data
+    cannot attribute a metric difference to a declared variable.
+
+    Args:
+        paths: Project layout.
+        matrix: The parsed experiment matrix.
+        declaration: This candidate's declaration.
+        macro: This run's selection metric, as an exact decimal.
+        global_metrics_now: This run's global validation metrics.
+        supported: Names of the classes in the selection metric.
+
+    Returns:
+        One entry per completed peer, keyed by experiment id.
+
+    Raises:
+        ExperimentRunError: If a peer's per-class table cannot produce the
+            selection metric, or its data fingerprints disagree with this run's.
+    """
+    entries: dict[str, Any] = {}
+    for peer in matrix.candidates:
+        if peer.experiment_id == declaration.experiment_id:
+            continue
+        path = paths.reports / f"detection_{peer.experiment_id}_manifest.json"
+        if not path.is_file():
+            continue
+        other = read_json(path)
+        try:
+            peer_macro = supported_macro(other["per_class_metrics"], list(supported))
+        except (ComparisonError, KeyError) as exc:
+            msg = f"peer {peer.experiment_id} cannot produce the selection metric: {exc}"
+            raise ExperimentRunError(msg) from exc
+        entry: dict[str, Any] = {
+            PRIMARY_SELECTION_METRIC: round(float(macro - peer_macro), 6),
+            "reference_value": round(float(peer_macro), 6),
+            "intentional_variable": peer.intentional_variable,
+            "note": (
+                "a difference against another candidate, recorded for completeness. The frozen "
+                "policy ranks candidates against the reference experiment; this number is not "
+                "a verdict and does not select anything."
+            ),
+        }
+        for name in (OFFICIAL_ALL_CLASS_METRIC, "mAP@0.50", "precision", "recall"):
+            current = global_metrics_now.get(name)
+            prior = other.get("validation_metrics", {}).get(name)
+            entry[name] = (
+                round(float(current) - float(prior), 6)
+                if isinstance(current, (int, float)) and isinstance(prior, (int, float))
+                else NOT_EXPOSED
+            )
+        entries[peer.experiment_id] = entry
+    return entries
+
+
+def correct_provenance_phase(paths: ProjectPaths, experiment_id: str, phase: str) -> list[str]:
+    """Correct the sub-phase label in this experiment's provenance records.
+
+    Both the pre-run and post-run records, because a correction that fixed only
+    one would leave the pair disagreeing about the same run.
+
+    Same fence as the manifest correction, and for the same reason: the label is
+    metadata, so it may be fixed, but only if it is provably the sole change.
+    ``created_at`` is preserved rather than refreshed - rewriting it would
+    misstate when the record was produced, which is the opposite of what a
+    provenance record is for.
+
+    Args:
+        paths: Project layout.
+        experiment_id: The experiment whose records to correct.
+        phase: The corrected sub-phase label.
+
+    Returns:
+        One line per record changed, empty when nothing did.
+
+    Raises:
+        ExperimentRunError: If anything other than the phase label would move.
+    """
+    changed: list[str] = []
+    for name in (
+        f"detection_{experiment_id}.provenance.json",
+        f"detection_{experiment_id}_prerun.provenance.json",
+    ):
+        path = paths.reports / name
+        if not path.is_file():
+            continue
+        committed = read_json(path)
+        details = committed.get("details", {})
+        if details.get("phase") == phase:
+            continue
+        updated = json.loads(json.dumps(committed))
+        previous = updated["details"].get("phase")
+        updated["details"]["phase"] = phase
+        moved = sorted(
+            key
+            for key in set(updated["details"]) | set(details)
+            if updated["details"].get(key) != details.get(key)
+        )
+        if moved != ["phase"] or updated["created_at"] != committed["created_at"]:
+            msg = (
+                f"a provenance metadata correction must move only 'phase'; in {name} it moved "
+                f"{moved}"
+            )
+            raise ExperimentRunError(msg)
+        write_json(path, updated)
+        changed.append(
+            f"provenance phase corrected    {previous!r} -> {phase!r} in {name} "
+            "(created_at preserved)"
+        )
+    return changed
 
 
 def record_results(
@@ -1814,6 +2270,8 @@ def record_results(
     preflight: dict[str, Any] | None,
     policy_sha256: str,
     matrix_sha256: str,
+    weight_identity: str = "NOT_VERIFIED",
+    phase: str = DEFAULT_PHASE,
 ) -> list[str]:
     """Validate the run, compare it against the reference and record everything.
 
@@ -1832,6 +2290,9 @@ def record_results(
         preflight: The memory feasibility record, when one was run.
         policy_sha256: Digest of the committed phase 7 policy.
         matrix_sha256: Digest of the experiment matrix configuration.
+        weight_identity: How this run's starting checkpoint relates to the
+            reference's, as established before training.
+        phase: Roadmap sub-phase label recorded in the manifest.
 
     Returns:
         Summary lines for the console.
@@ -1897,6 +2358,11 @@ def record_results(
 
     complexity = execution.get("model_complexity") or validation.get("model_complexity") or {}
 
+    # Every other completed candidate, so a three-way comparison does not have to
+    # be assembled by hand later. The reference stays the primary comparison; a
+    # peer delta is recorded, never used to rank.
+    peers = peer_deltas(paths, matrix, declaration, macro, validation["global"], supported)
+
     fingerprint = digest(
         {
             "phase7_policy_sha256": policy_sha256,
@@ -1917,7 +2383,7 @@ def record_results(
 
     manifest = {
         "schema_version": 1,
-        "phase": "7B",
+        "phase": phase,
         "task": "detection",
         "experiment_id": experiment_id,
         "status": EXPERIMENT_STATUS_COMPLETE,
@@ -1955,6 +2421,7 @@ def record_results(
         },
         "class_map": inputs["class_map"],
         "pretrained_weights": weights,
+        "pretrained_weight_identity": weight_identity,
         "train_images": inputs["train_images"],
         "train_annotations": inputs["train_annotations"],
         "validation_images": inputs["validation_images"],
@@ -1997,10 +2464,11 @@ def record_results(
             "delta_classification": classification,
             "official_all_class_metric": OFFICIAL_ALL_CLASS_METRIC,
             "deltas_vs_reference": deltas,
+            "deltas_vs_peers": peers,
             "selection_pending": True,
             "selection_pending_reason": (
-                "D2 has not been executed, so the frozen phase 7 A/B/C selection logic is not "
-                "applied and no final detector is declared."
+                "the frozen phase 7 selection logic is not applied by an experiment phase. It "
+                "belongs to a later review step, so no final detector is declared here."
             ),
         },
         "class_support": [record.as_dict() for record in support],
@@ -2044,7 +2512,7 @@ def record_results(
 
     write_json(paths.reports / f"detection_{experiment_id}_manifest.json", manifest)
 
-    report = build_report(manifest, matrix, declaration, reference)
+    report = build_report(paths, manifest, matrix, declaration, reference)
     unsafe = scan_for_sensitive(report)
     if unsafe:
         msg = f"the {experiment_id} report is not fit to commit: {'; '.join(unsafe)}"
@@ -2068,7 +2536,7 @@ def record_results(
         f"best epoch                   {best_epoch} of {epochs_completed} completed",
         f"optimizer                    {optimizer['optimizer']} via {optimizer['source']}",
         f"{experiment_id} experiment_sha256      {fingerprint}",
-        "selection                    PENDING - D2 has not been executed",
+        f"selection                    {UNSELECTED} - not decided by an experiment phase",
         f"holdout                      {TEST_PROTECTED}",
     ]
 
@@ -2105,7 +2573,7 @@ def write_run_provenance(
             "resolved_config_sha256": manifest["resolved_config_sha256"],
         },
         details={
-            "phase": "7B",
+            "phase": manifest["phase"],
             "experiment_id": experiment_id,
             "intentional_variable": declaration.intentional_variable,
             "model": manifest["model"],
@@ -2141,6 +2609,77 @@ def write_run_provenance(
     return destination
 
 
+def selection_state(
+    paths: ProjectPaths,
+    matrix: ExperimentMatrix,
+    rows: Sequence[Mapping[str, Any]],
+    pending: Sequence[str],
+    reference: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Describe where selection stands, without making it.
+
+    Two distinct reasons selection can be open, and conflating them would be
+    misleading. While a declared candidate has no result the logic *cannot* run.
+    Once every candidate has one it *could* run, and this still does not freeze a
+    winner: choosing the project's detector is a reviewed decision, so the
+    computed case is exposed as ``policy_case_candidate`` - an input to that
+    review - and ``preferred_experiment`` stays ``None``.
+
+    Args:
+        paths: Project layout.
+        matrix: The parsed experiment matrix.
+        rows: The assembled per-experiment rows.
+        pending: Ids of candidates with no result.
+        reference: The verified reference facts.
+
+    Returns:
+        The selection state.
+    """
+    if pending:
+        return {
+            "status": "PENDING_INCOMPLETE_MATRIX",
+            "policy_case_candidate": None,
+            "preferred_experiment": None,
+            "reason": (
+                "the frozen selection logic cannot run until every declared candidate has a "
+                f"result. Still outstanding: {list(pending)}. No case is assigned and no final "
+                "detector is declared."
+            ),
+        }
+
+    records: dict[str, Any] = {}
+    split = read_json(paths.reports / SPLIT_MANIFEST_JSON)
+    support = class_support(split, reference["class_map"], rule=matrix.support_rule)
+    for row in rows:
+        experiment_id = row["experiment_id"]
+        path = paths.reports / f"detection_{experiment_id}_manifest.json"
+        if path.is_file():
+            records[experiment_id] = build_experiment_record(read_json(path), support)
+
+    candidate_case: str | None = None
+    rationale = ""
+    try:
+        computed = compare(matrix, records)
+        candidate_case = computed["selection"]["case"]
+        rationale = computed["selection"]["rationale"]
+    except ComparisonError as exc:
+        rationale = f"the frozen logic could not be evaluated: {exc}"
+
+    return {
+        "status": "PENDING_HUMAN_REVIEW",
+        "policy_case_candidate": candidate_case,
+        "policy_case_rationale": rationale,
+        "preferred_experiment": None,
+        "reason": (
+            "every declared candidate now has a result, so the frozen logic can be evaluated - "
+            "and its output is recorded above as a candidate case, not as a decision. Freezing "
+            "the project's detector is a reviewed step of its own; an experiment phase reports "
+            "the numbers the rule needs and stops there."
+        ),
+        "advisory_only": True,
+    }
+
+
 def update_results_artifact(
     paths: ProjectPaths,
     matrix: ExperimentMatrix,
@@ -2171,6 +2710,7 @@ def update_results_artifact(
             "role": "REFERENCE_BASELINE",
             "status": "COMPLETE",
             "intentional_variable": "NONE_REFERENCE",
+            "experiment_phase": reference["manifest"].get("phase"),
             "model": reference["manifest"]["model"],
             "imgsz": reference["manifest"]["resolved_training_arguments"]["imgsz"],
             "metrics": {
@@ -2191,6 +2731,7 @@ def update_results_artifact(
                     "role": declaration.role,
                     "status": "COMPLETE",
                     "intentional_variable": declaration.intentional_variable,
+                    "experiment_phase": manifest.get("phase"),
                     "model": manifest["model"],
                     "imgsz": manifest["resolved_training_arguments"]["imgsz"],
                     "metrics": {
@@ -2216,6 +2757,7 @@ def update_results_artifact(
                     "role": declaration.role,
                     "status": "COMPLETE",
                     "intentional_variable": declaration.intentional_variable,
+                    "experiment_phase": other.get("phase"),
                     "model": other.get("model"),
                     "imgsz": other.get("resolved_training_arguments", {}).get("imgsz"),
                     "metrics": {
@@ -2237,6 +2779,7 @@ def update_results_artifact(
                 "role": declaration.role,
                 "status": declaration.status,
                 "intentional_variable": declaration.intentional_variable,
+                "experiment_phase": None,
                 "model": None,
                 "imgsz": None,
                 "metrics": None,
@@ -2248,9 +2791,13 @@ def update_results_artifact(
         )
 
     pending = [row["experiment_id"] for row in rows if row["metrics"] is None]
+    selection = selection_state(paths, matrix, rows, pending, reference)
     payload = {
         "schema_version": 1,
-        "phase": "7B",
+        # The roadmap phase, not a sub-phase: this table spans every phase 7
+        # experiment, and taking the sub-phase from whichever manifest was
+        # written last would make the label depend on rebuild order.
+        "phase": DEFAULT_PHASE,
         "task": "detection",
         "reference_experiment": matrix.reference_experiment,
         "primary_selection_metric": PRIMARY_SELECTION_METRIC,
@@ -2261,16 +2808,8 @@ def update_results_artifact(
         "descriptive_classes": comparison["descriptive_classes"],
         "experiments": rows,
         "pending_experiments": pending,
-        "selection": {
-            "status": "PENDING_INCOMPLETE_MATRIX",
-            "case": None,
-            "preferred_experiment": None,
-            "reason": (
-                "the frozen selection logic is applied only once every declared candidate has "
-                f"a result. Still outstanding: {pending}. No case is assigned and no final "
-                "detector is declared."
-            ),
-        },
+        "final_selected_detector": UNSELECTED,
+        "selection": selection,
         "metrics_are_validation_only": True,
         "test": {"status": TEST_PROTECTED, "reason": HOLDOUT_REASON},
     }

@@ -232,6 +232,8 @@ It is reported in full in section 12 and was **not** used in the selection metri
 
 `PREDECLARED_PROTOCOL` Recall is a **diagnostic** here. It helps explain why the selection metric moved; it is not promoted to a selection objective and no recall-weighted composite is introduced.
 
+`LIMITATION` These two numbers deserve more caution than the AP figures. Ultralytics reports a single precision and recall taken at the operating point that maximises F1, not at a fixed confidence threshold, so a large move in one of them can partly reflect *where that point landed* rather than a uniform change in behaviour. They are read as a hint about the precision/recall balance, never as a threshold-independent property of the model - and no threshold was tuned in either direction.
+
 ## 15. Training dynamics
 
 `OBSERVATION` The run terminated as `COMPLETED_ALL_EPOCHS` after 100 of 100 configured epochs, with the predeclared rule selecting epoch 73.
@@ -272,7 +274,7 @@ It is reported in full in section 12 and was **not** used in the selection metri
 
 ## 19. Interpretation
 
-`CONTROLLED_COMPARISON` Increasing capacity from YOLO11n to YOLO11s, with the data, image size, batch and training protocol held fixed by inheritance, moved `supported_macro_map50_95` by -0.010125, which the frozen margin classifies as `BELOW_D0`.
+`CONTROLLED_COMPARISON` Changing `model` 'YOLO11n' -> 'YOLO11s', `weight_identifier` 'yolo11n.pt' -> 'yolo11s.pt' and nothing else - everything else held fixed by inheritance from D0 - moved `supported_macro_map50_95` by -0.010125, which the frozen margin classifies as `BELOW_D0`.
 
 `OBSERVATION` The aggregate hides the shape of the change. Of the 4 classes in the selection metric, 3 improved and 1 did not.
 
@@ -283,17 +285,19 @@ It is reported in full in section 12 and was **not** used in the selection metri
 
 `LIMITATION` Why `vest_on_body` behaved that way is **UNKNOWN**. A plausible story is easy to construct and none is tested here: this is one run, the movement could be run-to-run variance, and diagnosing it would need either a repeated run or the image-level error analysis this phase deliberately does not perform. It is recorded as an open question, not explained.
 
-`LIMITATION` This is one run of each configuration on a 65-image validation split. It establishes what these two runs scored; it does not establish that capacity causes the difference in general, and it cannot separate a real effect from run-to-run variance, because neither experiment was repeated.
+`LIMITATION` This is one run of each configuration on a 65-image validation split. It establishes what these two runs scored; it does not establish that `MODEL_CAPACITY` causes the difference in general, and it cannot separate a real effect from run-to-run variance, because neither experiment was repeated.
 
 `LIMITATION` Nothing here was tuned, and nothing may be tuned in response to it. The phase 7A policy forbids trying another capacity, another resolution, another optimizer or another augmentation setting because of what this result shows.
 
-## 20. D2 remains pending
+## 20. Final Phase 7 comparison still pending
 
-`PENDING_EXPERIMENT` D2 (`INPUT_RESOLUTION`, imgsz 768) is frozen and **not executed**. Until it has a result:
+`PENDING_EXPERIMENT` Every declared candidate now has a result, so the frozen selection logic *could* be evaluated - and this phase still does not apply it. Freezing the project's detector is a reviewed decision, so `reports/detection_experiment_results.json` records the computed case as a `policy_case_candidate` marked `advisory_only`, with `final_selected_detector: UNSELECTED_PENDING_REVIEW`.
 
-- the Phase 7 A/B/C selection logic is not applied;
+Either way, and regardless of what the numbers above show:
+
 - no experiment is called the Phase 7 winner, D1 included;
-- the reference remains the preferred detector by default, not by comparison;
-- no efficiency or latency benchmark is run to break any tie.
+- D0 remains the preferred detector **by default, not by comparison**;
+- no efficiency or latency benchmark is run to break any tie;
+- no further experiment is authorised - not another resolution, another capacity, a combination of the two, or any tuning prompted by this result.
 
 Committed metric-only figures: `reports/figures/detection/D1/`.

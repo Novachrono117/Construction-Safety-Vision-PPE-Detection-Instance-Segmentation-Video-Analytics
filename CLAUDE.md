@@ -191,11 +191,12 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 7B complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, **D0 and D1 have both been
-  trained and validated**, and the phase 7 comparison protocol is frozen. **D2 is
-  frozen and NOT trained, so no Phase 7 winner exists.** Phase 7C (train D2) has
-  not started; do not start it unprompted.
+- **Phase:** 7C complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, and **all three detection
+  experiments (D0, D1, D2) have been trained and validated** under the frozen
+  phase 7 protocol. **No detector has been selected**
+  (`UNSELECTED_PENDING_REVIEW`). Phase 7D (final selection) has not started; do
+  not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -419,9 +420,10 @@ uv run pytest
   not do is decide a winner: never tune for it, never prefer or reject a model
   because it moved, never rank it against the supported classes, never consult
   the holdout to resolve its uncertainty.
-- **D1 exists; D2 is frozen and NOT TRAINED.** D1 varied `MODEL_CAPACITY`
-  (YOLO11s from `yolo11s.pt`, SHA-256 `85a76fe8...`, 19313732 B); D2 varies
-  `INPUT_RESOLUTION` (imgsz 768) and has no result. Both inherit D0's protocol
+- **D1 and D2 both exist.** D1 varied `MODEL_CAPACITY` (YOLO11s from
+  `yolo11s.pt`, SHA-256 `85a76fe8...`, 19313732 B); D2 varied
+  `INPUT_RESOLUTION` (imgsz 768) from **the same `yolo11n.pt` bytes D0 used**,
+  verified by digest. Both inherit D0's protocol
   from `configs/detection_baseline.yaml` and declare only an override set, so the
   one-variable discipline is enforced by the parser. Batch stays 16 for all
   three: a genuine CUDA OOM **stops** the experiment as
@@ -460,11 +462,49 @@ uv run pytest
   failure, protocol review, **never** read as model inferiority. The margin is an
   engineering threshold, **not a significance test**; run-to-run variance on this
   setup is UNKNOWN because nothing is repeated.
-- **No Phase 7 winner exists and the selection logic has NOT been applied.**
-  `reports/detection_experiment_results.json` records D2 as `FROZEN_NOT_EXECUTED`
-  with a `null` metrics block. Do not assign a case, do not call D0 or D1 the
-  winner, and do not invent a placeholder for D2. D0 remains preferred **by
-  default, not by comparison**.
+- **D2 result (validation only): `supported_macro_map50_95` 0.594018, delta
+  +0.023876 vs D0, classified `IMPROVES_D0_BEYOND_MARGIN`.** All-class
+  `mAP@0.50:0.95` 0.490386 (+0.025957), mAP@0.50 0.646304, precision 0.926331,
+  recall 0.516549. 100/100 epochs, best epoch 90, `D2_experiment_sha256`
+  `8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685`. Against D1:
+  +0.034001 on the selection metric. **D2 was run once and must not be re-run.**
+  Unlike D1, both metrics move the same way, so nothing turns on which is read.
+- **D2's small-object hypothesis is NOT supported by the shape of the result, and
+  saying otherwise would be the error.** Ranking the four supported classes by
+  their frozen small-object fraction against their AP change gives a rank
+  correlation of **-0.20**: the largest gain went to `vest_on_body` (the *least*
+  small-object-heavy) and the only decline was `person`. Resolution improved the
+  selection metric beyond the margin - that is the controlled claim - but the
+  proposed mechanism does not explain it. Never present the beyond-margin gain as
+  confirming the hypothesis, and never run a size-stratified study to rescue it
+  without a new reviewed protocol.
+- **Deltas between D1 and D2 are differences, not a ranking.** They differ from
+  each other in *two* things at once (each varies a different field relative to
+  D0), so nothing between them is attributable to either variable. Only each
+  candidate's comparison with D0 is controlled.
+- **No detector is selected and the selection logic must not be applied by an
+  experiment phase.** `reports/detection_experiment_results.json` records
+  `final_selected_detector: UNSELECTED_PENDING_REVIEW`, with the computed
+  `CASE_B_VALIDATION_PERFORMANCE_LEADER` (D2 leading) exposed as
+  `policy_case_candidate` / `advisory_only: true` and `preferred_experiment:
+  null`. **D0 remains preferred by default, not by comparison.** Freezing the
+  detector is phase 7D after human review; do not do it unprompted, and do not
+  run an efficiency benchmark to break anything.
+- **Precision and recall carry an operating-point caveat.** Ultralytics reports
+  one precision/recall pair at the F1-maximising point, not at a fixed
+  confidence, so a large move in either can partly reflect where that point
+  landed. Read them as a hint about the precision/recall balance, never as a
+  threshold-independent property. No threshold was ever tuned.
+- **The frozen phase 7 policy artifact must NOT be regenerated.** D1's and D2's
+  manifests record its digest, so rewriting it to refresh execution status would
+  invalidate their provenance. Its per-experiment `status` fields say what was
+  true *when it was frozen*; live status lives in
+  `reports/detection_experiment_results.json`.
+- **`--rebuild-report` re-renders prose from a committed manifest** without
+  training, validating or recomputing a metric, and asserts the manifest is
+  byte-identical afterwards. The single exception is a `--phase` metadata
+  correction, which is fenced: it proves only the `phase` key moved and preserves
+  `created_at`. Use it for prose fixes; never to change a number.
 - **Run primitives shared by phase 7 live in
   `src/construction_safety_vision/detection_run.py`**, and
   `scripts/train_detection_baseline.py` still carries its own older copies -

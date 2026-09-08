@@ -230,6 +230,28 @@ fails on the real format and the run falls back to inference for no reason. The
 manifest records which of the two happened, and an inferred value is labelled
 `inferred`.
 
+Two more guards. A candidate that does **not** override `weight_identifier` is
+asserting it starts from the same *bytes* as the reference, so the runner
+compares digests against the reference's committed record and refuses to run if
+the asset changed - checking the file name alone would let a silently replaced
+download add an undeclared variable. Conversely, a candidate that *does* declare
+new weights and then loads the reference's bytes is refused too: the variable was
+never applied. The verdict is recorded as `pretrained_weight_identity`.
+
+`--rebuild-report` re-renders the report and the live results table from a
+committed manifest. It trains nothing, validates nothing, loads no checkpoint and
+recomputes no metric, and it verifies afterwards that the manifest is still
+byte-identical - so prose can be corrected or extended without touching a
+published result.
+
+Selection is deliberately **not** made by this script. Once every declared
+candidate has a result the frozen logic *can* be evaluated, and the live results
+artifact then records its output as `policy_case_candidate` with
+`advisory_only: true`, `preferred_experiment: null` and
+`final_selected_detector: UNSELECTED_PENDING_REVIEW`. Freezing the project's
+detector is a reviewed step of its own; an experiment phase reports the numbers
+the rule needs and stops.
+
 ## Planned scripts
 
 Evaluation, error analysis and video inference scripts are added by their

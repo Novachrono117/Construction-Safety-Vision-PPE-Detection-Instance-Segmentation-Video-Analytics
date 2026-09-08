@@ -1,0 +1,98 @@
+{
+  "config": {
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "detection_experiments": "configs/detection_experiments.yaml",
+    "experiment_id": "D2",
+    "experiment_matrix_sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+    "phase7_policy_sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+    "resolved_config_sha256": "3b75cdddd7bf2bcdc9643ba0cf1f143c016e39a4aab4b201b5eaded9ad5e2854"
+  },
+  "created_at": "2026-09-08T14:06:16+00:00",
+  "details": {
+    "amp": true,
+    "augmentation": "ULTRALYTICS_DEFAULT",
+    "batch": 16,
+    "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+    "dataset_fingerprints": {
+      "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+      "adapter_manifest_sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+      "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+      "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+      "yolo_label_sha256": {
+        "train": "6237624f585f8e9f7ac2565be1eacf4140f6d55ad2de5d3c85f2972efa649e5f",
+        "validation": "d9ac55c70918b7ad7621ad6f7849d70c15f66585ec6b66f97b07fedfe6102c4b"
+      }
+    },
+    "declared_optimizer_policy": "auto",
+    "deterministic": true,
+    "device": "cuda:0",
+    "epochs_configured": 100,
+    "experiment_id": "D2",
+    "imgsz": 768,
+    "inherits": "D0",
+    "intentional_variable": "INPUT_RESOLUTION",
+    "model": "YOLO11n",
+    "overrides": {
+      "training.imgsz": 768
+    },
+    "patience": 50,
+    "phase": "7C",
+    "pretrained_weights": {
+      "committed": false,
+      "identifier": "yolo11n.pt",
+      "relative_path": "artifacts/weights/yolo11n.pt",
+      "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "size_bytes": 5613764,
+      "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+      "ultralytics_version": "8.4.138"
+    },
+    "runtime": {
+      "cuda_runtime": "12.8",
+      "cudnn": 91900,
+      "gpu_arch": "sm_120",
+      "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "gpu_total_memory_bytes": 8546484224,
+      "python": "3.12.13",
+      "torch": "2.11.0+cu128",
+      "torchvision": "0.26.0+cu128",
+      "ultralytics": "8.4.138"
+    },
+    "seed": 42,
+    "stage": "PRE_RUN",
+    "started_at": "2026-09-08T14:06:16+00:00",
+    "test_status": "PROTECTED_NOT_ACCESSED"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "2f960ed67aa198b6102e61b5676e4c4b74a942ec",
+  "inputs": [
+    {
+      "path": "configs/detection_experiments.yaml",
+      "sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+      "size_bytes": 9255
+    },
+    {
+      "path": "configs/detection_baseline.yaml",
+      "sha256": "6c8b59854795be3ca06fd2f0c5f4261834545e8ac3522f2f3d4200256efef4c7",
+      "size_bytes": 5214
+    },
+    {
+      "path": "reports/detection_comparison_policy.json",
+      "sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+      "size_bytes": 28973
+    },
+    {
+      "path": "reports/detection_adapter_manifest.json",
+      "sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "size_bytes": 4261
+    }
+  ],
+  "name": "detection_experiment_prerun",
+  "outputs": [],
+  "phase": 7,
+  "schema_version": 1
+}

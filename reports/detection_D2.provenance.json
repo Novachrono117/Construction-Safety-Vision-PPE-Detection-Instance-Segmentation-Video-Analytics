@@ -1,0 +1,85 @@
+{
+  "config": {
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "detection_experiments": "configs/detection_experiments.yaml",
+    "experiment_id": "D2",
+    "phase7_policy_sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+    "resolved_config_sha256": "3b75cdddd7bf2bcdc9643ba0cf1f143c016e39a4aab4b201b5eaded9ad5e2854"
+  },
+  "created_at": "2026-09-08T14:21:32+00:00",
+  "details": {
+    "best_checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "best_epoch": 90,
+    "delta_supported_macro_vs_reference": 0.023876,
+    "epochs_completed": 100,
+    "experiment_id": "D2",
+    "experiment_sha256": "8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685",
+    "holdout_accessed": false,
+    "intentional_variable": "INPUT_RESOLUTION",
+    "last_checkpoint_sha256": "8dcb7c370408eacda34b3ce9f50c9265bb66c6c1482ecf5ce0c2d8fb2cc8020c",
+    "margin_status": "IMPROVES_D0_BEYOND_MARGIN",
+    "model": "YOLO11n",
+    "models_trained_in_this_phase": 1,
+    "optimizer_evidence_source": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE",
+    "phase": "7C",
+    "pretrained_weights_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "resolved_optimizer": "AdamW",
+    "runtime": {
+      "cuda_runtime": "12.8",
+      "cudnn": 91900,
+      "gpu_arch": "sm_120",
+      "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "gpu_total_memory_bytes": 8546484224,
+      "python": "3.12.13",
+      "torch": "2.11.0+cu128",
+      "torchvision": "0.26.0+cu128",
+      "ultralytics": "8.4.138"
+    },
+    "selection_pending": true,
+    "supported_macro_map50_95": 0.594018,
+    "validation_metrics": {
+      "mAP@0.50": 0.646304,
+      "mAP@0.50:0.95": 0.490386,
+      "precision": 0.926331,
+      "recall": 0.516549
+    }
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "2f960ed67aa198b6102e61b5676e4c4b74a942ec",
+  "inputs": [
+    {
+      "path": "configs/detection_experiments.yaml",
+      "sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+      "size_bytes": 9255
+    },
+    {
+      "path": "reports/detection_comparison_policy.json",
+      "sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+      "size_bytes": 28973
+    },
+    {
+      "path": "reports/detection_adapter_manifest.json",
+      "sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+      "size_bytes": 4261
+    }
+  ],
+  "name": "detection_experiment",
+  "outputs": [
+    {
+      "path": "reports/detection_D2_manifest.json",
+      "sha256": "ea7893a3adb6648fa8c0f7a1662a723f11d7cf4a208503508dced11fe0ca6e8b",
+      "size_bytes": 17485
+    },
+    {
+      "path": "reports/detection_D2_report.md",
+      "sha256": "f518076d5ad983dbeb63407df9fc12402765fbe90bec30aeaf97a198d0d206ab",
+      "size_bytes": 18416
+    }
+  ],
+  "phase": 7,
+  "schema_version": 1
+}

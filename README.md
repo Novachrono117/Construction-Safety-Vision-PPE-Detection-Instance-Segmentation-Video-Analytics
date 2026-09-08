@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: D1 capacity experiment complete (phase 7B of 14).** The
+> **Status: all three detection experiments complete, no winner selected (phase 7C of 14).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -11,9 +11,10 @@
 > the frozen D0 protocol; **phase 6B ran D0 once and reports its validation
 > metrics**. Phase 7A froze the controlled comparison protocol - the class-support
 > rule, the selection metric, the decision margin and the two experiments D1 and
-> D2 - **before either experiment ran**; phase 7B then ran **D1 once** and found
-> it **below D0** on the frozen selection metric. **D2 has not been trained, so
-> no final detector is declared.** The provider's
+> D2 - **before either experiment ran**. Phase 7B ran **D1 once** (below D0) and
+> phase 7C ran **D2 once** (above D0 beyond the margin). **No final detector has
+> been selected**: that is a reviewed decision, and the experiment phases stop at
+> reporting the numbers the frozen rule needs. The provider's
 > split was **rejected for the final protocol** and is not reused. The `test` split is a **locked holdout**: it has never been
 > evaluated, inspected, materialised or adapted, and **every number below is a
 > validation number**. No segmentation model exists yet.
@@ -102,10 +103,10 @@ Two design decisions define this architecture:
 | GPU runtime | Done (phase 6A). torch 2.11.0+cu128 on an RTX 5070 Laptop (sm_120), verified by executing real kernels. |
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
 | Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
-| Detection experiments | **D1 complete (phase 7B), D2 not run.** D1 (capacity, YOLO11s) scored `supported_macro_map50_95` 0.560017 against D0's 0.570142 - `BELOW_D0`. D2 (resolution, imgsz 768) is frozen and untrained. |
-| Phase 7 winner | **Not decided.** The selection logic runs only once every declared candidate has a result. |
+| Detection experiments | **All three complete.** D0 0.570142 · D1 (capacity, YOLO11s) 0.560017 `BELOW_D0` · D2 (resolution, imgsz 768) 0.594018 `IMPROVES_D0_BEYOND_MARGIN`, on `supported_macro_map50_95`. |
+| Phase 7 winner | **`UNSELECTED_PENDING_REVIEW`.** The frozen logic computes `CASE_B` with D2 leading, recorded as an **advisory** candidate case; freezing the detector is a separate reviewed step. |
 | Segmentation model | Not trained. |
-| Metrics | **Validation only.** D0 mAP@0.50:0.95 = 0.4644 / supported macro 0.5701; D1 = 0.4711 / 0.5600. No test metric exists. |
+| Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -751,6 +752,85 @@ uv run python scripts/train_detection_experiment.py --experiment D1 --verify-onl
 uv run python scripts/train_detection_experiment.py --experiment D1 --memory-preflight
 ```
 
+### D2 - input-resolution experiment (phase 7C)
+
+**One run of YOLO11n at 768 px, and it beats the baseline beyond the margin.**
+Evidence in [`reports/detection_D2_report.md`](reports/detection_D2_report.md),
+machine-readable in `reports/detection_D2_manifest.json`.
+
+D2 inherited D0's protocol and overrode exactly one field, `training.imgsz`
+640 → 768. Capacity stayed YOLO11n and the run started from **the same
+`yolo11n.pt` bytes D0 used** - verified by digest against D0's manifest and the
+phase 6A provenance before training, and recorded as
+`IDENTICAL_TO_REFERENCE_VERIFIED_BY_DIGEST`. `optimizer: auto` again resolved to
+AdamW at lr0 0.001111, read directly from the framework log.
+
+| Validation metric | D2 | D0 | Δ vs D0 | D1 | Δ vs D1 |
+| --- | --- | --- | --- | --- | --- |
+| **`supported_macro_map50_95`** | **0.594018** | 0.570142 | **+0.023876** | 0.560017 | +0.034001 |
+| `mAP@0.50:0.95` (official) | 0.490386 | 0.464429 | +0.025957 | 0.471114 | +0.019272 |
+| `mAP@0.50` | 0.646304 | 0.619373 | +0.026931 | 0.618243 | +0.028061 |
+| precision | 0.926331 | 0.855680 | +0.070651 | 0.859640 | +0.066691 |
+| recall | 0.516549 | 0.539992 | -0.023443 | 0.527798 | -0.011249 |
+
+**Margin status: `IMPROVES_D0_BEYOND_MARGIN`.** Unlike D1, both metrics move the
+same way here, so nothing turns on which is read.
+
+Per class, `AP@0.50:0.95`:
+
+| Class | D2 | D0 | Delta | In selection metric |
+| --- | --- | --- | --- | --- |
+| `vest_on_body` | 0.490705 | 0.434691 | +0.056014 | yes |
+| `helmet_on_head` | 0.602340 | 0.561699 | +0.040641 | yes |
+| `helmet_loose` | 0.814493 | 0.792559 | +0.021934 | yes |
+| `person` | 0.468534 | 0.491618 | **-0.023084** | yes |
+| `vest_loose` *(1 val image)* | 0.075857 | 0.041575 | +0.034282 | no |
+
+**The small-object hypothesis is not supported by the shape of the result.**
+D2 was motivated by phase 4A's frozen measurement that several PPE classes hold
+many small objects. If that mechanism were driving the gain, the benefit should
+concentrate in the classes with the largest small-object fractions. It does not:
+ranking the four supported classes by small-object fraction against their AP
+change gives a rank correlation of **-0.20**. The largest gain went to
+`vest_on_body` (25.21% small - the *least* small-object-heavy of the four) and
+the only decline was `person` (27.57% small). So resolution did improve the
+selection metric beyond the margin - that is the controlled claim - but **why**
+is not explained by the predeclared account, and a rank correlation over four
+points tests nothing. A size-stratified evaluation would be needed, and this
+phase does not perform one.
+
+Precision rose 0.0707 while recall fell 0.0234. Both deserve more caution than
+the AP figures: Ultralytics reports them at the F1-maximising operating point
+rather than a fixed threshold, so a large move can partly reflect where that
+point landed. No threshold was tuned.
+
+Execution: 100/100 epochs in 911.8 s, best epoch 90 (fitness 0.508697), peak
+3.40 GiB at the frozen batch 16. YOLO11n is 2,624,080 parameters and 6.673
+GFLOPs as measured here (same capacity as D0; the resource difference is
+resolution, not model size - D0's own parameter count was not recorded, so no
+comparison against it is made). The headline metric was cross-checked against
+the independently recomputed epoch history at a delta of 0.002944.
+
+### Phase 7 selection - deliberately not made
+
+All three experiments now have results, so the frozen logic **can** be
+evaluated. It computes `CASE_B_VALIDATION_PERFORMANCE_LEADER` with D2 leading -
+and `reports/detection_experiment_results.json` records that as
+`policy_case_candidate` with `advisory_only: true`,
+`preferred_experiment: null` and
+**`final_selected_detector: UNSELECTED_PENDING_REVIEW`**.
+
+Freezing the project's detector is a reviewed decision, not an output of an
+experiment phase. Until it is taken, D0 remains preferred **by default, not by
+comparison**, no efficiency benchmark is run, and no further experiment is
+authorised - not another resolution, another capacity, a combination of the two,
+or any tuning prompted by these results.
+
+```bash
+uv run python scripts/train_detection_experiment.py --experiment D2 --verify-only
+uv run python scripts/train_detection_experiment.py --experiment D2 --memory-preflight
+```
+
 
 ## Academic requirements
 
@@ -859,7 +939,9 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_comparison_reference.json # D0 reference values for phase 7 (7A)
 │   ├── detection_D1_report.md             # D1 capacity experiment and its limits (7B)
 │   ├── detection_D1_manifest.json         # D1 metrics, fingerprints, checkpoints (7B)
-│   ├── detection_experiment_results.json  # D0/D1/D2 comparison table, D2 pending (7B)
+│   ├── detection_D2_report.md             # D2 resolution experiment and its limits (7C)
+│   ├── detection_D2_manifest.json         # D2 metrics, fingerprints, checkpoints (7C)
+│   ├── detection_experiment_results.json  # D0/D1/D2 table, winner unselected (7C)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report

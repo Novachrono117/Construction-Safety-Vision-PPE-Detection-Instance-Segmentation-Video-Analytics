@@ -6,6 +6,7 @@
     {
       "delta_supported_macro_vs_reference": 0.0,
       "experiment_id": "D0",
+      "experiment_phase": "6B",
       "experiment_sha256": "cbd79fd2f2f70eb31ede61b813f991e973bb5d2f69c223a3826ee6aeadd0ffb3",
       "imgsz": 640,
       "intentional_variable": "NONE_REFERENCE",
@@ -56,6 +57,7 @@
     {
       "delta_supported_macro_vs_reference": -0.010125,
       "experiment_id": "D1",
+      "experiment_phase": "7B",
       "experiment_sha256": "0589d4c0dabedfe0e6c72da3d248883d750347ce60b122b71aaa44e939158503",
       "imgsz": 640,
       "intentional_variable": "MODEL_CAPACITY",
@@ -104,34 +106,73 @@
       "status": "COMPLETE"
     },
     {
-      "delta_supported_macro_vs_reference": null,
+      "delta_supported_macro_vs_reference": 0.023876,
       "experiment_id": "D2",
-      "experiment_sha256": null,
-      "imgsz": null,
+      "experiment_phase": "7C",
+      "experiment_sha256": "8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685",
+      "imgsz": 768,
       "intentional_variable": "INPUT_RESOLUTION",
-      "margin_status": null,
-      "metrics": null,
-      "model": null,
-      "per_class_metrics": null,
+      "margin_status": "IMPROVES_D0_BEYOND_MARGIN",
+      "metrics": {
+        "mAP@0.50": 0.646304,
+        "mAP@0.50:0.95": 0.490386,
+        "precision": 0.926331,
+        "recall": 0.516549,
+        "supported_macro_map50_95": 0.594018
+      },
+      "model": "YOLO11n",
+      "per_class_metrics": {
+        "helmet_loose": {
+          "AP@0.50": 0.918909,
+          "AP@0.50:0.95": 0.814493,
+          "precision": 0.967942,
+          "recall": 0.719298
+        },
+        "helmet_on_head": {
+          "AP@0.50": 0.767135,
+          "AP@0.50:0.95": 0.60234,
+          "precision": 0.969884,
+          "recall": 0.685326
+        },
+        "person": {
+          "AP@0.50": 0.716256,
+          "AP@0.50:0.95": 0.468534,
+          "precision": 0.881327,
+          "recall": 0.596305
+        },
+        "vest_loose": {
+          "AP@0.50": 0.133571,
+          "AP@0.50:0.95": 0.075857,
+          "precision": 1.0,
+          "recall": 0.0
+        },
+        "vest_on_body": {
+          "AP@0.50": 0.695648,
+          "AP@0.50:0.95": 0.490705,
+          "precision": 0.812503,
+          "recall": 0.581818
+        }
+      },
       "role": "CONTROLLED_EXPERIMENT",
-      "status": "FROZEN_NOT_EXECUTED"
+      "status": "COMPLETE"
     }
   ],
+  "final_selected_detector": "UNSELECTED_PENDING_REVIEW",
   "metrics_are_validation_only": true,
   "official_all_class_metric": "mAP@0.50:0.95",
-  "pending_experiments": [
-    "D2"
-  ],
-  "phase": "7B",
+  "pending_experiments": [],
+  "phase": "7",
   "practical_equivalence_margin": "0.005",
   "primary_selection_metric": "supported_macro_map50_95",
   "reference_experiment": "D0",
   "schema_version": 1,
   "selection": {
-    "case": null,
+    "advisory_only": true,
+    "policy_case_candidate": "CASE_B_VALIDATION_PERFORMANCE_LEADER",
+    "policy_case_rationale": "D2 improves supported_macro_map50_95 over D0 by more than 0.005 and separates from every other candidate by more than the same margin",
     "preferred_experiment": null,
-    "reason": "the frozen selection logic is applied only once every declared candidate has a result. Still outstanding: ['D2']. No case is assigned and no final detector is declared.",
-    "status": "PENDING_INCOMPLETE_MATRIX"
+    "reason": "every declared candidate now has a result, so the frozen logic can be evaluated - and its output is recorded above as a candidate case, not as a decision. Freezing the project's detector is a reviewed step of its own; an experiment phase reports the numbers the rule needs and stops there.",
+    "status": "PENDING_HUMAN_REVIEW"
   },
   "selection_metric_classes": [
     "helmet_loose",
