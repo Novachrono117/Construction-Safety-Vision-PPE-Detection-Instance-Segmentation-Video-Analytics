@@ -1771,12 +1771,24 @@ def classify_delta(delta: Decimal, *, margin: Decimal = PRACTICAL_EQUIVALENCE_MA
 class SelectionOutcome:
     """The frozen selection logic's verdict on a set of experiments.
 
+    ``leader`` and ``runner_up`` rank **candidates only**. The reference is
+    never a member of that ranking: it enters the rule through the separate
+    "clears the reference by more than the margin" test, and comparing it as a
+    peer would make the reference compete with the experiments it exists to
+    calibrate. So ``runner_up`` means *the next-best controlled challenger*, and
+    it does **not** claim to be the second-highest score across every
+    experiment - the reference may well sit between the two. Any report that
+    quotes this field must say which of the two it means; naming it "runner-up"
+    unqualified invites exactly that misreading.
+
     Attributes:
         case: One of :data:`SELECTION_CASES`.
         preferred_experiment: The experiment the rule retains or elects.
         leader: The best-scoring candidate, or ``None`` when there is none.
-        runner_up: The next-best candidate, or ``None``.
-        leader_separation: Leader minus runner-up, or ``None``.
+        runner_up: The next-best **candidate**, excluding the reference, or
+            ``None``. Not necessarily the second-highest experiment overall.
+        leader_separation: Leader minus runner-up, or ``None``. A separation
+            between two candidates, never between a candidate and the reference.
         rationale: Why this case applies, in one sentence.
         efficiency_comparison_required: Whether a later benchmark must decide.
     """

@@ -362,9 +362,12 @@ def test_the_manifest_declares_selection_still_pending(manifest):
     assert "D2 has not been executed" in comparison["selection_pending_reason"]
 
 
-def test_no_final_winner_is_declared_anywhere(manifest, report, results):
-    assert results["final_selected_detector"] == "UNSELECTED_PENDING_REVIEW"
-    assert results["selection"]["preferred_experiment"] is None
+def test_no_final_winner_is_declared_anywhere(manifest, report):
+    # The live results artifact is not asserted here. Phase 7D owns its
+    # selection state and moved it to FINAL_SELECTED; what these historical D1
+    # artifacts must keep saying is that *this experiment phase* declared no
+    # winner, which is a property of the manifest and the report alone.
+    #
     # Affirmative selection phrasing only. "no final detector is declared" is a
     # legitimate sentence, so matching on "final detector is" would flag the very
     # disclaimer the test wants to see.

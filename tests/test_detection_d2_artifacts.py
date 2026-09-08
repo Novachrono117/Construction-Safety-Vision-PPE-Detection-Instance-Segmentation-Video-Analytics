@@ -372,9 +372,11 @@ def test_the_all_class_metric_is_preserved(manifest, d0_manifest):
 # --- no winner ----------------------------------------------------------------
 
 
-def test_no_final_detector_is_selected(manifest, results, report):
-    assert results["final_selected_detector"] == UNSELECTED
-    assert results["selection"]["preferred_experiment"] is None
+def test_no_final_detector_is_selected(manifest, report):
+    # As in the D1 tests, the live results artifact is deliberately not asserted
+    # here: Phase 7D owns its selection state. The invariant these historical D2
+    # artifacts protect is that the *experiment* phase froze no winner.
+    #
     # Affirmative selection phrasing only. "no final detector is declared" is a
     # legitimate sentence, so matching on "final detector is" would flag the very
     # disclaimer the test wants to see.
@@ -382,16 +384,18 @@ def test_no_final_detector_is_selected(manifest, results, report):
     for phrase in ("is the phase 7 winner", "the final detector is", "we select d2"):
         assert phrase not in lowered
     assert "no final detector is declared" in lowered or "unselected" in lowered
+    assert manifest["phase7_comparison"]["selection_pending"] is True
 
 
-def test_a_policy_case_candidate_may_be_reported_but_not_frozen(results):
-    selection = results["selection"]
-    assert selection["status"] == "PENDING_HUMAN_REVIEW"
-    # A computed case may be exposed for review; it must not be a decision.
-    if selection.get("policy_case_candidate") is not None:
-        assert selection["policy_case_candidate"].startswith("CASE_")
-    assert selection["preferred_experiment"] is None
-    assert results["final_selected_detector"] == UNSELECTED
+def test_the_experiment_manifest_reports_a_comparison_without_deciding_it(manifest):
+    comparison = manifest["phase7_comparison"]
+    # The experiment records every number the frozen rule needs and stops there.
+    assert comparison["margin_status"].startswith(("IMPROVES", "BELOW", "PRACTICALLY"))
+    assert comparison["selection_pending"] is True
+    assert "not applied by an experiment phase" in comparison["selection_pending_reason"]
+    assert UNSELECTED not in json.dumps(comparison)
+    for key in ("final_selected_detector", "preferred_experiment", "winner"):
+        assert key not in comparison
 
 
 def test_the_live_results_record_all_three_as_complete(results):

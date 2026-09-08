@@ -157,7 +157,7 @@
       "status": "COMPLETE"
     }
   ],
-  "final_selected_detector": "UNSELECTED_PENDING_REVIEW",
+  "final_selected_detector": "D2",
   "metrics_are_validation_only": true,
   "official_all_class_metric": "mAP@0.50:0.95",
   "pending_experiments": [],
@@ -167,12 +167,43 @@
   "reference_experiment": "D0",
   "schema_version": 1,
   "selection": {
-    "advisory_only": true,
-    "policy_case_candidate": "CASE_B_VALIDATION_PERFORMANCE_LEADER",
+    "advisory_only": false,
+    "candidate_runner_up": "D1",
+    "candidate_runner_up_semantics": "The next-best CONTROLLED CHALLENGER among the non-reference candidates, not a claim to the second-highest value of the selection metric overall. The reference D0 is excluded from that ranking by design. See overall_validation_ranking.",
+    "efficiency_comparison_required": false,
+    "final_selected_experiment": "D2",
+    "leader_separation": 0.034001,
+    "leader_separation_semantics": "leader minus next-best candidate; a separation between two candidates, never between a candidate and the reference",
+    "manifest": "reports/final_detector_manifest.json",
+    "method": "PREDECLARED_POLICY_PLUS_HUMAN_REVIEW",
+    "overall_validation_ranking": [
+      {
+        "experiment_id": "D2",
+        "rank": 1,
+        "supported_macro_map50_95": 0.594018,
+        "supported_macro_map50_95_exact": "0.594018000000"
+      },
+      {
+        "experiment_id": "D0",
+        "rank": 2,
+        "supported_macro_map50_95": 0.570142,
+        "supported_macro_map50_95_exact": "0.570141750000"
+      },
+      {
+        "experiment_id": "D1",
+        "rank": 3,
+        "supported_macro_map50_95": 0.560017,
+        "supported_macro_map50_95_exact": "0.560017000000"
+      }
+    ],
+    "policy_case": "CASE_B_VALIDATION_PERFORMANCE_LEADER",
     "policy_case_rationale": "D2 improves supported_macro_map50_95 over D0 by more than 0.005 and separates from every other candidate by more than the same margin",
-    "preferred_experiment": null,
-    "reason": "every declared candidate now has a result, so the frozen logic can be evaluated - and its output is recorded above as a candidate case, not as a decision. Freezing the project's detector is a reviewed step of its own; an experiment phase reports the numbers the rule needs and stops there.",
-    "status": "PENDING_HUMAN_REVIEW"
+    "preferred_experiment": "D2",
+    "reason": "Phase 7D applied the frozen Phase 7A policy mechanically to the committed results and recorded the maintainer's review of the outcome. The case and the leader are the selection engine's output; human review confirmed the protocol was respected and the rule correctly applied, and did not override it.",
+    "reference_experiment": "D0",
+    "report": "reports/detection_selection_report.md",
+    "status": "FINAL_SELECTED",
+    "validation_performance_leader": "D2"
   },
   "selection_metric_classes": [
     "helmet_loose",

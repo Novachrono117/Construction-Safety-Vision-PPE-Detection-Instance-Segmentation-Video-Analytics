@@ -191,12 +191,12 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 7C complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, and **all three detection
-  experiments (D0, D1, D2) have been trained and validated** under the frozen
-  phase 7 protocol. **No detector has been selected**
-  (`UNSELECTED_PENDING_REVIEW`). Phase 7D (final selection) has not started; do
-  not start it unprompted.
+- **Phase:** 7D complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, all three detection experiments
+  (D0, D1, D2) have been trained and validated under the frozen phase 7
+  protocol, and **the final detector is FROZEN: D2, YOLO11n at imgsz 768**.
+  Phase 8 (segmentation adapter and protocol) has not started; do not start it
+  unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -457,7 +457,7 @@ uv run pytest
   experiment, prefer direct capture and label an inference as inferred.
 - **Selection is decided in advance: margin 0.005, four cases.** A - nothing
   clears D0 by more than the margin, retain D0. B - one candidate clears D0 and
-  separates from the runner-up, it leads. C - a candidate clears D0 but does not
+  separates from the next-best *candidate*, it leads. C - a candidate clears D0 but does not
   separate, no winner, efficiency comparison required. D - execution or protocol
   failure, protocol review, **never** read as model inferiority. The margin is an
   engineering threshold, **not a significance test**; run-to-run variance on this
@@ -482,14 +482,59 @@ uv run pytest
   each other in *two* things at once (each varies a different field relative to
   D0), so nothing between them is attributable to either variable. Only each
   candidate's comparison with D0 is controlled.
-- **No detector is selected and the selection logic must not be applied by an
-  experiment phase.** `reports/detection_experiment_results.json` records
-  `final_selected_detector: UNSELECTED_PENDING_REVIEW`, with the computed
-  `CASE_B_VALIDATION_PERFORMANCE_LEADER` (D2 leading) exposed as
-  `policy_case_candidate` / `advisory_only: true` and `preferred_experiment:
-  null`. **D0 remains preferred by default, not by comparison.** Freezing the
-  detector is phase 7D after human review; do not do it unprompted, and do not
-  run an efficiency benchmark to break anything.
+- **The detector is FROZEN (phase 7D): D2, YOLO11n at imgsz 768.**
+  `selection_status: FINAL_SELECTED`, `selection_method:
+  PREDECLARED_POLICY_PLUS_HUMAN_REVIEW`, `policy_case:
+  CASE_B_VALIDATION_PERFORMANCE_LEADER`. Recorded in
+  `reports/final_detector_manifest.json` with `final_detector_sha256`
+  `84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e`;
+  `reports/detection_experiment_results.json` now carries the same final state.
+  **The selection is validation-only and says nothing about test performance.**
+  D0 is no longer the default - it is the reference experiment, not the
+  project's detector.
+- **The winner was derived, not asserted, and it must stay that way.** The case
+  and the leader are the output of
+  `construction_safety_vision.detection_comparison.compare` run over records
+  rebuilt from the committed manifests. `scripts/freeze_final_detector.py` names
+  no experiment id as the answer and refuses any case other than the single-
+  leader one; a test asserts the id appears nowhere as a constant. Never
+  hardcode the winner into the comparison engine or the freeze script.
+- **"Runner-up" in phase 7 means the next-best CANDIDATE, never the
+  second-highest experiment overall.** The frozen rule ranks D1 and D2 against
+  each other and each against D0; **D0 is never a peer in that ranking**, so the
+  candidate ordering (D2 > D1) and the overall ordering (**D2 > D0 > D1**) are
+  different true statements about different sets. D0 outscores D1. Every
+  artifact publishes `reference_experiment`, `validation_performance_leader`,
+  `candidate_runner_up` and `overall_validation_ranking` rather than one
+  overloaded `runner_up` field - do not reintroduce that field, and never write
+  "D1 was second" without the qualifier.
+- **Reach for the frozen checkpoint only through
+  `construction_safety_vision.detection_freeze`.** It resolves by digest, not by
+  path: SHA-256
+  `0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206`, 5502289
+  bytes, with a byte-identical git-ignored copy at
+  `artifacts/frozen/detection/D2_best.pt` kept outside the run directory a
+  re-run would overwrite. **Never use `last.pt`, never use D0's or D1's
+  weights**, and never retrain to replace a missing binary - a re-run produces
+  different bytes under the same experiment name, which is the substitution the
+  accessor exists to catch. A missing artifact is
+  `BLOCKED_MISSING_MODEL_ARTIFACT`, not a reason to train.
+- **No efficiency tie-break was run, and none is owed for phase 7.** The policy
+  requires one only in Case C; D2 separates from D1 by 0.034001, beyond the
+  margin. `FRAMEWORK_VALIDATION_SPEED` values stay descriptive and were not
+  consulted. A standardised detector-versus-segmenter latency study is still
+  required by the project's scientific question, but it is a later phase.
+- **No threshold was tuned and none may be, casually.** The frozen object is
+  model architecture + checkpoint + input resolution. If the video
+  demonstration later needs an operating confidence, that is a separate,
+  predeclared, validation-only decision; no holdout data may participate.
+- **The phase 7D artifacts are additive; the historical ones did not move.**
+  `reports/final_detector_manifest.json`,
+  `reports/detection_selection_report.md` and
+  `reports/detection_experiment_comparison.csv` are new. The six D0/D1/D2
+  manifests and reports and the frozen 7A policy are byte-identical, their
+  digests recorded in the freeze manifest and re-verified by test. A later
+  factual clarification to any of them is an **addendum**, never an edit.
 - **Precision and recall carry an operating-point caveat.** Ultralytics reports
   one precision/recall pair at the F1-maximising point, not at a fixed
   confidence, so a large move in either can partly reflect where that point

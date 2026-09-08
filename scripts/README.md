@@ -33,6 +33,7 @@ undocumented one-off shell invocation.
 | `train_detection_baseline.py` | 6B | Verify every frozen input, record the protocol, run the single D0 training, select the checkpoint by the predeclared rule and validate it once. |
 | `freeze_detection_experiments.py` | 7A | Freeze how D1 and D2 will be judged, before either exists: derive the class-support rule's verdict, compute D0's selection metric, resolve both candidate protocols and prove each is a one-variable comparison. Trains nothing. |
 | `train_detection_experiment.py` | 7B+ | Run one frozen Phase 7 candidate. Takes an experiment id, never hyperparameters: the protocol is resolved by inheriting D0's and applying the declared override set. Proves the one-variable contract before fetching weights. |
+| `freeze_final_detector.py` | 7D | Apply the frozen Phase 7 policy to the committed results, record the human-reviewed decision and freeze the selected checkpoint's identity. Trains, validates, benchmarks and tunes nothing. |
 
 ## Rules
 
@@ -244,13 +245,50 @@ recomputes no metric, and it verifies afterwards that the manifest is still
 byte-identical - so prose can be corrected or extended without touching a
 published result.
 
-Selection is deliberately **not** made by this script. Once every declared
-candidate has a result the frozen logic *can* be evaluated, and the live results
-artifact then records its output as `policy_case_candidate` with
-`advisory_only: true`, `preferred_experiment: null` and
-`final_selected_detector: UNSELECTED_PENDING_REVIEW`. Freezing the project's
-detector is a reviewed step of its own; an experiment phase reports the numbers
-the rule needs and stops.
+Selection is deliberately **not** made by this script. An experiment phase
+reports the numbers the frozen rule needs and stops; while it is the last
+candidate to run, the live results artifact records the computed case as an
+`advisory_only` `policy_case_candidate` with `preferred_experiment: null`.
+Freezing the project's detector is a reviewed step of its own, and it belongs to
+`freeze_final_detector.py`.
+
+`freeze_final_detector.py` (phase 7D) is that step. It trains nothing, validates
+nothing, runs no inference, benchmarks no latency, tunes no threshold and opens
+no image; every number it emits was read from a committed result manifest, and
+the only computation is arithmetic over those numbers plus SHA-256 over files
+already on disk.
+
+The winning experiment's id is never written into it. The script rebuilds each
+record from its committed manifest, re-derives the class-support filter from the
+frozen split, recomputes the selection metric and asks
+`detection_comparison.compare` which case holds - then refuses unless the answer
+is the one Phase 7D is authorised for, a single validation-performance leader. A
+test asserts the id appears nowhere as a constant, because "the policy chose it"
+is only worth something if the script could not have said so on its own.
+
+Two independent checks stand behind the one-variable claim: the contract is
+re-derived from the committed configuration *and* required to agree with the
+verdict each experiment recorded when it ran, so configuration drift after a run
+cannot pass. The six historical D0/D1/D2 artifacts and the frozen 7A policy are
+hashed before and after and must be byte-identical; the freeze never regenerates
+them.
+
+The checkpoint is verified by digest against the committed manifest and copied
+byte-identically to `artifacts/frozen/detection/<id>_best.pt` - deliberately
+outside the training run directory, which a re-run would overwrite. A missing
+binary is `BLOCKED_MISSING_MODEL_ARTIFACT` and the script says to obtain it
+rather than retrain, because a re-run produces different weights under the same
+experiment name. A destination that already exists with a different digest fails
+loudly and is never overwritten.
+
+`--verify-only` runs every check and derives the selection without writing
+anything.
+
+`construction_safety_vision.detection_freeze` is the accessor future phases
+should use. It resolves the frozen checkpoint by digest rather than by path,
+prefers the immutable copy over the run directory, and refuses `last.pt` by name
+as well as by digest - the failure mode being that a YOLO checkpoint loads
+whatever bytes it is handed and produces plausible numbers from the wrong model.
 
 ## Planned scripts
 

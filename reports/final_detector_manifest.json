@@ -1,0 +1,350 @@
+{
+  "adapter_manifest_sha256": "1300ff027402a8473c55b53cc9ce3c27297cf4ef05999dd088c2d3ad58eafefe",
+  "baseline_config_sha256": "ebff2d461d877f327ba2e707451c24a7a3d0df432447317cf8820ef224ddc3c6",
+  "batch": 16,
+  "best_epoch": 90,
+  "binary_distribution_status": "LOCAL_IGNORED_FROZEN_ARTIFACT",
+  "candidate_runner_up": "D1",
+  "class_map": {
+    "helmet_loose": 0,
+    "helmet_on_head": 1,
+    "person": 2,
+    "vest_loose": 3,
+    "vest_on_body": 4
+  },
+  "dataset_fingerprints": {
+    "adapter_config_sha256": "5f70fe2441526ef00d215e3a247bbd78eb116cf30094ead83f2821d21a065927",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "modeling_population_sha256": "afe8b73752f2dffda51e5cf9b67c2169966e94a73c0806c4c96405420e2c86d7",
+    "task_materialization_config_sha256": "352efcc105c295c17599fe73dda1506c61aa17de0f90bd3caa1612e40c44a541",
+    "yolo_label_sha256": {
+      "train": "6237624f585f8e9f7ac2565be1eacf4140f6d55ad2de5d3c85f2972efa649e5f",
+      "validation": "d9ac55c70918b7ad7621ad6f7849d70c15f66585ec6b66f97b07fedfe6102c4b"
+    }
+  },
+  "efficiency_tie_break": {
+    "benchmark_run": false,
+    "existing_speed_values": "The FRAMEWORK_VALIDATION_SPEED values recorded in each experiment manifest are descriptive only. They were measured by the training framework under differing input resolutions and were not used in this selection.",
+    "label": "SELECTION_RULE",
+    "reason": "The frozen policy requires an efficiency comparison only in Case C, where candidate performance is practically tied. D2 separates from the next-best candidate (D1) by 0.034001 on supported_macro_map50_95, more than the frozen margin of 0.005, so no tie exists among the candidates and no tie-break is required.",
+    "required_by_policy": false,
+    "still_required_later": "A standardised detector-versus-segmenter latency study remains required by the project's scientific question. It is a later phase and is not authorised now."
+  },
+  "epochs_completed": 100,
+  "experiment_matrix_sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+  "experiment_sha256": "8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685",
+  "final_detector_sha256": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+  "frozen_copy": {
+    "committed": false,
+    "immutable": true,
+    "note": "A byte-identical copy of the selected checkpoint, kept outside the training run's output directory so that re-running an experiment cannot overwrite the frozen model. Git-ignored: the repository commits the record, not the binary.",
+    "relative_path": "artifacts/frozen/detection/D2_best.pt",
+    "sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "size_bytes": 5502289,
+    "source_relative_path": "artifacts/detection/D2/weights/best.pt"
+  },
+  "historical_artifact_digests": {
+    "detection_D0_manifest.json": "52239d617272495a063662b133868130cc00666bf798780eec97e73be83713dc",
+    "detection_D0_report.md": "eda8abd8ddc2fd6e1de32234f679a76823cda586cd302017bd69e30c6ddc53cd",
+    "detection_D1_manifest.json": "3b81cbedd9f093a58afef428b8819e04eedf4e3d05d0121545b15c82e157b260",
+    "detection_D1_report.md": "6bfd53e78d4f725cf998e27ed8fecc57d2fcf268b8d68a25cc0ad31e02e4604e",
+    "detection_D2_manifest.json": "c5777819a405c7ac0133c5c2bd30dfeac77eca68080b647254dd52a6204ee6ef",
+    "detection_D2_report.md": "76fc0e399673f0562cb115095dbc812de6f279f47b1d43af36e4aef1a7e0102e",
+    "detection_comparison_policy.json": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+    "detection_comparison_reference.json": "200f18e6a6a6b40510ece589b2353ea577ae97b0ed9244242a62f398b78b54da"
+  },
+  "human_review": {
+    "confirmed": [
+      "the frozen protocol was respected by all three experiments",
+      "no disqualifying experimental violation exists",
+      "the frozen policy was correctly applied and yields CASE_B_VALIDATION_PERFORMANCE_LEADER",
+      "D2 is accepted as the final detector checkpoint"
+    ],
+    "did_not": [
+      "override the frozen policy",
+      "introduce a metric, tie-breaker or threshold",
+      "re-run, re-tune or re-validate any experiment",
+      "consult the holdout"
+    ],
+    "evidence_basis": "MAINTAINER_DECLARED",
+    "method": "PREDECLARED_POLICY_PLUS_HUMAN_REVIEW",
+    "relationship_to_policy": "Confirmatory, not corrective. The selected experiment is the frozen policy's output; human review established that the policy was applicable and correctly applied, and accepted the result. Had review disagreed with the policy's output, the correct action would have been to record the disagreement and stop - not to select a different model.",
+    "reviewed": [
+      "the complete committed D0, D1 and D2 validation results",
+      "the frozen Phase 7A comparison policy and its four selection cases",
+      "each candidate's one-variable contract against the reference",
+      "the holdout compliance recorded by every experiment"
+    ],
+    "reviewer": "project maintainer",
+    "status": "FINAL_SELECTED"
+  },
+  "imgsz": 768,
+  "interpretation_limits": {
+    "d1_d2_not_ranked": "D1 and D2 differ from each other in two things at once, because each varies a different field relative to D0. Their difference is recorded for completeness and is not attributable to either variable; only each candidate's comparison with D0 is controlled.",
+    "does_not_establish": [
+      "statistical significance: the margin is an engineering decision threshold, carries no confidence level, and nothing was repeated, so run-to-run variance on this setup is UNKNOWN",
+      "superiority across arbitrary datasets: one dataset of 433 eligible images from one provider was used",
+      "superiority across random seeds: every experiment ran once at seed 42",
+      "that increased resolution helped because of small objects: the class-level diagnostic conducted in Phase 7C did not support that mechanism",
+      "any statement about test performance: the holdout has never been evaluated"
+    ],
+    "label": "LIMITATION",
+    "operating_point": "Ultralytics reports one precision/recall pair at the F1-maximising point rather than at a fixed confidence, so a large move in either can partly reflect where that point landed. No threshold was ever tuned.",
+    "single_run": "Each configuration was trained exactly once. deterministic: true reduces run-to-run variance but does not remove it, so every delta reported here is a difference between two single runs, not an estimate with an interval.",
+    "small_object_hypothesis": {
+      "detail": "Phase 7C ranked the four supported classes by their frozen small-object fraction against their AP change and found a rank correlation of -0.20: the largest gain went to the least small-object-heavy class and the only decline was person. Resolution improved the selection metric beyond the margin - that is the controlled claim - but the proposed mechanism does not explain it, and the beyond-margin gain must never be presented as confirming the hypothesis.",
+      "status": "UNSUPPORTED_BY_THE_SHAPE_OF_THE_RESULT"
+    },
+    "supports": "Under this frozen dataset, split, software stack and one-run-per-configuration controlled protocol, D2 - YOLO11n at imgsz 768 - was the best validation detector among D0, D1 and D2 on the predeclared selection metric."
+  },
+  "metrics_are_validation_only": true,
+  "model": "YOLO11n",
+  "official_all_class_metric": "mAP@0.50:0.95",
+  "official_all_class_values": {
+    "D0": 0.464429,
+    "D1": 0.471114,
+    "D2": 0.490386
+  },
+  "overall_validation_ranking": [
+    {
+      "experiment_id": "D2",
+      "rank": 1,
+      "supported_macro_map50_95": 0.594018,
+      "supported_macro_map50_95_exact": "0.594018000000"
+    },
+    {
+      "experiment_id": "D0",
+      "rank": 2,
+      "supported_macro_map50_95": 0.570142,
+      "supported_macro_map50_95_exact": "0.570141750000"
+    },
+    {
+      "experiment_id": "D1",
+      "rank": 3,
+      "supported_macro_map50_95": 0.560017,
+      "supported_macro_map50_95_exact": "0.560017000000"
+    }
+  ],
+  "overall_validation_ranking_note": "A descriptive ordering of all three experiments by supported_macro_map50_95, reference included. It is reported so that no reader infers a total ordering from the candidate-only fields above, and it played no part in the decision: the frozen rule compares each candidate against the reference and the candidates against each other, and never ranks the reference as a peer.",
+  "per_class_metrics": {
+    "D0": {
+      "helmet_loose": {
+        "AP@0.50": 0.879592,
+        "AP@0.50:0.95": 0.792559,
+        "precision": 0.898364,
+        "recall": 0.807018
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.735806,
+        "AP@0.50:0.95": 0.561699,
+        "precision": 0.887663,
+        "recall": 0.672636
+      },
+      "person": {
+        "AP@0.50": 0.68902,
+        "AP@0.50:0.95": 0.491618,
+        "precision": 0.792384,
+        "recall": 0.583942
+      },
+      "vest_loose": {
+        "AP@0.50": 0.131486,
+        "AP@0.50:0.95": 0.041575,
+        "precision": 1.0,
+        "recall": 0.0
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.660959,
+        "AP@0.50:0.95": 0.434691,
+        "precision": 0.699987,
+        "recall": 0.636364
+      }
+    },
+    "D1": {
+      "helmet_loose": {
+        "AP@0.50": 0.862006,
+        "AP@0.50:0.95": 0.798361,
+        "precision": 0.907613,
+        "recall": 0.824561
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.734993,
+        "AP@0.50:0.95": 0.5941,
+        "precision": 0.872208,
+        "recall": 0.659574
+      },
+      "person": {
+        "AP@0.50": 0.706444,
+        "AP@0.50:0.95": 0.496203,
+        "precision": 0.860498,
+        "recall": 0.630357
+      },
+      "vest_loose": {
+        "AP@0.50": 0.165,
+        "AP@0.50:0.95": 0.1155,
+        "precision": 1.0,
+        "recall": 0.0
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.622773,
+        "AP@0.50:0.95": 0.351404,
+        "precision": 0.65788,
+        "recall": 0.524496
+      }
+    },
+    "D2": {
+      "helmet_loose": {
+        "AP@0.50": 0.918909,
+        "AP@0.50:0.95": 0.814493,
+        "precision": 0.967942,
+        "recall": 0.719298
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.767135,
+        "AP@0.50:0.95": 0.60234,
+        "precision": 0.969884,
+        "recall": 0.685326
+      },
+      "person": {
+        "AP@0.50": 0.716256,
+        "AP@0.50:0.95": 0.468534,
+        "precision": 0.881327,
+        "recall": 0.596305
+      },
+      "vest_loose": {
+        "AP@0.50": 0.133571,
+        "AP@0.50:0.95": 0.075857,
+        "precision": 1.0,
+        "recall": 0.0
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.695648,
+        "AP@0.50:0.95": 0.490705,
+        "precision": 0.812503,
+        "recall": 0.581818
+      }
+    }
+  },
+  "phase": "7D",
+  "phase7_policy_sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+  "policy_case": "CASE_B_VALIDATION_PERFORMANCE_LEADER",
+  "policy_case_derivation": {
+    "candidate_runner_up": "D1",
+    "candidate_runner_up_semantics": "The next-best CONTROLLED CHALLENGER, i.e. the second-ranked experiment among the non-reference candidates. It is NOT a claim that D1 holds the second-highest value of the selection metric overall - the reference D0 is excluded from this ranking by design, because it enters the rule through the separate 'clears the reference by more than the margin' test rather than as a peer. See overall_validation_ranking for the ordering across all three experiments.",
+    "derived_by": "construction_safety_vision.detection_comparison.select",
+    "efficiency_comparison_required": false,
+    "hardcoded_winner": false,
+    "leader_separation": 0.034001,
+    "leader_separation_exact": "0.034001",
+    "leader_separation_semantics": "D2 minus D1 on supported_macro_map50_95: a separation between two candidates, never between a candidate and the reference.",
+    "note": "The selected experiment id is the frozen selection engine's output, computed from the committed result manifests. It is not named in the freeze script, and the freeze refuses if the engine produces any case other than CASE_B_VALIDATION_PERFORMANCE_LEADER.",
+    "rationale": "D2 improves supported_macro_map50_95 over D0 by more than 0.005 and separates from every other candidate by more than the same margin",
+    "reference_experiment": "D0",
+    "validation_performance_leader": "D2"
+  },
+  "practical_equivalence_margin": "0.005",
+  "pretrained_weight_identity": "IDENTICAL_TO_REFERENCE_VERIFIED_BY_DIGEST",
+  "pretrained_weights": {
+    "committed": false,
+    "identifier": "yolo11n.pt",
+    "relative_path": "artifacts/weights/yolo11n.pt",
+    "sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "size_bytes": 5613764,
+    "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+    "ultralytics_version": "8.4.138"
+  },
+  "primary_metric_deltas": {
+    "D1_minus_D0": -0.010125,
+    "D2_minus_D0": 0.023876,
+    "D2_minus_D1": 0.034001
+  },
+  "primary_metric_deltas_exact": {
+    "D1_minus_D0": "-0.010124750000",
+    "D2_minus_D0": "0.023876250000",
+    "D2_minus_D1": "0.034001000000"
+  },
+  "primary_metric_values": {
+    "D0": 0.570142,
+    "D1": 0.560017,
+    "D2": 0.594018
+  },
+  "primary_metric_values_exact": {
+    "D0": "0.570141750000",
+    "D1": "0.560017000000",
+    "D2": "0.594018000000"
+  },
+  "primary_selection_metric": "supported_macro_map50_95",
+  "primary_selection_metric_definition": "unweighted arithmetic mean of per-class AP@0.50:0.95 over the classes the frozen support rule classifies COMPARISON_SUPPORTED",
+  "rare_class_policy": {
+    "classes": [
+      "vest_loose"
+    ],
+    "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+    "label": "LIMITATION",
+    "reported_in_full": true,
+    "rule": "Every class listed here failed the frozen support rule on the validation split. Its precision, recall, AP@0.50 and AP@0.50:0.95 are reported in full for every experiment, and it remains a required class of the project. What it may not do is decide a winner: it was not tuned for, no model was preferred or rejected because it moved, it is never ranked against the supported classes, and the holdout was not consulted to resolve its uncertainty.",
+    "selection_rationale_excludes_it": true,
+    "used_in_selection": false
+  },
+  "reference_experiment": "D0",
+  "repository_contains_model_binary": false,
+  "reproducibility_note": "A fresh clone cannot run inference immediately. The repository commits the record that identifies the frozen checkpoint - digest, size, producing experiment and complete protocol - not the binary itself. The weights must be obtained separately or reproduced by re-running the recorded protocol, and a re-run produces different bytes. How the frozen model is distributed for academic release is an open decision.",
+  "resolved_optimizer": "AdamW",
+  "schema_version": 1,
+  "secondary_metric_values": {
+    "D0": {
+      "mAP@0.50": 0.619373,
+      "precision": 0.85568,
+      "recall": 0.539992
+    },
+    "D1": {
+      "mAP@0.50": 0.618243,
+      "precision": 0.85964,
+      "recall": 0.527798
+    },
+    "D2": {
+      "mAP@0.50": 0.646304,
+      "precision": 0.926331,
+      "recall": 0.516549
+    }
+  },
+  "seed": 42,
+  "selected_checkpoint": {
+    "committed": false,
+    "relative_path": "artifacts/detection/D2/weights/best.pt",
+    "selection_rule": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+    "sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "size_bytes": 5502289
+  },
+  "selected_experiment": "D2",
+  "selection_method": "PREDECLARED_POLICY_PLUS_HUMAN_REVIEW",
+  "selection_metric_classes": [
+    "helmet_loose",
+    "helmet_on_head",
+    "person",
+    "vest_on_body"
+  ],
+  "selection_status": "FINAL_SELECTED",
+  "split_reference": {
+    "manifest": "reports/split_manifest.json",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc"
+  },
+  "status": "FROZEN",
+  "task": "detection",
+  "test": {
+    "reason": "Phase 7D selected a detector from committed validation results only. The holdout was not read, materialised, adapted, evaluated, counted or inspected, no artifact this phase wrote carries a holdout number, and no holdout identifier appears in any of them.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "threshold_tuning": {
+    "label": "SELECTION_RULE",
+    "note": "Validation ran at the pinned framework defaults, identical across all three experiments. If the video demonstration later needs an operational inference threshold, that is a separate, predeclared, validation-only decision in which no holdout data may participate.",
+    "parameters_untouched": [
+      "confidence",
+      "IoU",
+      "NMS"
+    ],
+    "selected_object": "model architecture + training checkpoint + input resolution",
+    "tuned": false
+  },
+  "training_or_evaluation_performed_in_this_phase": false,
+  "validation_performance_leader": "D2"
+}

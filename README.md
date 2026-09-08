@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: all three detection experiments complete, no winner selected (phase 7C of 14).** The
+> **Status: detector frozen - YOLO11n @ 768 (phase 7D of 14 complete).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -12,9 +12,11 @@
 > metrics**. Phase 7A froze the controlled comparison protocol - the class-support
 > rule, the selection metric, the decision margin and the two experiments D1 and
 > D2 - **before either experiment ran**. Phase 7B ran **D1 once** (below D0) and
-> phase 7C ran **D2 once** (above D0 beyond the margin). **No final detector has
-> been selected**: that is a reviewed decision, and the experiment phases stop at
-> reporting the numbers the frozen rule needs. The provider's
+> phase 7C ran **D2 once** (above D0 beyond the margin). Phase 7D applied that
+> frozen rule mechanically and, after human review, **froze D2 - YOLO11n at imgsz
+> 768 - as the final detector**; the selection is based entirely on the
+> validation-only Phase 7 protocol and trained, evaluated and benchmarked
+> nothing. The provider's
 > split was **rejected for the final protocol** and is not reused. The `test` split is a **locked holdout**: it has never been
 > evaluated, inspected, materialised or adapted, and **every number below is a
 > validation number**. No segmentation model exists yet.
@@ -104,7 +106,8 @@ Two design decisions define this architecture:
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
 | Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
 | Detection experiments | **All three complete.** D0 0.570142 · D1 (capacity, YOLO11s) 0.560017 `BELOW_D0` · D2 (resolution, imgsz 768) 0.594018 `IMPROVES_D0_BEYOND_MARGIN`, on `supported_macro_map50_95`. |
-| Phase 7 winner | **`UNSELECTED_PENDING_REVIEW`.** The frozen logic computes `CASE_B` with D2 leading, recorded as an **advisory** candidate case; freezing the detector is a separate reviewed step. |
+| Phase 7 winner | **Frozen (phase 7D): D2 - YOLO11n @ imgsz 768.** `CASE_B_VALIDATION_PERFORMANCE_LEADER`, derived mechanically by the frozen logic and accepted by human review. Selection is **validation-only**; no test number exists. |
+| Final detector artifact | `reports/final_detector_manifest.json` · `final_detector_sha256` `84d30d64...`. The checkpoint itself is **not committed** (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain or retrain the weights. |
 | Segmentation model | Not trained. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
@@ -658,8 +661,8 @@ absolute margin of **0.005**:
 | Case | Condition | Outcome |
 | --- | --- | --- |
 | A | nothing clears D0 by more than the margin | retain D0, the lower-complexity baseline |
-| B | one candidate clears D0 **and** separates from the runner-up | that candidate leads on validation |
-| C | a candidate clears D0 but does not separate from the runner-up | no winner; efficiency comparison required |
+| B | one candidate clears D0 **and** separates from the next-best *candidate* | that candidate leads on validation |
+| C | a candidate clears D0 but does not separate from the next-best *candidate* | no winner; efficiency comparison required |
 | D | execution or protocol failure | protocol review; **not** read as model inferiority |
 
 The margin is an engineering decision threshold that prevents escalating to a
@@ -811,20 +814,79 @@ resolution, not model size - D0's own parameter count was not recorded, so no
 comparison against it is made). The headline metric was cross-checked against
 the independently recomputed epoch history at a delta of 0.002944.
 
-### Phase 7 selection - deliberately not made
+### Phase 7D - the detector is frozen
 
-All three experiments now have results, so the frozen logic **can** be
-evaluated. It computes `CASE_B_VALIDATION_PERFORMANCE_LEADER` with D2 leading -
-and `reports/detection_experiment_results.json` records that as
-`policy_case_candidate` with `advisory_only: true`,
-`preferred_experiment: null` and
-**`final_selected_detector: UNSELECTED_PENDING_REVIEW`**.
+**Final detector: D2 - YOLO11n at imgsz 768.** Selected under the frozen
+validation-only Phase 7 protocol; `reports/detection_selection_report.md` sets
+out the full argument and `reports/final_detector_manifest.json` carries its
+identity.
 
-Freezing the project's detector is a reviewed decision, not an output of an
-experiment phase. Until it is taken, D0 remains preferred **by default, not by
-comparison**, no efficiency benchmark is run, and no further experiment is
-authorised - not another resolution, another capacity, a combination of the two,
-or any tuning prompted by these results.
+Phase 7D trained nothing, validated nothing, ran no inference, benchmarked no
+latency, tuned no threshold and opened no image. Every number it used was read
+from a committed result manifest.
+
+The decision was **derived, not asserted**. The phase rebuilt each experiment's
+record from its committed manifest, re-derived the class-support filter from the
+frozen split, recomputed `supported_macro_map50_95`, and asked the frozen
+selection engine which case held. It returned
+`CASE_B_VALIDATION_PERFORMANCE_LEADER` with D2 leading and D1 as the
+non-reference candidate runner-up; the
+freeze refuses any other case rather than reconciling it, and a test asserts
+that the winning experiment's id appears nowhere as a constant in the freeze
+script.
+
+| Experiment | `supported_macro_map50_95` (exact) | Delta vs D0 | Status |
+| --- | --- | --- | --- |
+| D0 | 0.570141750000 | - | reference |
+| D1 | 0.560017000000 | -0.010124750000 | `BELOW_D0` |
+| D2 | 0.594018000000 | +0.023876250000 | `IMPROVES_D0_BEYOND_MARGIN` |
+
+D2 also exceeds D1 by 0.034001000000, more than the frozen 0.005 margin, so no
+performance tie exists and **no efficiency tie-break was required** - the policy
+demands one only in Case C. The existing `FRAMEWORK_VALIDATION_SPEED` values
+remain descriptive and were not consulted.
+
+**Three different rankings, kept apart.** Case B compares D1 and D2 as
+controlled *challengers* against D0 as the *reference baseline*; D0 is never
+ranked as a peer of the two, because it enters the rule through the separate
+"clears the reference by more than the margin" test. So:
+
+| Concept | Value |
+| --- | --- |
+| Validation performance leader (the frozen detector) | **D2** |
+| Second-highest experiment overall | **D0** |
+| Non-reference candidate runner-up | **D1** |
+
+D1 being the other candidate does **not** make its metric second-highest
+overall - the overall ordering is **D2 > D0 > D1**, recorded in every artifact
+as `overall_validation_ranking`. Both orderings are true; they are about
+different sets.
+
+Human review was **confirmatory, not corrective**: it established that the
+protocol held, that no disqualifying violation exists and that the rule was
+correctly applied, then accepted the outcome. It did not override the policy,
+add a metric or tie-breaker, re-run anything, or consult the holdout.
+
+The frozen checkpoint is identified by digest rather than by path (SHA-256
+`0466f872...`, 5502289 bytes) and copied byte-identically to the git-ignored
+`artifacts/frozen/detection/D2_best.pt`, deliberately outside the run directory
+a re-run would overwrite. `last.pt` is rejected by name as well as by digest.
+
+**What this does not establish.** No statistical significance - the margin is an
+engineering threshold, nothing was repeated, and run-to-run variance here is
+UNKNOWN. No generalisation across datasets or seeds. **No support for the
+small-object mechanism**: Phase 7C's class-level diagnostic gave a rank
+correlation of -0.20, so the beyond-margin gain must never be read as confirming
+that hypothesis. `vest_loose` is reported in full but played no part in the
+rationale. D1 versus D2 is a difference, not a ranking. And **nothing at all
+about test performance** - the holdout has never been evaluated.
+
+No further detection experiment is authorised - not another resolution, another
+capacity, a combination of the two, or any tuning prompted by these results.
+
+```bash
+uv run python scripts/freeze_final_detector.py --verify-only
+```
 
 ```bash
 uv run python scripts/train_detection_experiment.py --experiment D2 --verify-only
@@ -941,7 +1003,10 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_D1_manifest.json         # D1 metrics, fingerprints, checkpoints (7B)
 │   ├── detection_D2_report.md             # D2 resolution experiment and its limits (7C)
 │   ├── detection_D2_manifest.json         # D2 metrics, fingerprints, checkpoints (7C)
-│   ├── detection_experiment_results.json  # D0/D1/D2 table, winner unselected (7C)
+│   ├── detection_experiment_results.json  # D0/D1/D2 table, final selection (7D)
+│   ├── detection_selection_report.md      # Why D2 was frozen, and its limits (7D)
+│   ├── final_detector_manifest.json       # Frozen detector identity + fingerprint (7D)
+│   ├── detection_experiment_comparison.csv # Machine-readable D0/D1/D2 table (7D)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -979,6 +1044,7 @@ Work proceeds through 14 gated phases (see
 │   ├── experiment.py          # Experiment protocols, declared before they run
 │   ├── detection_results.py   # Result manifests, metric extraction, experiment fingerprints
 │   ├── detection_comparison.py # Phase 7 support rule, selection metric, selection logic
+│   ├── detection_freeze.py     # Frozen detector identity, checkpoint verification (7D)
 │   ├── detection_run.py       # Shared run primitives: weights, optimizer evidence, figures
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,
