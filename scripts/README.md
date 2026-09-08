@@ -31,6 +31,7 @@ undocumented one-off shell invocation.
 | `build_detection_adapter.py` | 6A | Derive YOLO detection labels from the canonical COCO detection dataset, with a per-box fidelity audit. Detection only. |
 | `detection_runtime_check.py` | 6A | Verify the CUDA runtime by executing real kernels, fingerprint the pretrained weights, and optionally run a minimal smoke test. |
 | `train_detection_baseline.py` | 6B | Verify every frozen input, record the protocol, run the single D0 training, select the checkpoint by the predeclared rule and validate it once. |
+| `freeze_detection_experiments.py` | 7A | Freeze how D1 and D2 will be judged, before either exists: derive the class-support rule's verdict, compute D0's selection metric, resolve both candidate protocols and prove each is a one-variable comparison. Trains nothing. |
 
 ## Rules
 
@@ -179,6 +180,22 @@ earlier run cannot be reported as D0's.
 `--resume` exists for operational interruptions only: it continues the same run
 from its checkpoint with identical hyperparameters and records that it did. It
 is not a way to restart a failed experiment with different settings.
+
+`freeze_detection_experiments.py` (phase 7A) writes rules rather than results,
+and it is ordered so that the rules cannot have been fitted to a number that
+does not exist: it refuses to run at all if `CSVISION_ALLOW_TEST_SPLIT` is set,
+it refuses to build the D0 reference if the committed result was produced under a
+different protocol fingerprint than `detection_baseline.yaml` currently holds,
+and it exits non-zero if either candidate turns out to differ from D0 in an
+undeclared field. It re-reads the committed D0 manifest and never re-runs
+training or validation.
+
+Its output is deterministic: sorted keys, no timestamp in the policy or the
+reference, so running it twice produces byte-identical artifacts. The class set
+that enters the selection metric is *derived* from the frozen split manifest by
+applying the support thresholds - no class is named in the code - which is what
+makes the exclusion of the rare class a consequence of its evidence rather than
+a decision about the class.
 
 ## Planned scripts
 

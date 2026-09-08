@@ -6,6 +6,12 @@ outcome lives here, never in notebook cells or ad-hoc command-line flags.
 | File | Purpose |
 | --- | --- |
 | `project.yaml` | Project-level settings: seed, split ratios, declared dataset. |
+| `split_search.yaml` | Phase 5C.1 split-search protocol (see below). |
+| `split_freeze.yaml` | Phase 5C.2 split-freeze protocol. |
+| `task_materialization.yaml` | Phase 5D canonical COCO task-dataset materialisation. |
+| `detection_adapter.yaml` | Phase 6A YOLO detection adapter. |
+| `detection_baseline.yaml` | Phase 6A D0 protocol: model, every hyperparameter, metric hierarchy. |
+| `detection_experiments.yaml` | Phase 7A comparison protocol: D0/D1/D2, support rule, margin (see below). |
 
 ## Rules
 
@@ -28,3 +34,25 @@ ignored, so a typo cannot silently change the protocol.
 
 It defines how candidates are *searched for and scored*. It does not select one
 and it freezes nothing. The provider's split is absent by design.
+
+## `detection_experiments.yaml`
+
+The phase 7A controlled-comparison protocol, frozen while D1 and D2 did not yet
+exist: the class-support rule that decides which classes may order two models,
+the primary selection metric, the mandatory all-class metric, the
+practical-equivalence margin, the batch/memory policy and the two authorised
+experiments.
+
+Its shape is the point. D1 and D2 carry **no protocol of their own**: they name
+`inherits: D0` plus a set of dotted-path `overrides`, and D0's protocol is read
+from `detection_baseline.yaml`. So every shared hyperparameter is stated once
+and cannot drift between experiments, and "only one thing differs" is checkable
+rather than asserted - the parser rejects a candidate whose `overrides` do not
+exactly match its declared `intentional_fields` plus `consequential_fields`.
+
+Parsing is strict in two extra ways beyond unknown keys: the support thresholds
+and the margin must equal the frozen constants in
+`construction_safety_vision.detection_comparison`, and the metric names must be
+the frozen ones. Relaxing a threshold or renaming the deciding metric after a
+result exists is exactly the failure the file is meant to prevent, so it raises
+rather than loads.

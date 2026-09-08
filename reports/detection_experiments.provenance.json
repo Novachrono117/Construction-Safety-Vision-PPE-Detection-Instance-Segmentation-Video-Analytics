@@ -1,0 +1,94 @@
+{
+  "config": {
+    "detection_baseline": "configs/detection_baseline.yaml",
+    "detection_experiments": "configs/detection_experiments.yaml",
+    "experiment_matrix_sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+    "matrix_content_sha256": "665759623c56f70d91679f107474c3585a4332cbe242a5de934d56fec6c2abe9"
+  },
+  "created_at": "2026-09-08T13:01:29+00:00",
+  "details": {
+    "classification": "DETECTION_EXPERIMENT_PROTOCOL_FROZEN",
+    "d0_all_class_map50_95": 0.464429,
+    "d0_supported_macro_map50_95": 0.570142,
+    "descriptive_classes": [
+      "vest_loose"
+    ],
+    "experiments_executed_in_this_phase": [],
+    "frozen_experiments": [
+      "D1",
+      "D2"
+    ],
+    "holdout_accessed": false,
+    "models_trained_in_this_phase": 0,
+    "phase": "7A",
+    "policy_sha256": "4a9831e97252d4a7ba2acf1a2ccb17eb7f876135f10417183df1bf988fdb0cf1",
+    "practical_equivalence_margin": "0.005",
+    "primary_selection_metric": "supported_macro_map50_95",
+    "reference_experiment": "D0",
+    "reference_sha256": "99b1693ee912f1cc27dddba768325d729a65315380adf468e454b9db8a5f4a76",
+    "revalidation_audit": "NON_SELECTION_REVALIDATION",
+    "support_rule": {
+      "classifications": [
+        "COMPARISON_SUPPORTED",
+        "DESCRIPTIVE_HIGH_UNCERTAINTY"
+      ],
+      "min_validation_instances": 20,
+      "min_validation_positive_images": 5,
+      "split": "validation"
+    },
+    "supported_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ]
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "29b52b412e08cb3257bddb9c8141f54927680ead",
+  "inputs": [
+    {
+      "path": "configs/detection_experiments.yaml",
+      "sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+      "size_bytes": 9255
+    },
+    {
+      "path": "configs/detection_baseline.yaml",
+      "sha256": "6c8b59854795be3ca06fd2f0c5f4261834545e8ac3522f2f3d4200256efef4c7",
+      "size_bytes": 5214
+    },
+    {
+      "path": "reports/detection_D0_manifest.json",
+      "sha256": "52239d617272495a063662b133868130cc00666bf798780eec97e73be83713dc",
+      "size_bytes": 10077
+    },
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    }
+  ],
+  "name": "detection_experiment_protocol_freeze",
+  "outputs": [
+    {
+      "path": "reports/detection_comparison_policy.json",
+      "sha256": "ab4e44a1cd502db73a906c81095b3a0eeb9eee191b5cb5df1c2013fb40b5b330",
+      "size_bytes": 28973
+    },
+    {
+      "path": "reports/detection_comparison_policy.md",
+      "sha256": "cbdad2ede6d63b8ebc6eca61786a302c5620c9dd2007466056f88451da8b814b",
+      "size_bytes": 19655
+    },
+    {
+      "path": "reports/detection_comparison_reference.json",
+      "sha256": "200f18e6a6a6b40510ece589b2353ea577ae97b0ed9244242a62f398b78b54da",
+      "size_bytes": 4826
+    }
+  ],
+  "phase": 7,
+  "schema_version": 1
+}

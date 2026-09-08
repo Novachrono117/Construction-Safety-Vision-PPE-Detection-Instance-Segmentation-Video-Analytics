@@ -1,0 +1,204 @@
+# Phase 7 - the controlled detection comparison protocol, frozen before D1 and
+# D2 exist.
+#
+# Loaded by `construction_safety_vision.detection_comparison`. Parsing is
+# strict: an unknown key raises, a threshold that does not match the frozen
+# constant raises, a metric name outside the frozen set raises, and any
+# reference to the protected split raises.
+#
+# D0 has been trained. D1 and D2 have not. That is what makes this file a
+# protocol rather than a description: the deciding metric, the class-support
+# rule, the decision margin and the four selection cases are all fixed here,
+# while the numbers they will be applied to do not yet exist.
+#
+# The candidates carry no protocol of their own. They inherit D0's protocol
+# wholesale and declare an override set, so "only one thing differs" is a
+# structural property of the configuration rather than a promise in prose. The
+# validator checks that the override set equals the declared variable fields;
+# an extra override is an undeclared second variable and is rejected.
+
+schema_version: 1
+phase: 7A
+task: detection
+
+# Every candidate is measured against D0 and against nothing else.
+reference_experiment: D0
+
+# Which classes may decide a comparison. Written as a general threshold on
+# validation evidence, not as "exclude vest_loose": a rule that names a class is
+# a decision about that class, and would have to be re-argued for every future
+# class. Applied mechanically to the support frozen in phase 5C.2, it happens to
+# exclude vest_loose - that is the rule's output, not its premise.
+support_rule:
+  min_validation_positive_images: 5
+  min_validation_instances: 20
+  rationale: >-
+    A class's AP is an estimate, and its uncertainty is governed by how much
+    validation evidence stands behind it. Both floors are needed because they
+    fail independently: a class can hold many instances inside one or two
+    images, in which case the instance count looks healthy while the estimate
+    still rests on a single scene, one camera and one lighting condition. Under
+    the frozen split vest_loose holds 1 positive validation image and 8
+    instances, so averaging its AP into the deciding metric would hand a fifth
+    of every Phase 7 decision to one image. The thresholds are deliberately
+    modest - they are a floor on interpretability, not a claim that a class
+    above them is precisely estimated.
+
+metrics:
+  # The unweighted mean of per-class AP@0.50:0.95 over the supported classes.
+  # Unweighted on purpose: a support-weighted mean would let `person`, the most
+  # frequent class, absorb the decision, which is the opposite of what a PPE
+  # compliance evaluation cares about.
+  primary_selection: supported_macro_map50_95
+
+  # Mandatory and never hidden. The support filter says which classes carry
+  # enough evidence to *order two models*; it does not say the excluded class
+  # does not count, and the official five-class number stays the headline
+  # figure of the academic report.
+  official_all_class: mAP@0.50:0.95
+
+  secondary:
+    - mAP@0.50
+    - precision
+    - recall
+
+  per_class:
+    - AP@0.50
+    - AP@0.50:0.95
+    - precision
+    - recall
+
+  # Recorded for interpretation, never for selection. Recall in particular: D0's
+  # recall sits far below its precision, and tracking it across experiments
+  # helps explain why the selection metric moved. It does not choose the winner,
+  # and no recall-weighted composite is introduced.
+  diagnostics:
+    - confusion_matrix
+    - training_curves
+    - validation_loss_curves
+    - framework_validation_speed
+    - recall_diagnostic
+
+# An absolute margin on AP/mAP. An improvement no larger than this is treated as
+# PRACTICALLY_EQUIVALENT_ON_THIS_VALIDATION_SET and the lower-complexity
+# baseline is retained. `deterministic: true` reduces run-to-run variance; it
+# does not remove it, and a 65-image validation split cannot resolve a
+# half-point difference. This is an engineering decision threshold to prevent
+# model escalation for a trivial difference - NOT a significance test, and no
+# claim of statistical significance may be derived from it.
+practical_equivalence_margin_map50_95: 0.005
+
+# Batch size is a controlled variable, so it may not move to make a run fit.
+memory_policy:
+  controlled_batch: 16
+  on_cuda_oom: STOP_AND_CLASSIFY
+  classification: MEMORY_CONSTRAINT_REVIEW_REQUIRED
+  forbidden_mitigations:
+    - reduce_batch
+    - auto_batch
+    - gradient_accumulation
+    - change_imgsz
+    - change_model
+    - reduce_workers_to_fit_by_changing_batch
+  rationale: >-
+    Every listed mitigation changes the effective optimisation problem, so a run
+    rescued by one of them is no longer a one-variable comparison against D0 -
+    it differs in capacity or resolution *and* in batch size, and no metric
+    difference could be attributed to either. If either candidate cannot execute
+    at batch 16 on this GPU, that experiment stops and is classified
+    MEMORY_CONSTRAINT_REVIEW_REQUIRED. A revised protocol may be designed and
+    reviewed afterwards; the failure is a hardware constraint on the comparison,
+    never evidence that the model is worse.
+
+experiments:
+  - experiment_id: D0
+    role: REFERENCE_BASELINE
+    status: EXECUTED
+    # The single source of truth for every shared hyperparameter. The candidates
+    # inherit from this file, so the shared protocol is stated once and cannot
+    # drift between experiments.
+    protocol_source: configs/detection_baseline.yaml
+    result_manifest: reports/detection_D0_manifest.json
+    intentional_variable: NONE_REFERENCE
+    intentional_fields: []
+    consequential_fields: []
+    overrides: {}
+    question: >-
+      What does a small pretrained YOLO11 detector achieve under this project's
+      frozen data protocol, before any model-size, resolution or augmentation
+      experiment?
+    hypothesis: >-
+      None. D0 is a reference point, not a hypothesis test. It was run once and
+      is frozen: it must not be retuned, re-run to improve it, or averaged over
+      several runs, because a second run would measure noise rather than a
+      change.
+
+  - experiment_id: D1
+    role: CONTROLLED_EXPERIMENT
+    status: FROZEN_NOT_EXECUTED
+    inherits: D0
+    intentional_variable: MODEL_CAPACITY
+    # The declared variable is capacity. The pretrained checkpoint identity
+    # follows necessarily from it - a YOLO11s cannot start from yolo11n.pt - so
+    # it is recorded as consequential rather than as a second variable. Nothing
+    # else may move.
+    intentional_fields:
+      - model
+    consequential_fields:
+      - weight_identifier
+    overrides:
+      model: YOLO11s
+      weight_identifier: yolo11s.pt
+    pretrained_weights:
+      identifier: yolo11s.pt
+      source_mechanism: ULTRALYTICS_STANDARD_PRETRAINED_SAME_STACK_AS_D0
+      fingerprint_status: NOT_YET_FINGERPRINTED
+      commit_binary: false
+      required_before_training:
+        - identifier
+        - sha256
+        - size_bytes
+        - ultralytics_version
+        - source_mechanism
+    question: >-
+      Does increasing model capacity improve detection under the same input
+      resolution and training protocol?
+    hypothesis: >-
+      HYPOTHESIS, untested. A larger backbone may fit this 303-image training
+      set better, or may overfit it; 303 images is small enough that neither
+      outcome is the obvious one. No prediction is recorded as expected, and the
+      result is not interpreted as confirming a preference either way.
+
+  - experiment_id: D2
+    role: CONTROLLED_EXPERIMENT
+    status: FROZEN_NOT_EXECUTED
+    inherits: D0
+    intentional_variable: INPUT_RESOLUTION
+    # Capacity stays fixed at YOLO11n and the pretrained checkpoint stays the
+    # same yolo11n.pt identity D0 started from, so imgsz is the only field that
+    # moves.
+    intentional_fields:
+      - training.imgsz
+    consequential_fields: []
+    overrides:
+      training.imgsz: 768
+    question: >-
+      Does moderately increasing input resolution improve detection, especially
+      for small PPE objects, while model capacity remains fixed?
+    hypothesis: >-
+      HYPOTHESIS, untested. The motivation is a measurement, not an intuition:
+      phase 4A's `reports/eda_source.json` records, over all 2031 canonical
+      annotations and at a small-object threshold of 0.01 relative box area,
+      helmet_on_head 52.87% small (166/314), helmet_loose 45.29% (178/393),
+      person 27.57% (252/914), vest_on_body 25.21% (92/365) and vest_loose 4.44%
+      (2/45); the median relative box area over all annotations is 0.0301.
+      Raising the network input from 640 to 768 preserves roughly 1.44x the
+      pixels per object, which MAY help the smallest instances survive the
+      downsampling stages - or may not, since it also changes the scale
+      distribution the pretrained backbone sees. Whether it helps is exactly
+      what the experiment measures, and no direction is recorded as expected.
+      Two honest caveats on the evidence: those fractions are measured over the
+      whole canonical population rather than per split, and the 0.01 threshold
+      is this project's own convention, not the COCO small-object definition.
+      Nothing about the holdout motivates this, and nothing about the holdout
+      will evaluate it.

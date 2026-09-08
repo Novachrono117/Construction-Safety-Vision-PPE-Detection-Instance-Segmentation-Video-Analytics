@@ -191,10 +191,11 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 6B complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, and the **D0 detection baseline
-  has been trained and validated**. Phase 7 (controlled detection experiments)
-  has not started; do not start it unprompted.
+- **Phase:** 7A complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, the **D0 detection baseline has
+  been trained and validated**, and the **phase 7 comparison protocol is frozen
+  with D1 and D2 specified but not run**. Phase 7B (train D1) has not started;
+  do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -387,15 +388,67 @@ uv run pytest
   the device but have no kernels for it. If CUDA ever reports unavailable, that
   is `BLOCKED_FOR_GPU` - **never fall back to CPU and call it the same
   experiment**.
-- **D0 is frozen in `configs/detection_baseline.yaml` and has not been run.**
-  YOLO11n, imgsz 640, batch 16, seed 42, primary metric `mAP@0.50:0.95`,
-  checkpoint rule predeclared. Do not swap the model for a larger one because it
-  might score better - that is a phase 7 controlled experiment. Do not tune any
+- **D0's protocol lives in `configs/detection_baseline.yaml` and it has been
+  run once.** YOLO11n, imgsz 640, batch 16, seed 42, primary metric
+  `mAP@0.50:0.95`, checkpoint rule predeclared. It is now the phase 7 reference
+  and is also the protocol D1 and D2 inherit, so **editing it invalidates the
+  frozen comparison** - a variant is a new entry in
+  `configs/detection_experiments.yaml`, never an edit here. Do not tune any
   hyperparameter against validation, and do not add a metric after seeing
   results; the parser rejects both.
 - **`vest_loose` has 1 validation image and 8 instances.** Its validation AP is
   not a usable selection signal. Never tune against it, never prefer a model
   because it improved, and always report it with an explicit small-sample caveat.
+- **Phase 7's deciding metric is `supported_macro_map50_95`, not the all-class
+  mAP.** The unweighted mean of per-class AP@0.50:0.95 over the classes a frozen
+  support rule admits: `COMPARISON_SUPPORTED` needs **both** >= 5 positive
+  validation images **and** >= 20 validation instances. Applied to the phase 5C.2
+  counts it admits `helmet_loose`, `helmet_on_head`, `person` and
+  `vest_on_body`, and classifies `vest_loose` (1 image, 8 instances)
+  `DESCRIPTIVE_HIGH_UNCERTAINTY`. **The rule names no class** - never hardcode
+  the exclusion, never relax a threshold, never add a metric after a result.
+- **D0's phase 7 reference: `supported_macro_map50_95` 0.570142** (exactly
+  0.57014175), alongside the unchanged official all-class **mAP@0.50:0.95
+  0.464429**. Both are validation numbers. The 0.105713 gap is the arithmetic
+  effect of dropping one very low AP from an average - **not an improvement**, and
+  the two figures are never compared against each other. The five-class metric
+  stays `OFFICIAL_ALL_CLASS_REPORTING_METRIC` and is never hidden; phase 6B's
+  protocol was not rewritten.
+- **`vest_loose` is still a required class and still reported in full** -
+  precision, recall, AP@0.50, AP@0.50:0.95 - for every experiment. What it may
+  not do is decide a winner: never tune for it, never prefer or reject a model
+  because it moved, never rank it against the supported classes, never consult
+  the holdout to resolve its uncertainty.
+- **D1 and D2 are frozen and NOT TRAINED.** D1 varies `MODEL_CAPACITY` (YOLO11s,
+  `yolo11s.pt`, which is `NOT_YET_FINGERPRINTED` and must be fingerprinted before
+  D1 runs); D2 varies `INPUT_RESOLUTION` (imgsz 768). Both inherit D0's protocol
+  from `configs/detection_baseline.yaml` and declare only an override set, so the
+  one-variable discipline is enforced by the parser. Batch stays 16 for all
+  three: a genuine CUDA OOM **stops** the experiment as
+  `MEMORY_CONSTRAINT_REVIEW_REQUIRED` and is never rescued by a smaller batch,
+  auto-batch, gradient accumulation, a different imgsz or a different model.
+- **Selection is decided in advance: margin 0.005, four cases.** A - nothing
+  clears D0 by more than the margin, retain D0. B - one candidate clears D0 and
+  separates from the runner-up, it leads. C - a candidate clears D0 but does not
+  separate, no winner, efficiency comparison required. D - execution or protocol
+  failure, protocol review, **never** read as model inferiority. The margin is an
+  engineering threshold, **not a significance test**; run-to-run variance on this
+  setup is UNKNOWN because nothing is repeated.
+- **No D3 is authorised.** After a D1 or D2 result appears, do not try YOLO11m,
+  imgsz 896/960, optimizer or LR tuning, augmentation changes, oversampling, loss
+  weighting or class weighting, and do not add a metric or tie-breaker. Any
+  further experiment needs a new, explicitly reviewed protocol frozen first.
+- **The phase 6B result-artifact rebuild is `NON_SELECTION_REVALIDATION`**, with
+  `evidence_basis: MAINTAINER_DECLARED_PARTIALLY_CORROBORATED_ON_DISK`. It
+  re-executed validation of the same `best.pt` under the same configuration while
+  repairing provenance, introduced zero selection degrees of freedom and modified
+  no metric. **Corroborated:** the git-ignored `artifacts/detection/D0_val/`
+  exists and six of the seven committed D0 figures are byte-identical to its
+  output, so a separate validation execution demonstrably happened and the
+  committed figures come from it. **Not corroborated:** that nothing was varied
+  between the two executions - Ultralytics writes no `args.yaml` for a validation
+  run. Keep those two apart, and never present the rebuild as a second run, a
+  replication, or evidence about run-to-run variance.
 - **`artifacts/` is git-ignored and holds weights and runs.** Never commit
   `best.pt`, `last.pt`, optimizer state or caches. A report references a
   checkpoint by SHA-256 and by its provenance record.

@@ -1,0 +1,557 @@
+{
+  "class_support": [
+    {
+      "class_index": 0,
+      "class_name": "helmet_loose",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 57,
+      "validation_positive_images": 11
+    },
+    {
+      "class_index": 1,
+      "class_name": "helmet_on_head",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 47,
+      "validation_positive_images": 26
+    },
+    {
+      "class_index": 2,
+      "class_name": "person",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 137,
+      "validation_positive_images": 55
+    },
+    {
+      "class_index": 3,
+      "class_name": "vest_loose",
+      "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "validation_instances": 8,
+      "validation_positive_images": 1
+    },
+    {
+      "class_index": 4,
+      "class_name": "vest_on_body",
+      "classification": "COMPARISON_SUPPORTED",
+      "validation_instances": 55,
+      "validation_positive_images": 31
+    }
+  ],
+  "classification": "DETECTION_EXPERIMENT_PROTOCOL_FROZEN",
+  "descriptive_high_uncertainty_classes": [
+    "vest_loose"
+  ],
+  "experiment_matrix": "configs/detection_experiments.yaml",
+  "experiment_matrix_sha256": "e6acad129dc6b38c3a51b3388fd7078f07790e4801f7ee33f49afd245e49a998",
+  "experiments": [
+    {
+      "consequential_fields": [],
+      "experiment_id": "D0",
+      "hypothesis": "None. D0 is a reference point, not a hypothesis test. It was run once and is frozen: it must not be retuned, re-run to improve it, or averaged over several runs, because a second run would measure noise rather than a change.",
+      "inherits": null,
+      "intentional_fields": [],
+      "intentional_variable": "NONE_REFERENCE",
+      "overrides": {},
+      "pretrained_weights": null,
+      "protocol_source": "configs/detection_baseline.yaml",
+      "question": "What does a small pretrained YOLO11 detector achieve under this project's frozen data protocol, before any model-size, resolution or augmentation experiment?",
+      "resolved_protocol": {
+        "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+        "dataset_config": "data/processed/adapters/yolo_detection/dataset.yaml",
+        "device_requirement": "CUDA_GPU_REQUIRED",
+        "metrics.artifacts": [
+          "precision_recall_curve",
+          "confusion_matrix",
+          "training_loss_curves",
+          "validation_loss_curves"
+        ],
+        "metrics.per_class": [
+          "AP@0.50",
+          "AP@0.50:0.95",
+          "precision",
+          "recall"
+        ],
+        "metrics.primary": "mAP@0.50:0.95",
+        "metrics.secondary": [
+          "mAP@0.50",
+          "precision",
+          "recall"
+        ],
+        "model": "YOLO11n",
+        "rare_class": "vest_loose",
+        "rare_class_limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so its validation AP has high sampling uncertainty and is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose validation AP; do not prefer a model because vest_loose improved; interpret this class qualitatively and always report it with an explicit small-sample caveat. The holdout holds 2 vest_loose images and remains protected, so it cannot be consulted to resolve the uncertainty either.",
+        "schema_version": 1,
+        "seed": 42,
+        "splits": [
+          "train",
+          "validation"
+        ],
+        "task": "detection",
+        "training.amp": true,
+        "training.augmentation": "ULTRALYTICS_DEFAULT",
+        "training.batch": 16,
+        "training.close_mosaic": 10,
+        "training.cos_lr": false,
+        "training.deterministic": true,
+        "training.epochs": 100,
+        "training.imgsz": 640,
+        "training.lr0": 0.01,
+        "training.lrf": 0.01,
+        "training.momentum": 0.937,
+        "training.optimizer": "auto",
+        "training.patience": 50,
+        "training.pretrained": true,
+        "training.val": true,
+        "training.warmup_epochs": 3.0,
+        "training.weight_decay": 0.0005,
+        "training.workers": 8,
+        "weight_identifier": "yolo11n.pt",
+        "weights": "pretrained"
+      },
+      "result_manifest": "reports/detection_D0_manifest.json",
+      "role": "REFERENCE_BASELINE",
+      "status": "EXECUTED"
+    },
+    {
+      "consequential_fields": [
+        "weight_identifier"
+      ],
+      "experiment_id": "D1",
+      "hypothesis": "HYPOTHESIS, untested. A larger backbone may fit this 303-image training set better, or may overfit it; 303 images is small enough that neither outcome is the obvious one. No prediction is recorded as expected, and the result is not interpreted as confirming a preference either way.",
+      "inherits": "D0",
+      "intentional_fields": [
+        "model"
+      ],
+      "intentional_variable": "MODEL_CAPACITY",
+      "overrides": {
+        "model": "YOLO11s",
+        "weight_identifier": "yolo11s.pt"
+      },
+      "pretrained_weights": {
+        "commit_binary": false,
+        "fingerprint_status": "NOT_YET_FINGERPRINTED",
+        "identifier": "yolo11s.pt",
+        "required_before_training": [
+          "identifier",
+          "sha256",
+          "size_bytes",
+          "ultralytics_version",
+          "source_mechanism"
+        ],
+        "source_mechanism": "ULTRALYTICS_STANDARD_PRETRAINED_SAME_STACK_AS_D0"
+      },
+      "protocol_source": null,
+      "question": "Does increasing model capacity improve detection under the same input resolution and training protocol?",
+      "resolved_protocol": {
+        "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+        "dataset_config": "data/processed/adapters/yolo_detection/dataset.yaml",
+        "device_requirement": "CUDA_GPU_REQUIRED",
+        "metrics.artifacts": [
+          "precision_recall_curve",
+          "confusion_matrix",
+          "training_loss_curves",
+          "validation_loss_curves"
+        ],
+        "metrics.per_class": [
+          "AP@0.50",
+          "AP@0.50:0.95",
+          "precision",
+          "recall"
+        ],
+        "metrics.primary": "mAP@0.50:0.95",
+        "metrics.secondary": [
+          "mAP@0.50",
+          "precision",
+          "recall"
+        ],
+        "model": "YOLO11s",
+        "rare_class": "vest_loose",
+        "rare_class_limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so its validation AP has high sampling uncertainty and is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose validation AP; do not prefer a model because vest_loose improved; interpret this class qualitatively and always report it with an explicit small-sample caveat. The holdout holds 2 vest_loose images and remains protected, so it cannot be consulted to resolve the uncertainty either.",
+        "schema_version": 1,
+        "seed": 42,
+        "splits": [
+          "train",
+          "validation"
+        ],
+        "task": "detection",
+        "training.amp": true,
+        "training.augmentation": "ULTRALYTICS_DEFAULT",
+        "training.batch": 16,
+        "training.close_mosaic": 10,
+        "training.cos_lr": false,
+        "training.deterministic": true,
+        "training.epochs": 100,
+        "training.imgsz": 640,
+        "training.lr0": 0.01,
+        "training.lrf": 0.01,
+        "training.momentum": 0.937,
+        "training.optimizer": "auto",
+        "training.patience": 50,
+        "training.pretrained": true,
+        "training.val": true,
+        "training.warmup_epochs": 3.0,
+        "training.weight_decay": 0.0005,
+        "training.workers": 8,
+        "weight_identifier": "yolo11s.pt",
+        "weights": "pretrained"
+      },
+      "result_manifest": null,
+      "role": "CONTROLLED_EXPERIMENT",
+      "status": "FROZEN_NOT_EXECUTED"
+    },
+    {
+      "consequential_fields": [],
+      "experiment_id": "D2",
+      "hypothesis": "HYPOTHESIS, untested. The motivation is a measurement, not an intuition: phase 4A's `reports/eda_source.json` records, over all 2031 canonical annotations and at a small-object threshold of 0.01 relative box area, helmet_on_head 52.87% small (166/314), helmet_loose 45.29% (178/393), person 27.57% (252/914), vest_on_body 25.21% (92/365) and vest_loose 4.44% (2/45); the median relative box area over all annotations is 0.0301. Raising the network input from 640 to 768 preserves roughly 1.44x the pixels per object, which MAY help the smallest instances survive the downsampling stages - or may not, since it also changes the scale distribution the pretrained backbone sees. Whether it helps is exactly what the experiment measures, and no direction is recorded as expected. Two honest caveats on the evidence: those fractions are measured over the whole canonical population rather than per split, and the 0.01 threshold is this project's own convention, not the COCO small-object definition. Nothing about the holdout motivates this, and nothing about the holdout will evaluate it.",
+      "inherits": "D0",
+      "intentional_fields": [
+        "training.imgsz"
+      ],
+      "intentional_variable": "INPUT_RESOLUTION",
+      "overrides": {
+        "training.imgsz": 768
+      },
+      "pretrained_weights": null,
+      "protocol_source": null,
+      "question": "Does moderately increasing input resolution improve detection, especially for small PPE objects, while model capacity remains fixed?",
+      "resolved_protocol": {
+        "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+        "dataset_config": "data/processed/adapters/yolo_detection/dataset.yaml",
+        "device_requirement": "CUDA_GPU_REQUIRED",
+        "metrics.artifacts": [
+          "precision_recall_curve",
+          "confusion_matrix",
+          "training_loss_curves",
+          "validation_loss_curves"
+        ],
+        "metrics.per_class": [
+          "AP@0.50",
+          "AP@0.50:0.95",
+          "precision",
+          "recall"
+        ],
+        "metrics.primary": "mAP@0.50:0.95",
+        "metrics.secondary": [
+          "mAP@0.50",
+          "precision",
+          "recall"
+        ],
+        "model": "YOLO11n",
+        "rare_class": "vest_loose",
+        "rare_class_limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so its validation AP has high sampling uncertainty and is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose validation AP; do not prefer a model because vest_loose improved; interpret this class qualitatively and always report it with an explicit small-sample caveat. The holdout holds 2 vest_loose images and remains protected, so it cannot be consulted to resolve the uncertainty either.",
+        "schema_version": 1,
+        "seed": 42,
+        "splits": [
+          "train",
+          "validation"
+        ],
+        "task": "detection",
+        "training.amp": true,
+        "training.augmentation": "ULTRALYTICS_DEFAULT",
+        "training.batch": 16,
+        "training.close_mosaic": 10,
+        "training.cos_lr": false,
+        "training.deterministic": true,
+        "training.epochs": 100,
+        "training.imgsz": 768,
+        "training.lr0": 0.01,
+        "training.lrf": 0.01,
+        "training.momentum": 0.937,
+        "training.optimizer": "auto",
+        "training.patience": 50,
+        "training.pretrained": true,
+        "training.val": true,
+        "training.warmup_epochs": 3.0,
+        "training.weight_decay": 0.0005,
+        "training.workers": 8,
+        "weight_identifier": "yolo11n.pt",
+        "weights": "pretrained"
+      },
+      "result_manifest": null,
+      "role": "CONTROLLED_EXPERIMENT",
+      "status": "FROZEN_NOT_EXECUTED"
+    }
+  ],
+  "holdout_policy": {
+    "guard": {
+      "env_var": "CSVISION_ALLOW_TEST_SPLIT",
+      "requires_code_opt_in": true,
+      "requires_environment_opt_in": true,
+      "state_during_this_phase": "LOCKED"
+    },
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "rule": "Every phase 7 decision - model selection, capacity, resolution, thresholds, tie-breaking and error-driven iteration - uses the frozen validation split only. The holdout is read once, in phase 11, after both models are frozen.",
+    "test": {
+      "reason": "Phase 7 selection happens on the frozen validation split only. The holdout was not read, materialised, adapted, evaluated or counted by this phase, and no comparison artifact it produced carries a holdout number.",
+      "status": "PROTECTED_NOT_ACCESSED"
+    }
+  },
+  "labels": {
+    "D0_REFERENCE_RESULT": "a validation number produced by the single D0 run",
+    "FROZEN_DATASET_FACT": "a measurement of the frozen split, made before modelling",
+    "LIMITATION": "a stated weakness of the evidence, not a caveat added afterwards",
+    "PREDECLARED_PHASE7_POLICY": "a rule fixed in phase 7A, before any D1 or D2 result existed",
+    "SELECTION_RULE": "a deterministic rule that decides an outcome"
+  },
+  "limitations": [
+    {
+      "id": "SMALL_VALIDATION_SPLIT",
+      "label": "LIMITATION",
+      "statement": "Selection rests on 65 validation images and 304 annotations. Every metric here is an estimate from that sample, and the support rule reduces but does not remove the problem - a supported class clears a floor on interpretability, not a bar for precise estimation."
+    },
+    {
+      "id": "RUN_TO_RUN_VARIANCE_NOT_MEASURED",
+      "label": "LIMITATION",
+      "statement": "deterministic: true reduces variance without eliminating it, and no experiment is repeated, so the size of the run-to-run variance on this setup is UNKNOWN. The 0.005 margin is a judgement about what difference is worth acting on, not a measurement of that variance."
+    },
+    {
+      "id": "DESCRIPTIVE_CLASS_EXCLUDED_FROM_SELECTION",
+      "label": "LIMITATION",
+      "statement": "The deciding metric ignores vest_loose. A model that improved that class while leaving the others unchanged would be recorded as practically equivalent and would not be selected. That is the deliberate cost of refusing to let one validation image decide, and it is a real cost rather than a free choice."
+    },
+    {
+      "id": "TWO_EXPERIMENTS_NOT_A_SEARCH",
+      "label": "LIMITATION",
+      "statement": "Two controlled experiments test two hypotheses. They do not search the hyperparameter space, and a Case A outcome means these two variations did not help by more than the margin - not that the baseline is optimal."
+    },
+    {
+      "id": "NO_INDEPENDENCE_CLAIM_BEYOND_DUPLICATE_SCREENING",
+      "label": "LIMITATION",
+      "statement": "The split is group-aware and class-aware but nothing establishes that two images in different splits do not share a site, a day, a camera or a worker. Any comparison made on it inherits that limitation."
+    }
+  ],
+  "memory_policy": {
+    "classification": "MEMORY_CONSTRAINT_REVIEW_REQUIRED",
+    "controlled_batch": 16,
+    "forbidden_mitigations": [
+      "reduce_batch",
+      "auto_batch",
+      "gradient_accumulation",
+      "change_imgsz",
+      "change_model",
+      "reduce_workers_to_fit_by_changing_batch"
+    ],
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "on_cuda_oom": "STOP_AND_CLASSIFY",
+    "rationale": "Every listed mitigation changes the effective optimisation problem, so a run rescued by one of them is no longer a one-variable comparison against D0 - it differs in capacity or resolution *and* in batch size, and no metric difference could be attributed to either. If either candidate cannot execute at batch 16 on this GPU, that experiment stops and is classified MEMORY_CONSTRAINT_REVIEW_REQUIRED. A revised protocol may be designed and reviewed afterwards; the failure is a hardware constraint on the comparison, never evidence that the model is worse."
+  },
+  "metrics": {
+    "all_class_is_never_hidden": true,
+    "diagnostics": [
+      "confusion_matrix",
+      "training_curves",
+      "validation_loss_curves",
+      "framework_validation_speed",
+      "recall_diagnostic"
+    ],
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "official_all_class": "mAP@0.50:0.95",
+    "official_all_class_role": "OFFICIAL_ALL_CLASS_REPORTING_METRIC",
+    "per_class": [
+      "AP@0.50",
+      "AP@0.50:0.95",
+      "precision",
+      "recall"
+    ],
+    "phase_6b_protocol_unchanged": "This is a phase 7 comparison policy, declared after D0 and before any comparative experiment. It does not rewrite the phase 6B protocol: D0's primary metric remains mAP@0.50:0.95 and its reported numbers are unchanged. What is new is which classes may order two models. The support structure it filters on was frozen in phase 5C.2, before any modelling, and vest_loose was already predeclared HIGH_SAMPLING_UNCERTAINTY in configs/detection_baseline.yaml before D0 trained - so the filter is not a reaction to D0's per-class results.",
+    "primary_selection": "supported_macro_map50_95",
+    "primary_selection_definition": "unweighted arithmetic mean of per-class AP@0.50:0.95 over the classes classified COMPARISON_SUPPORTED by the frozen support rule",
+    "secondary": [
+      "mAP@0.50",
+      "precision",
+      "recall"
+    ]
+  },
+  "one_variable_discipline": {
+    "frozen_fields": "split, labels, class map, epochs, batch, optimizer policy, patience, seed, deterministic flag, augmentation policy, checkpoint-selection rule and validation protocol are identical across D0, D1 and D2",
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "mechanism": "Candidates declare no protocol of their own. They inherit D0's protocol and declare an override set, and the parser rejects a matrix whose override set differs from its declared variable fields. So 'only one thing differs' is a structural property of the configuration, not a promise in prose.",
+    "resolved_optimizer_note": "optimizer=auto is the declared policy, so the framework-resolved optimizer and learning rate may legitimately differ between experiments. Each run records what it actually used; none is forced to match another after execution, and a resolved value is never quoted as though the configuration had stated it.",
+    "verdicts": [
+      {
+        "compatible": true,
+        "declared_fields": [
+          "model",
+          "weight_identifier"
+        ],
+        "experiment_id": "D1",
+        "intentional_variable": "MODEL_CAPACITY",
+        "observed_differences": [
+          "model",
+          "weight_identifier"
+        ],
+        "reference_experiment": "D0",
+        "unapplied_declarations": [],
+        "undeclared_differences": []
+      },
+      {
+        "compatible": true,
+        "declared_fields": [
+          "training.imgsz"
+        ],
+        "experiment_id": "D2",
+        "intentional_variable": "INPUT_RESOLUTION",
+        "observed_differences": [
+          "training.imgsz"
+        ],
+        "reference_experiment": "D0",
+        "unapplied_declarations": [],
+        "undeclared_differences": []
+      }
+    ]
+  },
+  "phase": "7A",
+  "post_hoc_policy": {
+    "authorised_experiments": [
+      "D1",
+      "D2"
+    ],
+    "forbidden_automatic_followups": [
+      "try YOLO11m or any other capacity",
+      "try imgsz 896, 960 or any other resolution",
+      "tune the optimizer or the learning rate",
+      "change mosaic, close_mosaic or any augmentation setting",
+      "oversample or rebalance classes",
+      "alter loss weights or apply class weighting",
+      "relabel or filter annotations",
+      "add a metric, a composite or a tie-breaker after seeing results",
+      "re-run D0, D1 or D2 to obtain a better number"
+    ],
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "no_further_experiment_without_review": true,
+    "rule": "Any experiment beyond D1 and D2 requires a new, explicitly reviewed protocol frozen before it runs. There is no D3 in Phase 7A, and none may be added by reading a Phase 7B or 7C result."
+  },
+  "practical_equivalence_margin": {
+    "applies_to": [
+      "supported_macro_map50_95",
+      "mAP@0.50:0.95"
+    ],
+    "kind": "absolute AP/mAP margin",
+    "label": "SELECTION_RULE",
+    "not_a_significance_test": true,
+    "value": "0.005"
+  },
+  "rare_class_policy": {
+    "classes": [
+      "vest_loose"
+    ],
+    "forbidden": [
+      "tuning any hyperparameter for this class",
+      "rejecting a model because this class's metric decreased",
+      "selecting a model because this class's metric increased",
+      "ranking this class against the supported classes",
+      "consulting the holdout to resolve the uncertainty"
+    ],
+    "identified_by": "the frozen support rule applied to the frozen validation support",
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "must_report": [
+      "precision",
+      "recall",
+      "AP@0.50",
+      "AP@0.50:0.95"
+    ],
+    "reported_for_every_experiment": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body"
+    ],
+    "reporting_rule": "A DESCRIPTIVE_HIGH_UNCERTAINTY class remains a required project class and its full per-class metrics are reported for every experiment, wherever the framework exposes them reliably. Excluding it from the deciding metric is a statement about how much validation evidence stands behind its AP, not about whether the class matters. The academic report must show the class and explain this limitation.",
+    "still_required": true,
+    "support": [
+      {
+        "class_index": 3,
+        "class_name": "vest_loose",
+        "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+        "validation_instances": 8,
+        "validation_positive_images": 1
+      }
+    ]
+  },
+  "reference_experiment": "D0",
+  "reference_result": {
+    "artifact": "reports/detection_comparison_reference.json",
+    "best_checkpoint_sha256": "30288fbc3abe60ce1713fdb430feb2e1a3716dcf4b52b80d26a9b2aea1ca5c34",
+    "experiment_sha256": "cbd79fd2f2f70eb31ede61b813f991e973bb5d2f69c223a3826ee6aeadd0ffb3",
+    "label": "D0_REFERENCE_RESULT",
+    "metrics": {
+      "mAP@0.50": 0.619373,
+      "mAP@0.50:0.95": 0.464429,
+      "precision": 0.85568,
+      "recall": 0.539992,
+      "supported_macro_map50_95": 0.570142
+    },
+    "validation_only": true
+  },
+  "revalidation_audit": {
+    "classification": "NON_SELECTION_REVALIDATION",
+    "corroborated_on_disk": [
+      "a separate validation run directory artifacts/detection/D0_val/ exists (git-ignored), so a second validation execution demonstrably happened",
+      "six of the seven committed D0 figures under reports/figures/detection/D0/ are byte-identical to that directory's output, so the committed metric figures come from that run rather than from the training run's own validation pass",
+      "the committed D0 manifest validates against the result schema and its metrics agree with the report and the provenance record",
+      "exactly one D0 experiment fingerprint exists in the repository"
+    ],
+    "d0_metrics_modified": false,
+    "equivalent_classification": "PROTOCOL_DEVIATION_WITHOUT_SELECTION_DEGREE_OF_FREEDOM",
+    "event": "phase 6B D0 result-artifact rebuild",
+    "evidence_basis": "MAINTAINER_DECLARED_PARTIALLY_CORROBORATED_ON_DISK",
+    "not_independently_verified_here": [
+      "that nothing was varied between the two executions - Ultralytics writes no args.yaml for a validation run, so the configuration that run used cannot be read back off disk. This is the maintainer's account, and the corroborated facts above do not establish it."
+    ],
+    "reporting_rule": "D0 is one experiment with one result. The rebuild must never be presented as a second run, as a replication, or as evidence about run-to-run variance, and no D0 metric may be averaged, re-rounded or restated because of it.",
+    "selection_degrees_of_freedom_introduced": 0,
+    "was_not": [
+      "hyperparameter tuning",
+      "checkpoint selection",
+      "threshold selection",
+      "model comparison",
+      "a second independent experiment"
+    ],
+    "what_happened": "The Phase 6B result-rebuild procedure re-executed validation of the same best.pt under the same frozen configuration while repairing the result provenance. The metrics were reproduced identically and the committed D0 numbers are those metrics.",
+    "why_no_selection_freedom": "The checkpoint was already fixed by the predeclared ULTRALYTICS_BEST_ON_VALIDATION_FITNESS rule before the rebuild, and the rebuild varied nothing: same weights, same validation split, same image size, same confidence and IoU thresholds, same metric set. A re-execution that varies nothing and compares nothing cannot select anything."
+  },
+  "schema_version": 1,
+  "selection_logic": {
+    "boundary": "Strictly greater than 0.005 counts as an improvement; a difference of exactly 0.005 is PRACTICALLY_EQUIVALENT_ON_THIS_VALIDATION_SET. Comparisons are made on exact decimals at the manifests' six-place precision, so the boundary is reproducible rather than dependent on binary floating point.",
+    "case_c_coverage_note": "Case C is defined by the leader's separation from the runner-up rather than by both candidates having cleared the reference. That covers the tie the protocol was written for and also the region where only one candidate clears the reference while the two candidates sit within the margin of each other. The reasoning is identical in both - the candidates cannot be ordered - and leaving that region undefined would mean deciding it after seeing the numbers. Recorded explicitly because it is a predeclared extension of the case wording, not a reinterpretation made later.",
+    "cases": {
+      "CASE_A_RETAIN_REFERENCE": "No candidate improves supported_macro_map50_95 over D0 by more than 0.005. Retain D0: it is the lower-complexity model and the difference does not establish an ordering.",
+      "CASE_B_VALIDATION_PERFORMANCE_LEADER": "One candidate improves supported_macro_map50_95 over D0 by more than 0.005 and separates from every other candidate by more than 0.005. That candidate is the validation-performance leader.",
+      "CASE_C_PERFORMANCE_TIE_REQUIRES_EFFICIENCY_COMPARISON": "A candidate improves supported_macro_map50_95 over D0 by more than 0.005 but does not separate from the runner-up by more than 0.005. No winner is declared; classified PERFORMANCE_TIE_REQUIRES_EFFICIENCY_COMPARISON, to be decided by a later controlled efficiency comparison that is not authorised now.",
+      "CASE_D_EXECUTION_OR_PROTOCOL_FAILURE": "An execution or protocol failure. The failure is not reinterpreted as model inferiority; the experiment returns for protocol review."
+    },
+    "label": "SELECTION_RULE",
+    "margin": "0.005",
+    "metric": "supported_macro_map50_95",
+    "not_a_significance_test": "The margin is an engineering decision threshold that prevents escalating to a larger model for a trivial validation difference. It is not a hypothesis test, it carries no confidence level, and no claim of statistical significance may be derived from it.",
+    "overrides_forbidden": [
+      "no per-class metric may override these cases",
+      "no DESCRIPTIVE_HIGH_UNCERTAINTY class may override these cases",
+      "recall may explain a movement but never selects the winner",
+      "no recall-weighted or otherwise composite metric may be introduced",
+      "the holdout may not be consulted to break a tie"
+    ],
+    "reference_experiment": "D0"
+  },
+  "support_rule": {
+    "applied_to": "frozen validation support, phase 5C.2",
+    "classifications": [
+      "COMPARISON_SUPPORTED",
+      "DESCRIPTIVE_HIGH_UNCERTAINTY"
+    ],
+    "derivation": "mechanical - the rule is applied to the counts, not to class names",
+    "label": "PREDECLARED_PHASE7_POLICY",
+    "min_validation_instances": 20,
+    "min_validation_positive_images": 5,
+    "rationale": "A per-class AP inherits the uncertainty of the evidence behind it. Both floors are required because they fail independently: a class can hold many instances inside one or two images, leaving the instance count healthy while the estimate still rests on a single scene. Averaging such a class into the deciding metric would hand a fixed share of every decision to a handful of images.",
+    "source": "reports/split_manifest.json",
+    "split": "validation"
+  },
+  "supported_classes": [
+    "helmet_loose",
+    "helmet_on_head",
+    "person",
+    "vest_on_body"
+  ],
+  "task": "detection"
+}

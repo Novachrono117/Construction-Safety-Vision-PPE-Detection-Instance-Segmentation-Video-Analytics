@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: D0 detection baseline trained and validated (phase 6B of 14).** The
+> **Status: Phase 7 comparison protocol frozen (phase 7A of 14).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -9,8 +9,10 @@
 > instance-segmentation views of `train` and `validation` are materialised (5D).
 > Phase 6A added a verified GPU runtime, a lossless YOLO detection adapter and
 > the frozen D0 protocol; **phase 6B ran D0 once and reports its validation
-> metrics**. The provider's split was **rejected for the final protocol** and is
-> not reused. The `test` split is a **locked holdout**: it has never been
+> metrics**. Phase 7A froze the controlled comparison protocol - the class-support
+> rule, the selection metric, the decision margin and the two experiments D1 and
+> D2 - **before either experiment ran; neither has been trained**. The provider's
+> split was **rejected for the final protocol** and is not reused. The `test` split is a **locked holdout**: it has never been
 > evaluated, inspected, materialised or adapted, and **every number below is a
 > validation number**. No segmentation model exists yet.
 
@@ -98,8 +100,9 @@ Two design decisions define this architecture:
 | GPU runtime | Done (phase 6A). torch 2.11.0+cu128 on an RTX 5070 Laptop (sm_120), verified by executing real kernels. |
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
 | Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
+| Detection experiments | **Protocol frozen (phase 7A), not run.** D1 (capacity, YOLO11s) and D2 (resolution, imgsz 768) are specified in full; neither has been trained. |
 | Segmentation model | Not trained. |
-| Metrics | **Validation only** (phase 6B): D0 mAP@0.50:0.95 = 0.4644. No test metric exists. |
+| Metrics | **Validation only** (phase 6B): D0 mAP@0.50:0.95 = 0.4644, `supported_macro_map50_95` = 0.5701. No test metric exists. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -114,7 +117,8 @@ layer, the phase 5D task-dataset materialiser with its geometry round-trip and
 cross-task alignment validators, the phase 6A YOLO detection adapter with its
 box-fidelity audit, the GPU runtime preflight, the frozen D0 baseline protocol,
 the phase 6B D0 training and validation pipeline with its result bookkeeping,
-the test suite, and the planning documents (`reports/rubric_contract.md`,
+the phase 7A comparison-policy freezer with its support rule, selection logic
+and protocol-compatibility validator, the test suite, and the planning documents (`reports/rubric_contract.md`,
 `reports/roadmap.md`, `CLAUDE.md`).
 
 ### The dataset
@@ -561,8 +565,8 @@ machine-readable record in `reports/detection_D0_manifest.json`.
   against only 3 class-to-class confusions - consistent with precision
   (0.85568) sitting well above recall (0.539992).
 - **D0 is a reference point, not the project's detector.** No alternative model,
-  image size or augmentation has been tried; phase 7 defines that comparison
-  before running it.
+  image size or augmentation has been tried; phase 7A defines that comparison
+  below, and it was defined before running it.
 
 **The holdout was not touched.** Every number here is from the 65-image
 validation split. The test split has no labels, no adapter and no key in the
@@ -577,6 +581,96 @@ command.
 ```bash
 uv run python scripts/train_detection_baseline.py --verify-only  # pre-flight only
 uv run python scripts/train_detection_baseline.py                # the D0 experiment
+```
+
+### Controlled detection comparison protocol (phase 7A)
+
+**D0 exists. D1 and D2 do not.** That ordering is what makes phase 7A a protocol
+rather than a description: the deciding metric, the class-support rule, the
+decision margin and the four selection cases are all frozen while the numbers
+they will be applied to do not yet exist. Full policy in
+[`reports/detection_comparison_policy.md`](reports/detection_comparison_policy.md),
+machine-readable in `reports/detection_comparison_policy.json`, and the
+experiment matrix in
+[`configs/detection_experiments.yaml`](configs/detection_experiments.yaml).
+
+**Why the metric changes for the comparison.** The all-class `mAP@0.50:0.95` is
+the unweighted mean over all five classes, so a class standing on **one**
+validation image carries a full fifth of it. Under the frozen split the five
+classes do not carry comparable evidence:
+
+| Class | Validation images | Validation instances | Classification |
+| --- | --- | --- | --- |
+| `helmet_loose` | 11 | 57 | `COMPARISON_SUPPORTED` |
+| `helmet_on_head` | 26 | 47 | `COMPARISON_SUPPORTED` |
+| `person` | 55 | 137 | `COMPARISON_SUPPORTED` |
+| `vest_loose` | 1 | 8 | `DESCRIPTIVE_HIGH_UNCERTAINTY` |
+| `vest_on_body` | 31 | 55 | `COMPARISON_SUPPORTED` |
+
+A class is `COMPARISON_SUPPORTED` when **both** `validation_positive_images >= 5`
+**and** `validation_instances >= 20`. The rule is a general threshold applied
+mechanically to counts frozen in phase 5C.2 - it names no class, and excluding
+`vest_loose` is its **output**, not its premise.
+
+| Role | Metric | D0 (validation) |
+| --- | --- | --- |
+| Primary phase 7 selection | `supported_macro_map50_95` | **0.570142** |
+| Official all-class reporting | `mAP@0.50:0.95` | **0.464429** |
+
+The supported macro is the unweighted mean of per-class `AP@0.50:0.95` over the
+four supported classes. **The two numbers are not interchangeable**: the gap of
+0.105713 is the arithmetic effect of dropping one very low AP from an average,
+not an improvement. The five-class figure stays mandatory and is never hidden,
+and phase 6B's protocol is unchanged - D0's primary metric is still
+`mAP@0.50:0.95`.
+
+`vest_loose` remains a **required project class**: its precision, recall,
+`AP@0.50` and `AP@0.50:0.95` are reported for every experiment. What it may not
+do is decide which model wins.
+
+| | D1 | D2 |
+| --- | --- | --- |
+| Question | Does more capacity help? | Does more input resolution help? |
+| Intentional variable | `MODEL_CAPACITY` | `INPUT_RESOLUTION` |
+| Model | YOLO11s (`yolo11s.pt`) | YOLO11n (`yolo11n.pt`, as D0) |
+| `imgsz` | 640 (as D0) | **768** |
+| Everything else | inherited from D0 | inherited from D0 |
+| Status | `FROZEN_NOT_EXECUTED` | `FROZEN_NOT_EXECUTED` |
+
+**One-variable discipline is structural, not a promise.** The candidates carry no
+protocol of their own: they inherit `configs/detection_baseline.yaml` and declare
+an override set, and the parser rejects a matrix whose override set differs from
+its declared variable fields. D1's changed pretrained checkpoint is recorded as
+*consequential* to the capacity change rather than as a second variable. Split,
+labels, class map, epochs, batch, optimizer policy, patience, seed,
+`deterministic`, augmentation policy, checkpoint rule and validation protocol are
+identical across all three.
+
+**Selection is decided in advance.** Ranked by `supported_macro_map50_95` with an
+absolute margin of **0.005**:
+
+| Case | Condition | Outcome |
+| --- | --- | --- |
+| A | nothing clears D0 by more than the margin | retain D0, the lower-complexity baseline |
+| B | one candidate clears D0 **and** separates from the runner-up | that candidate leads on validation |
+| C | a candidate clears D0 but does not separate from the runner-up | no winner; efficiency comparison required |
+| D | execution or protocol failure | protocol review; **not** read as model inferiority |
+
+The margin is an engineering decision threshold that prevents escalating to a
+larger model for a trivial difference. It is **not** a significance test, and
+`deterministic: true` reduces run-to-run variance without eliminating it - the
+size of that variance on this setup is UNKNOWN, because no experiment is
+repeated. Batch stays at **16** for all three; a genuine CUDA OOM stops the
+experiment as `MEMORY_CONSTRAINT_REVIEW_REQUIRED` rather than being rescued by a
+smaller batch, which would break the comparison.
+
+**No holdout involvement.** Every phase 7 decision uses the 65-image validation
+split. `CSVISION_ALLOW_TEST_SPLIT` was not set, no holdout image, label or count
+was read, and no comparison artifact carries a holdout number.
+
+```bash
+uv run python scripts/freeze_detection_experiments.py --verify-only
+uv run python scripts/freeze_detection_experiments.py
 ```
 
 
@@ -643,7 +737,8 @@ Work proceeds through 14 gated phases (see
 │   ├── task_materialization.yaml # Copy, naming, bbox and geometry policies (5D)
 │   ├── detection_adapter.yaml    # COCO -> YOLO detection adapter protocol (6A)
 │   ├── detection_dataset.template.yaml # Portable Ultralytics dataset descriptor (6A)
-│   └── detection_baseline.yaml   # D0 protocol: model, hyperparameters, metrics (6A)
+│   ├── detection_baseline.yaml   # D0 protocol: model, hyperparameters, metrics (6A)
+│   └── detection_experiments.yaml # Phase 7 matrix: D0/D1/D2, support rule, margin (7A)
 │                                  #   frozen before the run; parser rejects a test reference
 ├── data/                      # Never committed; see data/README.md
 │   ├── external/              # Provider archive, source originals, provenance record
@@ -681,6 +776,9 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_runtime_report.md        # GPU runtime, weights, smoke test (6A)
 │   ├── detection_D0_report.md             # D0 baseline result and its limits (6B)
 │   ├── detection_D0_manifest.json         # D0 metrics, fingerprints, checkpoints (6B)
+│   ├── detection_comparison_policy.md     # Phase 7 comparison rules, frozen (7A)
+│   ├── detection_comparison_policy.json   # The same policy, machine-readable (7A)
+│   ├── detection_comparison_reference.json # D0 reference values for phase 7 (7A)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -707,7 +805,8 @@ Work proceeds through 14 gated phases (see
 │   ├── materialize_task_datasets.py # Canonical COCO detection + segmentation views (5D)
 │   ├── build_detection_adapter.py # COCO -> YOLO detection labels + fidelity audit (6A)
 │   ├── detection_runtime_check.py # GPU preflight, weight provenance, smoke test (6A)
-│   └── train_detection_baseline.py # Run and record the D0 detection baseline (6B)
+│   ├── train_detection_baseline.py # Run and record the D0 detection baseline (6B)
+│   └── freeze_detection_experiments.py # Freeze the phase 7 comparison protocol (7A)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -715,6 +814,7 @@ Work proceeds through 14 gated phases (see
 │   ├── splits.py              # Split identifiers and the holdout guard
 │   ├── experiment.py          # Experiment protocols, declared before they run
 │   ├── detection_results.py   # Result manifests, metric extraction, experiment fingerprints
+│   ├── detection_comparison.py # Phase 7 support rule, selection metric, selection logic
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,
 │                              # task materialisation and the YOLO detection adapter

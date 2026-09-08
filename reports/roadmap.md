@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 1.7 · Current phase: **7 - Detection experiments and model freeze** (not started; phase 6 complete through 6B)
+Version: 1.8 · Current phase: **7 - Detection experiments and model freeze** (7A complete: comparison protocol frozen, no experiment run; 7B next)
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -21,7 +21,7 @@ change log at the bottom of this file.
 | 4 | Dataset/annotation audit and EDA | complete (4A automated, 4B visual review) |
 | 5 | Split freeze and task-specific dataset generation | complete (5A, 5B, 5B.1, 5C.1, 5C.2 split frozen 303/65/65, 5D COCO development datasets materialised) |
 | 6 | Detection baseline | complete (6A adapter/runtime/protocol · 6B D0 trained and validated, mAP@0.50:0.95 0.464429 on validation) |
-| 7 | Detection experiments and model freeze | **next**, not started |
+| 7 | Detection experiments and model freeze | in progress (7A comparison protocol frozen · **7B next**: D1 capacity · 7C planned: D2 resolution) |
 | 8 | Segmentation baseline | not started |
 | 9 | Segmentation experiments and model freeze | not started |
 | 10 | Controlled validation comparison | not started |
@@ -487,6 +487,40 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
   afterwards.
 - **Academic mapping.** C2; feeds C4.
 
+### Phase 7A - comparison protocol freeze (complete)
+
+Delivered `configs/detection_experiments.yaml`,
+`src/construction_safety_vision/detection_comparison.py`,
+`scripts/freeze_detection_experiments.py`,
+[`reports/detection_comparison_policy.md`](detection_comparison_policy.md),
+`reports/detection_comparison_policy.json`,
+`reports/detection_comparison_reference.json`,
+`reports/detection_experiments.provenance.json` and two test modules.
+
+- **Objective.** Fix how D1 and D2 will be judged while neither exists, so the
+  deciding metric cannot be chosen once the numbers are visible.
+- **Gate (passed).** The class-support rule is a general threshold applied
+  mechanically to the phase 5C.2 counts and names no class; D0's
+  `supported_macro_map50_95` is computed from committed per-class metrics and
+  verified against an independent hand computation; both candidates inherit D0's
+  protocol and are proven to differ only in their declared fields; the four
+  selection cases and the 0.005 margin are frozen and covered by tests; the
+  official all-class metric is retained; the rare class stays reported;
+  `CSVISION_ALLOW_TEST_SPLIT` was not set and no holdout artifact exists;
+  **no model was trained**.
+- **Academic mapping.** C2; feeds C4 and C6.
+
+### Phase 7B - D1 capacity experiment (next, not started)
+
+Run D1 exactly as frozen: YOLO11s from `yolo11s.pt`, imgsz 640, batch 16, every
+other field inherited from D0. `yolo11s.pt` must be fingerprinted before
+training. No result exists.
+
+### Phase 7C - D2 resolution experiment (planned, not started)
+
+Run D2 exactly as frozen: YOLO11n from the same `yolo11n.pt` identity D0 used,
+imgsz 768, batch 16, every other field inherited from D0. No result exists.
+
 ## Phase 8 - Segmentation baseline
 
 - **Objective.** Establish the instance-segmentation reference point on the same
@@ -613,3 +647,4 @@ package (`reports/manual_review_manifest.csv` plus `reports/figures/review_*`).
 | 2026-09-04 | Phase 5D materialised the canonical task datasets for the development splits only. Two COCO views of the same images and the same objects: `canonical_detection_format: COCO`, `canonical_segmentation_format: COCO_INSTANCE_SEGMENTATION`, `model_specific_adapter: NOT_YET_SELECTED`. **368 images and 1726 annotations** (train 303/1422, validation 65/304), derived from the frozen manifest and verified against the canonical population. Images copied byte-for-byte, 368/368 verified by hashing both sides - no resize, crop, re-encode, EXIF rotation or colour conversion. Detection boxes derived from the canonical segmentation, never from the provider's bbox, and cross-checked against the independent phase 5A measurement at **max delta 0.0 px**. Geometry preservation measured rather than claimed: the emitted segmentation file is read back from disk and compared with the canonical state, RLE by decoded mask and polygons coordinate by coordinate - **1726 checked, 1726 matched, 0 mismatches** across 843 polygons, 881 RLE masks and 2 synthetic rectangles. Cross-task alignment verified for both splits. COCO ids are global over the whole modelling population, so the holdout can be materialised later without renumbering; no timestamp enters an emitted file and re-running is byte-identical. **No YOLO labels were written**: only COCO carries both polygon and RLE natively, so converting now would approximate the ground truth before a model exists; a future adapter must pass a documented mask-IoU fidelity audit first. The holdout is `NOT_MATERIALIZED_PROTECTED_HOLDOUT` - no test directory, COCO file or statistic was produced and no new knowledge about it was computed; CSVISION_ALLOW_TEST_SPLIT was not set. No model trained, no framework installed, no inference. Phase 6 not started. |
 | 2026-09-04 | Phase 6A prepared the detection baseline without running it. Installed and locked torch 2.11.0+cu128, torchvision 0.26.0+cu128 and ultralytics 8.4.138; torch comes from the CUDA 12.8 index for a hardware reason, not a preference - the GPU is Blackwell (sm_120) and only cu128 builds carry its kernels. The runtime was verified by executing real kernels (matmul checked against CPU, conv backward, AMP autocast) rather than by reading `torch.cuda.is_available()`: RTX 5070 Laptop, sm_120, 7.96 GiB, driver 610.88, AMP OK. Built a **lossless** YOLO detection adapter over 368 images and 1726 labels: every box converted, written, read back from the label file on disk, decoded and compared against canonical - **1726/1726 within tolerance, 0 mismatches, max delta 1.47e-06 px** against a declared 1e-4 px. Adapter images byte-identical to canonical, class indices the frozen map verified against class_map_sha256, placeholder `object` absent, 12 negatives preserved as empty label files, and no YOLO segmentation labels written anywhere. Froze the D0 protocol before the experiment: YOLO11n pretrained (yolo11n.pt fingerprinted 0ebbc80d..., 5613764 B), imgsz 640, batch 16, 100 epochs, seed 42, every hyperparameter stated, checkpoint rule fixed in advance, metric hierarchy declared with primary mAP@0.50:0.95, and the vest_loose small-sample limitation (1 validation image, 8 instances) recorded before any number exists. A one-epoch smoke test proved the stack executes (OK, 62 s, 2.4 GiB peak, checkpoints written) and is marked NON_EXPERIMENTAL / DO_NOT_REPORT_AS_MODEL_RESULT - no metric from it is recorded and nothing was tuned from it. **The full D0 run was not performed**; no model result exists. The holdout has no adapter, no directory, no label and no key in the dataset descriptor; CSVISION_ALLOW_TEST_SPLIT was not set. Phase 6B not started. |
 | 2026-09-04 | Phase 6B ran the D0 detection baseline once and reported it. YOLO11n pretrained, 640 px, batch 16, seed 42, 100/100 epochs, 772.7 s on an RTX 5070 Laptop. Validation-only result: primary **mAP@0.50:0.95 0.464429**, mAP@0.50 0.619373, precision 0.85568, recall 0.539992. Checkpoint chosen by the predeclared ULTRALYTICS_BEST_ON_VALIDATION_FITNESS rule (epoch 67, fitness 0.481862) and cross-checked against a fitness curve recomputed independently from results.csv, so the published number provably belongs to best.pt rather than to the last epoch. A pre-run provenance record was written before the first optimisation step, so the protocol demonstrably preceded the result. `optimizer: auto` resolved to AdamW at lr0 0.001111, overriding the file's generic 0.01; because Ultralytics persists neither value, it was re-derived from the framework's own selection rule and corroborated against the observed learning-rate trace, and the manifest records that provenance instead of implying the framework reported it. vest_loose scored AP@0.50 0.131486 with precision 1.0 and recall 0.0 on its single validation image - marked HIGH_SAMPLING_UNCERTAINTY under a limitation predeclared before the run. The confusion matrix shows 96 missed objects and 71 unmatched predictions against 3 class-to-class confusions. **No tuning, one run, no second run to see whether the number moved.** The holdout was not adapted, loaded, evaluated or measured; CSVISION_ALLOW_TEST_SPLIT was not set. Seven metric-only figures committed; no dataset or prediction image and no checkpoint committed. Phase 7 not started. |
+| 2026-09-08 | Phase 7A froze the controlled detection comparison protocol **before D1 or D2 existed**, which is the only thing that makes it a protocol rather than a description. A general class-support rule - `COMPARISON_SUPPORTED` requires both >= 5 positive validation images and >= 20 validation instances - was applied mechanically to the counts frozen in phase 5C.2 and classified `helmet_loose`, `helmet_on_head`, `person` and `vest_on_body` as supported and `vest_loose` (1 image, 8 instances) as `DESCRIPTIVE_HIGH_UNCERTAINTY`. The rule names no class; the exclusion is its output. The primary phase 7 selection metric is `supported_macro_map50_95`, the unweighted mean of per-class AP@0.50:0.95 over the supported classes; D0's value is **0.570142** (exactly 0.57014175), computed from the committed per-class metrics and checked against an independent exact-fraction computation. The five-class `mAP@0.50:0.95` remains `OFFICIAL_ALL_CLASS_REPORTING_METRIC` at 0.464429 and is never hidden - the 0.105713 gap is the arithmetic effect of dropping one very low AP from an average, not an improvement, and phase 6B's protocol was not rewritten. Two experiments were frozen and **neither was trained**: D1 varies `MODEL_CAPACITY` (YOLO11s, `yolo11s.pt` recorded as a consequential change, still `NOT_YET_FINGERPRINTED`) and D2 varies `INPUT_RESOLUTION` (imgsz 768), each inheriting D0's protocol wholesale and declaring only an override set - so the one-variable discipline is enforced by the parser rather than promised in prose, and both comparisons were verified to differ from D0 only in their declared fields. Selection logic frozen at four cases with an absolute margin of 0.005, explicitly not a significance test; Case C was widened to cover the region where only one candidate clears D0 while the two sit within the margin of each other, and that widening is recorded as predeclared rather than applied later. Batch is fixed at 16 for all three, with a genuine CUDA OOM stopping an experiment as `MEMORY_CONSTRAINT_REVIEW_REQUIRED` instead of being rescued. The phase 6B result-artifact rebuild was classified `NON_SELECTION_REVALIDATION` with `evidence_basis: MAINTAINER_DECLARED_PARTIALLY_CORROBORATED_ON_DISK`, introducing zero selection degrees of freedom and modifying no D0 metric; the corroborated half is that the git-ignored `artifacts/detection/D0_val/` exists and six of the seven committed D0 figures are byte-identical to its output, so a separate validation execution demonstrably happened, while the claim that nothing was varied between the two executions stays maintainer-declared because Ultralytics writes no `args.yaml` for a validation run. Artifacts are byte-identical on re-run. The holdout was not read, materialised, adapted, counted or plotted, and `CSVISION_ALLOW_TEST_SPLIT` was not set. No model trained, no D3 authorised, phase 7B not started. |
