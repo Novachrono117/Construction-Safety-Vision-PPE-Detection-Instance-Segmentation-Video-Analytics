@@ -37,6 +37,7 @@ undocumented one-off shell invocation.
 | `audit_segmentation_adapter.py` | 8A | Measure how much canonical COCO instance-mask geometry survives the Ultralytics YOLO segmentation label format. Development splits only. Trains nothing, downloads nothing, selects no architecture. |
 | `freeze_segmentation_baseline.py` | 8B | Record the architecture decision, approve the audited adapter by digest, freeze the S0 protocol and run one non-experimental smoke test. Does not run S0 and reports no model performance. |
 | `train_segmentation_baseline.py` | 8C | Run the S0 baseline exactly once, validate the natively selected checkpoint once, and execute the predeclared direct mask-IoU diagnostic once. Selects no final segmenter and tunes nothing. |
+| `analyze_segmentation_errors.py` | 8D | Attribute S0's validation errors one canonical instance at a time, from a frozen taxonomy and a deterministic review set. Trains nothing, re-validates nothing and selects nothing. |
 
 ## Rules
 
@@ -432,6 +433,40 @@ being reported. `--verify-only` runs every precondition and writes nothing;
 `--diagnostic-only` re-renders the artifacts from a completed run without
 training, for recovering from a failure after training rather than for repeating
 the experiment.
+
+`analyze_segmentation_errors.py` (phase 8D) explains what the S0 aggregates do
+not. It trains nothing, re-validates nothing, and selects no segmenter.
+
+Four properties keep it an analysis rather than a search.
+
+**It reuses the phase 8C protocol instead of restating it.** The inference
+settings and the matching rule are read from the committed diagnostic
+configuration and asserted, so the phase cannot quietly become a threshold
+sweep. It then re-derives the committed aggregates from its own per-instance
+table and refuses to continue if they disagree - the published result stands and
+the analysis is what would be wrong.
+
+**The taxonomy is frozen before any image is opened**, and mechanism flags an
+automated pass may assign are separated from the ones only a person can.
+`INSTANCE_SEPARATION_ERROR` and `OCCLUSION_ASSOCIATED` are deliberately not
+derivable from an IoU and an area ratio; assigning them automatically would
+manufacture a census out of arithmetic. An instance nothing explains stays
+`UNATTRIBUTED`.
+
+**The review set is chosen from the table before inspection.** Deterministic
+slices of a totally ordered list, identifiers written out first, and no example
+swapped afterwards for a more photogenic one. Human judgements are then declared
+as data in the script - the convention `record_manual_audit.py` established in
+phase 4B - and validated against that set: a judgement about an unselected
+instance is refused, as is any label naming a cause a controlled experiment would
+be needed to establish.
+
+**Review figures stay git-ignored.** They overlay canonical and predicted masks
+on source images, and this repository does not publish dataset imagery.
+
+`--verify-only` checks every precondition and writes nothing; `--build-review`
+computes the table, records the selection and renders its figures, then stops
+before any human judgement is recorded.
 
 ## Planned scripts
 

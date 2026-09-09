@@ -1,0 +1,77 @@
+{
+  "config": {
+    "direct_mask_iou_protocol": "configs/segmentation_mask_iou_evaluation.yaml",
+    "protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80"
+  },
+  "created_at": "2026-09-09T20:22:36+00:00",
+  "details": {
+    "alternative_models_tested": 0,
+    "band_census": {
+      "DETECTION_MISS": 68,
+      "HIGH_QUALITY_MASK": 140,
+      "LOW_OVERLAP_MASK": 57,
+      "MODERATE_MASK": 39
+    },
+    "checkpoint_sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3",
+    "classification": "S1_HYPOTHESIS_READY_FOR_PROTOCOL_FREEZE",
+    "experiment_id": "S0",
+    "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+    "gt_instances": 304,
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "instances_selected": 43,
+    "instances_visually_inspected": 6,
+    "models_trained": 0,
+    "phase": "8D",
+    "s0_revalidated": false,
+    "thresholds_changed": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "1c7808d01b8fa949220dd8ec49ec5ccec55baca8",
+  "inputs": [
+    {
+      "path": "configs/segmentation_mask_iou_evaluation.yaml",
+      "sha256": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+      "size_bytes": 6270
+    },
+    {
+      "path": "reports/segmentation_S0_result_manifest.json",
+      "sha256": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+      "size_bytes": 20541
+    },
+    {
+      "path": "reports/segmentation_S0_mask_iou.json",
+      "sha256": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+      "size_bytes": 4644
+    },
+    {
+      "path": "reports/segmentation_adapter_fidelity.csv",
+      "sha256": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+      "size_bytes": 419757
+    }
+  ],
+  "name": "segmentation_S0_error_analysis",
+  "outputs": [
+    {
+      "path": "reports/segmentation_S0_error_analysis.json",
+      "sha256": "a1eae1b7f3d719859e125318bae553bf4cef8b958aa690255767f1e4d6abf82e",
+      "size_bytes": 52543
+    },
+    {
+      "path": "reports/segmentation_S0_error_analysis.md",
+      "sha256": "b0bca820072448dad012df95614b1c23e22c77d002f032d01595b62ed8c0b01b",
+      "size_bytes": 24814
+    },
+    {
+      "path": "reports/segmentation_S0_error_instances.csv",
+      "sha256": "16b754bb689ba635999f552dec7063e7be3382ae7fafc3a10d4c06335525724d",
+      "size_bytes": 53176
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}

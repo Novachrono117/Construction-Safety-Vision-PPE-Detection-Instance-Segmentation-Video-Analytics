@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detector frozen - YOLO11n @ 768; S0 segmentation baseline trained (phase 8C of 14 complete).** The
+> **Status: detector frozen - YOLO11n @ 768; S0 segmentation baseline trained and diagnosed (phase 8D of 14 complete).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -21,12 +21,14 @@
 > evaluated, inspected, materialised or adapted, and **every number below is a
 > validation number**. Phase 8A measured how much canonical instance-mask geometry
 > survives the YOLO segmentation label format, and **phase 8B selected YOLO11n-seg,
-> approved the audited label bytes and froze the S0 protocol**. S0 itself has **not
-> Phase 8C then ran **S0 exactly once**: mask mAP@0.50:0.95 **0.407942** on
-> validation, plus a predeclared direct instance-mask IoU diagnostic against the
-> canonical COCO masks. **No final segmenter is selected**
-> (`UNSELECTED_PENDING_REVIEW`) - S0 is the only segmentation experiment, so there
-> is nothing to select between.
+> approved the audited label bytes and froze the S0 protocol**. Phase 8C then ran
+> **S0 exactly once**: mask mAP@0.50:0.95 **0.407942** on validation, plus a
+> predeclared direct instance-mask IoU diagnostic against the canonical COCO
+> masks. Phase 8D diagnosed *why* the mask metric trails the box metric and found
+> that **a large share of the `person` deficit is a target-versus-evaluation
+> mismatch created by the frozen `overlap_mask: true` policy**, not a failure to
+> learn. **No final segmenter is selected** (`UNSELECTED_PENDING_REVIEW`) - S0 is
+> the only segmentation experiment, so there is nothing to select between.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -120,6 +122,7 @@ Two design decisions define this architecture:
 | Segmentation model | **S0 trained (phase 8C).** YOLO11n-seg, 100/100 epochs, one run, checkpoint chosen by the frozen native rule (epoch 59). |
 | Segmentation metrics | **Validation only.** mask mAP@0.50:0.95 **0.407942** · mask mAP@0.50 0.579830 · `supported_macro_mask_map50_95` 0.509482. Box from the same model: mAP@0.50:0.95 0.478156. |
 | Direct mask IoU | **Measured (phase 8C)** against canonical COCO masks at a predeclared operating point: `matched_mask_iou_mean` 0.717462, `gt_normalized_mask_iou` 0.556977, coverage 0.776316. |
+| S0 error analysis | Done (phase 8D). 304 instances: 68 misses, 57 low-overlap, 39 moderate, 140 high-quality. `person` weaker than every class at every size quartile. |
 | Final segmenter | **Not selected.** `UNSELECTED_PENDING_REVIEW`. No S1 exists and no segmentation comparison protocol has been frozen. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
@@ -1113,6 +1116,82 @@ uv run python scripts/train_segmentation_baseline.py --verify-only
 ```
 
 
+## Phase 8D - why the masks trail the boxes
+
+**Nothing was trained.** Phase 8D re-ran inference on validation under the
+settings phase 8C froze and reported the outcome one canonical instance at a
+time. Its per-instance table reproduces the committed 8C aggregates exactly,
+which is how it is known to describe the same run.
+[`reports/segmentation_S0_error_analysis.md`](reports/segmentation_S0_error_analysis.md)
+is the full argument.
+
+**Coverage and mask quality fail in opposite directions.** Detection coverage
+rises with object size (0.513 / 0.816 / 0.882 / 0.895 by area quartile), so
+misses concentrate in small masks. But matched mask IoU is *worst* in the largest
+quartile (0.642). Large objects are reliably found and poorly delineated; small
+ones are missed outright. Reading either half alone gives the wrong story.
+
+| Outcome band | Count | Share |
+| --- | --- | --- |
+| `HIGH_QUALITY_MASK` (IoU >= 0.75) | 140 | 46.1% |
+| `DETECTION_MISS` | 68 | 22.4% |
+| `LOW_OVERLAP_MASK` (IoU < 0.50) | 57 | 18.8% |
+| `MODERATE_MASK` | 39 | 12.8% |
+
+**`person` is weaker than every other class at every size.** Matched IoU by
+quartile, person against non-person: 0.592/0.789, 0.539/0.844, 0.636/0.829,
+0.561/0.822. The deficit is not a size artefact, and its box-minus-mask AP gap
+(0.251) is an order above the next class (0.039).
+
+**A large share of that deficit is a target-versus-evaluation mismatch, not a
+failure to learn.** The frozen protocol sets `overlap_mask: true`, and the
+framework's `polygons2masks_overlap` sorts instances by descending area with a
+running maximum - so **the smaller instance owns any shared pixel**. A vest owns
+the pixels of the person wearing it, and that person's training target is the
+remainder. Measured over all 137 validation persons:
+
+| | |
+| --- | --- |
+| Canonical person pixels also inside another class | 27.3% |
+| **Missed pixels lying in that contested region** | **71.0%** |
+| Spearman, contested fraction vs mask IoU | -0.547 |
+| Matched IoU, persons <20% contested vs >=40% | 0.691 vs 0.408 |
+
+Re-scoring the *same* predictions against the target the model was actually
+trained on raises person GT-normalised IoU from 0.4346 to 0.5046 and matched IoU
+from 0.5781 to 0.6712, while every other class moves by less than 0.002 -
+exactly the signature the mechanism predicts, since the compact classes are the
+ones winning the contested pixels.
+
+**This is labelled `POST_HOC_HYPOTHESIS_GENERATING`, not a finding.** It was
+motivated by an observation made while reviewing images, and re-scoring changes
+the measuring stick rather than the model. It does not show that training without
+overlap resolution would produce better masks, and it does not close the gap:
+even against its own target, `person` matched IoU (0.671) stays far below
+`helmet_loose` (0.935).
+
+**Adapter conversion is not the bottleneck.** The 20 worst S0 instances average
+adapter IoU 0.968 against 0.979 for the split, the rank correlation is 0.246, and
+only 4 validation instances fall in the adapter-risk band. Not zero effect -
+phase 8A quantified real loss - but not the dominant cause.
+
+**Candidate interventions, assessed rather than chosen.** `mask_ratio: 2` is
+`WEAKLY_MOTIVATED` (under-segmentation outnumbers boundary error 56:19, so finer
+supervision does not address the measured failure). YOLO11s-seg is
+`NOT_SPECIFICALLY_MOTIVATED` (nothing here isolates capacity - which is not
+evidence that capacity cannot help). `overlap_mask: false` is best motivated by
+the evidence but is **not a clean comparison**: the flag changes the validation
+target as well as the training target, so framework mask mAP would not be
+comparable across S0 and S1 while the direct IoU diagnostic would.
+
+`S1_HYPOTHESIS_READY_FOR_PROTOCOL_FREEZE` - no protocol is frozen and no
+experiment is authorised here.
+
+```bash
+uv run python scripts/analyze_segmentation_errors.py --verify-only
+```
+
+
 ## Academic requirements
 
 The assignment requires all of the following. Each is mapped to a verifiable
@@ -1235,6 +1314,9 @@ Work proceeds through 14 gated phases (see
 │   ├── segmentation_S0_result_manifest.json     # S0 metrics, fingerprints, checkpoints (8C)
 │   ├── segmentation_S0_mask_iou.json            # Direct instance-mask IoU diagnostic (8C)
 │   ├── segmentation_S0_report.md                # The S0 baseline result and its limits (8C)
+│   ├── segmentation_S0_error_analysis.md        # Why the masks trail the boxes (8D)
+│   ├── segmentation_S0_error_analysis.json      # Strata, hypotheses, candidates (8D)
+│   ├── segmentation_S0_error_instances.csv      # One row per canonical validation instance (8D)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -1266,7 +1348,8 @@ Work proceeds through 14 gated phases (see
 │   ├── train_detection_experiment.py # Run one frozen phase 7 candidate (7B+)
 │   ├── audit_segmentation_adapter.py # Measure what the YOLO seg format costs (8A)
 │   ├── freeze_segmentation_baseline.py # Select the architecture, freeze S0, smoke test (8B)
-│   └── train_segmentation_baseline.py # Run S0 once, validate it, run the IoU diagnostic (8C)
+│   ├── train_segmentation_baseline.py # Run S0 once, validate it, run the IoU diagnostic (8C)
+│   └── analyze_segmentation_errors.py # Per-instance S0 error attribution, trains nothing (8D)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -1281,6 +1364,7 @@ Work proceeds through 14 gated phases (see
 │   ├── segmentation_experiment.py # The S0 protocol schema, parsed strictly (8B)
 │   ├── segmentation_run.py        # Runtime view, native fitness, checkpoint records (8C)
 │   ├── mask_iou_evaluation.py     # The direct instance-mask IoU diagnostic (8C)
+│   ├── segmentation_error_analysis.py # Error taxonomy, strata, deterministic review (8D)
 │   ├── detection_run.py       # Shared run primitives: weights, optimizer evidence, figures
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,

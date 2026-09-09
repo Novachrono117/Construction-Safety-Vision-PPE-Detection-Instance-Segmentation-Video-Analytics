@@ -1,0 +1,1209 @@
+{
+  "adapter_versus_model": {
+    "adapter_fidelity_risk_instances": 4,
+    "all_adapter_mean": 0.97914,
+    "conclusion": "**Adapter conversion is unlikely to be the main explanation.** The worst S0 instances are near-average conversions, the rank correlation is weak, `person`'s mean adapter fidelity is 0.975 - higher than the split's own worst strata - and only 4 validation instances fall in the adapter-risk band. This is not a claim that the adapter has zero effect: it loses real geometry, phase 8A quantified that, and a small share of S0's error is certainly attributable to it. What the evidence rules out is adapter loss as the dominant cause.",
+    "person_adapter_mean": 0.975368,
+    "rank_correlation": 0.246,
+    "summary": "Phase 8A measured how much canonical geometry survives the YOLO label format. If that loss were driving S0's mask error, the instances S0 handles worst would tend to be the ones the adapter converted worst. They are not.",
+    "worst_s0_adapter_mean": 0.968401
+  },
+  "alternative_models_tested": 0,
+  "analysis_question": "Why is S0 mask quality substantially weaker than its box quality, especially for person, and what evidence does that give a future controlled experiment?",
+  "area_quartile_edges": [
+    12200.25,
+    53645.5,
+    150648.25
+  ],
+  "band_census": {
+    "DETECTION_MISS": 68,
+    "HIGH_QUALITY_MASK": 140,
+    "LOW_OVERLAP_MASK": 57,
+    "MODERATE_MASK": 39
+  },
+  "box_vs_mask": {
+    "helmet_loose": {
+      "box_ap50_95": 0.802332,
+      "box_minus_mask": 0.012405,
+      "gt_match_coverage": 0.824561,
+      "gt_normalized_mask_iou": 0.771314,
+      "mask_ap50_95": 0.789927,
+      "matched_mask_iou_mean": 0.935424,
+      "supported": true
+    },
+    "helmet_on_head": {
+      "box_ap50_95": 0.625702,
+      "box_minus_mask": 0.039179,
+      "gt_match_coverage": 0.765957,
+      "gt_normalized_mask_iou": 0.671407,
+      "mask_ap50_95": 0.586523,
+      "matched_mask_iou_mean": 0.876559,
+      "supported": true
+    },
+    "person": {
+      "box_ap50_95": 0.522227,
+      "box_minus_mask": 0.251045,
+      "gt_match_coverage": 0.751825,
+      "gt_normalized_mask_iou": 0.434635,
+      "mask_ap50_95": 0.271182,
+      "matched_mask_iou_mean": 0.578106,
+      "supported": true
+    },
+    "vest_loose": {
+      "box_ap50_95": 0.025059,
+      "box_minus_mask": 0.023277,
+      "gt_match_coverage": 0.25,
+      "gt_normalized_mask_iou": 0.065886,
+      "mask_ap50_95": 0.001782,
+      "matched_mask_iou_mean": 0.263543,
+      "supported": false
+    },
+    "vest_on_body": {
+      "box_ap50_95": 0.415462,
+      "box_minus_mask": 0.025166,
+      "gt_match_coverage": 0.872727,
+      "gt_normalized_mask_iou": 0.613237,
+      "mask_ap50_95": 0.390296,
+      "matched_mask_iou_mean": 0.702667,
+      "supported": true
+    }
+  },
+  "candidates": {
+    "mask_ratio_2": {
+      "one_variable": "Yes, methodologically. `mask_ratio` changes the training target's resolution and nothing else in the frozen protocol, and it does not alter what the framework's validation compares against, so S0 and such an S1 would remain comparable on both the framework mask metric and the direct IoU diagnostic. The design is clean; the motivation is what is thin.",
+      "reasoning": "The evidence does not point here. A clean one-variable intervention needs the variable to address the measured failure, and the measured failure is whole-region exclusion concentrated in pixels the training target assigns to another instance - not contour imprecision. Under-segmentation outnumbers boundary error 56 to 19 overall and 49 to 14 within `person`. Halving the mask-target downsampling would sharpen boundaries the model is already placing roughly correctly, on the classes that are already scoring 0.88-0.94, while leaving the jacket-shaped hole in the `person` masks exactly where it is. It is not ruled out - finer supervision could help at the margin - but running it first would spend the project's one controlled comparison on the weaker lead.",
+      "verdict": "WEAKLY_MOTIVATED"
+    },
+    "overlap_mask_false": {
+      "one_variable": "**No, not for the framework metric.** The flag changes the training target *and* the validation target: the installed `SegmentationValidator._prepare_batch` builds its ground truth with `masks == index` when `overlap_mask` is set, so S0 and an `overlap_mask: false` S1 would be scored against different ground truth and their mask mAP would not be comparable. The direct mask-IoU diagnostic **would** remain comparable, because it always scores against canonical COCO masks that never resolve overlap. A protocol for this experiment therefore has to decide, in advance, which metric adjudicates it - and that is a methodological decision for a human, not a detail to settle mid-experiment.",
+      "reasoning": "This is where the evidence points, and it is also where the methodology gets awkward - which is exactly why it needs a reviewed protocol rather than a decision taken here. With `overlap_mask: false` each instance gets its own mask plane, so a `person` target would include the pixels its vest currently takes, addressing the one mechanism this phase actually measured.",
+      "verdict": "BEST_MOTIVATED_BY_THE_EVIDENCE_BUT_NOT_A_CLEAN_COMPARISON"
+    },
+    "yolo11s_seg": {
+      "one_variable": "Yes, methodologically - it mirrors D1's design exactly, varying the model and its consequential pretrained weights and nothing else.",
+      "reasoning": "Nothing measured here points at capacity. The class S0 handles worst is the class whose training target the overlap policy most alters, so a capacity experiment run now would inherit that confound and its result would be hard to read: a larger model might close part of the gap by better fitting an artefact of the target. There is also a specific precedent against reaching for capacity first - phase 7B varied exactly this on the detection side and D1 came in **below** D0 on the selection metric. That says nothing definitive about segmentation, but it does mean capacity is not a free bet in this project. **Absence of supporting evidence is not evidence that capacity cannot help**; it is a reason to sequence it after the mechanism that is measured.",
+      "verdict": "NOT_SPECIFICALLY_MOTIVATED"
+    }
+  },
+  "checkpoint": {
+    "checkpoints_compared": 0,
+    "last_pt_used": false,
+    "name": "best.pt",
+    "selected_by": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3"
+  },
+  "classification": "S1_HYPOTHESIS_READY_FOR_PROTOCOL_FREEZE",
+  "cross_check": {
+    "agree": true,
+    "committed": {
+      "gt_count": 304,
+      "gt_match_coverage": 0.776316,
+      "gt_normalized_mask_iou": 0.556977,
+      "matched_count": 236,
+      "matched_mask_iou_mean": 0.717462
+    },
+    "note": "The committed phase 8C figures were not regenerated. They were re-derived from the per-instance table purely to prove this analysis describes the same run.",
+    "recomputed": {
+      "gt_count": 304,
+      "gt_match_coverage": 0.776316,
+      "gt_normalized_mask_iou": 0.556977,
+      "matched_count": 236,
+      "matched_mask_iou_mean": 0.717462
+    }
+  },
+  "experiment_id": "S0",
+  "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+  "ground_truth_source": "CANONICAL_COCO_INSTANCE_SEGMENTATION",
+  "gt_instances": 304,
+  "historical_artifact_digests": {
+    "configs/segmentation_adapter_audit.yaml": "b4945ddaebb48db007ac30c97334f2a2dee767f3a39c51bcaa28e96b881fc4f7",
+    "configs/segmentation_baseline.yaml": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+    "configs/segmentation_mask_iou_evaluation.yaml": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "reports/segmentation_S0_manifest.json": "09f6ddc9a08bc66e48d5deac49c1734dad89e0bd564afd92168b3518407d0ce9",
+    "reports/segmentation_S0_mask_iou.json": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+    "reports/segmentation_S0_protocol.md": "d84717b2ffae0707b32330db35c6298f0966dc74acb9473f7d1d6169cb1945d9",
+    "reports/segmentation_S0_report.md": "6170b7dbe6ea99c8fbd170abbac430311110f5871bcab9327ca1fed0860191d8",
+    "reports/segmentation_S0_result_manifest.json": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+    "reports/segmentation_adapter_approval.json": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+    "reports/segmentation_adapter_audit_manifest.json": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "reports/segmentation_adapter_fidelity.csv": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+    "reports/segmentation_adapter_fidelity_report.md": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83"
+  },
+  "historical_artifacts_unchanged": true,
+  "holdout_accessed": false,
+  "hypotheses": {
+    "DATA_OR_ANNOTATION_LIMITATION": {
+      "status": "HYPOTHESIS_PARTLY_SUPPORTED",
+      "supported_by": "Two of the six inspected instances are indoor office scenes with fragmentary `person` annotations - one covering only hair and hands beside a fully visible unannotated face, another covering two hands of a background figure against a whole-person prediction 36 times its area. The dataset's known limitations already include out-of-domain images. Annotation scope for `person` is visibly not uniform across the split.",
+      "weakened_by": "Two instances cannot establish a rate. No systematic audit of annotation scope was run, and phases 4 and 5 accepted the annotations with documented limitations after a human review that did not flag this. It would also not explain the population-wide contested-pixel pattern, which holds on cleanly annotated construction images."
+    },
+    "INPUT_RESOLUTION": {
+      "status": "HYPOTHESIS_WEAKLY_SUPPORTED",
+      "supported_by": "Detection misses concentrate in the smallest area quartile (37 of 68), and higher input resolution is the conventional remedy for small-object recall.",
+      "weakened_by": "The mask-quality failure this phase set out to explain sits at the *other* end of the size distribution: the largest quartile has 0.895 coverage and the worst matched IoU. Resolution is least likely to be the constraint on objects that already span much of the frame. Phase 7C also found the analogous resolution hypothesis unsupported by the shape of the detection result."
+    },
+    "MASK_SUPERVISION_RESOLUTION": {
+      "status": "HYPOTHESIS_WEAKLY_SUPPORTED",
+      "supported_by": "`mask_ratio: 4` downsamples the mask target fourfold before the loss sees it, so fine structure is not what is optimised. Matched mask IoU is worst in the largest area quartile (0.642), where a person spans much of the frame and thin extremities carry proportionally more of the boundary.",
+      "weakened_by": "The dominant measured failure is whole-region exclusion, not contour imprecision: among poorly matched instances the automated pass flags 56 under-segmentations against 19 boundary errors, and for `person` specifically 49 against 14. A coarse supervision grid does not explain a prediction that omits an entire jacket. `mask_ratio` also applies identically to every class, yet the compact classes score 0.88-0.94."
+    },
+    "MODEL_CAPACITY": {
+      "status": "HYPOTHESIS_NOT_SPECIFICALLY_MOTIVATED",
+      "supported_by": "YOLO11n-seg is the smallest model in its family, and `person` is the most variable class in the set. Nothing here rules capacity out.",
+      "weakened_by": "No measurement in this analysis isolates capacity, and none could: capacity is only visible by comparison against a larger model, which this phase did not run. The class the model handles worst is also the one whose training target the overlap policy alters most, which is a confound a capacity experiment would inherit. **Absence of evidence here is not evidence that capacity cannot help** - it is the absence of a reason to try it first."
+    },
+    "NO_CLEAR_INTERVENTION": {
+      "status": "HYPOTHESIS_NOT_SUPPORTED",
+      "supported_by": "S0 is a first baseline and some of its weakness may simply be the difficulty of the task on 303 training images.",
+      "weakened_by": "One mechanism is measured, specific, and traceable to a single frozen protocol flag whose behaviour was read from the installed source. That is a concrete lead, whatever its eventual size."
+    },
+    "OVERLAP_MASK_TARGET_MISMATCH": {
+      "status": "HYPOTHESIS_WITH_THE_STRONGEST_SUPPORT",
+      "supported_by": "The frozen protocol sets `overlap_mask: true`. Read from the installed source, `polygons2masks_overlap` sorts instances by descending area and paints them with a running maximum, so the **smaller** instance owns any shared pixel: a vest owns the pixels of the person wearing it, and that person's training target is the remainder. Measured consequences, over all 137 validation persons: 28.0% of canonical person pixels lie inside another class's canonical mask, but **71.0% of the pixels S0 misses on person lie in that contested region** - 2.5 times the base rate. Contested fraction correlates negatively with person mask IoU (Spearman -0.547); persons under 20% contested average 0.691 matched IoU against 0.408 for those over 40%. Re-scoring the same predictions against the overlap-resolved target the model was actually trained on raises person GT-normalised IoU from 0.4346 to 0.5046 and matched IoU from 0.578 to 0.671, while every other class moves by less than 0.002 - exactly as expected if the compact classes are the ones winning the contested pixels.",
+      "weakened_by": "It does not close the gap. Even scored against its own training target, `person` matched IoU is 0.671, still far below `helmet_loose` at 0.935 and `helmet_on_head` at 0.877, so a material `person`-specific difficulty remains unexplained. The measurement is also post-hoc - motivated by an observation made while reviewing images - and re-scoring changes the measuring stick rather than the model, so it demonstrates a target/evaluation mismatch, not that removing the flag would improve anything."
+    }
+  },
+  "inference": {
+    "agnostic_nms": false,
+    "augment": false,
+    "classes": "ALL_FIVE_FROZEN_CLASSES",
+    "conf": 0.25,
+    "half": false,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "retina_masks": true
+  },
+  "instance_table": {
+    "path": "reports/segmentation_S0_error_instances.csv",
+    "sha256": "16b754bb689ba635999f552dec7063e7be3382ae7fafc3a10d4c06335525724d"
+  },
+  "limitations": [
+    "**Descriptive, not causal.** No controlled experiment was run. Every mechanism named here is an association or an observation, and the one quantitative decomposition offered - re-scoring against the overlap-resolved target - changes the measuring stick, not the model.",
+    "**One model, one run, one operating point.** All of it describes a single S0 checkpoint at conf 0.25 and NMS IoU 0.70. A different threshold would move the coverage figures.",
+    "**Validation only, 304 instances, 65 images.** Small enough that per-class and per-stratum figures carry real sampling uncertainty, and `vest_loose`'s 8 instances carry so much that nothing about the population may be read from them.",
+    "**Six instances were looked at.** The visual review confirms and illustrates the population-level measurements; it does not independently establish their frequency.",
+    "**The strata are correlated.** Size, class, component count and hole presence are not independent in this dataset - large multi-component holed instances are disproportionately `person` - so no single stratum's effect is isolated.",
+    "**The contested-pixel measurement was motivated by an observation made during review.** It is reported as a post-hoc, hypothesis-generating analysis over pre-existing canonical data, not as a predeclared test, and it needs a controlled experiment to become a finding."
+  ],
+  "matching": {
+    "algorithm": "SCIPY_LINEAR_SUM_ASSIGNMENT_MAXIMIZE_MASK_IOU",
+    "redefined": false,
+    "reused_from_phase_8c": true
+  },
+  "models_trained": 0,
+  "next_decision": "The preferred intervention is **`overlap_mask: false`**, and the evidence for it is the measured contested-pixel pattern rather than a preference among plausible knobs. It is recorded as a hypothesis with a named obstacle: flipping the flag changes what the framework's own mask metric is measured against, so phase 8E must decide in advance which metric adjudicates the comparison - the direct mask-IoU diagnostic against canonical COCO is comparable across the flag, and the framework's mask mAP is not.\n\nNo protocol is frozen here and no experiment is authorised. Phase 8E is a human-reviewed protocol freeze, and like phase 7A it must be written before the experiment it would decide exists.\n\nOne further observation belongs in that review rather than in this analysis: if the overlap policy stays as it is, then the project's direct mask-IoU diagnostic is charging the model for pixels it was trained to exclude. That is a reporting question about S0's published numbers as much as an experiment design question, and both readings are already recorded side by side above so that neither is quietly adopted.",
+  "overlap_target_analysis": {
+    "canonical_gt_does_not_resolve_overlap": true,
+    "contested_fraction_vs_iou_rank_correlation": -0.5466,
+    "framework_behaviour": "Read from the installed source. `polygons2masks_overlap` sorts instances by descending area and paints them with a running maximum, so the smaller instance owns any shared pixel: a vest owns the pixels of the person wearing it, and that person's training target is the remainder. `SegmentationValidator._prepare_batch` builds its ground truth the same way, so the framework's own mask metric is measured against the same resolved target.",
+    "gt_normalized_iou_scored_both_ways": {
+      "helmet_loose": {
+        "canonical": 0.771314,
+        "overlap_resolved": 0.771208
+      },
+      "helmet_on_head": {
+        "canonical": 0.671407,
+        "overlap_resolved": 0.671407
+      },
+      "person": {
+        "canonical": 0.434635,
+        "overlap_resolved": 0.50461
+      },
+      "vest_loose": {
+        "canonical": 0.065886,
+        "overlap_resolved": 0.065399
+      },
+      "vest_on_body": {
+        "canonical": 0.613237,
+        "overlap_resolved": 0.615059
+      }
+    },
+    "interpretation": "A substantial share of person's mask deficit is a target-versus-evaluation mismatch created by the frozen protocol, not a failure to learn: re-scoring the same predictions against the target the model was actually trained on recovers a large part of the gap for person and almost nothing for the other classes, which is the signature the mechanism predicts. It does not recover all of it, so a person-specific difficulty remains.",
+    "label": "POST_HOC_HYPOTHESIS_GENERATING",
+    "not_a_finding_because": "Re-scoring changes the measuring stick, not the model. It demonstrates that the two targets disagree and that person is where they disagree most; it does not show that training without overlap resolution would produce better masks. Only a controlled experiment could, and none was run.",
+    "person_contested_pixel_share": 0.273128,
+    "person_matched_iou_by_contested_fraction": {
+      "at_or_over_40_percent": {
+        "instances": 32,
+        "matched_mask_iou_mean": 0.408306
+      },
+      "under_20_percent": {
+        "instances": 55,
+        "matched_mask_iou_mean": 0.691414
+      }
+    },
+    "person_matched_only": {
+      "canonical": 0.578106,
+      "delta": 0.093073,
+      "overlap_resolved": 0.67118
+    },
+    "person_missed_pixel_share_in_contested_region": 0.710036
+  },
+  "per_class": {
+    "helmet_loose": {
+      "bands": {
+        "DETECTION_MISS": 10,
+        "HIGH_QUALITY_MASK": 47,
+        "LOW_OVERLAP_MASK": 0,
+        "MODERATE_MASK": 0
+      },
+      "gt_match_coverage": 0.824561,
+      "gt_normalized_mask_iou": 0.771314,
+      "instances": 57,
+      "matched": 47,
+      "matched_mask_iou_mean": 0.935424,
+      "misses": 10
+    },
+    "helmet_on_head": {
+      "bands": {
+        "DETECTION_MISS": 11,
+        "HIGH_QUALITY_MASK": 32,
+        "LOW_OVERLAP_MASK": 0,
+        "MODERATE_MASK": 4
+      },
+      "gt_match_coverage": 0.765957,
+      "gt_normalized_mask_iou": 0.671407,
+      "instances": 47,
+      "matched": 36,
+      "matched_mask_iou_mean": 0.876559,
+      "misses": 11
+    },
+    "person": {
+      "bands": {
+        "DETECTION_MISS": 34,
+        "HIGH_QUALITY_MASK": 32,
+        "LOW_OVERLAP_MASK": 45,
+        "MODERATE_MASK": 26
+      },
+      "gt_match_coverage": 0.751825,
+      "gt_normalized_mask_iou": 0.434635,
+      "instances": 137,
+      "matched": 103,
+      "matched_mask_iou_mean": 0.578106,
+      "misses": 34
+    },
+    "vest_loose": {
+      "bands": {
+        "DETECTION_MISS": 6,
+        "HIGH_QUALITY_MASK": 0,
+        "LOW_OVERLAP_MASK": 2,
+        "MODERATE_MASK": 0
+      },
+      "gt_match_coverage": 0.25,
+      "gt_normalized_mask_iou": 0.065886,
+      "instances": 8,
+      "matched": 2,
+      "matched_mask_iou_mean": 0.263543,
+      "misses": 6
+    },
+    "vest_on_body": {
+      "bands": {
+        "DETECTION_MISS": 7,
+        "HIGH_QUALITY_MASK": 29,
+        "LOW_OVERLAP_MASK": 10,
+        "MODERATE_MASK": 9
+      },
+      "gt_match_coverage": 0.872727,
+      "gt_normalized_mask_iou": 0.613237,
+      "instances": 55,
+      "matched": 48,
+      "matched_mask_iou_mean": 0.702667,
+      "misses": 7
+    }
+  },
+  "person_diagnostic": {
+    "bands": {
+      "DETECTION_MISS": 34,
+      "HIGH_QUALITY_MASK": 32,
+      "LOW_OVERLAP_MASK": 45,
+      "MODERATE_MASK": 26
+    },
+    "box_ap50_95": 0.522227,
+    "box_minus_mask": 0.251045,
+    "by_area_quartile": {
+      "Q1_smallest": {
+        "bands": {
+          "DETECTION_MISS": 20,
+          "HIGH_QUALITY_MASK": 3,
+          "LOW_OVERLAP_MASK": 4,
+          "MODERATE_MASK": 7
+        },
+        "gt_match_coverage": 0.411765,
+        "gt_normalized_mask_iou": 0.243867,
+        "instances": 34,
+        "matched": 14,
+        "matched_mask_iou_mean": 0.592249,
+        "misses": 20
+      },
+      "Q2": {
+        "bands": {
+          "DETECTION_MISS": 9,
+          "HIGH_QUALITY_MASK": 6,
+          "LOW_OVERLAP_MASK": 9,
+          "MODERATE_MASK": 4
+        },
+        "gt_match_coverage": 0.678571,
+        "gt_normalized_mask_iou": 0.365575,
+        "instances": 28,
+        "matched": 19,
+        "matched_mask_iou_mean": 0.538743,
+        "misses": 9
+      },
+      "Q3": {
+        "bands": {
+          "DETECTION_MISS": 3,
+          "HIGH_QUALITY_MASK": 9,
+          "LOW_OVERLAP_MASK": 8,
+          "MODERATE_MASK": 6
+        },
+        "gt_match_coverage": 0.884615,
+        "gt_normalized_mask_iou": 0.56265,
+        "instances": 26,
+        "matched": 23,
+        "matched_mask_iou_mean": 0.636039,
+        "misses": 3
+      },
+      "Q4_largest": {
+        "bands": {
+          "DETECTION_MISS": 2,
+          "HIGH_QUALITY_MASK": 14,
+          "LOW_OVERLAP_MASK": 24,
+          "MODERATE_MASK": 9
+        },
+        "gt_match_coverage": 0.959184,
+        "gt_normalized_mask_iou": 0.53854,
+        "instances": 49,
+        "matched": 47,
+        "matched_mask_iou_mean": 0.561457,
+        "misses": 2
+      }
+    },
+    "class": "person",
+    "focus_reason": "Named as the focus before this analysis began, because S0 showed it the largest box-to-mask AP gap of any comparison-supported class. The gap is a committed fact, not evidence for a mechanism.",
+    "gt_normalized_mask_iou": 0.434635,
+    "instances": 137,
+    "iou50_coverage": 0.423358,
+    "iou75_coverage": 0.233577,
+    "mask_ap50_95": 0.271182,
+    "matched": 103,
+    "matched_mask_iou_mean": 0.578106,
+    "misses": 34
+  },
+  "phase": "8D",
+  "protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+  "protocol_reused_unchanged": true,
+  "protocol_source": "configs/segmentation_mask_iou_evaluation.yaml",
+  "qualitative_review": {
+    "automatic_flag_census": {
+      "ADAPTER_FIDELITY_RISK": 4,
+      "BOUNDARY_ERROR": 19,
+      "INSTANCE_SEPARATION_ERROR": 0,
+      "OCCLUSION_ASSOCIATED": 0,
+      "OVERSEGMENTATION": 21,
+      "TINY_MASK_ASSOCIATED": 7,
+      "UNATTRIBUTED": 201,
+      "UNDERSEGMENTATION": 56
+    },
+    "figures_committed": false,
+    "figures_location": "artifacts/segmentation/S0_error_review",
+    "figures_rendered": 43,
+    "findings": [
+      "**Six instances were inspected in detail** out of the 43 the rules selected and rendered. That is stated rather than implied: the population-level findings above rest on all 304 instances, and the review's job was to check what the numbers meant, not to supply a census of its own.",
+      "**The dominant `person` failure is visible and consistent.** In the worst matched cases the predicted mask covers the face, hands and trousers but omits the high-visibility jacket - precisely the region a `vest_on_body` instance also occupies.",
+      "**It is not an assignment artefact.** On the multi-person images the best IoU available from *any* prediction is already low (0.141, 0.196, 0.243, 0.263), so one-to-one matching is not manufacturing the deficit.",
+      "**Two of the six sit in indoor office scenes with fragmentary `person` annotations** - one covering only hair and hands while the face is plainly visible, another covering two hands of a background figure. These are data characteristics, and the frozen taxonomy has no flag for them, so they are recorded as `UNATTRIBUTED` with the evidence written out.",
+      "**Genuine occlusion accounts for some misses**, such as an operator seated behind cab glass at low contrast."
+    ],
+    "inspection_note": "The selection rules chose and rendered every instance listed above. A subset was then examined in detail and carries a recorded judgement; the count of judgements is the count of instances actually looked at, and it is reported separately from the count selected so neither is mistaken for the other. The population-level findings in this analysis rest on all canonical instances, not on the reviewed subset.",
+    "instances_selected": 43,
+    "instances_visually_inspected": 6,
+    "manual_attributions": {
+      "6fMvy2k97BSY0a3P9Fbg#173": {
+        "evidence": "An indoor office scene, not a construction site. The canonical person annotation covers only the top of the hair and the hands while leaving the fully visible face and torso unannotated. No listed mechanism explains the miss: the annotation itself is a fragment, which is a data characteristic rather than a model error, and the taxonomy has no flag for that.",
+        "flags": [
+          "UNATTRIBUTED"
+        ]
+      },
+      "9uyGbpRuvoK6FWsiIhGx#305": {
+        "evidence": "A single, large, unoccluded flagger. The canonical mask covers the whole person including the high-visibility jacket; the S0 mask covers the face, the bare hand and the trousers but not the jacket, which is exactly the region a vest_on_body instance also covers. Predicted area is 82% smaller than canonical.",
+        "flags": [
+          "UNDERSEGMENTATION"
+        ]
+      },
+      "9uyGbpRuvoK6FWsiIhGx#306": {
+        "evidence": "A seated operator inside a machine cab, seen through a windscreen at low contrast and small scale. No same-class prediction overlaps it at all. The failure is visibility, not mask quality.",
+        "flags": [
+          "OCCLUSION_ASSOCIATED"
+        ]
+      },
+      "HvvG43BEgtvO5Az8qBX5#499": {
+        "evidence": "Three heavily overlapping people. The canonical mask covers the centre person fully; the assigned prediction covers mostly a neighbour plus a fragment of the centre torso. The best IoU available from any of the five person predictions is 0.141, so this is not an assignment artefact - no prediction covers this person.",
+        "flags": [
+          "UNDERSEGMENTATION",
+          "OCCLUSION_ASSOCIATED",
+          "INSTANCE_SEPARATION_ERROR"
+        ]
+      },
+      "eK6ftnVVMa7WC57HMKWj#1124": {
+        "evidence": "Another indoor office scene. The canonical annotation is a two-hand fragment of a background person; the assigned prediction is a whole foreground person at 36 times the area. The prediction is arguably the more sensible object, and the IoU of 0.027 reflects an annotation-versus-prediction mismatch of scope.",
+        "flags": [
+          "OVERSEGMENTATION",
+          "INSTANCE_SEPARATION_ERROR"
+        ]
+      },
+      "hsfBHYazMXnS3WJlQzR7#1246": {
+        "evidence": "Two large overlapping people seen from behind. The canonical mask spans helmet, shoulders and arm; the prediction covers roughly a quarter of it, omitting the helmet and much of the jacket. Predicted area is 75% smaller than canonical.",
+        "flags": [
+          "UNDERSEGMENTATION",
+          "OCCLUSION_ASSOCIATED"
+        ]
+      }
+    },
+    "manual_flag_census": {
+      "ADAPTER_FIDELITY_RISK": 0,
+      "BOUNDARY_ERROR": 0,
+      "INSTANCE_SEPARATION_ERROR": 2,
+      "OCCLUSION_ASSOCIATED": 3,
+      "OVERSEGMENTATION": 1,
+      "TINY_MASK_ASSOCIATED": 0,
+      "UNATTRIBUTED": 1,
+      "UNDERSEGMENTATION": 3
+    },
+    "selection_counts": {
+      "adapter_fidelity_risk": 4,
+      "best_matched_person": 5,
+      "misses_person": 10,
+      "worst_helmet_loose": 5,
+      "worst_helmet_on_head": 5,
+      "worst_matched_person": 10,
+      "worst_vest_on_body": 5
+    },
+    "selection_method": "Deterministic slices of a totally ordered instance table, ordered by mask IoU then by image id then by annotation id so every tie resolves. Identifiers were recorded before any image was opened.",
+    "selection_rules": {
+      "adapter_fidelity_risk": [
+        {
+          "adapter_mask_iou": 0.856887299,
+          "annotation_id": 310,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 9660,
+          "class": "helmet_on_head",
+          "image_id": "A2iSTnVfTHioOl73tkQd",
+          "mask_iou": 0.0,
+          "rule": "adapter_fidelity_risk"
+        },
+        {
+          "adapter_mask_iou": 0.899873257,
+          "annotation_id": 1952,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 758,
+          "class": "person",
+          "image_id": "xEWKVpjbfnBH9kQEaUbB",
+          "mask_iou": 0.0,
+          "rule": "adapter_fidelity_risk"
+        },
+        {
+          "adapter_mask_iou": 0.784688995,
+          "annotation_id": 2022,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 164,
+          "class": "vest_on_body",
+          "image_id": "ywH2LFvRJto6sV68hk5v",
+          "mask_iou": 0.0,
+          "rule": "adapter_fidelity_risk"
+        },
+        {
+          "adapter_mask_iou": 0.88876591,
+          "annotation_id": 1959,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 1665,
+          "class": "person",
+          "image_id": "xEWKVpjbfnBH9kQEaUbB",
+          "mask_iou": 0.307059,
+          "rule": "adapter_fidelity_risk"
+        }
+      ],
+      "best_matched_person": [
+        {
+          "adapter_mask_iou": 0.968790341,
+          "annotation_id": 1194,
+          "band": "HIGH_QUALITY_MASK",
+          "canonical_area_px": 221980,
+          "class": "person",
+          "image_id": "feq9UuxoWtVRBPUnMr4G",
+          "mask_iou": 0.952027,
+          "rule": "best_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.993107713,
+          "annotation_id": 933,
+          "band": "HIGH_QUALITY_MASK",
+          "canonical_area_px": 77099,
+          "class": "person",
+          "image_id": "WeIamb2srt7SBgcfAFq1",
+          "mask_iou": 0.946052,
+          "rule": "best_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.987793496,
+          "annotation_id": 175,
+          "band": "HIGH_QUALITY_MASK",
+          "canonical_area_px": 54266,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.925548,
+          "rule": "best_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.990028091,
+          "annotation_id": 317,
+          "band": "HIGH_QUALITY_MASK",
+          "canonical_area_px": 116702,
+          "class": "person",
+          "image_id": "Ai3fqVHdn3cSDpuEaa5l",
+          "mask_iou": 0.913978,
+          "rule": "best_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.99050943,
+          "annotation_id": 105,
+          "band": "HIGH_QUALITY_MASK",
+          "canonical_area_px": 73803,
+          "class": "person",
+          "image_id": "3LUOWEww9aCx2Cx4B38y",
+          "mask_iou": 0.910979,
+          "rule": "best_matched_person"
+        }
+      ],
+      "misses_person": [
+        {
+          "adapter_mask_iou": 0.95954023,
+          "annotation_id": 166,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 2137,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.925987625,
+          "annotation_id": 167,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 11833,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.9657549,
+          "annotation_id": 168,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 4556,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.946700224,
+          "annotation_id": 173,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 17103,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.968240702,
+          "annotation_id": 174,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 4707,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.975867797,
+          "annotation_id": 176,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 11266,
+          "class": "person",
+          "image_id": "6fMvy2k97BSY0a3P9Fbg",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.971344424,
+          "annotation_id": 306,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 12222,
+          "class": "person",
+          "image_id": "9uyGbpRuvoK6FWsiIhGx",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.980647371,
+          "annotation_id": 311,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 17332,
+          "class": "person",
+          "image_id": "A2iSTnVfTHioOl73tkQd",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.983205162,
+          "annotation_id": 312,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 22435,
+          "class": "person",
+          "image_id": "A2iSTnVfTHioOl73tkQd",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        },
+        {
+          "adapter_mask_iou": 0.955764787,
+          "annotation_id": 313,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 61568,
+          "class": "person",
+          "image_id": "A2iSTnVfTHioOl73tkQd",
+          "mask_iou": 0.0,
+          "rule": "misses_person"
+        }
+      ],
+      "worst_helmet_loose": [
+        {
+          "adapter_mask_iou": 0.992098962,
+          "annotation_id": 5,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 37307,
+          "class": "helmet_loose",
+          "image_id": "0OEuk7X9WrM64hqQbedA",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_loose"
+        },
+        {
+          "adapter_mask_iou": 0.989725187,
+          "annotation_id": 417,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 64926,
+          "class": "helmet_loose",
+          "image_id": "F9BUOPsajE69txpyePoP",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_loose"
+        },
+        {
+          "adapter_mask_iou": 0.99447132,
+          "annotation_id": 439,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 90670,
+          "class": "helmet_loose",
+          "image_id": "Foo1oq3oHF7pBhTWKpnL",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_loose"
+        },
+        {
+          "adapter_mask_iou": 0.991863916,
+          "annotation_id": 593,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 67249,
+          "class": "helmet_loose",
+          "image_id": "L51HLb9pTcXWg0hlY2eI",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_loose"
+        },
+        {
+          "adapter_mask_iou": 0.991415965,
+          "annotation_id": 890,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 24760,
+          "class": "helmet_loose",
+          "image_id": "VBtNhSPdKWG9aB5UwSAp",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_loose"
+        }
+      ],
+      "worst_helmet_on_head": [
+        {
+          "adapter_mask_iou": 0.856887299,
+          "annotation_id": 310,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 9660,
+          "class": "helmet_on_head",
+          "image_id": "A2iSTnVfTHioOl73tkQd",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_on_head"
+        },
+        {
+          "adapter_mask_iou": 0.996253784,
+          "annotation_id": 1045,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 436415,
+          "class": "helmet_on_head",
+          "image_id": "ZtkHwixUGYxprWRUjVfK",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_on_head"
+        },
+        {
+          "adapter_mask_iou": 0.979194452,
+          "annotation_id": 1511,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 11122,
+          "class": "helmet_on_head",
+          "image_id": "nXwfWz2We6dOnsyzeEno",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_on_head"
+        },
+        {
+          "adapter_mask_iou": 0.936205468,
+          "annotation_id": 1512,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 2342,
+          "class": "helmet_on_head",
+          "image_id": "nXwfWz2We6dOnsyzeEno",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_on_head"
+        },
+        {
+          "adapter_mask_iou": 0.967087941,
+          "annotation_id": 1513,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 3730,
+          "class": "helmet_on_head",
+          "image_id": "nXwfWz2We6dOnsyzeEno",
+          "mask_iou": 0.0,
+          "rule": "worst_helmet_on_head"
+        }
+      ],
+      "worst_matched_person": [
+        {
+          "adapter_mask_iou": 0.97450661,
+          "annotation_id": 1124,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 26016,
+          "class": "person",
+          "image_id": "eK6ftnVVMa7WC57HMKWj",
+          "mask_iou": 0.026932,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.965883377,
+          "annotation_id": 1847,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 16884,
+          "class": "person",
+          "image_id": "u4uGaDsy2tThEpOEs5TM",
+          "mask_iou": 0.092158,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.995020713,
+          "annotation_id": 499,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 218855,
+          "class": "person",
+          "image_id": "HvvG43BEgtvO5Az8qBX5",
+          "mask_iou": 0.140731,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.992786729,
+          "annotation_id": 305,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 162561,
+          "class": "person",
+          "image_id": "9uyGbpRuvoK6FWsiIhGx",
+          "mask_iou": 0.166617,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.996476355,
+          "annotation_id": 235,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 435405,
+          "class": "person",
+          "image_id": "7VMQ21x6vDuAvoY6Ku2F",
+          "mask_iou": 0.196223,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.993953317,
+          "annotation_id": 503,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 216404,
+          "class": "person",
+          "image_id": "HvvG43BEgtvO5Az8qBX5",
+          "mask_iou": 0.208424,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.995490197,
+          "annotation_id": 1246,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 578546,
+          "class": "person",
+          "image_id": "hsfBHYazMXnS3WJlQzR7",
+          "mask_iou": 0.243217,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.975875416,
+          "annotation_id": 1527,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 76640,
+          "class": "person",
+          "image_id": "nXwfWz2We6dOnsyzeEno",
+          "mask_iou": 0.248678,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.92053206,
+          "annotation_id": 1951,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 2794,
+          "class": "person",
+          "image_id": "xEWKVpjbfnBH9kQEaUbB",
+          "mask_iou": 0.261549,
+          "rule": "worst_matched_person"
+        },
+        {
+          "adapter_mask_iou": 0.995486555,
+          "annotation_id": 1245,
+          "band": "LOW_OVERLAP_MASK",
+          "canonical_area_px": 477335,
+          "class": "person",
+          "image_id": "hsfBHYazMXnS3WJlQzR7",
+          "mask_iou": 0.263371,
+          "rule": "worst_matched_person"
+        }
+      ],
+      "worst_vest_on_body": [
+        {
+          "adapter_mask_iou": 0.960710945,
+          "annotation_id": 351,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 2069,
+          "class": "vest_on_body",
+          "image_id": "CDbWzCeakwV73xXd2qlq",
+          "mask_iou": 0.0,
+          "rule": "worst_vest_on_body"
+        },
+        {
+          "adapter_mask_iou": 0.972133609,
+          "annotation_id": 964,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 10384,
+          "class": "vest_on_body",
+          "image_id": "WvGmeXrUqULTXbaSGJgZ",
+          "mask_iou": 0.0,
+          "rule": "worst_vest_on_body"
+        },
+        {
+          "adapter_mask_iou": 0.932912257,
+          "annotation_id": 965,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 5465,
+          "class": "vest_on_body",
+          "image_id": "WvGmeXrUqULTXbaSGJgZ",
+          "mask_iou": 0.0,
+          "rule": "worst_vest_on_body"
+        },
+        {
+          "adapter_mask_iou": 0.995480395,
+          "annotation_id": 1235,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 885290,
+          "class": "vest_on_body",
+          "image_id": "hKVfPWLhNq2uN8d3SJs1",
+          "mask_iou": 0.0,
+          "rule": "worst_vest_on_body"
+        },
+        {
+          "adapter_mask_iou": 0.956720686,
+          "annotation_id": 1841,
+          "band": "DETECTION_MISS",
+          "canonical_area_px": 5113,
+          "class": "vest_on_body",
+          "image_id": "u4uGaDsy2tThEpOEs5TM",
+          "mask_iou": 0.0,
+          "rule": "worst_vest_on_body"
+        }
+      ]
+    }
+  },
+  "rare_class": {
+    "name": "vest_loose",
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "s0_modified": false,
+  "s0_revalidated": false,
+  "schema_version": 1,
+  "stratified": {
+    "adapter_fidelity_band": {
+      "adapter_iou_0.90_to_0.95": {
+        "bands": {
+          "DETECTION_MISS": 15,
+          "HIGH_QUALITY_MASK": 4,
+          "LOW_OVERLAP_MASK": 3,
+          "MODERATE_MASK": 6
+        },
+        "gt_match_coverage": 0.464286,
+        "gt_normalized_mask_iou": 0.29632,
+        "instances": 28,
+        "matched": 13,
+        "matched_mask_iou_mean": 0.638228,
+        "misses": 15
+      },
+      "adapter_iou_0.95_to_0.99": {
+        "bands": {
+          "DETECTION_MISS": 36,
+          "HIGH_QUALITY_MASK": 56,
+          "LOW_OVERLAP_MASK": 22,
+          "MODERATE_MASK": 20
+        },
+        "gt_match_coverage": 0.731343,
+        "gt_normalized_mask_iou": 0.514064,
+        "instances": 134,
+        "matched": 98,
+        "matched_mask_iou_mean": 0.702904,
+        "misses": 36
+      },
+      "adapter_iou_ge_0.99": {
+        "bands": {
+          "DETECTION_MISS": 14,
+          "HIGH_QUALITY_MASK": 80,
+          "LOW_OVERLAP_MASK": 31,
+          "MODERATE_MASK": 13
+        },
+        "gt_match_coverage": 0.898551,
+        "gt_normalized_mask_iou": 0.665453,
+        "instances": 138,
+        "matched": 124,
+        "matched_mask_iou_mean": 0.740585,
+        "misses": 14
+      },
+      "adapter_iou_lt_0.90": {
+        "bands": {
+          "DETECTION_MISS": 3,
+          "HIGH_QUALITY_MASK": 0,
+          "LOW_OVERLAP_MASK": 1,
+          "MODERATE_MASK": 0
+        },
+        "gt_match_coverage": 0.25,
+        "gt_normalized_mask_iou": 0.076765,
+        "instances": 4,
+        "matched": 1,
+        "matched_mask_iou_mean": 0.307059,
+        "misses": 3
+      }
+    },
+    "area_quartile": {
+      "Q1_smallest": {
+        "bands": {
+          "DETECTION_MISS": 37,
+          "HIGH_QUALITY_MASK": 22,
+          "LOW_OVERLAP_MASK": 6,
+          "MODERATE_MASK": 11
+        },
+        "gt_match_coverage": 0.513158,
+        "gt_normalized_mask_iou": 0.368574,
+        "instances": 76,
+        "matched": 39,
+        "matched_mask_iou_mean": 0.718246,
+        "misses": 37
+      },
+      "Q2": {
+        "bands": {
+          "DETECTION_MISS": 14,
+          "HIGH_QUALITY_MASK": 41,
+          "LOW_OVERLAP_MASK": 13,
+          "MODERATE_MASK": 8
+        },
+        "gt_match_coverage": 0.815789,
+        "gt_normalized_mask_iou": 0.612376,
+        "instances": 76,
+        "matched": 62,
+        "matched_mask_iou_mean": 0.750655,
+        "misses": 14
+      },
+      "Q3": {
+        "bands": {
+          "DETECTION_MISS": 9,
+          "HIGH_QUALITY_MASK": 45,
+          "LOW_OVERLAP_MASK": 12,
+          "MODERATE_MASK": 10
+        },
+        "gt_match_coverage": 0.881579,
+        "gt_normalized_mask_iou": 0.67262,
+        "instances": 76,
+        "matched": 67,
+        "matched_mask_iou_mean": 0.762971,
+        "misses": 9
+      },
+      "Q4_largest": {
+        "bands": {
+          "DETECTION_MISS": 8,
+          "HIGH_QUALITY_MASK": 32,
+          "LOW_OVERLAP_MASK": 26,
+          "MODERATE_MASK": 10
+        },
+        "gt_match_coverage": 0.894737,
+        "gt_normalized_mask_iou": 0.574339,
+        "instances": 76,
+        "matched": 68,
+        "matched_mask_iou_mean": 0.641909,
+        "misses": 8
+      }
+    },
+    "component_count": {
+      "1_component": {
+        "bands": {
+          "DETECTION_MISS": 54,
+          "HIGH_QUALITY_MASK": 123,
+          "LOW_OVERLAP_MASK": 38,
+          "MODERATE_MASK": 25
+        },
+        "gt_match_coverage": 0.775,
+        "gt_normalized_mask_iou": 0.58558,
+        "instances": 240,
+        "matched": 186,
+        "matched_mask_iou_mean": 0.755587,
+        "misses": 54
+      },
+      "2_or_more_components": {
+        "bands": {
+          "DETECTION_MISS": 14,
+          "HIGH_QUALITY_MASK": 17,
+          "LOW_OVERLAP_MASK": 19,
+          "MODERATE_MASK": 14
+        },
+        "gt_match_coverage": 0.78125,
+        "gt_normalized_mask_iou": 0.449718,
+        "instances": 64,
+        "matched": 50,
+        "matched_mask_iou_mean": 0.575639,
+        "misses": 14
+      }
+    },
+    "hole_presence": {
+      "has_holes": {
+        "bands": {
+          "DETECTION_MISS": 9,
+          "HIGH_QUALITY_MASK": 13,
+          "LOW_OVERLAP_MASK": 10,
+          "MODERATE_MASK": 6
+        },
+        "gt_match_coverage": 0.763158,
+        "gt_normalized_mask_iou": 0.470024,
+        "instances": 38,
+        "matched": 29,
+        "matched_mask_iou_mean": 0.615893,
+        "misses": 9
+      },
+      "no_holes": {
+        "bands": {
+          "DETECTION_MISS": 59,
+          "HIGH_QUALITY_MASK": 127,
+          "LOW_OVERLAP_MASK": 47,
+          "MODERATE_MASK": 33
+        },
+        "gt_match_coverage": 0.778195,
+        "gt_normalized_mask_iou": 0.569399,
+        "instances": 266,
+        "matched": 207,
+        "matched_mask_iou_mean": 0.731692,
+        "misses": 59
+      }
+    }
+  },
+  "stratified_findings": [
+    "**Coverage and mask quality fail in opposite directions across size.** Detection coverage rises monotonically with canonical area (0.513, 0.816, 0.882, 0.895 from smallest to largest quartile), so misses concentrate in small masks. But matched mask IoU is *worst* in the largest quartile (0.642) and best in the middle two (0.751, 0.763). Large objects are reliably found and poorly delineated; small ones are missed outright.",
+    "**`person` is weaker than every other class at every size.** Matched IoU by quartile, person against non-person: 0.592 vs 0.789, 0.539 vs 0.844, 0.636 vs 0.829, 0.561 vs 0.822. The deficit therefore survives size stratification and is not a size artefact.",
+    "**Adapter fidelity does not track model error.** The 20 worst S0 instances have a mean phase 8A adapter IoU of 0.968 against 0.979 for the split as a whole, and the rank correlation between adapter IoU and S0 mask IoU over matched instances is 0.246 - weak and positive. Only 4 validation instances fall in the adapter-risk band at all.",
+    "**Multi-component instances score lower, but the effect is largely `person`.** Matched IoU 0.576 for two-or-more components against 0.756 for one. Within `person` alone the gap narrows to 0.522 against 0.602, and single-component persons still sit far below single-component non-persons - so topology is a secondary contributor, not the explanation.",
+    "**Hole-carrying instances score lower (0.616 against 0.732), and this is confounded** the same way phase 8A's was: holed instances are disproportionately large and disproportionately `person`. It is reported as an association, not an effect."
+  ],
+  "support_classification": {
+    "helmet_loose": {
+      "images": 11,
+      "instances": 57,
+      "supported": true
+    },
+    "helmet_on_head": {
+      "images": 26,
+      "instances": 47,
+      "supported": true
+    },
+    "person": {
+      "images": 55,
+      "instances": 137,
+      "supported": true
+    },
+    "vest_loose": {
+      "images": 1,
+      "instances": 8,
+      "supported": false
+    },
+    "vest_on_body": {
+      "images": 31,
+      "instances": 55,
+      "supported": true
+    }
+  },
+  "supported_classes": [
+    "helmet_loose",
+    "helmet_on_head",
+    "person",
+    "vest_on_body"
+  ],
+  "taxonomy": {
+    "adapter_fidelity_risk_iou": 0.9,
+    "area_ratio_tolerance": 0.25,
+    "automatic_flags": [
+      "UNDERSEGMENTATION",
+      "OVERSEGMENTATION",
+      "BOUNDARY_ERROR",
+      "TINY_MASK_ASSOCIATED",
+      "ADAPTER_FIDELITY_RISK",
+      "UNATTRIBUTED"
+    ],
+    "band_thresholds": {
+      "high": 0.75,
+      "low": 0.5
+    },
+    "bands": [
+      "DETECTION_MISS",
+      "LOW_OVERLAP_MASK",
+      "MODERATE_MASK",
+      "HIGH_QUALITY_MASK"
+    ],
+    "frozen_before_visual_review": true,
+    "manual_only_flags": [
+      "INSTANCE_SEPARATION_ERROR",
+      "OCCLUSION_ASSOCIATED"
+    ],
+    "mechanism_flags": [
+      "UNDERSEGMENTATION",
+      "OVERSEGMENTATION",
+      "BOUNDARY_ERROR",
+      "INSTANCE_SEPARATION_ERROR",
+      "OCCLUSION_ASSOCIATED",
+      "TINY_MASK_ASSOCIATED",
+      "ADAPTER_FIDELITY_RISK",
+      "UNATTRIBUTED"
+    ],
+    "tiny_mask_area_px": 1024
+  },
+  "test": {
+    "reason": "Phase 8D re-ran inference on the frozen validation split under the settings phase 8C froze, and inspected a deterministic sample of validation images. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, image, mask or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "thresholds_changed": 0
+}

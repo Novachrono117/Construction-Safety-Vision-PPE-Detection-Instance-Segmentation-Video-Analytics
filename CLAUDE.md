@@ -191,14 +191,13 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8C complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, **the final detector is FROZEN
-  (D2, YOLO11n at imgsz 768)**, the segmentation adapter is audited and approved,
-  the S0 protocol is frozen, and **S0 HAS BEEN TRAINED ONCE**
-  (`S0_SEGMENTATION_BASELINE_COMPLETE`). **No final segmenter is selected**
-  (`final_segmenter: UNSELECTED_PENDING_REVIEW`, `segmentation_baseline_status:
-  S0_COMPLETE`). Phase 8D - human review and segmentation-experiment planning -
-  has not started; do not start it unprompted.
+- **Phase:** 8D complete - the split is frozen, the holdout is locked, **the
+  final detector is FROZEN (D2, YOLO11n at imgsz 768)**, the segmentation adapter
+  is audited and approved, **S0 has been trained once**, and its validation error
+  analysis is done (`S1_HYPOTHESIS_READY_FOR_PROTOCOL_FREEZE`). **No final
+  segmenter is selected** (`final_segmenter: UNSELECTED_PENDING_REVIEW`) and **no
+  S1 protocol is frozen**. Phase 8E - the human-reviewed S1 protocol freeze - has
+  not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -565,6 +564,75 @@ uv run pytest
   augmentation or thresholds, and do not add a metric. Any further segmentation
   experiment needs a comparison protocol frozen first, exactly as phase 7A did
   for detection.
+- **Phase 8D trained nothing.** It re-ran inference on validation under the
+  phase 8C settings and reported one row per canonical instance. Its per-instance
+  table reproduces the committed 8C aggregates exactly, which is how it is known
+  to describe the same run; **the 8C figures were not regenerated and are not
+  revised**.
+- **Outcome census over all 304 validation instances:** `DETECTION_MISS` 68,
+  `LOW_OVERLAP_MASK` 57, `MODERATE_MASK` 39, `HIGH_QUALITY_MASK` 140. The four
+  bands partition, so they sum to 304.
+- **Coverage and mask quality fail in OPPOSITE directions across size, and
+  conflating them is the easy mistake.** Detection coverage rises monotonically
+  with canonical area (0.513 / 0.816 / 0.882 / 0.895 by quartile) - misses
+  concentrate in small masks. Matched mask IoU is **worst in the largest
+  quartile** (0.642 against 0.751 and 0.763 in the middle). Large objects are
+  reliably found and poorly delineated; small ones are missed outright.
+- **`person` is weaker than every other class at EVERY size quartile** - 0.592 /
+  0.539 / 0.636 / 0.561 against non-person 0.789 / 0.844 / 0.829 / 0.822. The
+  deficit survives size stratification, so never explain it as a size artefact.
+  Its box-minus-mask AP gap is **0.251045**, an order above every other class
+  (next is `helmet_on_head` at 0.039179).
+- **A large share of `person`'s mask deficit is a TARGET-VERSUS-EVALUATION
+  MISMATCH created by the frozen protocol.** `overlap_mask: true`, and
+  `polygons2masks_overlap` sorts by descending area with a running maximum, so
+  **the smaller instance owns shared pixels** - a vest owns the pixels of the
+  person wearing it, and that person's training target is the remainder.
+  Measured: 27.3% of canonical person pixels are contested, but **71.0% of the
+  pixels S0 misses on person lie in that contested region**; contested fraction
+  versus person mask IoU has Spearman **-0.5466**; under-20%-contested persons
+  average 0.691 matched IoU against 0.408 for over-40%. Re-scoring the same
+  predictions against the overlap-resolved target raises person GT-normalised IoU
+  **0.434635 -> 0.504610** and matched IoU **0.578106 -> 0.671180**, while every
+  other class moves by less than 0.002.
+- **That analysis is `POST_HOC_HYPOTHESIS_GENERATING` and is NOT a finding.**
+  It was motivated by an observation made while reviewing images, and re-scoring
+  changes the measuring stick rather than the model. It does **not** show that
+  training without overlap resolution would produce better masks - only a
+  controlled experiment could. And it does not close the gap: even against its
+  own target, `person` matched IoU 0.671180 remains far below `helmet_loose`
+  0.935 and `helmet_on_head` 0.877.
+- **Adapter conversion is NOT the main explanation for S0's mask error.** The 20
+  worst S0 instances average adapter IoU 0.968401 against 0.979140 for the split;
+  the adapter-versus-model rank correlation is 0.246; `person`'s mean adapter
+  fidelity is 0.975368; only 4 validation instances fall in the adapter-risk
+  band. **This is not a claim that the adapter has zero effect** - phase 8A
+  quantified real loss and some of S0's error is certainly attributable to it.
+- **`mask_ratio: 2` is `WEAKLY_MOTIVATED` and YOLO11s-seg is
+  `NOT_SPECIFICALLY_MOTIVATED`.** Under-segmentation outnumbers boundary error 56
+  to 19 overall and 49 to 14 within `person`, so finer supervision does not
+  address the measured failure; and nothing here isolates capacity. **Absence of
+  evidence for capacity is not evidence that capacity cannot help** - it is a
+  reason to sequence it later.
+- **The preferred S1 hypothesis is `overlap_mask: false`, and it is NOT a clean
+  comparison.** The flag changes the training target **and** the validation
+  target - `SegmentationValidator._prepare_batch` builds its ground truth with
+  `masks == index` when the flag is set - so S0 and such an S1 would have
+  incomparable framework mask mAP. The direct mask-IoU diagnostic **would** stay
+  comparable, because it always scores against canonical COCO. Phase 8E must
+  decide in advance which metric adjudicates; do not start the experiment first.
+- **Only 6 of the 43 selected instances were visually inspected**, and the
+  artifacts record `instances_selected` and `instances_visually_inspected`
+  separately. Never quote the selected count as the number reviewed. The
+  population findings rest on all 304 instances, not on the reviewed subset.
+- **Two of the six inspected instances are indoor office scenes with fragmentary
+  `person` annotations** (one covering only hair and hands beside a fully visible
+  unannotated face). Recorded as `UNATTRIBUTED` because the frozen taxonomy has
+  no flag for an annotation-scope problem. Two instances establish no rate.
+- **Causal labels are refused by the recorder, not merely discouraged.**
+  `MODEL_CAPACITY_LIMIT`, `INSUFFICIENT_TRAINING`, `NEEDS_MORE_DATA` and
+  `ARCHITECTURE_LIMIT` raise if written into a manual attribution, because this
+  phase ran no controlled experiment and could not establish any of them.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that
