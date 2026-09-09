@@ -191,13 +191,15 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8A complete - the split is frozen, the holdout is locked, the
+- **Phase:** 8B complete - the split is frozen, the holdout is locked, the
   canonical COCO task datasets are materialised, **the final detector is FROZEN
-  (D2, YOLO11n at imgsz 768)**, and the YOLO segmentation-adapter fidelity audit
-  has been run. **No segmentation architecture is selected**
-  (`UNSELECTED_PENDING_FIDELITY_REVIEW`), the segmentation baseline is
-  `UNFROZEN` and `S0` is `NOT_DEFINED`. Phase 8B (the architecture decision) has
-  not started; do not start it unprompted.
+  (D2, YOLO11n at imgsz 768)**, the YOLO segmentation-adapter fidelity audit has
+  been run, and **the S0 segmentation protocol is FROZEN** (`S0_PROTOCOL_FROZEN`:
+  YOLO11n-seg selected, the audited adapter approved, the runtime proven by a
+  smoke test). **S0 itself has NOT been trained** -
+  `s0_execution_status: NOT_EXECUTED_PROTOCOL_ONLY`, and no segmentation
+  performance number exists. Phase 8C (the S0 baseline run) has not started; do
+  not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -413,12 +415,86 @@ uv run pytest
   4-59 px masks. The with-versus-without-holes comparison is **confounded by
   size** (median 148640 px against 24690 px) and must never be quoted as
   evidence that filling holes is free.
-- **Phase 8A selected nothing, and its numbers must not be turned into a
-  decision.** A high IoU distribution is not an approval of YOLO segmentation
-  and a low one is not a rejection. Do not choose YOLO11n-seg, do not choose
-  Mask R-CNN, do not define S0, and do not train anything until phase 8B's
-  reviewed decision is recorded. The mask-native alternative in the report is a
-  recorded option, not a preference.
+- **Phase 8A selected nothing; phase 8B did.** 8A's numbers are evidence, not a
+  decision: a high IoU distribution is not an approval and a low one is not a
+  rejection. The choice was made by human review in 8B and is recorded in
+  `reports/segmentation_adapter_approval.json`, never by re-reading 8A's
+  distribution. The five phase 8A artifacts are **historical and immutable** -
+  their digests are recorded in the 8B approval and re-verified by test, so do
+  not regenerate them, do not edit the fidelity report to say the adapter is now
+  selected, and route any factual clarification through a new artifact.
+- **The segmentation architecture is SELECTED (phase 8B): YOLO11n-seg from
+  `yolo11n-seg.pt`** (SHA-256 `55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152`,
+  6182636 bytes), `segmentation_architecture_selection: FINAL_SELECTED_FOR_S0`,
+  basis `PHASE_8A_QUANTITATIVE_FIDELITY_AUDIT_PLUS_HUMAN_REVIEW`. **Mask R-CNN is
+  `NOT_SELECTED_FALLBACK`** and was never installed, trained or benchmarked here
+  - never write that YOLO11n-seg beat it, or that it is better in general. The
+  three recorded reasons are audited-format viability, YOLO11 family alignment
+  with the frozen detector, and imgsz 768 matching its input resolution.
+- **The audited adapter is APPROVED, not promoted.**
+  `APPROVED_FOR_CONTROLLED_TRAINING`, role
+  `MODEL_SPECIFIC_DERIVED_REPRESENTATION`, canonical ground truth still
+  `COCO_INSTANCE_SEGMENTATION`. The conversion is
+  `ACCEPTED_WITH_QUANTIFIED_APPROXIMATION` and **never lossless** - 0 of 1726
+  instances round-trip exactly. Training uses the **exact phase 8A bytes**, whose
+  digests are `63a8145d...` (train), `dae69290...` (validation), `ff21c782...`
+  (development) and `616701e1...` (membership); a differing digest is
+  `ADAPTER_FINGERPRINT_MISMATCH` and **stops the phase - never rebuild silently,
+  and never write a new conversion algorithm**.
+- **All 1726 development instances stay in S0**, including the 47 below round-trip
+  IoU 0.90, the tiny masks, the multi-component masks, the holed masks and the 2
+  synthetic rectangles. Filtering after observing adapter fidelity would change
+  the canonical modelling population to suit a model format. Never propose it.
+- **S0's protocol is frozen in `configs/segmentation_baseline.yaml`**: YOLO11n-seg,
+  imgsz 768, batch 8, epochs 100, patience 50, seed 42, deterministic, AMP,
+  `optimizer: auto`, `ULTRALYTICS_DEFAULT_SEGMENTATION_TRAINING_POLICY`. Editing
+  it after S0 runs invalidates the result; a variant is a new file. **Batch 8 is a
+  `PREDECLARED_EXECUTION_DECISION`** - never try 16 "to see", and treat a genuine
+  OOM as `MEMORY_CONSTRAINT_REVIEW_REQUIRED` rather than lowering anything.
+- **S0's primary metric is `mask_mAP@0.50:0.95`, and mask and box never merge.**
+  Box metrics from the segmenter are reported in their own section; a composite
+  box-plus-mask score is refused by the parser, not merely discouraged.
+  `supported_macro_mask_map50_95` is reported by S0 but is **not** a
+  winner-selection metric until a segmentation comparison protocol is frozen -
+  and `vest_loose` stays `DESCRIPTIVE_HIGH_UNCERTAINTY` under the unchanged phase
+  7A support rule, reported in full and deciding nothing.
+- **`best.pt` for a segmentation model is NOT selected on the mask metric alone,
+  and that was REVIEWED AND ACCEPTED before S0.** Read from the installed source
+  before training: `SegmentMetrics.fitness = self.seg.fitness() +
+  DetMetrics.fitness`, the unweighted **sum of box and mask mAP@0.50:0.95**
+  (weights 1.0 and 1.0). Recorded as `checkpoint_selection_policy:
+  ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS`, `checkpoint_selection_review_status:
+  HUMAN_REVIEWED_AND_ACCEPTED_BEFORE_S0`, `checkpoint_selection_semantics:
+  BOX_MAP50_95_PLUS_MASK_MAP50_95`.
+- **`selection_metric_equals_primary_reporting_metric` is `false`, deliberately.**
+  The checkpoint is chosen on the composite; the project reports
+  `primary_scientific_reporting_metric: MASK_MAP50_95`. So the epoch S0 reports
+  need not be the epoch that maximised the reported metric. Never close that gap
+  after the fact: **no custom mask-only checkpoint selector is authorised**
+  (`custom_mask_only_selector_authorized: false`), and **S0 may never be
+  retrospectively re-read as a mask-only-selected epoch**
+  (`retrospective_reinterpretation_allowed: false`).
+- **The framework fitness is a checkpoint-selection mechanism, not a metric.**
+  Never publish it as a headline number, never introduce a combined box+mask
+  project metric, and **never claim the composite is scientifically superior to
+  mask-only selection** - nothing here compares the two. It is an accepted
+  baseline protocol choice.
+- **PROTOCOL INVARIANT: every future segmentation experiment compared directly
+  with S0 must use `ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS`** for checkpoint
+  selection, unless a new comparison protocol is human-reviewed and frozen
+  **before** any affected experiment runs. A new rule applies to experiments
+  frozen under it; it never rewrites S0's semantics.
+- **A direct instance-mask IoU diagnostic is OWED and its protocol is NOT
+  written.** Ultralytics' mask AP does not satisfy the assignment's IoU
+  requirement. The matching rule, inference settings, unmatched-prediction
+  handling and averaging scheme must be **predeclared**; writing them after
+  looking at S0's predictions is forbidden.
+- **The phase 8B smoke test is `NON_EXPERIMENTAL` / `DO_NOT_REPORT_AS_MODEL_RESULT`
+  and none of its numbers was recorded** - never quote it as a segmentation
+  result, and never tune against it. What it establishes is engineering only:
+  the model loads, labels parse, CUDA forward/backward runs, the validation
+  loader works, the mask loss executes, a checkpoint is written, ~51 s at peak
+  3.20 GiB reserved, `optimizer: auto` resolving to AdamW at lr0 0.001111.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

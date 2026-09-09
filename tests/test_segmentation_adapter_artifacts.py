@@ -535,13 +535,29 @@ def test_the_unlock_variable_is_not_carried_as_data(manifest):
     assert HOLDOUT_UNLOCK_ENV_VAR not in json.dumps(manifest)
 
 
-def test_no_segmentation_model_weight_or_training_output_exists(paths, manifest):
+def test_the_audit_phase_trained_and_evaluated_nothing(manifest):
+    assert manifest["models_trained_in_this_phase"] == 0
+    assert manifest["models_evaluated_in_this_phase"] == 0
+    assert manifest["segmentation_baseline"] == "UNFROZEN"
+    assert manifest["S0"] == "NOT_DEFINED"
+
+
+def test_no_segmentation_model_weight_or_training_output_sits_in_the_audited_adapter(
+    paths, manifest
+):
+    # Scoped to the audited directory on purpose. An earlier version also
+    # asserted that `artifacts/segmentation/` did not exist anywhere in the
+    # repository, which was a true statement about the project while phase 8A
+    # was the current phase and is no longer one: phase 8B runs an authorised
+    # non-experimental smoke test there. What phase 8A guarantees, and what this
+    # test now checks, is that the bytes it audited are annotation labels and
+    # images and nothing else - no checkpoint, and no framework cache left
+    # behind by a later training run.
     root = paths.root / manifest["adapter"]["root"]
     if not root.exists():
         pytest.skip("the git-ignored audit adapter is not present on this machine")
     assert list(root.rglob("*.pt")) == []
     assert list(root.rglob("*.cache")) == []
-    assert not (paths.root / "artifacts" / "segmentation").exists()
 
 
 # --- provenance and hygiene ---------------------------------------------------

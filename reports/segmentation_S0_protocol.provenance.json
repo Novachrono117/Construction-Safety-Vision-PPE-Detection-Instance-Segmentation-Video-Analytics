@@ -1,0 +1,111 @@
+{
+  "config": {
+    "protocol_config_sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+    "protocol_fingerprint": "0c6bbcd8529be08b1ef328edd3d8cd13739f3b7eab24b627220cdb5bf8a5dd9e",
+    "segmentation_baseline": "configs/segmentation_baseline.yaml"
+  },
+  "created_at": "2026-09-09T18:31:16+00:00",
+  "details": {
+    "adapter_counts": {
+      "instances": 1726,
+      "negative_images": 12,
+      "train_images": 303,
+      "train_instances": 1422,
+      "validation_images": 65,
+      "validation_instances": 304
+    },
+    "adapter_fingerprints": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "adapter_regenerated": false,
+    "adapter_review_status": "APPROVED_FOR_CONTROLLED_TRAINING",
+    "adapter_role": "MODEL_SPECIFIC_DERIVED_REPRESENTATION",
+    "all_instances_retained": true,
+    "architecture": "YOLO11n-seg",
+    "architecture_selection": "FINAL_SELECTED_FOR_S0",
+    "canonical_ground_truth": "COCO_INSTANCE_SEGMENTATION",
+    "checkpoint_fitness_behaviour": "COMBINED_MASK_AND_BOX_MAP50_95_UNWEIGHTED_SUM",
+    "classification": "S0_PROTOCOL_FROZEN",
+    "conversion_characterisation": "ACCEPTED_WITH_QUANTIFIED_APPROXIMATION",
+    "detection_artifacts_unchanged": true,
+    "detector_touched": false,
+    "experiment_id": "S0",
+    "fallback_status": "NOT_SELECTED_FALLBACK",
+    "fidelity_based_filtering": "NONE",
+    "holdout_accessed": false,
+    "models_trained_in_this_phase": 0,
+    "phase": "8B",
+    "phase_8a_artifacts_unchanged": true,
+    "pretrained_weight_sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+    "s0_execution_status": "NOT_EXECUTED_PROTOCOL_ONLY",
+    "smoke_classification": "NON_EXPERIMENTAL",
+    "smoke_metrics_recorded": false,
+    "smoke_status": "SUCCESS"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "7871ff69221ccb50144919218a2842ca2715d423",
+  "inputs": [
+    {
+      "path": "configs/segmentation_baseline.yaml",
+      "sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+      "size_bytes": 15018
+    },
+    {
+      "path": "reports/segmentation_adapter_audit_manifest.json",
+      "sha256": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+      "size_bytes": 110901
+    },
+    {
+      "path": "reports/segmentation_adapter_fidelity_report.md",
+      "sha256": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83",
+      "size_bytes": 28609
+    },
+    {
+      "path": "reports/segmentation_adapter_fidelity.csv",
+      "sha256": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+      "size_bytes": 419757
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/task_dataset_manifest.json",
+      "sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+      "size_bytes": 5389
+    },
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    }
+  ],
+  "name": "segmentation_baseline_protocol_freeze",
+  "outputs": [
+    {
+      "path": "reports/segmentation_adapter_approval.json",
+      "sha256": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+      "size_bytes": 6842
+    },
+    {
+      "path": "reports/segmentation_S0_manifest.json",
+      "sha256": "09f6ddc9a08bc66e48d5deac49c1734dad89e0bd564afd92168b3518407d0ce9",
+      "size_bytes": 27109
+    },
+    {
+      "path": "reports/segmentation_S0_protocol.md",
+      "sha256": "d84717b2ffae0707b32330db35c6298f0966dc74acb9473f7d1d6169cb1945d9",
+      "size_bytes": 22150
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}

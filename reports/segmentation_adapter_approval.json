@@ -1,0 +1,110 @@
+{
+  "adapter_bytes_regenerated": false,
+  "adapter_fingerprints": {
+    "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+    "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+    "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+    "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+  },
+  "adapter_fingerprints_verified_on_disk": true,
+  "adapter_review_status": "APPROVED_FOR_CONTROLLED_TRAINING",
+  "adapter_role": "MODEL_SPECIFIC_DERIVED_REPRESENTATION",
+  "all_instances_retained": true,
+  "architecture_decision": {
+    "fallback_architecture": "mask-native instance segmentation consuming canonical COCO masks and RLE directly, for example Mask R-CNN",
+    "fallback_status": "NOT_SELECTED_FALLBACK",
+    "not_a_claim_of_superiority": "No mask-native architecture was installed, trained or benchmarked in this project. YOLO11n-seg is not asserted to be better; it is the architecture chosen under this evidence and these constraints.",
+    "selected_architecture": "YOLO11n-seg",
+    "status": "FINAL_SELECTED_FOR_S0",
+    "weight_identifier": "yolo11n-seg.pt"
+  },
+  "architecture_selection_basis": "PHASE_8A_QUANTITATIVE_FIDELITY_AUDIT_PLUS_HUMAN_REVIEW",
+  "canonical_ground_truth": "COCO_INSTANCE_SEGMENTATION",
+  "cardinality": {
+    "instances": 1726,
+    "negative_images": 12,
+    "train_images": 303,
+    "train_instances": 1422,
+    "validation_images": 65,
+    "validation_instances": 304
+  },
+  "conversion_algorithm_changed": false,
+  "conversion_characterisation": "ACCEPTED_WITH_QUANTIFIED_APPROXIMATION",
+  "derived_adapter": "YOLO_SEGMENTATION",
+  "fidelity_based_filtering": "NONE",
+  "fidelity_reading_rules": [
+    "the three levels are never collapsed: control_iou is rasterisation convention alone and exists before the YOLO format is involved, merged_iou adds component joining, mask_iou adds serialisation and the int32 snap",
+    "the per-representation means are never aggregated into one figure",
+    "mask size, not topology, dominates the distribution; the with-versus-without-holes comparison is confounded by size and is not evidence that filling holes is free"
+  ],
+  "fidelity_summary": {
+    "by_canonical_representation_mask_iou_mean": {
+      "CANONICAL_POLYGON": 0.9780914114962314,
+      "CANONICAL_RLE": 0.9685379789787697,
+      "SYNTHETIC_RECTANGLE": 0.8497023809523809
+    },
+    "control_iou_mean": 0.9863676875577402,
+    "instance_cardinality_preserved": true,
+    "instances": 1726,
+    "instances_dropped": 0,
+    "instances_iou_lt_0.90": 47,
+    "instances_merged": 0,
+    "instances_split": 0,
+    "mask_iou_exact_instances": 0,
+    "mask_iou_mean": 0.9730662943994923,
+    "mask_iou_median": 0.9845760780888786,
+    "mask_iou_min": 0.3076923076923077,
+    "mask_iou_p05": 0.9181755671581353,
+    "merged_iou_mean": 0.9855246487815423,
+    "parser_corrupt_labels": 0,
+    "percent_iou_ge_0.90": 97.2769,
+    "percent_iou_ge_0.95": 85.3998
+  },
+  "known_approximation_categories": [
+    {
+      "category": "SERIALIZATION_AND_QUANTIZATION",
+      "detail": "Coordinates are written at six decimal places and rasterised through an int32 truncation. This is the largest contributor: 0.012458 mean IoU."
+    },
+    {
+      "category": "COMPONENT_JOIN_APPROXIMATION",
+      "detail": "A disconnected mask cannot be expressed: one row is one flat ring, so the 307 multi-component instances are bridged with zero-width connectors. Costs 0.000843 mean IoU."
+    },
+    {
+      "category": "HOLE_FILL_APPROXIMATION",
+      "detail": "An interior ring cannot be expressed, so holes are filled: 180 instances carry holes totalling 1072133 filled pixels."
+    },
+    {
+      "category": "RASTER_CONVENTION_DIFFERENCE",
+      "detail": "pycocotools and OpenCV do not rasterise identical geometry into identical pixels, which is why no instance round-trips exactly and why this level is never reported as YOLO format loss."
+    },
+    {
+      "category": "SMALL_MASK_SENSITIVITY",
+      "detail": "All 20 worst instances are 4-59 px masks, where a single boundary pixel is a large share of the area. This is the primary fidelity-risk stratum."
+    }
+  ],
+  "no_filtering_rationale": "Excluding instances after observing adapter fidelity would change the canonical modelling population in response to a model-format limitation - choosing the data to suit the tool. All 1726 development instances remain, including the 47 whose round-trip IoU fell below 0.90, the tiny masks, the multi-component masks, the masks with holes and the 2 synthetic rectangles.",
+  "phase": "8B",
+  "phase_8a_artifact_digests": {
+    "configs/segmentation_adapter_audit.yaml": "b4945ddaebb48db007ac30c97334f2a2dee767f3a39c51bcaa28e96b881fc4f7",
+    "reports/segmentation_adapter_audit.provenance.json": "b9ae44470b0b5608f3c11a8fbb470c64b0bbd38315ebf8f51022e79be5ca3487",
+    "reports/segmentation_adapter_audit_manifest.json": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "reports/segmentation_adapter_fidelity.csv": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+    "reports/segmentation_adapter_fidelity_report.md": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83"
+  },
+  "phase_8a_audit_manifest_sha256": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+  "review_method": "HUMAN_REVIEW_OF_PHASE_8A_QUANTITATIVE_EVIDENCE",
+  "reviewer": "project maintainer",
+  "schema_version": 1,
+  "status": "APPROVED_FOR_CONTROLLED_TRAINING",
+  "test": {
+    "reason": "Phase 8B selected an architecture, approved already-audited label bytes, froze the S0 protocol and ran a one-epoch engineering smoke test on the development splits. The holdout was not read, materialised, adapted, converted, counted, inspected or predicted on; no holdout label, statistic or identifier exists in any artifact this phase wrote, and no holdout adapter directory was created. Nothing about choosing an architecture or proving that a training loop executes depends on which images are held out.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "what_the_approval_is": "A decision that the measured approximation is acceptable for controlled segmentation training under this project's protocol. It approves specific label bytes, identified by digest.",
+  "what_the_approval_is_not": [
+    "it does not make the YOLO segmentation labels canonical ground truth",
+    "it does not describe the conversion as lossless: no instance round-trips exactly",
+    "it does not turn phase 8A's measurements into an endorsement of YOLO segmentation over a mask-native architecture, which was never benchmarked here",
+    "it does not authorise regenerating the labels by a different conversion"
+  ]
+}

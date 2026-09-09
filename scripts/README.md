@@ -35,6 +35,7 @@ undocumented one-off shell invocation.
 | `train_detection_experiment.py` | 7B+ | Run one frozen Phase 7 candidate. Takes an experiment id, never hyperparameters: the protocol is resolved by inheriting D0's and applying the declared override set. Proves the one-variable contract before fetching weights. |
 | `freeze_final_detector.py` | 7D | Apply the frozen Phase 7 policy to the committed results, record the human-reviewed decision and freeze the selected checkpoint's identity. Trains, validates, benchmarks and tunes nothing. |
 | `audit_segmentation_adapter.py` | 8A | Measure how much canonical COCO instance-mask geometry survives the Ultralytics YOLO segmentation label format. Development splits only. Trains nothing, downloads nothing, selects no architecture. |
+| `freeze_segmentation_baseline.py` | 8B | Record the architecture decision, approve the audited adapter by digest, freeze the S0 protocol and run one non-experimental smoke test. Does not run S0 and reports no model performance. |
 
 ## Rules
 
@@ -330,9 +331,69 @@ methodological choice that could move a number lives in
 
 `--verify-only` checks the canonical inputs, the class map and the frozen
 detector, then stops without writing anything. The adapter it generates is
-git-ignored and marked `AUDIT_ONLY` / `NOT_CANONICAL` /
-`NOT_YET_APPROVED_FOR_TRAINING`: it is a measurement instrument, not the
-project's segmentation dataset.
+git-ignored and was marked `AUDIT_ONLY` / `NOT_CANONICAL` /
+`NOT_YET_APPROVED_FOR_TRAINING` when phase 8A wrote it. Phase 8B approved those
+exact bytes for controlled training; the approval lives in
+`reports/segmentation_adapter_approval.json` rather than in the generated
+directory, because that directory's own README is a phase 8A output and editing
+generated evidence by hand is worse than a stale line inside a git-ignored file.
+
+`freeze_segmentation_baseline.py` (phase 8B) records the human architecture
+decision, approves the audited label bytes, freezes the S0 protocol and proves
+the runtime executes. **It does not run S0**, and no accuracy figure it observes
+reaches an artifact.
+
+The order of its checks is the point.
+
+**Phase 8A and phase 7D are digested first and digested again last.** "The
+historical evidence is unchanged" is a measurement here, not an intention: ten
+files are hashed at entry, hashed at exit, and compared. The frozen detector's
+manifest is additionally recomputed from its own contents and its checkpoint
+bytes verified - and then left alone, because the detection block is closed.
+
+**The adapter is verified before a single weight is fetched.** All four phase 8A
+label fingerprints are recomputed from the files on disk, and the instance and
+image counts with them. A mismatch is `ADAPTER_FINGERPRINT_MISMATCH` and stops
+the phase; it never triggers a rebuild, because a rebuild would replace measured
+bytes with unmeasured ones. The same check runs again after the smoke test.
+
+**The protocol's framework arguments are checked against the installed library.**
+Every segmentation-specific and augmentation value declared in
+`configs/segmentation_baseline.yaml` must equal the installed effective
+configuration, so the file cannot claim a default the library does not have, and
+each general hyperparameter is classified `FRAMEWORK_DEFAULT` or
+`PROJECT_OVERRIDE` in the manifest rather than left for a reader to work out.
+
+**The checkpoint rule's behaviour is read before training, not after.** For a
+segmentation model Ultralytics' validation fitness is the unweighted sum of box
+and mask mAP@0.50:0.95, so `best.pt` is not selected on the mask metric alone.
+That is established by inspecting the installed source and checked structurally,
+so a future version that changes the definition fails the phase instead of
+quietly invalidating the report. The behaviour was returned for methodological
+review before S0 and the native composite was **accepted** rather than replaced
+by a custom mask-only selector; the config records the policy, its semantics,
+both component weights and - explicitly - that the selector is **not** the
+project's reported metric.
+
+The smoke test is one epoch at the frozen batch and resolution, marked
+`NON_EXPERIMENTAL` / `DO_NOT_REPORT_AS_MODEL_RESULT`. It records success,
+runtime, peak GPU memory, the resolved optimizer and whether a checkpoint was
+written - and no accuracy number whatever. Plots are disabled so it renders no
+dataset or prediction imagery, and the framework label caches it leaves inside
+the audited directory are deleted afterwards, so those bytes stay exactly as
+phase 8A wrote them. A genuine CUDA out-of-memory event is
+`MEMORY_CONSTRAINT_REVIEW_REQUIRED`: the batch is never reduced to rescue it.
+
+`--verify-only` runs every precondition, fetches no weights, trains nothing and
+writes nothing.
+
+`--rebuild-protocol` re-renders the artifacts from the committed manifest's own
+smoke record, for a protocol clarification that changes no runtime behaviour.
+Every verification still runs, but nothing is trained: re-running the smoke test
+would replace a recorded runtime and peak-memory figure with a different one for
+no reason. The reused record is checked rather than trusted - it must report
+success, must carry no metrics, and the pretrained checkpoint on disk must hash
+to the bytes it ran on, so one run's evidence cannot be attributed to another's.
 
 ## Planned scripts
 

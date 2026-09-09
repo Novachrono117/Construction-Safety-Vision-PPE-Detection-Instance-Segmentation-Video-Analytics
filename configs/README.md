@@ -12,6 +12,8 @@ outcome lives here, never in notebook cells or ad-hoc command-line flags.
 | `detection_adapter.yaml` | Phase 6A YOLO detection adapter. |
 | `detection_baseline.yaml` | Phase 6A D0 protocol: model, every hyperparameter, metric hierarchy. |
 | `detection_experiments.yaml` | Phase 7A comparison protocol: D0/D1/D2, support rule, margin (see below). |
+| `segmentation_adapter_audit.yaml` | Phase 8A YOLO segmentation-adapter fidelity audit: a measurement, not a dataset. |
+| `segmentation_baseline.yaml` | Phase 8B S0 protocol: architecture, every hyperparameter, adapter digests, mask metric hierarchy (see below). |
 
 ## Rules
 
@@ -56,3 +58,49 @@ and the margin must equal the frozen constants in
 the frozen ones. Relaxing a threshold or renaming the deciding metric after a
 result exists is exactly the failure the file is meant to prevent, so it raises
 rather than loads.
+
+## `segmentation_baseline.yaml`
+
+The phase 8B S0 protocol, frozen before S0 was trained and before any
+segmentation performance number existed. Parsed by
+`construction_safety_vision.segmentation_experiment`, deliberately a **sibling**
+of the detection schema rather than an extension of it: `detection_baseline.yaml`
+is inherited by D0, D1 and D2 and its digest is recorded in three committed
+manifests, so widening its parser would put an untested change underneath a
+frozen comparison.
+
+Parsing is strict in five ways beyond unknown keys:
+
+- **the holdout may not appear anywhere**, keys included, checked recursively;
+- **the primary metric must be `mask_mAP@0.50:0.95`**, and mask sections may
+  contain only `mask_*` metrics while box sections may contain only `box_*` -
+  merging the families is how a weak mask result hides behind a strong box one;
+- **a composite box-plus-mask score is refused outright** rather than left
+  available for a later phase to reach for;
+- **the adapter is named by digest**, and the declared instance counts must add
+  up, with `all_instances_retained: true` and `fidelity_based_filtering: NONE`
+  enforced - excluding instances after observing adapter fidelity would change
+  the modelling population to suit the model format;
+- **each framework argument is declared exactly once** across the `training`,
+  `segmentation_arguments` and `augmentation_arguments` blocks, so no precedence
+  rule is needed to know what ran.
+
+It also carries the reviewed checkpoint-selection decision as its own block, and
+the parser enforces every part of it: the policy is
+`ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS`, its semantics are
+`BOX_MAP50_95_PLUS_MASK_MAP50_95` at component weights 1.0 and 1.0, the review
+status is `HUMAN_REVIEWED_AND_ACCEPTED_BEFORE_S0`, the reported metric stays
+`MASK_MAP50_95`, and `selection_metric_equals_primary_reporting_metric` must be
+`false`. That last one is the point: the checkpoint is chosen on a composite
+while the project reports the mask metric, and the parser refuses both ways of
+hiding that - relabelling the composite as the headline metric, and swapping in a
+mask-only selector once results are visible. A rationale entry claiming the
+composite is *superior* is also refused, because nothing in this project compares
+the two.
+
+The segmentation and augmentation blocks record the installed framework's own
+effective defaults, and `scripts/freeze_segmentation_baseline.py` **verifies
+them against the installed configuration** at freeze time rather than trusting
+the file. The rare-class support thresholds and the macro metric name are
+derived from `construction_safety_vision.detection_comparison`, so the
+segmentation phase cannot quietly acquire a friendlier rule.

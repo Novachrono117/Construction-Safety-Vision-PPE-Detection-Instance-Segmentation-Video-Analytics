@@ -1,0 +1,593 @@
+{
+  "adapter": {
+    "all_instances_retained": true,
+    "canonical_ground_truth": "COCO_INSTANCE_SEGMENTATION",
+    "conversion_characterisation": "ACCEPTED_WITH_QUANTIFIED_APPROXIMATION",
+    "counts": {
+      "instances": 1726,
+      "negative_images": 12,
+      "train_images": 303,
+      "train_instances": 1422,
+      "validation_images": 65,
+      "validation_instances": 304
+    },
+    "dataset_config": "data/processed/adapters/yolo_segmentation_audit/dataset.yaml",
+    "descriptor_keys": [
+      "names",
+      "path",
+      "train",
+      "val"
+    ],
+    "fidelity_based_filtering": "NONE",
+    "fingerprints": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "regenerated": false,
+    "review_status": "APPROVED_FOR_CONTROLLED_TRAINING",
+    "role": "MODEL_SPECIFIC_DERIVED_REPRESENTATION"
+  },
+  "architecture": {
+    "fallback_architecture": "mask-native instance segmentation consuming canonical COCO masks and RLE directly, for example Mask R-CNN",
+    "fallback_status": "NOT_SELECTED_FALLBACK",
+    "family_alignment": "YOLO11, the same family as the frozen detector, so a later operational comparison is between comparable things rather than between two frameworks.",
+    "model": "YOLO11n-seg",
+    "resolution_alignment": "imgsz 768, the frozen detector's input resolution, so a later detector-versus-segmenter comparison is not also a resolution comparison.",
+    "selected": "YOLO11n-seg",
+    "selection_basis": "PHASE_8A_QUANTITATIVE_FIDELITY_AUDIT_PLUS_HUMAN_REVIEW",
+    "status": "FINAL_SELECTED_FOR_S0"
+  },
+  "argument_classification": {
+    "augmentation_arguments": {
+      "auto_augment": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": "randaugment",
+        "installed_default": "randaugment"
+      },
+      "bgr": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "copy_paste": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "copy_paste_mode": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": "flip",
+        "installed_default": "flip"
+      },
+      "cutmix": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "degrees": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "erasing": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.4,
+        "installed_default": 0.4
+      },
+      "fliplr": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.5,
+        "installed_default": 0.5
+      },
+      "flipud": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "hsv_h": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.015,
+        "installed_default": 0.015
+      },
+      "hsv_s": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.7,
+        "installed_default": 0.7
+      },
+      "hsv_v": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.4,
+        "installed_default": 0.4
+      },
+      "mixup": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "mosaic": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 1.0,
+        "installed_default": 1.0
+      },
+      "perspective": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "scale": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.5,
+        "installed_default": 0.5
+      },
+      "shear": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "translate": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.1,
+        "installed_default": 0.1
+      }
+    },
+    "seed": {
+      "classification": "PROJECT_OVERRIDE",
+      "declared": 42,
+      "installed_default": 0
+    },
+    "segmentation_arguments": {
+      "dropout": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "mask_ratio": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 4,
+        "installed_default": 4
+      },
+      "max_det": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 300,
+        "installed_default": 300
+      },
+      "multi_scale": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0,
+        "installed_default": 0.0
+      },
+      "overlap_mask": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": true,
+        "installed_default": true
+      },
+      "rect": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": false,
+        "installed_default": false
+      },
+      "retina_masks": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": false,
+        "installed_default": false
+      },
+      "single_cls": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": false,
+        "installed_default": false
+      }
+    },
+    "training": {
+      "amp": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": true,
+        "installed_default": true
+      },
+      "batch": {
+        "classification": "PROJECT_OVERRIDE",
+        "declared": 8,
+        "installed_default": 16
+      },
+      "close_mosaic": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 10,
+        "installed_default": 10
+      },
+      "cos_lr": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": false,
+        "installed_default": false
+      },
+      "deterministic": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": true,
+        "installed_default": true
+      },
+      "epochs": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 100,
+        "installed_default": 100
+      },
+      "imgsz": {
+        "classification": "PROJECT_OVERRIDE",
+        "declared": 768,
+        "installed_default": 640
+      },
+      "lr0": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.01,
+        "installed_default": 0.01
+      },
+      "lrf": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.01,
+        "installed_default": 0.01
+      },
+      "momentum": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.937,
+        "installed_default": 0.937
+      },
+      "optimizer": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": "auto",
+        "installed_default": "auto"
+      },
+      "patience": {
+        "classification": "PROJECT_OVERRIDE",
+        "declared": 50,
+        "installed_default": 100
+      },
+      "pretrained": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": true,
+        "installed_default": true
+      },
+      "val": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": true,
+        "installed_default": true
+      },
+      "warmup_epochs": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 3.0,
+        "installed_default": 3.0
+      },
+      "weight_decay": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 0.0005,
+        "installed_default": 0.0005
+      },
+      "workers": {
+        "classification": "FRAMEWORK_DEFAULT",
+        "declared": 8,
+        "installed_default": 8
+      }
+    }
+  },
+  "augmentation_arguments": {
+    "auto_augment": "randaugment",
+    "bgr": 0.0,
+    "copy_paste": 0.0,
+    "copy_paste_mode": "flip",
+    "cutmix": 0.0,
+    "degrees": 0.0,
+    "erasing": 0.4,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "mixup": 0.0,
+    "mosaic": 1.0,
+    "perspective": 0.0,
+    "scale": 0.5,
+    "shear": 0.0,
+    "translate": 0.1
+  },
+  "augmentation_policy": "ULTRALYTICS_DEFAULT_SEGMENTATION_TRAINING_POLICY",
+  "batch_decision": "PREDECLARED_EXECUTION_DECISION. Batch 8 rather than the detection phases' 16, fixed before any S0 performance number existed. The segmentation head carries an additional mask branch and the trainer materialises per-image mask targets, so the memory profile is not the detector's, and this machine has roughly 8 GiB of VRAM. No scientific question in this project depends on the segmentation batch matching the detection batch: S0 is compared against future segmentation experiments under this same protocol, never against a detector's training configuration. A genuine CUDA out-of-memory event at batch 8 stops the experiment as MEMORY_CONSTRAINT_REVIEW_REQUIRED and is never rescued by a smaller batch, auto-batch, gradient accumulation, a different imgsz or a different model.",
+  "canonical_references": {
+    "canonical_task_manifest_sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+    "class_map": {
+      "helmet_loose": 0,
+      "helmet_on_head": 1,
+      "person": 2,
+      "vest_loose": 3,
+      "vest_on_body": 4
+    },
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc"
+  },
+  "checkpoint_fitness_behaviour": {
+    "classification": "COMBINED_MASK_AND_BOX_MAP50_95_UNWEIGHTED_SUM",
+    "component_weights": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "consequence": "The reported checkpoint can differ from the epoch that maximised the mask metric on its own. This is recorded before training rather than discovered after it, and it is NOT replaced by a private checkpoint rule: substituting one would make S0 incomparable to any experiment that used the framework's own. If a later phase judges the misalignment material, that is a methodological review, not a quiet fix.",
+    "definition": "SegmentMetrics.fitness returns self.seg.fitness() + DetMetrics.fitness, and each term is Metric.fitness, a weighted mean of [precision, recall, mAP@0.50, mAP@0.50:0.95] with weights [0.0, 0.0, 0.0, 1.0]. So the framework's validation fitness is the unweighted SUM of mask mAP@0.50:0.95 and box mAP@0.50:0.95, and best.pt is not selected on the mask metric alone.",
+    "driven_by": "BOTH_MASK_AND_BOX",
+    "evidence": "INSTALLED_PACKAGE_SOURCE_INSPECTION",
+    "source": {
+      "DetMetrics.fitness": "@property\n    def fitness(self) -> float:\n        \"\"\"Return the fitness of box object.\"\"\"\n        return self.box.fitness()",
+      "Metric.fitness": "def fitness(self) -> float:\n        \"\"\"Return model fitness as a weighted combination of metrics.\"\"\"\n        w = [0.0, 0.0, 0.0, 1.0]  # weights for [P, R, mAP@0.5, mAP@0.5:0.95]\n        return float((np.nan_to_num(np.array(self.mean_results())) * w).sum())",
+      "SegmentMetrics.fitness": "@property\n    def fitness(self) -> float:\n        \"\"\"Return the fitness score for both segmentation and bounding box models.\"\"\"\n        return self.seg.fitness() + DetMetrics.fitness.fget(self)"
+    }
+  },
+  "checkpoint_selection": "ULTRALYTICS_BEST_ON_VALIDATION_FITNESS - the `best.pt` Ultralytics writes according to its own predeclared validation fitness, computed on the frozen validation split only. For a segmentation model that fitness is SegmentMetrics.fitness, which is the unweighted SUM of mask mAP@0.50:0.95 and box mAP@0.50:0.95: the framework's checkpoint is therefore NOT selected on the mask metric alone. That behaviour is recorded here because it was established from the installed source before training, not discovered afterwards; it is not replaced by a private rule, and any change to it would need methodological review. No other checkpoint is inspected, compared or reported, and the holdout takes no part in the selection.",
+  "checkpoint_selection_policy": {
+    "checkpoint_selection_box_component_weight": 1.0,
+    "checkpoint_selection_mask_component_weight": 1.0,
+    "checkpoint_selection_policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "checkpoint_selection_review_status": "HUMAN_REVIEWED_AND_ACCEPTED_BEFORE_S0",
+    "checkpoint_selection_semantics": "BOX_MAP50_95_PLUS_MASK_MAP50_95",
+    "custom_mask_only_selector_authorized": false,
+    "divergence_is_intentional": true,
+    "established_from": "INSTALLED_PACKAGE_SOURCE_INSPECTION",
+    "framework_fitness_is_a_reporting_metric": false,
+    "future_comparison_constraint": "PROTOCOL_INVARIANT. Every future segmentation experiment compared directly with S0 must select its checkpoint by ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS, unless a new comparison protocol is human-reviewed and frozen BEFORE any affected experiment is run. A comparison in which one model's checkpoint was chosen on a composite and another's on the mask metric alone would be measuring the selection rule as well as the model. S0's checkpoint semantics are never altered retroactively to satisfy a later protocol; a new rule applies to the experiments frozen under it.",
+    "primary_scientific_reporting_metric": "MASK_MAP50_95",
+    "rationale": [
+      "The behaviour was established from the installed source before any full S0 result existed, so accepting it is a protocol decision rather than a rationalisation of whichever checkpoint happened to score well.",
+      "It is the native, deterministic behaviour of the frozen Ultralytics version. Keeping it means S0 introduces no custom checkpoint-selection mechanism whose own behaviour would then need validating.",
+      "Instance segmentation requires both instance localisation and mask prediction, so a checkpoint chosen on both terms is a defensible baseline - which is a reason it is acceptable, not evidence that it is better.",
+      "This is NOT a claim that the composite fitness is scientifically superior to mask-only selection. Nothing in this project compares the two, and no experiment here could support such a claim.",
+      "S0 may never be retrospectively re-read as an epoch selected only by mask mAP@0.50:0.95. The checkpoint S0 reports is the one the native fitness chose, and changing that after the fact would silently replace the experiment with a different one."
+    ],
+    "retrospective_reinterpretation_allowed": false,
+    "selection_metric_equals_primary_reporting_metric": false,
+    "superiority_claim": "NONE. Keeping the native composite is an explicitly accepted baseline protocol choice, not a finding that it beats mask-only selection. No experiment in this project compares the two, and none could support such a claim."
+  },
+  "classification": "S0_PROTOCOL_FROZEN",
+  "detection_artifact_digests": {
+    "reports/detection_experiment_comparison.csv": "df1d111ce789ecc4f6f4538dd4e0c77acc503cfef088d4efac386f3813060fa9",
+    "reports/detection_experiment_results.json": "ade35948f9c962a2679b18660d0aac6ab9273e9b34f69eba0d541aff9bf5f79e",
+    "reports/detection_selection_report.md": "cf082e3521b7612e50d52a28aeb9ae711fa93f7a4432bb8f56dd1675d0a61bbe",
+    "reports/final_detector.provenance.json": "46a7aa59f8baf9098ca83ee4b0f31ff2f51ae7ff32ec6f9d1e3db9712db81682",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205"
+  },
+  "detection_artifacts_unchanged": true,
+  "detector_touched": false,
+  "direct_mask_iou_requirement": {
+    "defined_here": false,
+    "executed_here": false,
+    "must_not": "That protocol must not be written after looking at S0's predictions. Choosing a matching rule once the failures are visible is how a diagnostic becomes a flattering one.",
+    "phase": "a later phase, alongside the phase 10 evaluation protocol",
+    "status": "REQUIRED_FUTURE_PREDECLARED_EVALUATION",
+    "what_is_owed": "After S0's checkpoint is selected, the project must report an explicit instance-mask IoU diagnostic under a protocol that predeclares the inference settings, the prediction-to-ground-truth matching rule, how unmatched predictions and unmatched ground truth are counted, and the averaging scheme.",
+    "why": "The academic deliverable requires IoU. Ultralytics' mask AP is an averaged detection-style metric over IoU thresholds and is not a direct instance-mask IoU diagnostic, so reporting AP alone would not satisfy it."
+  },
+  "experiment_id": "S0",
+  "experiment_question": "What validation instance-segmentation performance does a pretrained YOLO11n-seg model achieve at the same 768-pixel input resolution as the frozen detector, using the phase 8A audited segmentation adapter? S0 is a baseline reference point, not the project's final segmenter and not an attempt at a good score.",
+  "experiment_role": "BASELINE_NOT_THE_FINAL_SEGMENTER",
+  "frozen_detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "checkpoint_size_bytes": 5502289,
+    "checkpoint_state": "PRESENT_VERIFIED",
+    "final_detector_sha256": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "fingerprint_recomputed": true,
+    "imgsz": 768,
+    "inference_run": false,
+    "model": "YOLO11n",
+    "retrained": false,
+    "revalidated": false,
+    "selected_experiment": "D2",
+    "status": "UNCHANGED_DETECTION_BLOCK_CLOSED",
+    "threshold_changed": false
+  },
+  "holdout_accessed": false,
+  "installed_defaults_evidence": "INSTALLED_EFFECTIVE_CONFIGURATION",
+  "known_approximation_categories": [
+    {
+      "category": "SERIALIZATION_AND_QUANTIZATION",
+      "detail": "Coordinates are written at six decimal places and rasterised through an int32 truncation. This is the largest contributor: 0.012458 mean IoU."
+    },
+    {
+      "category": "COMPONENT_JOIN_APPROXIMATION",
+      "detail": "A disconnected mask cannot be expressed: one row is one flat ring, so the 307 multi-component instances are bridged with zero-width connectors. Costs 0.000843 mean IoU."
+    },
+    {
+      "category": "HOLE_FILL_APPROXIMATION",
+      "detail": "An interior ring cannot be expressed, so holes are filled: 180 instances carry holes totalling 1072133 filled pixels."
+    },
+    {
+      "category": "RASTER_CONVENTION_DIFFERENCE",
+      "detail": "pycocotools and OpenCV do not rasterise identical geometry into identical pixels, which is why no instance round-trips exactly and why this level is never reported as YOLO format loss."
+    },
+    {
+      "category": "SMALL_MASK_SENSITIVITY",
+      "detail": "All 20 worst instances are 4-59 px masks, where a single boundary pixel is a large share of the area. This is the primary fidelity-risk stratum."
+    }
+  ],
+  "metrics": {
+    "artifacts": [
+      "mask_precision_recall_curve",
+      "box_precision_recall_curve",
+      "confusion_matrix",
+      "training_loss_curves",
+      "validation_loss_curves"
+    ],
+    "box_from_segmenter": [
+      "box_mAP@0.50:0.95",
+      "box_mAP@0.50",
+      "box_precision",
+      "box_recall"
+    ],
+    "composite_box_mask_score": false,
+    "per_class_box": [
+      "box_AP@0.50",
+      "box_AP@0.50:0.95"
+    ],
+    "per_class_mask": [
+      "mask_AP@0.50",
+      "mask_AP@0.50:0.95"
+    ],
+    "primary": "mask_mAP@0.50:0.95",
+    "secondary_mask": [
+      "mask_mAP@0.50",
+      "mask_precision",
+      "mask_recall"
+    ],
+    "supported_macro": "supported_macro_mask_map50_95"
+  },
+  "models_trained_in_this_phase": 0,
+  "phase": "8B",
+  "phase_8a_artifact_digests": {
+    "configs/segmentation_adapter_audit.yaml": "b4945ddaebb48db007ac30c97334f2a2dee767f3a39c51bcaa28e96b881fc4f7",
+    "reports/segmentation_adapter_audit.provenance.json": "b9ae44470b0b5608f3c11a8fbb470c64b0bbd38315ebf8f51022e79be5ca3487",
+    "reports/segmentation_adapter_audit_manifest.json": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "reports/segmentation_adapter_fidelity.csv": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+    "reports/segmentation_adapter_fidelity_report.md": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83"
+  },
+  "phase_8a_artifacts_unchanged": true,
+  "phase_8a_evidence": {
+    "audit_manifest_sha256": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "audit_phase": "8A",
+    "by_geometry_type_mask_iou_mean": {
+      "CANONICAL_POLYGON": 0.9780914114962314,
+      "CANONICAL_RLE": 0.9685379789787697,
+      "SYNTHETIC_RECTANGLE": 0.8497023809523809
+    },
+    "control_iou_mean": 0.9863676875577402,
+    "instance_cardinality_preserved": true,
+    "instances": 1726,
+    "instances_dropped": 0,
+    "instances_iou_ge_0.90": 1679,
+    "instances_iou_ge_0.95": 1474,
+    "instances_iou_lt_0.90": 47,
+    "instances_merged": 0,
+    "instances_split": 0,
+    "instances_with_holes": 180,
+    "instances_with_multiple_components": 307,
+    "mask_iou_exact_instances": 0,
+    "mask_iou_mean": 0.9730662943994923,
+    "mask_iou_median": 0.9845760780888786,
+    "mask_iou_min": 0.3076923076923077,
+    "mask_iou_p05": 0.9181755671581353,
+    "merged_iou_mean": 0.9855246487815423,
+    "parser_corrupt_labels": 0,
+    "parser_test_split_present": false,
+    "percent_iou_ge_0.90": 97.2769,
+    "percent_iou_ge_0.95": 85.3998,
+    "total_hole_pixels": 1072133
+  },
+  "pretrained_weights": {
+    "committed": false,
+    "identifier": "yolo11n-seg.pt",
+    "relative_path": "artifacts/weights/yolo11n-seg.pt",
+    "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+    "size_bytes": 6182636,
+    "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+    "ultralytics_version": "8.4.138"
+  },
+  "protocol_config": "configs/segmentation_baseline.yaml",
+  "protocol_config_sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+  "protocol_fingerprint": "0c6bbcd8529be08b1ef328edd3d8cd13739f3b7eab24b627220cdb5bf8a5dd9e",
+  "rare_class": {
+    "classification": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+    "limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so it is classified DESCRIPTIVE_HIGH_UNCERTAINTY by the frozen support rule and its validation AP is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose; do not prefer or reject a model because vest_loose moved; do not rank it against the supported classes. It remains a required class and is reported in full - mask and box, AP@0.50 and AP@0.50:0.95, precision and recall - always with an explicit small-sample caveat. The holdout also cannot be consulted to resolve the uncertainty.",
+    "may_decide_a_winner": false,
+    "name": "vest_loose",
+    "reported_in_full": true,
+    "support_rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "support_rule_origin": "FROZEN_IN_PHASE_7A_REUSED_UNCHANGED",
+    "validation_images": 1,
+    "validation_instances": 8
+  },
+  "runtime": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu_arch": "sm_120",
+    "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "gpu_total_memory_bytes": 8546484224,
+    "python": "3.12.13",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "ultralytics": "8.4.138"
+  },
+  "s0_execution_status": "NOT_EXECUTED_PROTOCOL_ONLY",
+  "s0_result_metrics": null,
+  "s0_result_metrics_reason": "Phase 8B freezes the protocol and proves the runtime executes. S0 has not been trained, so there is no performance number to record and none is invented.",
+  "schema_version": 1,
+  "segmentation_arguments": {
+    "dropout": 0.0,
+    "mask_ratio": 4,
+    "max_det": 300,
+    "multi_scale": 0.0,
+    "overlap_mask": true,
+    "rect": false,
+    "retina_masks": false,
+    "single_cls": false
+  },
+  "smoke_runs_in_this_phase": 1,
+  "smoke_test": {
+    "batch": 8,
+    "checkpoint_written": true,
+    "classification": "NON_EXPERIMENTAL",
+    "deviations_from_s0": [
+      "epochs 1 instead of 100",
+      "plots disabled, so no dataset or prediction imagery is rendered"
+    ],
+    "epochs": 1,
+    "imgsz": 768,
+    "last_checkpoint_written": true,
+    "metrics_recorded": false,
+    "metrics_recorded_reason": "A one-epoch run's AP is not a model result. Recording it would create a number the project would then have to explain, and inviting a comparison against it is exactly the tuning this phase forbids.",
+    "optimizer_selected": {
+      "effective_lr0": 0.001111,
+      "effective_momentum": 0.9,
+      "evidence": "optimizer: AdamW(lr=0.001111, momentum=0.9)",
+      "inferred": false,
+      "optimizer": "AdamW",
+      "source": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE"
+    },
+    "out_of_memory": false,
+    "peak_gpu_memory_allocated_bytes": 2441025024,
+    "peak_gpu_memory_reserved_bytes": 3433037824,
+    "peak_gpu_memory_reserved_gib": 3.197,
+    "purpose": "Prove the model loads, the segmentation labels parse, CUDA forward and backward run, the validation loader works, the mask loss executes and a checkpoint reaches disk. Nothing else.",
+    "reporting_ban": "DO_NOT_REPORT_AS_MODEL_RESULT",
+    "run_directory": "artifacts/segmentation/S0_smoke",
+    "run_directory_committed": false,
+    "runtime_seconds": 51.275,
+    "seed": 42,
+    "status": "SUCCESS"
+  },
+  "supported_macro_mask_policy": {
+    "definition": "The unweighted mean of per-class mask AP@0.50:0.95 over the classes the frozen support rule admits. The rule names no class; the admitted set is its output.",
+    "is_a_selection_metric": false,
+    "metric": "supported_macro_mask_map50_95",
+    "reason": "S0 is a baseline and there is nothing to select between. It becomes a selection metric only when a segmentation comparison protocol is frozen, before the experiments it would decide exist.",
+    "s0_reports_it": true
+  },
+  "task": "segmentation",
+  "test": {
+    "reason": "Phase 8B selected an architecture, approved already-audited label bytes, froze the S0 protocol and ran a one-epoch engineering smoke test on the development splits. The holdout was not read, materialised, adapted, converted, counted, inspected or predicted on; no holdout label, statistic or identifier exists in any artifact this phase wrote, and no holdout adapter directory was created. Nothing about choosing an architecture or proving that a training loop executes depends on which images are held out.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "training": {
+    "amp": true,
+    "augmentation": "ULTRALYTICS_DEFAULT_SEGMENTATION_TRAINING_POLICY",
+    "batch": 8,
+    "close_mosaic": 10,
+    "cos_lr": false,
+    "deterministic": true,
+    "epochs": 100,
+    "imgsz": 768,
+    "lr0": 0.01,
+    "lrf": 0.01,
+    "momentum": 0.937,
+    "optimizer": "auto",
+    "patience": 50,
+    "pretrained": true,
+    "val": true,
+    "warmup_epochs": 3.0,
+    "weight_decay": 0.0005,
+    "workers": 8
+  }
+}
