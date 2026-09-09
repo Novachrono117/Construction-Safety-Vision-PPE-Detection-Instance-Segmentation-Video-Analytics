@@ -36,6 +36,7 @@ undocumented one-off shell invocation.
 | `freeze_final_detector.py` | 7D | Apply the frozen Phase 7 policy to the committed results, record the human-reviewed decision and freeze the selected checkpoint's identity. Trains, validates, benchmarks and tunes nothing. |
 | `audit_segmentation_adapter.py` | 8A | Measure how much canonical COCO instance-mask geometry survives the Ultralytics YOLO segmentation label format. Development splits only. Trains nothing, downloads nothing, selects no architecture. |
 | `freeze_segmentation_baseline.py` | 8B | Record the architecture decision, approve the audited adapter by digest, freeze the S0 protocol and run one non-experimental smoke test. Does not run S0 and reports no model performance. |
+| `train_segmentation_baseline.py` | 8C | Run the S0 baseline exactly once, validate the natively selected checkpoint once, and execute the predeclared direct mask-IoU diagnostic once. Selects no final segmenter and tunes nothing. |
 
 ## Rules
 
@@ -394,6 +395,43 @@ would replace a recorded runtime and peak-memory figure with a different one for
 no reason. The reused record is checked rather than trusted - it must report
 success, must carry no metrics, and the pretrained checkpoint on disk must hash
 to the bytes it ran on, so one run's evidence cannot be attributed to another's.
+
+`train_segmentation_baseline.py` (phase 8C) runs the S0 baseline. One training
+run, one validation, one diagnostic - and no decision.
+
+Four design decisions carry the experiment's credibility.
+
+**Training reads a hard-linked runtime view, not the audited adapter.**
+Ultralytics writes `.cache` files beside the labels it scans, and the audited
+adapter is phase 8A evidence. So the run gets a disposable view whose label bytes
+are verified identical to the approved digests first, before and after training.
+The audited directory ends the phase exactly as phase 8A wrote it.
+
+**The selected checkpoint is verified against the rule, not assumed.** The
+framework writes `best.pt` by its own composite fitness and records the terms but
+not the fitness, so the composite is recomputed from `results.csv` as
+`metrics/mAP50-95(B) + metrics/mAP50-95(M)` and the recorded best epoch is
+confirmed to be its argmax. Without that step, "the frozen rule chose this
+checkpoint" would be an article of faith.
+
+**The direct IoU diagnostic scores against canonical COCO masks.** Never the
+YOLO adapter: its own round-trip error was measured in phase 8A, and scoring
+against it would fold that approximation into the model's result by an amount
+nobody could separate afterwards. Predictions are produced with
+`retina_masks=True` so they land on the original image canvas the canonical masks
+live on, rather than this project resampling them and measuring its own
+interpolation.
+
+**An out-of-memory event stops the phase.** `MEMORY_CONSTRAINT_REVIEW_REQUIRED`;
+the batch is never reduced, auto-batch is never enabled and imgsz is never
+lowered to rescue a run.
+
+The script refuses to start if a completed S0 run already exists, because exactly
+one valid full run is authorised and overwriting it would destroy the experiment
+being reported. `--verify-only` runs every precondition and writes nothing;
+`--diagnostic-only` re-renders the artifacts from a completed run without
+training, for recovering from a failure after training rather than for repeating
+the experiment.
 
 ## Planned scripts
 

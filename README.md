@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detector frozen - YOLO11n @ 768; S0 segmentation protocol frozen (phase 8B of 14 complete).** The
+> **Status: detector frozen - YOLO11n @ 768; S0 segmentation baseline trained (phase 8C of 14 complete).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -22,9 +22,11 @@
 > validation number**. Phase 8A measured how much canonical instance-mask geometry
 > survives the YOLO segmentation label format, and **phase 8B selected YOLO11n-seg,
 > approved the audited label bytes and froze the S0 protocol**. S0 itself has **not
-> been trained**: the only segmentation model that has run is a one-epoch
-> non-experimental smoke test whose metrics were not recorded, so **no segmentation
-> performance number exists**.
+> Phase 8C then ran **S0 exactly once**: mask mAP@0.50:0.95 **0.407942** on
+> validation, plus a predeclared direct instance-mask IoU diagnostic against the
+> canonical COCO masks. **No final segmenter is selected**
+> (`UNSELECTED_PENDING_REVIEW`) - S0 is the only segmentation experiment, so there
+> is nothing to select between.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -115,7 +117,10 @@ Two design decisions define this architecture:
 | Final detector artifact | `reports/final_detector_manifest.json` · `final_detector_sha256` `84d30d64...`. The checkpoint itself is **not committed** (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain or retrain the weights. |
 | Segmentation architecture | **Selected (phase 8B): YOLO11n-seg** (`FINAL_SELECTED_FOR_S0`), by human review of the phase 8A audit. Mask R-CNN recorded as `NOT_SELECTED_FALLBACK`, never benchmarked. |
 | S0 protocol | **Frozen (phase 8B).** imgsz 768, batch 8, 100 epochs, seed 42, mask metric hierarchy and checkpoint rule declared before training. Runtime proven by a one-epoch `NON_EXPERIMENTAL` smoke test. |
-| Segmentation model | **Not trained.** `S0: NOT_EXECUTED_PROTOCOL_ONLY`. No segmentation performance metric exists, and the smoke test's numbers are `DO_NOT_REPORT_AS_MODEL_RESULT`. |
+| Segmentation model | **S0 trained (phase 8C).** YOLO11n-seg, 100/100 epochs, one run, checkpoint chosen by the frozen native rule (epoch 59). |
+| Segmentation metrics | **Validation only.** mask mAP@0.50:0.95 **0.407942** · mask mAP@0.50 0.579830 · `supported_macro_mask_map50_95` 0.509482. Box from the same model: mAP@0.50:0.95 0.478156. |
+| Direct mask IoU | **Measured (phase 8C)** against canonical COCO masks at a predeclared operating point: `matched_mask_iou_mean` 0.717462, `gt_normalized_mask_iou` 0.556977, coverage 0.776316. |
+| Final segmenter | **Not selected.** `UNSELECTED_PENDING_REVIEW`. No S1 exists and no segmentation comparison protocol has been frozen. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
@@ -1043,6 +1048,71 @@ uv run python scripts/freeze_segmentation_baseline.py --verify-only
 ```
 
 
+## Phase 8C - the S0 segmentation baseline and a direct IoU result
+
+**One training run, one validation, one diagnostic, and no decision.**
+[`reports/segmentation_S0_report.md`](reports/segmentation_S0_report.md) is the
+full record.
+
+**Primary result, validation only: mask mAP@0.50:0.95 = 0.407942.** Secondary:
+mask mAP@0.50 0.579830, mask precision 0.850509, mask recall 0.528435. The box
+metrics the same model produces are reported separately and never merged: box
+mAP@0.50:0.95 0.478156, mAP@0.50 0.647256. `supported_macro_mask_map50_95` is
+0.509482 over the four classes the frozen phase 7 support rule admits -
+**descriptive, not a selection metric**, because there is nothing to select
+between.
+
+| Class | mask AP@0.50:0.95 | mask AP@0.50 | box AP@0.50:0.95 |
+| --- | --- | --- | --- |
+| `helmet_loose` | 0.789927 | 0.909395 | 0.802332 |
+| `helmet_on_head` | 0.586523 | 0.786113 | 0.625702 |
+| `vest_on_body` | 0.390296 | 0.652652 | 0.415462 |
+| `person` | 0.271182 | 0.539634 | 0.522227 |
+| `vest_loose` | 0.001782 | 0.011359 | 0.025059 |
+
+**`person` is the outlier worth naming.** Its mask AP@0.50:0.95 (0.271182) is
+roughly half its box AP@0.50:0.95 (0.522227) - by far the widest box-to-mask gap
+of any class. **Why is UNKNOWN.** It is consistent with large, frequently
+occluded, irregular shapes being harder to delineate than to localise, but that
+is a hypothesis; nothing here tests it, and the image-level error analysis that
+could is a later, deliberate phase.
+
+**The checkpoint was chosen by the framework's native composite**, epoch 59 at
+box-plus-mask fitness 0.884180, verified to be the argmax of that composite
+recomputed from `results.csv`. As phase 8B recorded and accepted, that is **not**
+the primary reported metric, so the selected epoch need not be the one that
+maximised mask mAP alone.
+
+**The direct instance-mask IoU diagnostic** ran once, under a protocol frozen
+before the first optimisation step, scoring against the **canonical COCO masks**
+rather than the YOLO adapter, at a predeclared confidence of 0.25 and NMS IoU
+0.70. Matching is one-to-one within an image and a class, solved with
+`scipy.optimize.linear_sum_assignment` to maximise total IoU.
+
+| Diagnostic | Value |
+| --- | --- |
+| `matched_mask_iou_mean` | 0.717462 |
+| `gt_normalized_mask_iou` | 0.556977 |
+| `gt_match_coverage` | 0.776316 |
+| `gt_iou50_coverage` | 0.588816 |
+| `gt_iou75_coverage` | 0.460526 |
+
+304 canonical instances, 304 predictions, 236 overlapping assignments, 68
+unmatched on each side. **The two headline numbers answer different questions**:
+0.717462 is mask quality *where the model found something*, and 0.556977 divides
+the same IoU sum by every canonical instance, so the 68 misses pull it down.
+Neither is a COCO AP, and neither was used to change S0.
+
+**Nothing was decided.** `segmentation_baseline_status: S0_COMPLETE`,
+`final_segmenter: UNSELECTED_PENDING_REVIEW`. No S1, no alternative resolution or
+batch, no threshold tuning, and the frozen detector was not retrained,
+revalidated or run.
+
+```bash
+uv run python scripts/train_segmentation_baseline.py --verify-only
+```
+
+
 ## Academic requirements
 
 The assignment requires all of the following. Each is mapped to a verifiable
@@ -1162,6 +1232,9 @@ Work proceeds through 14 gated phases (see
 │   ├── segmentation_adapter_approval.json       # Adapter approved for training, by digest (8B)
 │   ├── segmentation_S0_manifest.json            # Frozen S0 protocol + smoke record (8B)
 │   ├── segmentation_S0_protocol.md              # Architecture decision and S0 protocol (8B)
+│   ├── segmentation_S0_result_manifest.json     # S0 metrics, fingerprints, checkpoints (8C)
+│   ├── segmentation_S0_mask_iou.json            # Direct instance-mask IoU diagnostic (8C)
+│   ├── segmentation_S0_report.md                # The S0 baseline result and its limits (8C)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -1192,7 +1265,8 @@ Work proceeds through 14 gated phases (see
 │   ├── freeze_detection_experiments.py # Freeze the phase 7 comparison protocol (7A)
 │   ├── train_detection_experiment.py # Run one frozen phase 7 candidate (7B+)
 │   ├── audit_segmentation_adapter.py # Measure what the YOLO seg format costs (8A)
-│   └── freeze_segmentation_baseline.py # Select the architecture, freeze S0, smoke test (8B)
+│   ├── freeze_segmentation_baseline.py # Select the architecture, freeze S0, smoke test (8B)
+│   └── train_segmentation_baseline.py # Run S0 once, validate it, run the IoU diagnostic (8C)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -1205,6 +1279,8 @@ Work proceeds through 14 gated phases (see
 │   ├── data/segmentation_adapter.py  # Canonical COCO masks -> YOLO seg rows (8A)
 │   ├── data/segmentation_fidelity.py # Round-trip mask metrics and attribution (8A)
 │   ├── segmentation_experiment.py # The S0 protocol schema, parsed strictly (8B)
+│   ├── segmentation_run.py        # Runtime view, native fitness, checkpoint records (8C)
+│   ├── mask_iou_evaluation.py     # The direct instance-mask IoU diagnostic (8C)
 │   ├── detection_run.py       # Shared run primitives: weights, optimizer evidence, figures
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,

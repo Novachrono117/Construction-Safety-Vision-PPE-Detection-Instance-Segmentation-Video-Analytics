@@ -1,0 +1,128 @@
+{
+  "checkpoint": {
+    "name": "best.pt",
+    "selected_by": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3",
+    "size_bytes": 6041685
+  },
+  "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+  "contains_raw_masks_or_imagery": false,
+  "experiment_id": "S0",
+  "global": {
+    "gt_count": 304,
+    "gt_iou50_coverage": 0.588816,
+    "gt_iou75_coverage": 0.460526,
+    "gt_match_coverage": 0.776316,
+    "gt_normalized_mask_iou": 0.556977,
+    "matched_count": 236,
+    "matched_mask_iou_mean": 0.717462,
+    "prediction_count": 304,
+    "unmatched_gt": 68,
+    "unmatched_predictions": 68
+  },
+  "ground_truth": {
+    "document": "data/processed/canonical/annotations/segmentation_validation.coco.json",
+    "is_the_yolo_adapter": false,
+    "sha256": "e674c5df27eee3e43c6ca4249b17c541967435196151b64ceb0d351131c8098e",
+    "source": "CANONICAL_COCO_INSTANCE_SEGMENTATION"
+  },
+  "images": 65,
+  "inference": {
+    "agnostic_nms": false,
+    "augment": false,
+    "classes": "ALL_FIVE_FROZEN_CLASSES",
+    "conf": 0.25,
+    "half": false,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "retina_masks": true
+  },
+  "matching": {
+    "algorithm": "SCIPY_LINEAR_SUM_ASSIGNMENT_MAXIMIZE_MASK_IOU",
+    "deterministic": true,
+    "implementation": "scipy.optimize.linear_sum_assignment",
+    "scope": "PER_IMAGE_PER_CLASS_ONE_TO_ONE",
+    "unmatched_gt_policy": "CONTRIBUTES_ZERO_TO_GT_NORMALIZED_MASK_IOU",
+    "zero_overlap_policy": "ASSIGNED_PAIRS_WITH_ZERO_IOU_ARE_NOT_MATCHES"
+  },
+  "per_class": {
+    "helmet_loose": {
+      "gt_count": 57,
+      "gt_iou50_coverage": 0.824561,
+      "gt_iou75_coverage": 0.824561,
+      "gt_match_coverage": 0.824561,
+      "gt_normalized_mask_iou": 0.771314,
+      "matched_count": 47,
+      "matched_mask_iou_mean": 0.935424,
+      "prediction_count": 55,
+      "unmatched_gt": 10,
+      "unmatched_predictions": 8
+    },
+    "helmet_on_head": {
+      "gt_count": 47,
+      "gt_iou50_coverage": 0.765957,
+      "gt_iou75_coverage": 0.680851,
+      "gt_match_coverage": 0.765957,
+      "gt_normalized_mask_iou": 0.671407,
+      "matched_count": 36,
+      "matched_mask_iou_mean": 0.876559,
+      "prediction_count": 40,
+      "unmatched_gt": 11,
+      "unmatched_predictions": 4
+    },
+    "person": {
+      "gt_count": 137,
+      "gt_iou50_coverage": 0.423358,
+      "gt_iou75_coverage": 0.233577,
+      "gt_match_coverage": 0.751825,
+      "gt_normalized_mask_iou": 0.434635,
+      "matched_count": 103,
+      "matched_mask_iou_mean": 0.578106,
+      "prediction_count": 137,
+      "unmatched_gt": 34,
+      "unmatched_predictions": 34
+    },
+    "vest_loose": {
+      "gt_count": 8,
+      "gt_iou50_coverage": 0.0,
+      "gt_iou75_coverage": 0.0,
+      "gt_match_coverage": 0.25,
+      "gt_normalized_mask_iou": 0.065886,
+      "matched_count": 2,
+      "matched_mask_iou_mean": 0.263543,
+      "prediction_count": 2,
+      "unmatched_gt": 6,
+      "unmatched_predictions": 0
+    },
+    "vest_on_body": {
+      "gt_count": 55,
+      "gt_iou50_coverage": 0.690909,
+      "gt_iou75_coverage": 0.527273,
+      "gt_match_coverage": 0.872727,
+      "gt_normalized_mask_iou": 0.613237,
+      "matched_count": 48,
+      "matched_mask_iou_mean": 0.702667,
+      "prediction_count": 70,
+      "unmatched_gt": 7,
+      "unmatched_predictions": 22
+    }
+  },
+  "phase": "8C",
+  "protocol": "DIRECT_INSTANCE_MASK_IOU_DIAGNOSTIC",
+  "protocol_config": "configs/segmentation_mask_iou_evaluation.yaml",
+  "protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+  "rare_class_warning": {
+    "class": "vest_loose",
+    "detail": "vest_loose holds one validation source image and eight instances under the frozen split. Its direct-IoU figures carry high sampling uncertainty, are reported for completeness, and must not be used to tune, rank or select.",
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "runs": 1,
+  "schema_version": 1,
+  "split": "validation",
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "test": {
+    "reason": "Phase 8C trained S0 on the frozen train split, validated it on the frozen validation split, and ran the direct mask-IoU diagnostic on that same validation split. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, label, prediction or statistic exists in any artifact this phase wrote, and the dataset descriptor the framework read carries no holdout key.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  }
+}

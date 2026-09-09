@@ -191,15 +191,14 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8B complete - the split is frozen, the holdout is locked, the
+- **Phase:** 8C complete - the split is frozen, the holdout is locked, the
   canonical COCO task datasets are materialised, **the final detector is FROZEN
-  (D2, YOLO11n at imgsz 768)**, the YOLO segmentation-adapter fidelity audit has
-  been run, and **the S0 segmentation protocol is FROZEN** (`S0_PROTOCOL_FROZEN`:
-  YOLO11n-seg selected, the audited adapter approved, the runtime proven by a
-  smoke test). **S0 itself has NOT been trained** -
-  `s0_execution_status: NOT_EXECUTED_PROTOCOL_ONLY`, and no segmentation
-  performance number exists. Phase 8C (the S0 baseline run) has not started; do
-  not start it unprompted.
+  (D2, YOLO11n at imgsz 768)**, the segmentation adapter is audited and approved,
+  the S0 protocol is frozen, and **S0 HAS BEEN TRAINED ONCE**
+  (`S0_SEGMENTATION_BASELINE_COMPLETE`). **No final segmenter is selected**
+  (`final_segmenter: UNSELECTED_PENDING_REVIEW`, `segmentation_baseline_status:
+  S0_COMPLETE`). Phase 8D - human review and segmentation-experiment planning -
+  has not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -495,6 +494,77 @@ uv run pytest
   the model loads, labels parse, CUDA forward/backward runs, the validation
   loader works, the mask loss executes, a checkpoint is written, ~51 s at peak
   3.20 GiB reserved, `optimizer: auto` resolving to AdamW at lr0 0.001111.
+- **S0 was run ONCE and must not be re-run, retuned or averaged.**
+  `S0_experiment_sha256`
+  `1761007ab1fd3937a56a870618c11115307988f2031598980e8dfea0e218f7bc`. YOLO11n-seg,
+  imgsz 768, batch 8, 100/100 epochs, `ALL_EPOCHS_COMPLETED` (no early stop),
+  training time 1106.85 s, best epoch **59** at native composite fitness
+  **0.884180**, verified as the argmax of the composite recomputed from
+  `results.csv`. `optimizer: auto` resolved to **AdamW at lr0 0.001111,
+  momentum 0.9**, captured directly from the framework log. `best.pt` SHA-256
+  `d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3`, 6041685 B;
+  `last.pt` `9b8a956f...`, same size. Neither is committed.
+- **S0 result (validation only): primary mask mAP@0.50:0.95 `0.407942`.** Mask
+  mAP@0.50 0.579830, mask precision 0.850509, mask recall 0.528435.
+  `supported_macro_mask_map50_95` **0.509482** over `helmet_loose`,
+  `helmet_on_head`, `person`, `vest_on_body` - **descriptive, not a winner**.
+  Box from the same model, reported separately and never merged: mAP@0.50:0.95
+  0.478156, mAP@0.50 0.647256, precision 0.886160, recall 0.552147. **Every one
+  of these is a validation number and says nothing about test performance.**
+- **Per-class mask AP@0.50:0.95: `helmet_loose` 0.789927, `helmet_on_head`
+  0.586523, `vest_on_body` 0.390296, `person` 0.271182, `vest_loose` 0.001782.**
+  `person`'s mask AP is roughly half its box AP (0.522227) - the widest
+  box-to-mask gap of any class. **Why is UNKNOWN**; occlusion and irregular shape
+  are a hypothesis, and the image-level analysis that would test it is a later
+  phase. Do not explain it and do not fix it.
+- **The direct instance-mask IoU diagnostic ran once, and its numbers are the
+  only ones that may be quoted.** `matched_mask_iou_mean` **0.717462**,
+  `gt_normalized_mask_iou` **0.556977**, `gt_match_coverage` 0.776316,
+  `gt_iou50_coverage` 0.588816, `gt_iou75_coverage` 0.460526, over 304 canonical
+  instances and 304 predictions with 236 overlapping assignments and 68 unmatched
+  on each side. Protocol fingerprint
+  `b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80`, frozen in
+  `configs/segmentation_mask_iou_evaluation.yaml` **before the first optimisation
+  step**.
+- **The two direct-IoU headlines are NOT interchangeable, and neither is an AP.**
+  `matched_mask_iou_mean` describes mask quality *where the model produced an
+  overlapping same-class instance*; `gt_normalized_mask_iou` divides the same IoU
+  sum by *every* canonical instance, so the 68 misses lower it. Never quote the
+  first as the project's IoU, never call either a COCO AP, and never use either
+  to change S0.
+- **Direct IoU scores against CANONICAL COCO masks, never the YOLO adapter**, at
+  a predeclared operating point (conf 0.25, NMS IoU 0.70, imgsz 768, max_det 300,
+  `retina_masks: true`, no TTA). Matching is one-to-one per image and per class
+  via `scipy.optimize.linear_sum_assignment` maximising total IoU; an assigned
+  pair sharing no pixel is not a match; an unmatched GT contributes zero. **No
+  threshold was swept and none may be.**
+- **`scipy` was added in phase 8C as a runtime dependency**, after a recorded
+  methodological review, because `linear_sum_assignment` is the matching rule the
+  diagnostic freezes. Greedy matching and a hand-rolled Hungarian solver were both
+  considered and rejected. Verified to cause no drift in the frozen ML stack.
+- **The training run reads a git-ignored runtime VIEW of the approved adapter**
+  (`data/processed/adapters/yolo_segmentation_s0_runtime/`), hard-linked with
+  label bytes verified identical to the approved digests before and after
+  training. It exists so the framework's `.cache` files never land inside phase
+  8A's evidence. The audited directory must stay free of caches and checkpoints.
+- **One artifact-write re-execution is recorded, and it is not a second
+  experiment.** The first attempt trained, validated and ran the diagnostic, then
+  refused to write: the sensitive-content scan caught machine-specific absolute
+  paths copied out of the framework's `args.yaml`. No artifact was published.
+  Training was **not** repeated; validation and the diagnostic were re-executed
+  deterministically on the same frozen checkpoint and reproduced identical
+  numbers. Never present this as a repeat measurement.
+- **Peak GPU memory for the S0 training run is `NOT_PERSISTED_FOR_THIS_RUN`.**
+  The measuring process exited before the artifact was written and the figure is
+  not recoverable from any file. Do not reconstruct it from terminal scrollback -
+  a number that cannot be traced to an artifact is not evidence. What is
+  established is that batch 8 completed without an out-of-memory event.
+- **NO final segmenter is selected and NO S1 is authorised.**
+  `final_segmenter: UNSELECTED_PENDING_REVIEW`. Do not freeze S0 as the final
+  segmenter, do not train an alternative model, resolution or batch, do not tune
+  augmentation or thresholds, and do not add a metric. Any further segmentation
+  experiment needs a comparison protocol frozen first, exactly as phase 7A did
+  for detection.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

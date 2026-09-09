@@ -14,6 +14,7 @@ outcome lives here, never in notebook cells or ad-hoc command-line flags.
 | `detection_experiments.yaml` | Phase 7A comparison protocol: D0/D1/D2, support rule, margin (see below). |
 | `segmentation_adapter_audit.yaml` | Phase 8A YOLO segmentation-adapter fidelity audit: a measurement, not a dataset. |
 | `segmentation_baseline.yaml` | Phase 8B S0 protocol: architecture, every hyperparameter, adapter digests, mask metric hierarchy (see below). |
+| `segmentation_mask_iou_evaluation.yaml` | Phase 8C direct instance-mask IoU diagnostic: ground truth, operating point, matching rule (see below). |
 
 ## Rules
 
@@ -104,3 +105,37 @@ them against the installed configuration** at freeze time rather than trusting
 the file. The rare-class support thresholds and the macro metric name are
 derived from `construction_safety_vision.detection_comparison`, so the
 segmentation phase cannot quietly acquire a friendlier rule.
+
+## `segmentation_mask_iou_evaluation.yaml`
+
+The direct instance-mask IoU diagnostic, frozen **before the first optimisation
+step of S0**. It exists because the academic deliverable requires an explicit
+IoU result and mask average precision does not supply one: AP is an averaged,
+ranking-sensitive summary over IoU thresholds, so a reader cannot recover from it
+how similar a predicted mask actually was to the object it covered.
+
+Four decisions carry the diagnostic's meaning, and the parser enforces all four:
+
+- **ground truth is the canonical COCO instance segmentation**, never the YOLO
+  adapter - a `ground_truth_document` whose path contains `adapter` is refused,
+  because scoring against a representation with its own measured approximation
+  would fold that error into the model's result;
+- **one predeclared operating point** - confidence 0.25, NMS IoU 0.70, imgsz 768,
+  `max_det` 300, no test-time augmentation, no sweep, no second threshold;
+- **one-to-one matching per image and per class, maximising total IoU**, solved
+  with `scipy.optimize.linear_sum_assignment`; a greedy rule is a different rule
+  and is refused by name;
+- **no combined score** - the five diagnostics answer different questions, and
+  blending them would let a coverage failure hide behind good mask quality on the
+  instances that happened to be found.
+
+Two policies decide what the numbers mean. An assigned pair sharing no pixel is
+**not** a match: the assignment problem pairs those when the alternative is
+leaving both unassigned, and counting them would inflate coverage with unrelated
+objects. And an unmatched ground-truth instance contributes **zero** rather than
+disappearing, which is the whole difference between `matched_mask_iou_mean` (mask
+quality where the model found something) and `gt_normalized_mask_iou` (the same
+IoU sum divided by every canonical instance, so misses lower it).
+
+It is a diagnostic. It selects no checkpoint, tunes nothing, and does not replace
+mask mAP@0.50:0.95 as the primary scientific result.

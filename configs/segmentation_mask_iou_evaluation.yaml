@@ -1,0 +1,157 @@
+# Direct instance-mask IoU diagnostic - frozen in phase 8C BEFORE S0 trained.
+#
+# Loaded by `construction_safety_vision.mask_iou_evaluation`. Parsing is strict:
+# an unknown key raises, a reference to the protected split raises, ground truth
+# that points at an adapter raises, and a combined score raises.
+#
+# This file exists because the academic deliverable requires an explicit IoU
+# result and mask average precision does not supply one. AP is an averaged,
+# ranking-sensitive summary over IoU thresholds; a reader cannot recover from it
+# how similar a predicted mask actually was to the object it covered.
+#
+# It is written before the first optimisation step of S0. That is what makes the
+# operating point below a protocol rather than a number chosen once the failures
+# were visible.
+
+schema_version: 1
+
+protocol: DIRECT_INSTANCE_MASK_IOU_DIAGNOSTIC
+
+purpose: >-
+  Report, at one predeclared operating point, how much canonical instance-mask
+  area the segmentation baseline actually recovers - both where it produced an
+  overlapping same-class instance, and across every canonical instance including
+  the ones it missed.
+
+# Stated as prohibitions because each is a way this diagnostic could quietly
+# turn into something it is not.
+is_not:
+  - a checkpoint-selection metric - the checkpoint is chosen by the frozen
+    native Ultralytics segmentation fitness and nothing here participates
+  - an S0 tuning metric - no hyperparameter, augmentation or resolution may be
+    changed in response to any value it reports
+  - a threshold-selection mechanism - the confidence below is fixed in advance
+    and no sweep is authorised
+  - a replacement for mask mAP - the primary scientific result remains
+    mask mAP@0.50:0.95, and these numbers are a diagnostic beside it
+
+experiment: S0
+
+# Development validation only. The holdout takes no part in a diagnostic run
+# before the models are frozen.
+split: validation
+
+# --- ground truth --------------------------------------------------------------
+
+# The canonical phase 5D COCO instance segmentation, never the YOLO adapter.
+# The adapter is a lossy derived view whose own round-trip error was measured in
+# phase 8A at mean mask IoU 0.973066; scoring predictions against it would fold
+# that approximation into the model's result by an amount nobody could separate
+# afterwards.
+ground_truth_source: CANONICAL_COCO_INSTANCE_SEGMENTATION
+ground_truth_document: data/processed/canonical/annotations/segmentation_validation.coco.json
+canonical_task_manifest: reports/task_dataset_manifest.json
+
+class_map_sha256: 596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753
+split_assignment_sha256: a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc
+
+# --- predictions ---------------------------------------------------------------
+
+# The S0 checkpoint the frozen native fitness selected. Never `last.pt`, never a
+# manually chosen epoch, and never a second checkpoint for comparison.
+checkpoint: S0_BEST_PT_SELECTED_BY_ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS
+
+inference:
+  # The frozen S0 input resolution. Not swept.
+  imgsz: 768
+
+  # A predeclared OPERATIONAL diagnostic threshold, fixed before any S0
+  # performance number existed. It is not tuned, not swept, and not chosen to
+  # flatter a result; a diagnostic reported at a threshold picked after seeing
+  # the failures would describe the threshold rather than the model.
+  conf: 0.25
+
+  # NMS IoU. Frozen at the same value for the same reason.
+  iou: 0.70
+
+  max_det: 300
+
+  # Masks are produced at the ORIGINAL image resolution rather than the
+  # letterboxed model canvas. The canonical masks live on the original canvas,
+  # so this puts both on the same grid using the framework's own native mask
+  # path instead of this project resampling predictions itself and measuring its
+  # own interpolation.
+  retina_masks: true
+
+  # No test-time augmentation, no class-agnostic NMS, no half precision, and no
+  # class filter: all five frozen classes are evaluated.
+  augment: false
+  agnostic_nms: false
+  half: false
+  classes: ALL_FIVE_FROZEN_CLASSES
+
+  threshold_policy: >-
+    PREDECLARED_OPERATING_POINT. One confidence, one NMS IoU, one resolution,
+    fixed before S0 trained. No sweep, no second threshold, no per-class
+    threshold, and no reporting of the best value among several.
+
+# --- matching ------------------------------------------------------------------
+
+matching:
+  algorithm: SCIPY_LINEAR_SUM_ASSIGNMENT_MAXIMIZE_MASK_IOU
+  implementation: scipy.optimize.linear_sum_assignment
+  scope: PER_IMAGE_PER_CLASS_ONE_TO_ONE
+  objective: MAXIMIZE_TOTAL_MASK_IOU
+
+  # The assignment problem will pair a ground-truth instance with a prediction
+  # they share no pixel with, when the alternative is leaving both unassigned.
+  # Counting that as a match would inflate coverage with unrelated objects, so
+  # such pairs are discarded and counted as one unmatched ground truth plus one
+  # unmatched prediction.
+  zero_overlap_policy: ASSIGNED_PAIRS_WITH_ZERO_IOU_ARE_NOT_MATCHES
+
+  # A missed instance lowers the headline diagnostic instead of vanishing from
+  # it. This is the difference between the two headline numbers below.
+  unmatched_gt_policy: CONTRIBUTES_ZERO_TO_GT_NORMALIZED_MASK_IOU
+
+  deterministic: true
+
+# --- what is reported ------------------------------------------------------------
+
+diagnostics:
+  # Reported side by side and never collapsed. Each answers a different
+  # question, and one blended number would let a coverage failure hide behind
+  # good mask quality on the instances that happened to be found.
+  headline:
+    - matched_mask_iou_mean
+    - gt_normalized_mask_iou
+    - gt_match_coverage
+    - gt_iou50_coverage
+    - gt_iou75_coverage
+
+  coverage_thresholds: [0.50, 0.75]
+
+  per_class:
+    - gt_count
+    - prediction_count
+    - matched_count
+    - matched_mask_iou_mean
+    - gt_normalized_mask_iou
+    - gt_iou50_coverage
+    - gt_iou75_coverage
+
+  counts:
+    - gt_count
+    - prediction_count
+    - matched_count
+    - unmatched_gt
+    - unmatched_predictions
+
+  combined_score: false
+
+# --- the rare class ---------------------------------------------------------------
+
+rare_class: vest_loose
+rare_class_status: DESCRIPTIVE_HIGH_UNCERTAINTY
+
+test_policy: PROTECTED_NOT_ACCESSED

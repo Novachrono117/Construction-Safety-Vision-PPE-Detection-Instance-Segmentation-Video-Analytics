@@ -1,0 +1,98 @@
+{
+  "config": {
+    "direct_mask_iou_protocol": "configs/segmentation_mask_iou_evaluation.yaml",
+    "direct_mask_iou_protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+    "protocol_fingerprint": "0c6bbcd8529be08b1ef328edd3d8cd13739f3b7eab24b627220cdb5bf8a5dd9e",
+    "segmentation_baseline": "configs/segmentation_baseline.yaml"
+  },
+  "created_at": "2026-09-09T19:43:04+00:00",
+  "details": {
+    "S0_experiment_sha256": "1761007ab1fd3937a56a870618c11115307988f2031598980e8dfea0e218f7bc",
+    "adapter_fingerprints": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "adapter_regenerated": false,
+    "alternative_segmenters_trained": 0,
+    "architecture": "YOLO11n-seg",
+    "best_checkpoint_sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3",
+    "best_epoch": 59,
+    "best_native_fitness": 0.88418,
+    "checkpoint_selection_policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "classification": "S0_SEGMENTATION_BASELINE_COMPLETE",
+    "detector_touched": false,
+    "direct_mask_iou_gt_normalized": 0.556977,
+    "direct_mask_iou_matched_mean": 0.717462,
+    "epochs_completed": 100,
+    "epochs_configured": 100,
+    "experiment_id": "S0",
+    "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "models_trained_in_this_phase": 1,
+    "phase": "8C",
+    "primary_metric": "mask_mAP@0.50:0.95",
+    "primary_value": 0.407942,
+    "supported_macro_mask_map50_95": 0.509482
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "3aaaae4af0ec20f6e732f94aaa206d0b28d4667d",
+  "inputs": [
+    {
+      "path": "configs/segmentation_baseline.yaml",
+      "sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+      "size_bytes": 15018
+    },
+    {
+      "path": "configs/segmentation_mask_iou_evaluation.yaml",
+      "sha256": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+      "size_bytes": 6270
+    },
+    {
+      "path": "reports/segmentation_adapter_approval.json",
+      "sha256": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+      "size_bytes": 6842
+    },
+    {
+      "path": "reports/segmentation_S0_manifest.json",
+      "sha256": "09f6ddc9a08bc66e48d5deac49c1734dad89e0bd564afd92168b3518407d0ce9",
+      "size_bytes": 27109
+    },
+    {
+      "path": "reports/segmentation_adapter_audit_manifest.json",
+      "sha256": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+      "size_bytes": 110901
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    }
+  ],
+  "name": "segmentation_S0_baseline",
+  "outputs": [
+    {
+      "path": "reports/segmentation_S0_result_manifest.json",
+      "sha256": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+      "size_bytes": 20541
+    },
+    {
+      "path": "reports/segmentation_S0_mask_iou.json",
+      "sha256": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+      "size_bytes": 4644
+    },
+    {
+      "path": "reports/segmentation_S0_report.md",
+      "sha256": "6170b7dbe6ea99c8fbd170abbac430311110f5871bcab9327ca1fed0860191d8",
+      "size_bytes": 19765
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}

@@ -37,6 +37,29 @@ dependencies = [
     "torch>=2.7",
     "torchvision>=0.22",
     "ultralytics>=8.3",
+    # Installed by phase 8C, the phase that needs it. A runtime dependency
+    # rather than dev tooling, for the same reason pycocotools is: it computes a
+    # number the project reports, so a checkout without it cannot reproduce a
+    # committed metric.
+    #
+    # What it does: `scipy.optimize.linear_sum_assignment` solves the one-to-one
+    # ground-truth-to-prediction assignment that maximises total mask IoU, which
+    # is the matching rule the direct mask-IoU diagnostic freezes. Only that one
+    # function is used, and only from the evaluation path - never from training
+    # or inference.
+    #
+    # Why the existing set is insufficient: nothing installed solves a linear
+    # sum assignment. The alternatives were considered and rejected in a
+    # recorded methodological review - greedy descending-IoU matching is not the
+    # same rule and would change the frozen metric definition, and a hand-rolled
+    # Hungarian solver would put a non-trivial algorithm on a reported-metric
+    # path, which is precisely the correctness risk cited above for hand-rolling
+    # an RLE decoder.
+    #
+    # Cost: a large binary wheel, no build requirements, BSD-3-Clause, Colab
+    # preinstalled, and it constrains only numpy, which is already pinned well
+    # inside its supported range.
+    "scipy>=1.14",
 ]
 
 [dependency-groups]
