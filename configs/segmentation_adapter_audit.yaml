@@ -1,0 +1,241 @@
+# Phase 8A - YOLO instance-segmentation adapter fidelity audit.
+#
+# Loaded by `construction_safety_vision.data.segmentation_adapter`. Parsing is
+# strict: an unknown key raises rather than being ignored.
+#
+# This file describes a MEASUREMENT, not a dataset the project has adopted. It
+# answers one question - how much canonical COCO instance-mask information
+# survives a round trip through the Ultralytics YOLO segmentation label format -
+# and it answers it on development data only.
+#
+# Nothing here selects an architecture. The audit's output is evidence for a
+# human decision in phase 8B; a good IoU distribution is not an approval and a
+# poor one is not a rejection.
+#
+# Every methodological choice that could change a reported number lives in this
+# file rather than in Python, because a fidelity figure means nothing without
+# the conventions it was measured under.
+
+schema_version: 1
+
+adapter_type: YOLO_SEGMENTATION_AUDIT
+
+# What this artifact is, stated so it cannot be mistaken for the project's
+# segmentation dataset. It has not been reviewed, approved or adopted.
+status: AUDIT_ONLY
+canonical_status: NOT_CANONICAL
+training_status: NOT_YET_APPROVED_FOR_TRAINING
+
+# The phase 5D record this audit reads. Its fingerprints are verified before
+# anything is written.
+canonical_task_manifest: reports/task_dataset_manifest.json
+canonical_annotations_root: data/processed/canonical/annotations
+canonical_images_root: data/processed/canonical/images
+
+# The canonical source of truth. COCO instance segmentation, frozen in phase 5D.
+# It is read, never modified, and never reinterpreted.
+canonical_source: COCO_INSTANCE_SEGMENTATION
+canonical_source_phase: "5D"
+
+# Adapter directory names per canonical split. Ultralytics conventionally calls
+# the validation split `val`; the canonical layout spells it `validation`.
+# There is deliberately no `test` entry, and the loader rejects one.
+split_directories:
+  train: train
+  validation: val
+
+# Development splits only. The holdout has no part in an annotation-format
+# audit: nothing about how COCO geometry serialises depends on which images are
+# held out, so reading it would buy no information and spend the one look the
+# protocol allows.
+allowed_splits:
+  - train
+  - validation
+
+# The protected split gets no adapter, no label, no statistic and no mention
+# beyond a protection notice. Changing this value alone unlocks nothing: split
+# resolution still routes through the holdout guard, which needs both opt-ins.
+test_policy: PROTECTED_NOT_ACCESSED
+
+# The frozen canonical class map, by fingerprint rather than by listing it here
+# twice. The provider's placeholder category `object` carries no annotations and
+# must stay absent without shifting any index.
+class_map_reference: reports/task_dataset_manifest.json
+class_map_sha256: 596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753
+placeholder_category_excluded: object
+
+# --- instance semantics ------------------------------------------------------
+
+# The invariant the whole audit rests on. One canonical annotation becomes
+# exactly one YOLO row, whatever its topology. Splitting a disconnected mask
+# into several rows would make the conversion look better and would silently
+# change what an instance *is* - inflating instance counts, changing per-image
+# object counts, and invalidating any later detection-versus-segmentation
+# comparison. If the format cannot represent an instance under this invariant,
+# that is recorded as a limitation rather than resolved by relaxing it.
+instance_cardinality_policy: ONE_CANONICAL_ANNOTATION_ONE_MODEL_INSTANCE
+instance_split_allowed: false
+instance_merge_allowed: false
+
+# --- geometry conversion -----------------------------------------------------
+
+# Compressed RLE is decoded with the same pycocotools path phases 5A-5D already
+# use and audit. No reimplementation: the reference decoder is the one the
+# canonical masks were built with.
+rle_decode: PYCOCOTOOLS_REFERENCE_DECODER
+
+# Contour extraction for masks that have no polygon representation. The settings
+# are the ones Ultralytics' own `convert_segment_masks_to_yolo_seg` uses, so the
+# audit measures the framework's behaviour rather than a private variant.
+#
+# RETR_EXTERNAL is the framework's choice and is also the reason interior holes
+# cannot survive: it returns outer boundaries only. CHAIN_APPROX_SIMPLE collapses
+# exactly-collinear runs, which is lossless for a rasterised boundary. No
+# `approxPolyDP` epsilon is applied - simplification to reduce label size would
+# discard real boundary detail and is not performed.
+contour_retrieval_mode: RETR_EXTERNAL
+contour_approximation_mode: CHAIN_APPROX_SIMPLE
+contour_epsilon_simplification: NONE
+contour_source: ULTRALYTICS_CONVERT_SEGMENT_MASKS_TO_YOLO_SEG
+
+# A YOLO segmentation row carries one flat sequence of coordinates and no
+# separator, so an instance made of several components must become one path.
+# Ultralytics' own COCO converter bridges components with `merge_multi_segment`,
+# which joins them along their closest points with a zero-width connector. Using
+# the framework's primitive keeps the audit about the format rather than about a
+# strategy invented here.
+multi_component_policy: ULTRALYTICS_MERGE_MULTI_SEGMENT
+multi_component_classification: COMPONENT_JOIN_APPROXIMATION
+
+# The format has no way to express an interior ring. Anything enclosed by the
+# outer boundary is filled. The audit measures the area this adds rather than
+# assuming it is negligible.
+hole_policy: NOT_REPRESENTABLE_FILLED
+hole_classification: HOLE_FILL_APPROXIMATION
+
+# Decimal places per normalised coordinate. Six matches what Ultralytics writes
+# in its own converters, and the format is parsed into float32, whose ~7
+# significant digits make more precision unrecoverable. On the widest image here
+# (1880 px) one unit in the sixth decimal is about 0.002 px - far below the
+# integer grid the rasteriser snaps to. Fixed-point rather than a shortest-repr
+# float, so files are byte-identical between runs and machines.
+serialization_precision: 6
+
+# Minimum points Ultralytics needs before a row parses as a segment rather than
+# a detection box: a row is a segment when it has more than 6 fields, i.e. a
+# class plus at least three points.
+minimum_points_per_instance: 3
+
+# Rasterisation for the round trip. `polygon2mask` is Ultralytics' own function:
+# it casts coordinates to int32 and fills with cv2.fillPoly. The audit calls it
+# directly so that the reconstruction is the framework's, not an approximation
+# of it. Masks are compared on the original source-image canvas - no letterbox,
+# no resize, no downsample - because those are model-input transformations and
+# would confound a representation measurement.
+rasterization: ULTRALYTICS_POLYGON2MASK
+rasterization_canvas: ORIGINAL_SOURCE_IMAGE
+rasterization_downsample_ratio: 1
+
+# Connectivity for connected-component analysis of the canonical mask. Eight is
+# stated because four would count diagonally-touching pixels as separate
+# components and inflate the multi-component population.
+connectivity: 8
+
+# Images are transferred by hard link where the filesystem allows it and by
+# byte copy otherwise; either way the adapter image's SHA-256 must equal the
+# canonical image's. No resize, no re-encode, no EXIF handling. The audit is
+# about annotation geometry and touches no pixel.
+image_transfer_mode: HARDLINK_OR_BINARY_COPY
+image_transformation: NONE
+
+# An image with no annotation gets an empty label file, which is Ultralytics'
+# own representation of a background image. The 12 development negatives were
+# confirmed by the phase 4B audit and must not be dropped.
+zero_instance_policy: EMPTY_LABEL_FILE
+
+# Destination root, repository-relative. Git-ignored: derived bulk data is never
+# committed, only the manifest and report that make it re-derivable.
+output_root: data/processed/adapters/yolo_segmentation_audit
+
+# --- what is measured --------------------------------------------------------
+
+# Per-instance metrics. Reported per instance and summarised by stratum; an
+# aggregate mean alone would let an exactly-converted polygon population hide an
+# approximated RLE one.
+fidelity_metrics:
+  - mask_iou
+  - dice
+  - canonical_area_px
+  - reconstructed_area_px
+  - absolute_area_error_px
+  - relative_area_error
+  - false_positive_pixels
+  - false_negative_pixels
+  - bbox_max_delta_px
+
+# A control, and the reason the audit can attribute loss honestly. pycocotools
+# and OpenCV do not rasterise identical geometry into identical pixels, so some
+# disagreement exists before the YOLO format is involved at all. This measures
+# the canonical mask against an OpenCV rasterisation of the canonical geometry
+# *before* any merging or serialisation. Loss beyond this control is what the
+# format costs; loss at this level is a rasteriser convention difference and
+# must not be reported as format loss.
+raster_convention_control: CV2_RASTERIZATION_OF_UNCONVERTED_CANONICAL_GEOMETRY
+
+# Descriptive bands. They describe a distribution; they are NOT thresholds, and
+# phase 8A does not turn any of them into an approval or rejection rule.
+fidelity_bands:
+  - "iou_exact"
+  - "iou_ge_0.99"
+  - "iou_0.95_to_0.99"
+  - "iou_0.90_to_0.95"
+  - "iou_lt_0.90"
+
+fidelity_percentiles: [1, 5, 25, 50, 75, 95, 99]
+
+# Absolute relative area-error thresholds, also descriptive.
+area_error_bands: [0.01, 0.02, 0.05, 0.10]
+
+# Strata the summary is broken down by. Aggregating across these would be the
+# single easiest way to publish a misleading fidelity figure.
+fidelity_strata:
+  - canonical_geometry_type
+  - class
+  - connected_component_count
+  - hole_presence
+  - mask_area_quartile
+
+# Mask-area quartiles are computed from the development distribution itself and
+# recorded with their boundaries. They are diagnostic bins for this audit only
+# and deliberately do NOT reuse or redefine the project's small-object EDA
+# terminology, which is a different measurement with a different threshold.
+mask_area_binning: DEVELOPMENT_DISTRIBUTION_QUARTILES
+
+# A documented thin-structure proxy: perimeter / sqrt(area), which is scale-free
+# and rises for elongated or ragged shapes. Reported as a diagnostic covariate,
+# not as a definition of "thin".
+thin_structure_proxy: PERIMETER_OVER_SQRT_AREA
+
+# Reason flags. Assigned from evidence; an instance whose loss cannot be
+# attributed is UNATTRIBUTED rather than assigned a plausible-sounding cause.
+reason_flags:
+  - SERIALIZATION_ONLY
+  - RASTER_BOUNDARY_DIFFERENCE
+  - MULTI_COMPONENT_APPROXIMATION
+  - COMPONENT_JOIN_APPROXIMATION
+  - HOLE_FILL_APPROXIMATION
+  - SMALL_MASK_SENSITIVITY
+  - OTHER_GEOMETRIC_APPROXIMATION
+  - UNATTRIBUTED
+
+# An instance is "materially non-exact" - and therefore gets reason flags - when
+# its mask IoU falls below this. Above it, the disagreement is at the scale of
+# individual boundary pixels.
+material_deviation_iou: 0.999
+
+# Mask area below which single-pixel boundary disagreement dominates the IoU,
+# used only to justify the SMALL_MASK_SENSITIVITY flag.
+small_mask_area_px: 1024
+
+# What phase 8A may conclude: nothing about which architecture to use.
+architecture_decision: DEFERRED_TO_HUMAN_REVIEW

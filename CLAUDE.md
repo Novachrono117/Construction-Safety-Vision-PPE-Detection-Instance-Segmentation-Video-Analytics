@@ -191,12 +191,13 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 7D complete - the split is frozen, the holdout is locked, the
-  canonical COCO task datasets are materialised, all three detection experiments
-  (D0, D1, D2) have been trained and validated under the frozen phase 7
-  protocol, and **the final detector is FROZEN: D2, YOLO11n at imgsz 768**.
-  Phase 8 (segmentation adapter and protocol) has not started; do not start it
-  unprompted.
+- **Phase:** 8A complete - the split is frozen, the holdout is locked, the
+  canonical COCO task datasets are materialised, **the final detector is FROZEN
+  (D2, YOLO11n at imgsz 768)**, and the YOLO segmentation-adapter fidelity audit
+  has been run. **No segmentation architecture is selected**
+  (`UNSELECTED_PENDING_FIDELITY_REVIEW`), the segmentation baseline is
+  `UNFROZEN` and `S0` is `NOT_DEFINED`. Phase 8B (the architecture decision) has
+  not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -380,10 +381,44 @@ uv run pytest
   and the canonical COCO file ever disagree, **the COCO file is right and the
   adapter is broken** - regenerate it, never edit it. It was proven lossless:
   1726/1726 boxes round-trip within 1e-4 px, max observed 1.47e-06 px.
-- **Still no YOLO segmentation labels, and none may be written casually.** The
-  RLE-to-polygon fidelity audit (convert, rasterise, compare, per-instance mask
-  IoU and area error, disconnected components and holes) has **not** been done.
-  Make no claim about how lossy it would be.
+- **The RLE-to-polygon fidelity audit HAS been done (phase 8A), and its numbers
+  are the only ones that may be quoted.** All 1726 development annotations
+  round-trip through the YOLO segmentation format: mask IoU mean 0.973066,
+  median 0.984576, P05 0.918176, minimum 0.307692; **none exact**. By canonical
+  representation - polygon 0.978091 (n=843), RLE 0.968538 (n=881), synthetic
+  rectangle 0.849702 (n=2). Evidence in
+  `reports/segmentation_adapter_fidelity_report.md` and
+  `reports/segmentation_adapter_audit_manifest.json`. Never aggregate the strata
+  into one figure; that is what the report exists to prevent.
+- **The audit-only segmentation adapter is NOT the project's dataset.**
+  `data/processed/adapters/yolo_segmentation_audit/` is git-ignored and marked
+  `AUDIT_ONLY` / `NOT_CANONICAL` / `NOT_YET_APPROVED_FOR_TRAINING`. Do not train
+  on it, do not promote it, and do not describe it as the segmentation dataset.
+- **The YOLO segmentation format cannot express a hole or a disconnected mask,
+  and that is a structural fact read from the installed source**, not an
+  inference: one row is one class plus one flat ring with no separator, the
+  framework's own mask converter uses `RETR_EXTERNAL`, and `polygon2mask` fills
+  with `cv2.fillPoly` and no even-odd subtraction. 307 development instances
+  have more than one component (max 78); 180 carry 699 holes totalling 1072133
+  filled pixels.
+- **Loss is decomposed into three levels and must not be collapsed.**
+  `control_iou` 0.986368 (pycocotools-versus-OpenCV rasterisation alone),
+  `merged_iou` 0.985525 (adds component joining), `mask_iou` 0.973066 (adds
+  serialisation and the int32 snap). Component joining costs 0.000843 mean IoU;
+  serialisation and quantisation cost 0.012458. **Never report the
+  control-level gap as YOLO format loss** - it exists before the format is
+  involved.
+- **Mask size, not topology, dominates the fidelity distribution.** Area
+  quartiles run 0.9358 / 0.9768 / 0.9874 / 0.9924 and all 20 worst instances are
+  4-59 px masks. The with-versus-without-holes comparison is **confounded by
+  size** (median 148640 px against 24690 px) and must never be quoted as
+  evidence that filling holes is free.
+- **Phase 8A selected nothing, and its numbers must not be turned into a
+  decision.** A high IoU distribution is not an approval of YOLO segmentation
+  and a low one is not a rejection. Do not choose YOLO11n-seg, do not choose
+  Mask R-CNN, do not define S0, and do not train anything until phase 8B's
+  reviewed decision is recorded. The mask-native alternative in the report is a
+  recorded option, not a preference.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

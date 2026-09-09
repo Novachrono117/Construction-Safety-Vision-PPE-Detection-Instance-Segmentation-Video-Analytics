@@ -19,7 +19,9 @@
 > nothing. The provider's
 > split was **rejected for the final protocol** and is not reused. The `test` split is a **locked holdout**: it has never been
 > evaluated, inspected, materialised or adapted, and **every number below is a
-> validation number**. No segmentation model exists yet.
+> validation number**. Phase 8A measured how much canonical instance-mask geometry
+> survives the YOLO segmentation label format; **no segmentation model exists and no
+> segmentation architecture has been chosen.**
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -101,14 +103,15 @@ Two design decisions define this architecture:
 | Splits | **Frozen (phase 5C.2). `candidate_001` selected by human review; 303 / 65 / 65 images over 422 indivisible groups. Provider split not reused.** |
 | Holdout | **Frozen and locked.** Never evaluated, inspected or materialised. Access needs two independent opt-ins. |
 | Task datasets | Done (phase 5D). COCO detection + instance segmentation for `train` and `validation`: 368 images, 1726 annotations, byte-identical images, geometry round-trip verified. |
-| Model-specific adapter | Done for detection (phase 6A). Lossless YOLO detection adapter, 1726/1726 boxes round-trip within 1e-4 px. **No segmentation adapter**; that one still needs a geometry-fidelity audit first. |
+| Model-specific adapter | Done for detection (phase 6A). Lossless YOLO detection adapter, 1726/1726 boxes round-trip within 1e-4 px. Segmentation: an **audit-only** adapter exists (phase 8A) for the fidelity measurement; it is `NOT_CANONICAL` and `NOT_YET_APPROVED_FOR_TRAINING`. |
 | GPU runtime | Done (phase 6A). torch 2.11.0+cu128 on an RTX 5070 Laptop (sm_120), verified by executing real kernels. |
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
 | Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
 | Detection experiments | **All three complete.** D0 0.570142 · D1 (capacity, YOLO11s) 0.560017 `BELOW_D0` · D2 (resolution, imgsz 768) 0.594018 `IMPROVES_D0_BEYOND_MARGIN`, on `supported_macro_map50_95`. |
 | Phase 7 winner | **Frozen (phase 7D): D2 - YOLO11n @ imgsz 768.** `CASE_B_VALIDATION_PERFORMANCE_LEADER`, derived mechanically by the frozen logic and accepted by human review. Selection is **validation-only**; no test number exists. |
 | Final detector artifact | `reports/final_detector_manifest.json` · `final_detector_sha256` `84d30d64...`. The checkpoint itself is **not committed** (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain or retrain the weights. |
-| Segmentation model | Not trained. |
+| Segmentation model | Not trained. **No architecture selected** (`UNSELECTED_PENDING_FIDELITY_REVIEW`), baseline `UNFROZEN`, `S0: NOT_DEFINED`. |
+| Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
@@ -894,6 +897,63 @@ uv run python scripts/train_detection_experiment.py --experiment D2 --memory-pre
 ```
 
 
+## Phase 8A - what the YOLO segmentation format would cost
+
+**No segmentation model was trained, evaluated or downloaded, and no
+architecture was selected.** Phase 8A answered one question with numbers:
+*would a YOLO segmentation label still describe the same object?*
+`reports/segmentation_adapter_fidelity_report.md` is the full argument.
+
+**The format is narrower than the data.** Read from the installed Ultralytics
+8.4.138 source: one row is one class plus **one flat ring**, with no separator
+between rings. So an interior hole cannot be expressed, and neither can a
+disconnected mask. Both get flattened, and both *add* area.
+
+**Every instance converted.** 1726 canonical annotations became 1726 parseable
+rows - none split, merged or dropped - and the framework's own dataset scanner
+read back exactly that count (303/1422 and 65/304, 12 negatives, 5 classes, 0
+corrupt labels, no holdout split).
+
+**Loss was decomposed rather than aggregated**, because pycocotools and OpenCV
+do not rasterise identical geometry into identical pixels and blaming the format
+for that would be wrong:
+
+| Level | What it adds | Global mean IoU |
+| --- | --- | --- |
+| `control_iou` | rasteriser and contour convention alone | 0.986368 |
+| `merged_iou` | component joining | 0.985525 |
+| `mask_iou` | serialisation and the int32 snap | 0.973066 |
+
+That decomposition changed the conclusion: component joining costs 0.000843 mean
+IoU, while serialisation and coordinate quantisation cost 0.012458. The loss a
+naive audit would have blamed on multi-component instances is mostly the integer
+snap.
+
+| Canonical representation | Instances | Mean IoU | Median IoU | Min IoU |
+| --- | --- | --- | --- | --- |
+| polygon | 843 | 0.978091 | 0.989090 | 0.307692 |
+| compressed RLE | 881 | 0.968538 | 0.977699 | 0.743243 |
+| synthetic rectangle | 2 | 0.849702 | 0.849702 | 0.761905 |
+
+**Size dominates, not topology.** Mask-area quartiles run 0.9358 / 0.9768 /
+0.9874 / 0.9924, and all 20 worst instances are masks of 4-59 px where one
+boundary pixel is a large share of the area. 307 instances have more than one
+component (maximum 78) and 180 carry 699 holes totalling 1,072,133 filled
+pixels - but the with-versus-without-holes comparison is **confounded by size**
+(median 148,640 px against 24,690 px) and is reported as such rather than as
+"holes are free".
+
+**Nothing was decided.** `segmentation_architecture_selection:
+UNSELECTED_PENDING_FIDELITY_REVIEW` · `segmentation_baseline: UNFROZEN` · `S0:
+NOT_DEFINED`. A high IoU distribution is not an approval of YOLO segmentation
+and a low one is not a rejection; that judgement is phase 8B's, and a
+mask-native alternative is recorded as a future option rather than chosen.
+
+```bash
+uv run python scripts/audit_segmentation_adapter.py --verify-only
+```
+
+
 ## Academic requirements
 
 The assignment requires all of the following. Each is mapped to a verifiable
@@ -1007,6 +1067,9 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_selection_report.md      # Why D2 was frozen, and its limits (7D)
 │   ├── final_detector_manifest.json       # Frozen detector identity + fingerprint (7D)
 │   ├── detection_experiment_comparison.csv # Machine-readable D0/D1/D2 table (7D)
+│   ├── segmentation_adapter_fidelity_report.md  # What the YOLO seg format costs (8A)
+│   ├── segmentation_adapter_audit_manifest.json # Fidelity, topology, parser check (8A)
+│   ├── segmentation_adapter_fidelity.csv        # One row per development annotation (8A)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -1045,6 +1108,8 @@ Work proceeds through 14 gated phases (see
 │   ├── detection_results.py   # Result manifests, metric extraction, experiment fingerprints
 │   ├── detection_comparison.py # Phase 7 support rule, selection metric, selection logic
 │   ├── detection_freeze.py     # Frozen detector identity, checkpoint verification (7D)
+│   ├── data/segmentation_adapter.py  # Canonical COCO masks -> YOLO seg rows (8A)
+│   ├── data/segmentation_fidelity.py # Round-trip mask metrics and attribution (8A)
 │   ├── detection_run.py       # Shared run primitives: weights, optimizer evidence, figures
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,

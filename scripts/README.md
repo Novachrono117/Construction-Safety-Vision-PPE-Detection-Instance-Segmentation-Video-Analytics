@@ -34,6 +34,7 @@ undocumented one-off shell invocation.
 | `freeze_detection_experiments.py` | 7A | Freeze how D1 and D2 will be judged, before either exists: derive the class-support rule's verdict, compute D0's selection metric, resolve both candidate protocols and prove each is a one-variable comparison. Trains nothing. |
 | `train_detection_experiment.py` | 7B+ | Run one frozen Phase 7 candidate. Takes an experiment id, never hyperparameters: the protocol is resolved by inheriting D0's and applying the declared override set. Proves the one-variable contract before fetching weights. |
 | `freeze_final_detector.py` | 7D | Apply the frozen Phase 7 policy to the committed results, record the human-reviewed decision and freeze the selected checkpoint's identity. Trains, validates, benchmarks and tunes nothing. |
+| `audit_segmentation_adapter.py` | 8A | Measure how much canonical COCO instance-mask geometry survives the Ultralytics YOLO segmentation label format. Development splits only. Trains nothing, downloads nothing, selects no architecture. |
 
 ## Rules
 
@@ -289,6 +290,49 @@ should use. It resolves the frozen checkpoint by digest rather than by path,
 prefers the immutable copy over the run directory, and refuses `last.pt` by name
 as well as by digest - the failure mode being that a YOLO checkpoint loads
 whatever bytes it is handed and produces plausible numbers from the wrong model.
+
+`audit_segmentation_adapter.py` (phase 8A) answers one question - how much of a
+canonical COCO instance mask is still there after a round trip through the YOLO
+segmentation label format - and refuses to answer any other. It trains nothing,
+downloads no weights, and selects no architecture; a good IoU distribution is
+not an approval and a poor one is not a rejection.
+
+Three design decisions carry the audit's credibility.
+
+**It measures the label as written to disk.** Comparing against an in-memory
+object would skip serialisation, float32 parsing and the integer snap - three of
+the places fidelity is actually lost. The row is written, re-read with the
+framework's own parsing semantics, denormalised and rasterised by Ultralytics'
+own `polygon2mask`.
+
+**It separates the rasteriser from the format.** pycocotools and OpenCV disagree
+on boundary-pixel inclusion, so even an unchanged polygon will not reproduce the
+canonical mask. Charging that to the YOLO format would be wrong, so every
+instance is measured at three levels - before conversion, after component
+joining, after serialisation - and each stage is charged only for what it
+consumed. That decomposition changed the finding: joining costs 0.000843 mean
+IoU and serialisation costs 0.012458, so the loss a naive audit would have
+blamed on multi-component masks is mostly coordinate quantisation.
+
+**One canonical annotation becomes exactly one row, always.** Splitting a
+disconnected mask into several rows would raise every fidelity number and would
+quietly redefine what an instance is. The invariant is enforced in code, and it
+is re-verified by handing the result to the framework's own dataset scanner -
+which also catches the latent hazard that Ultralytics drops duplicate
+`(class, box)` rows with `np.unique`, so two same-class instances sharing a box
+would silently collapse into one.
+
+Conversion uses the framework's primitives wherever they exist
+(`merge_multi_segment`, the same contour settings its own mask converter uses),
+so the audit measures Ultralytics rather than a private variant. Every
+methodological choice that could move a number lives in
+`configs/segmentation_adapter_audit.yaml`, not in Python.
+
+`--verify-only` checks the canonical inputs, the class map and the frozen
+detector, then stops without writing anything. The adapter it generates is
+git-ignored and marked `AUDIT_ONLY` / `NOT_CANONICAL` /
+`NOT_YET_APPROVED_FOR_TRAINING`: it is a measurement instrument, not the
+project's segmentation dataset.
 
 ## Planned scripts
 

@@ -1,0 +1,92 @@
+{
+  "config": {
+    "audit_config_sha256": "51090981d320a259b6a5a9a62ce3ebd2ffbc2f499ea87890265ddbecd0ccee7c",
+    "segmentation_adapter_audit": "configs/segmentation_adapter_audit.yaml"
+  },
+  "created_at": "2026-09-09T17:35:05+00:00",
+  "details": {
+    "S0": "NOT_DEFINED",
+    "adapter_fingerprints": {
+      "audit_config_sha256": "51090981d320a259b6a5a9a62ce3ebd2ffbc2f499ea87890265ddbecd0ccee7c",
+      "fidelity_rows_sha256": "79f2157326ee898cafcdcb35f733ec42e6a924e86430690758d8ed9520241dde",
+      "fidelity_table_sha256": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "adapter_status": "AUDIT_ONLY",
+    "adapter_type": "YOLO_SEGMENTATION_AUDIT",
+    "canonical_geometry_counts": {
+      "CANONICAL_POLYGON": 843,
+      "CANONICAL_RLE": 881,
+      "SYNTHETIC_RECTANGLE": 2
+    },
+    "classification": "SEGMENTATION_ADAPTER_AUDIT_COMPLETE",
+    "detector_touched": false,
+    "development_annotations": 1726,
+    "development_images": 368,
+    "global_mean_mask_iou": 0.9730662943994923,
+    "global_median_mask_iou": 0.9845760780888786,
+    "global_min_mask_iou": 0.3076923076923077,
+    "holdout_accessed": false,
+    "instance_cardinality_preserved": true,
+    "instances_with_holes": 180,
+    "instances_with_multiple_components": 307,
+    "model_instance_rows": 1726,
+    "models_evaluated_in_this_phase": 0,
+    "models_trained_in_this_phase": 0,
+    "parser_validation_passed": true,
+    "phase": "8A",
+    "segmentation_architecture_selection": "UNSELECTED_PENDING_FIDELITY_REVIEW",
+    "segmentation_baseline": "UNFROZEN"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "c44d17f3c84703c4749976aa5f253172f187d232",
+  "inputs": [
+    {
+      "path": "configs/segmentation_adapter_audit.yaml",
+      "sha256": "b4945ddaebb48db007ac30c97334f2a2dee767f3a39c51bcaa28e96b881fc4f7",
+      "size_bytes": 11140
+    },
+    {
+      "path": "reports/task_dataset_manifest.json",
+      "sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+      "size_bytes": 5389
+    },
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    }
+  ],
+  "name": "segmentation_adapter_fidelity_audit",
+  "outputs": [
+    {
+      "path": "reports/segmentation_adapter_fidelity.csv",
+      "sha256": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+      "size_bytes": 419757
+    },
+    {
+      "path": "reports/segmentation_adapter_audit_manifest.json",
+      "sha256": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+      "size_bytes": 110901
+    },
+    {
+      "path": "reports/segmentation_adapter_fidelity_report.md",
+      "sha256": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83",
+      "size_bytes": 28609
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}
