@@ -1,0 +1,172 @@
+# Canonical COCO mask-AP evaluation - frozen in phase 8E, BEFORE S1 exists.
+#
+# Loaded by `construction_safety_vision.canonical_evaluation`. Parsing is strict:
+# an unknown key raises, a reference to the protected split raises, ground truth
+# that points at an adapter raises, a changed IoU sweep raises, and a composite
+# score raises.
+#
+# Honest about its own timing: this protocol was frozen **after S0 ran and before
+# S1 exists**. It is not presented as having existed before S0, and S0's already
+# published results are not withdrawn or rewritten because of it.
+
+schema_version: 1
+
+protocol: CANONICAL_COCO_MASK_AP_EVALUATION
+
+purpose: >-
+  Score every segmentation experiment against one fixed reference that no
+  training flag can move, so that S0 and S1 can be compared on the same ground
+  truth rather than each on the target its own configuration constructs.
+
+why_a_common_evaluator_is_required: >-
+  Phase 8D established, from the installed source, that the framework builds its
+  mask target - and its validation ground truth - according to `overlap_mask`.
+  With the flag set, `polygons2masks_overlap` gives contested pixels to the
+  smaller instance and `SegmentationValidator._prepare_batch` scores against that
+  same resolved target. S0 trained with `overlap_mask: true`; the S1 candidate
+  flips it. Their native mask AP would therefore be measured against DIFFERENT
+  ground truth, and comparing those two numbers would compare the targets as much
+  as the models. Native mask AP is
+  NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION. It remains reportable, and it
+  remains a valid statement about each model against its own target.
+
+# Stated as prohibitions because each is a way this evaluator could quietly turn
+# into something else.
+is_not:
+  - a replacement for the phase 8C direct mask-IoU diagnostic, which keeps its
+    own frozen operational threshold of 0.25 and its own separate protocol
+  - an invalidation of S0's published native mask mAP@0.50:0.95 of 0.407942,
+    which remains a valid NATIVE_TARGET_EVALUATION
+  - an invalidation of S0's published direct GT-normalised mask IoU of 0.556977,
+    which remains a valid CANONICAL_GT_RECOVERY_DIAGNOSTIC
+  - a threshold search - one confidence, one NMS IoU, one resolution, no sweep
+  - a checkpoint selector - each experiment's own frozen rule chooses its
+    checkpoint, and this evaluator only scores the result
+
+# Development validation only. The holdout takes no part in a comparison run
+# before the models are frozen.
+split: validation
+
+# --- ground truth ----------------------------------------------------------------
+
+# The canonical phase 5D COCO instance segmentation. Never the YOLO adapter,
+# whose own round-trip loss phase 8A measured, and never a target a training flag
+# reshapes. This is the whole point of the evaluator.
+ground_truth_source: CANONICAL_COCO_INSTANCE_SEGMENTATION
+ground_truth_document: data/processed/canonical/annotations/segmentation_validation.coco.json
+
+class_map_sha256: 596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753
+split_assignment_sha256: a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc
+
+# --- predictions ------------------------------------------------------------------
+
+inference:
+  # The frozen S0 input resolution, which S1 inherits. Not swept.
+  imgsz: 768
+
+  # Deliberately low, and deliberately NOT an operating point. Average precision
+  # integrates precision over recall, so it needs the low-scoring tail that an
+  # operational threshold discards; truncating it would silently cap recall and
+  # depress AP for reasons that have nothing to do with the model. The phase 8C
+  # direct-IoU diagnostic keeps its own operational 0.25, and the two protocols
+  # are never mixed or averaged.
+  conf: 0.001
+
+  # NMS IoU, frozen. Not swept.
+  iou: 0.70
+
+  # The model may propose up to 300 candidates per image. COCOeval then applies
+  # its own conventional cap of 100 when scoring - see `cocoeval.max_dets`. The
+  # two numbers are different on purpose and both are recorded, so no reader
+  # infers that one constrained the other.
+  max_det: 300
+
+  # Masks are produced at the ORIGINAL image resolution rather than the
+  # letterboxed model canvas, using the framework's own native mask path. The
+  # canonical masks live on the original canvas, and resizing either side to meet
+  # the other would make every IoU partly a measurement of the resize.
+  retina_masks: true
+
+  augment: false
+  agnostic_nms: false
+  half: false
+  classes: ALL_FIVE_FROZEN_CLASSES
+
+  # Each experiment's own checkpoint, chosen by its own frozen rule. This
+  # evaluator selects nothing.
+  checkpoint: EXPERIMENT_BEST_PT_SELECTED_BY_ITS_OWN_FROZEN_RULE
+
+  threshold_policy: >-
+    PREDECLARED_AND_FIXED. One confidence, one NMS IoU, one resolution, frozen
+    before S1 exists. No sweep, no second threshold, no per-class threshold, and
+    no reporting of the best value among several.
+
+# --- the evaluator -------------------------------------------------------------------
+
+cocoeval:
+  implementation: pycocotools.cocoeval.COCOeval
+  iou_type: segm
+
+  # The standard COCO sweep. Pinned here and re-checked against what COCOeval
+  # actually used, because changing the sweep after a candidate exists is the
+  # classic way to move a result.
+  iou_thresholds: [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+
+  # COCOeval's conventional caps, unmodified.
+  max_dets: [1, 10, 100]
+
+  area_range: all
+
+  # Exact binary-mask run-length encoding through pycocotools - the reference
+  # implementation, and the same library that decodes the canonical ground truth,
+  # so both sides of every IoU come from one implementation. Deliberately not a
+  # polygon: a polygon would approximate the boundary before the metric saw it.
+  mask_encoding: PYCOCOTOOLS_BINARY_MASK_RLE
+
+  # None needed. The canonical category ids are 0-4 and pycocotools accepts them
+  # directly, verified by test. No evaluator-only bijection is applied, so the
+  # canonical class identity is used unchanged on both sides.
+  category_id_mapping: NONE_CANONICAL_IDS_USED_DIRECTLY
+
+# --- what is reported ------------------------------------------------------------------
+
+metrics:
+  # The frozen S0-versus-S1 selection metric: the unweighted mean of canonical
+  # per-class mask AP@0.50:0.95 over the classes the frozen phase 7A support rule
+  # admits. The rule names no class; the admitted set is its output.
+  primary: CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95
+
+  # Mandatory reporting over all five classes. Never hidden, and never allowed to
+  # override the selection policy - the same discipline phase 7A applied to the
+  # detection metrics.
+  all_class:
+    - CANONICAL_ALL_CLASS_MASK_MAP50_95
+    - CANONICAL_ALL_CLASS_MASK_MAP50
+
+  per_class:
+    - AP@0.50:0.95
+    - AP@0.50
+
+  # The phase 8C direct-IoU diagnostics stay secondary and keep their own
+  # protocol and their own operational threshold. They inform human review; they
+  # do not rank.
+  secondary_direct_iou:
+    - GT_NORMALIZED_MASK_IOU
+    - MATCHED_MASK_IOU_MEAN
+    - GT_MATCH_COVERAGE
+    - GT_IOU50_COVERAGE
+    - GT_IOU75_COVERAGE
+
+  native_framework_status: NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION
+
+  # Refused outright. If the canonical AP and the direct IoU diagnostic ever move
+  # in opposite directions, the answer is to record the disagreement, not to
+  # invent a weighting that resolves it.
+  composite_score: false
+
+# --- the rare class -----------------------------------------------------------------------
+
+rare_class: vest_loose
+rare_class_status: DESCRIPTIVE_HIGH_UNCERTAINTY
+
+test_policy: PROTECTED_NOT_ACCESSED

@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detector frozen - YOLO11n @ 768; S0 segmentation baseline trained and diagnosed (phase 8D of 14 complete).** The
+> **Status: detector frozen - YOLO11n @ 768; S0 trained and diagnosed, canonical comparison protocol and S1 frozen (phase 8E of 14 complete).** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -27,8 +27,10 @@
 > masks. Phase 8D diagnosed *why* the mask metric trails the box metric and found
 > that **a large share of the `person` deficit is a target-versus-evaluation
 > mismatch created by the frozen `overlap_mask: true` policy**, not a failure to
-> learn. **No final segmenter is selected** (`UNSELECTED_PENDING_REVIEW`) - S0 is
-> the only segmentation experiment, so there is nothing to select between.
+> learn. Phase 8E froze a **canonical COCO evaluator** so two models trained
+> against different targets can be compared at all, evaluated S0 under it once,
+> and froze **S1 as a one-variable `overlap_mask` intervention**. **S1 has not
+> been trained** and **no final segmenter is selected** (`UNSELECTED`).
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -123,7 +125,9 @@ Two design decisions define this architecture:
 | Segmentation metrics | **Validation only.** mask mAP@0.50:0.95 **0.407942** · mask mAP@0.50 0.579830 · `supported_macro_mask_map50_95` 0.509482. Box from the same model: mAP@0.50:0.95 0.478156. |
 | Direct mask IoU | **Measured (phase 8C)** against canonical COCO masks at a predeclared operating point: `matched_mask_iou_mean` 0.717462, `gt_normalized_mask_iou` 0.556977, coverage 0.776316. |
 | S0 error analysis | Done (phase 8D). 304 instances: 68 misses, 57 low-overlap, 39 moderate, 140 high-quality. `person` weaker than every class at every size quartile. |
-| Final segmenter | **Not selected.** `UNSELECTED_PENDING_REVIEW`. No S1 exists and no segmentation comparison protocol has been frozen. |
+| Canonical evaluation | Frozen (phase 8E). pycocotools `COCOeval` segm against canonical COCO masks. S0 reference: supported macro **0.484643**, all-class mAP@0.50:0.95 **0.388009**. |
+| S1 | **Frozen, not executed** (phase 8E). One variable: `overlap_mask` `true` -> `false`. Batch-8 feasibility established; nothing trained. |
+| Final segmenter | **Not selected.** `UNSELECTED`. S1 has not run, and the comparison policy decides a classification, not a freeze. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
@@ -1192,6 +1196,82 @@ uv run python scripts/analyze_segmentation_errors.py --verify-only
 ```
 
 
+## Phase 8E - a common yardstick, and S1 frozen
+
+**Nothing was trained.** Phase 8E froze a canonical evaluator, measured S0 under
+it once, froze S1, and proved the frozen batch still fits.
+[`reports/segmentation_canonical_comparison_reference.md`](reports/segmentation_canonical_comparison_reference.md)
+and
+[`reports/segmentation_comparison_policy.md`](reports/segmentation_comparison_policy.md)
+are the record.
+
+**Why a new evaluator was needed.** Phase 8D established that `overlap_mask`
+decides both the training target *and* the framework's validation ground truth.
+S0 trained with it on; S1 will train with it off. Their native mask AP would
+therefore be measured against **different ground truth**, so differencing the two
+numbers would compare the targets as much as the models. Native mask AP is
+labelled `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` — demoted, never
+suppressed.
+
+**The canonical evaluator.** pycocotools `COCOeval` at `iouType='segm'` against
+the canonical phase 5D COCO validation masks, which no training flag can move.
+IoU 0.50:0.05:0.95, `maxDets` [1, 10, 100], imgsz 768, NMS IoU 0.70, conf
+**0.001**, binary-mask RLE, canonical category ids used directly. The low
+confidence is **not an operating point** — AP needs the low-scoring tail; the
+phase 8C direct-IoU diagnostic keeps its own operational 0.25 and the two are
+never mixed. Validated against synthetic fixtures before it was pointed at any
+checkpoint, and deterministic across two independent executions.
+
+**S0 canonical reference** (validation only, executed once, classified
+`POST_S0_PRE_S1_CANONICAL_COMPARISON_REFERENCE_EVALUATION`):
+
+| Metric | Value |
+| --- | --- |
+| **`CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95`** | **0.484643** |
+| `CANONICAL_ALL_CLASS_MASK_MAP50_95` | 0.388009 |
+| `CANONICAL_ALL_CLASS_MASK_MAP50` | 0.537536 |
+
+| Class | canonical AP@0.50:0.95 | native AP@0.50:0.95 |
+| --- | --- | --- |
+| `helmet_loose` | 0.793946 | 0.789927 |
+| `helmet_on_head` | 0.609345 | 0.586523 |
+| `vest_on_body` | 0.400246 | 0.390296 |
+| `person` | **0.135036** | 0.271182 |
+| `vest_loose` | 0.001474 | 0.001782 |
+
+**The two columns are not comparable in absolute terms** and no difference
+between them measures the model. What is legible is the shape: the compact
+classes land close under both evaluators and `person` does not. That is the class
+phase 8D identified, and the direction its overlap-target mechanism predicts —
+**corroboration from an evaluator built for another purpose, not proof, and not a
+prediction that S1 will be better.**
+
+**S0's earlier results stand.** Native mask mAP@0.50:0.95 0.407942 remains a
+valid `NATIVE_TARGET_EVALUATION`; direct GT-normalised mask IoU 0.556977 remains
+a valid `CANONICAL_GT_RECOVERY_DIAGNOSTIC`. Phase 8E added a third measurement
+and withdrew none.
+
+**S1, frozen and not executed.** The only intentional difference from S0 is
+`overlap_mask: true → false`; 43 other framework arguments are inherited
+unchanged, and the parser refuses any second override. Same pretrained binary,
+same adapter label bytes, same imgsz 768 / batch 8 / epochs 100 / seed 42 /
+**mask_ratio 4**, same native checkpoint policy. Selection is frozen at margin
+0.005 with three cases, `PRACTICALLY_EQUIVALENT` preferring S0 — decided in
+advance. If the canonical AP and the direct IoU disagree in direction, the answer
+is `CROSS_METRIC_DIRECTION_DISAGREEMENT`, recorded and never resolved by a
+composite.
+
+**One honest asymmetry.** Phase 7A's detection policy predated both its
+candidates; this one could not, because the need for a common evaluator was
+discovered by phase 8D. `protocol_timing` is `POST_S0_PRE_S1_PROTOCOL_FREEZE` and
+the parser refuses any claim that it predated S0. No S1 number influenced any
+rule.
+
+```bash
+uv run python scripts/freeze_segmentation_comparison.py --verify-only
+```
+
+
 ## Academic requirements
 
 The assignment requires all of the following. Each is mapped to a verifiable
@@ -1317,6 +1397,11 @@ Work proceeds through 14 gated phases (see
 │   ├── segmentation_S0_error_analysis.md        # Why the masks trail the boxes (8D)
 │   ├── segmentation_S0_error_analysis.json      # Strata, hypotheses, candidates (8D)
 │   ├── segmentation_S0_error_instances.csv      # One row per canonical validation instance (8D)
+│   ├── segmentation_S0_canonical_evaluation.json # S0 under the common evaluator (8E)
+│   ├── segmentation_canonical_comparison_reference.md # Why, and the S0 reference (8E)
+│   ├── segmentation_comparison_policy.{json,md} # The frozen S0-vs-S1 policy (8E)
+│   ├── segmentation_S1_protocol.md              # S1, frozen and not executed (8E)
+│   ├── segmentation_S1_protocol_manifest.json   # The same, machine-readable (8E)
 │   └── figures/               # Contact sheets, analytical plots, D0 metric curves
 ├── scripts/                   # Command-line entry points, one job each
 │   ├── check_environment.py       # Environment, configuration and holdout-lock report
@@ -1349,7 +1434,8 @@ Work proceeds through 14 gated phases (see
 │   ├── audit_segmentation_adapter.py # Measure what the YOLO seg format costs (8A)
 │   ├── freeze_segmentation_baseline.py # Select the architecture, freeze S0, smoke test (8B)
 │   ├── train_segmentation_baseline.py # Run S0 once, validate it, run the IoU diagnostic (8C)
-│   └── analyze_segmentation_errors.py # Per-instance S0 error attribution, trains nothing (8D)
+│   ├── analyze_segmentation_errors.py # Per-instance S0 error attribution, trains nothing (8D)
+│   └── freeze_segmentation_comparison.py # Canonical evaluator, S0 reference, S1 freeze (8E)
 ├── src/construction_safety_vision/
 │   ├── config.py              # Strict typed configuration loading
 │   ├── paths.py               # Repository layout, Colab support, long-path handling
@@ -1365,6 +1451,8 @@ Work proceeds through 14 gated phases (see
 │   ├── segmentation_run.py        # Runtime view, native fitness, checkpoint records (8C)
 │   ├── mask_iou_evaluation.py     # The direct instance-mask IoU diagnostic (8C)
 │   ├── segmentation_error_analysis.py # Error taxonomy, strata, deterministic review (8D)
+│   ├── canonical_evaluation.py    # COCOeval against canonical masks, common to all models (8E)
+│   ├── segmentation_comparison.py # The frozen S0-vs-S1 policy and one-variable contract (8E)
 │   ├── detection_run.py       # Shared run primitives: weights, optimizer evidence, figures
 │   └── data/                  # Acquisition, COCO inspection, geometry, drift, decision,
 │                              # split search, the frozen split + its access layer,

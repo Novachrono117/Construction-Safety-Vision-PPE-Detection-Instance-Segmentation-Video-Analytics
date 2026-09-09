@@ -1,0 +1,97 @@
+{
+  "config": {
+    "canonical_evaluation": "configs/segmentation_canonical_evaluation.yaml",
+    "canonical_evaluation_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+    "comparison": "configs/segmentation_comparison.yaml",
+    "comparison_fingerprint": "a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16"
+  },
+  "created_at": "2026-09-09T21:00:23+00:00",
+  "details": {
+    "candidate": "S1",
+    "candidate_status": "FROZEN_NOT_EXECUTED",
+    "classification": "S1_PROTOCOL_FROZEN",
+    "final_segmenter": "UNSELECTED",
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "memory_feasibility": "SUCCESS",
+    "models_trained_in_this_phase": 0,
+    "one_variable_field": "overlap_mask",
+    "optimizer_step_taken": false,
+    "phase": "8E",
+    "reference_experiment": "S0",
+    "s0_canonical_all_class_map50_95": 0.388009,
+    "s0_canonical_supported_macro": 0.484643,
+    "s0_checkpoint_sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3",
+    "s0_native_metrics_regenerated": false,
+    "s0_retrained": false,
+    "timing": "POST_S0_PRE_S1_CANONICAL_COMPARISON_REFERENCE_EVALUATION"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "776317f2a8375cf4fe8e8fd19d72478cb3a4ad8c",
+  "inputs": [
+    {
+      "path": "configs/segmentation_canonical_evaluation.yaml",
+      "sha256": "7f560d751a55c36d72b1ef59b18eb72e4682b931095261298a160224917b8b44",
+      "size_bytes": 7645
+    },
+    {
+      "path": "configs/segmentation_comparison.yaml",
+      "sha256": "b7f5d174d6bedb40106521adaf950b74353b7d08c38fdf930281513e60b4de45",
+      "size_bytes": 5386
+    },
+    {
+      "path": "configs/segmentation_baseline.yaml",
+      "sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+      "size_bytes": 15018
+    },
+    {
+      "path": "reports/segmentation_S0_result_manifest.json",
+      "sha256": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+      "size_bytes": 20541
+    },
+    {
+      "path": "reports/segmentation_S0_mask_iou.json",
+      "sha256": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+      "size_bytes": 4644
+    }
+  ],
+  "name": "segmentation_canonical_comparison_freeze",
+  "outputs": [
+    {
+      "path": "reports/segmentation_S0_canonical_evaluation.json",
+      "sha256": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+      "size_bytes": 7585
+    },
+    {
+      "path": "reports/segmentation_comparison_policy.json",
+      "sha256": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+      "size_bytes": 6758
+    },
+    {
+      "path": "reports/segmentation_S1_protocol_manifest.json",
+      "sha256": "b4b4d4243f44c1d57baf147e4a129c20c48d9090d3133a7c6a0754e42a647f96",
+      "size_bytes": 7134
+    },
+    {
+      "path": "reports/segmentation_canonical_comparison_reference.md",
+      "sha256": "a7d234bb0a87e77ca9e0ec2913edabba6d25753403eda742abcebbe739516bef",
+      "size_bytes": 8558
+    },
+    {
+      "path": "reports/segmentation_comparison_policy.md",
+      "sha256": "645f29126aa4279a364d4ff60483a6381e39a5be765ff6297634d7ba44a35388",
+      "size_bytes": 4479
+    },
+    {
+      "path": "reports/segmentation_S1_protocol.md",
+      "sha256": "8f3dcd808e326ba948c5b9bcd3ff9847fd72c494c91f91a51e6c122147c7ed23",
+      "size_bytes": 6925
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}

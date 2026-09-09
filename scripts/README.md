@@ -38,6 +38,7 @@ undocumented one-off shell invocation.
 | `freeze_segmentation_baseline.py` | 8B | Record the architecture decision, approve the audited adapter by digest, freeze the S0 protocol and run one non-experimental smoke test. Does not run S0 and reports no model performance. |
 | `train_segmentation_baseline.py` | 8C | Run the S0 baseline exactly once, validate the natively selected checkpoint once, and execute the predeclared direct mask-IoU diagnostic once. Selects no final segmenter and tunes nothing. |
 | `analyze_segmentation_errors.py` | 8D | Attribute S0's validation errors one canonical instance at a time, from a frozen taxonomy and a deterministic review set. Trains nothing, re-validates nothing and selects nothing. |
+| `freeze_segmentation_comparison.py` | 8E | Freeze the canonical COCOeval protocol, evaluate S0 under it exactly once, freeze S1 as a one-variable `overlap_mask` change, and size its batch. Trains nothing. |
 
 ## Rules
 
@@ -467,6 +468,37 @@ on source images, and this repository does not publish dataset imagery.
 `--verify-only` checks every precondition and writes nothing; `--build-review`
 computes the table, records the selection and renders its figures, then stops
 before any human judgement is recorded.
+
+`freeze_segmentation_comparison.py` (phase 8E) does four things in one pass, in
+an order that matters: it freezes a common canonical evaluator, evaluates the
+frozen S0 checkpoint under it **exactly once**, freezes S1 as a one-variable
+`overlap_mask` intervention, and proves the frozen batch still fits with the flag
+off. It trains nothing and selects no segmenter.
+
+**The evaluator is validated before it is used.** Synthetic fixtures check that a
+perfect prediction scores 1.0, a disjoint or wrong-class one scores 0.0,
+duplicates cannot raise the score, ordering matters, and RLE round-trips
+pixel-exactly - all before any real checkpoint is loaded. An evaluator validated
+after producing the number it was built to produce validates nothing.
+
+**Predictions reach the metric without this project resampling them.** Masks come
+back on the original image canvas through the framework's own native mask path,
+then go through pycocotools' reference encoder - the same library that decodes
+the canonical ground truth, so both sides of every IoU come from one
+implementation. A prediction whose canvas does not match its image's original
+size is refused rather than resized.
+
+**The one-variable contract is verified against S0's own protocol**, not against
+a second copy of it, and a variable declared but never applied is refused as
+firmly as an undeclared one.
+
+**The feasibility check takes no optimizer step.** One real batch, a forward
+pass, the loss, a backward pass - enough to size the target tensor that grows
+when each instance gets its own mask plane, and nothing more. No validation, no
+checkpoint, no metric. A genuine OOM is `MEMORY_CONSTRAINT_REVIEW_REQUIRED`; the
+batch is never reduced to rescue it.
+
+`--verify-only` runs every precondition and writes nothing.
 
 ## Planned scripts
 

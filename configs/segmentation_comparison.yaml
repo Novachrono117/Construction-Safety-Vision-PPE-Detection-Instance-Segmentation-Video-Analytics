@@ -1,0 +1,134 @@
+# S0-versus-S1 segmentation comparison protocol.
+#
+# Loaded by `construction_safety_vision.segmentation_comparison`. Parsing is
+# strict: an unknown key raises, an override beyond the one declared variable
+# raises, promoting the framework metric raises, a composite score raises, and a
+# result for the unexecuted candidate raises.
+#
+# TIMING, stated plainly because it matters: this protocol was frozen AFTER S0
+# ran and BEFORE S1 exists. The need for a common evaluator was discovered by the
+# phase 8D error analysis, not anticipated before phase 8C. It is therefore not
+# presented as having predated S0, and S0's published results are not withdrawn
+# or rewritten - a third measurement is added beside them.
+#
+# The shape follows phase 7A's detection protocol: the candidate carries no
+# protocol of its own, only an inheritance and one override, so "exactly one
+# thing differs" is enforced by the parser rather than promised in prose.
+
+schema_version: 1
+
+protocol_timing: POST_S0_PRE_S1_PROTOCOL_FREEZE
+
+reference_experiment: S0
+
+candidate:
+  experiment_id: S1
+
+  question: >-
+    Does preserving overlapping instance-mask supervision improve canonical
+    instance-segmentation performance relative to S0?
+
+  # S1 has no protocol of its own. Every field not listed under `overrides` is
+  # S0's, read from configs/segmentation_baseline.yaml at run time.
+  inherits: S0
+
+  intentional_field: overlap_mask
+
+  # The single intentional difference. With overlap resolution off, each instance
+  # gets its own mask plane instead of sharing one indexed map in which the
+  # smaller instance owns contested pixels - which phase 8D measured as the
+  # mechanism most closely aligned with S0's dominant person mask error.
+  overrides:
+    overlap_mask: false
+
+  status: FROZEN_NOT_EXECUTED
+
+  # Unchanged from S0. Because overlap_mask alters the native target semantics,
+  # the framework's checkpoint fitness is part of the treatment environment
+  # rather than something held constant across the two runs - which is precisely
+  # why the final comparison is performed externally, against canonical masks.
+  checkpoint_policy: ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS
+
+  # The intervention happens inside the framework's target construction, not in
+  # the data. S1 reads the same approved phase 8A adapter label bytes, with no
+  # conversion change, no mask filtering, no relabelling and no change to the
+  # canonical modelling population.
+  adapter_identity: SAME_APPROVED_PHASE_8A_ADAPTER_LABEL_BYTES
+
+  required_reporting:
+    - CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95
+    - CANONICAL_ALL_CLASS_MASK_MAP50_95
+    - CANONICAL_ALL_CLASS_MASK_MAP50
+    - canonical per-class mask AP@0.50:0.95 and AP@0.50
+    - the phase 8C direct mask-IoU diagnostic, executed exactly once
+    - native framework mask mAP@0.50:0.95, mAP@0.50, precision and recall
+    - native framework box metrics
+
+canonical_evaluation_config: configs/segmentation_canonical_evaluation.yaml
+canonical_evaluation_sha256: 282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64
+
+metrics:
+  primary: CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95
+
+  all_class:
+    - CANONICAL_ALL_CLASS_MASK_MAP50_95
+    - CANONICAL_ALL_CLASS_MASK_MAP50
+
+  # Secondary, for interpretation and human review. They do not rank.
+  secondary_direct_iou:
+    - GT_NORMALIZED_MASK_IOU
+    - MATCHED_MASK_IOU_MEAN
+    - GT_MATCH_COVERAGE
+    - GT_IOU50_COVERAGE
+    - GT_IOU75_COVERAGE
+
+  # Still reported in full for both experiments. Demoted, never suppressed: each
+  # remains a valid statement about its own model against its own target.
+  native_framework:
+    - native mask mAP@0.50:0.95
+    - native mask mAP@0.50
+    - native mask precision
+    - native mask recall
+    - native box mAP@0.50:0.95
+    - native box mAP@0.50
+
+  native_framework_status: NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION
+
+  composite_score: false
+
+# An engineering practical-equivalence threshold on the primary metric. It
+# carries no confidence level and is not a significance test: nothing is
+# repeated, so run-to-run variance on this setup remains UNKNOWN.
+margin: 0.005
+
+selection_logic:
+  improves: >-
+    delta > +0.005 on the primary canonical metric: S1_IMPROVES_S0_BEYOND_MARGIN.
+  practically_equivalent: >-
+    -0.005 <= delta <= +0.005: PRACTICALLY_EQUIVALENT. S0 is preferred, because
+    the baseline already exists and no material canonical advantage was
+    demonstrated. Preferring the incumbent on a tie is a decision rule fixed in
+    advance, not a judgement made once the numbers are visible.
+  below: >-
+    delta < -0.005: S1_BELOW_S0.
+  human_review_still_required: >-
+    The rule produces a classification, not a frozen segmenter. Selecting the
+    project's final segmenter remains a reviewed human decision, exactly as
+    phase 7D was for detection.
+
+disagreement_policy:
+  case: CROSS_METRIC_DIRECTION_DISAGREEMENT
+  rule: >-
+    If the primary canonical AP and the direct canonical GT-normalised IoU move
+    in opposite directions, record the disagreement and rank by the primary
+    canonical metric. The direct IoU diagnostic informs the human reading of why
+    the two disagree; it does not override the ranking.
+  create_composite: false
+  invent_weights_after_the_fact: false
+
+rare_class: vest_loose
+rare_class_status: DESCRIPTIVE_HIGH_UNCERTAINTY
+
+final_segmenter: UNSELECTED
+
+test_policy: PROTECTED_NOT_ACCESSED

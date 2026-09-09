@@ -15,6 +15,8 @@ outcome lives here, never in notebook cells or ad-hoc command-line flags.
 | `segmentation_adapter_audit.yaml` | Phase 8A YOLO segmentation-adapter fidelity audit: a measurement, not a dataset. |
 | `segmentation_baseline.yaml` | Phase 8B S0 protocol: architecture, every hyperparameter, adapter digests, mask metric hierarchy (see below). |
 | `segmentation_mask_iou_evaluation.yaml` | Phase 8C direct instance-mask IoU diagnostic: ground truth, operating point, matching rule (see below). |
+| `segmentation_canonical_evaluation.yaml` | Phase 8E common COCOeval protocol: the one yardstick every segmentation experiment is scored by (see below). |
+| `segmentation_comparison.yaml` | Phase 8E S0-vs-S1 policy: primary metric, margin, the one-variable contract (see below). |
 
 ## Rules
 
@@ -139,3 +141,39 @@ IoU sum divided by every canonical instance, so misses lower it).
 
 It is a diagnostic. It selects no checkpoint, tunes nothing, and does not replace
 mask mAP@0.50:0.95 as the primary scientific result.
+
+## `segmentation_canonical_evaluation.yaml` and `segmentation_comparison.yaml`
+
+The phase 8E pair, frozen **after S0 ran and before S1 exists** - stated in the
+files themselves, and the parser refuses a `protocol_timing` claiming otherwise.
+
+They exist because of a problem phase 8D uncovered. `overlap_mask` decides both
+the framework's training target and its validation ground truth, so S0 and an
+`overlap_mask: false` S1 would have their native mask AP measured against
+*different* ground truth. Differencing those two numbers would compare the
+targets as much as the models. The canonical evaluator supplies one yardstick
+neither flag can move: pycocotools `COCOeval` at `iouType=segm` against the
+canonical phase 5D COCO masks.
+
+Parsing is strict in ways that matter:
+
+- **the standard COCO semantics are pinned** - IoU 0.50:0.05:0.95 and `maxDets`
+  [1, 10, 100] - and re-checked against what `COCOeval` actually used, because
+  changing the sweep after a candidate exists is the classic way to move a
+  result;
+- **conf must be 0.001**, which is not an operating point: AP needs the
+  low-scoring tail, and the phase 8C direct-IoU diagnostic keeps its own
+  operational 0.25;
+- **ground truth may not be an adapter**, and the native framework metric may not
+  be promoted to primary;
+- **the candidate may override exactly one field**, `overlap_mask`, and a second
+  override, a changed checkpoint policy, a relaxed margin or a recorded result
+  for the unexecuted candidate each raise;
+- **no composite score**, in either file. If the canonical AP and the direct IoU
+  move in opposite directions the outcome is
+  `CROSS_METRIC_DIRECTION_DISAGREEMENT` - recorded and ranked by the canonical
+  metric, never resolved by a weighting invented once the numbers are visible.
+
+The one-variable contract is additionally verified at run time against S0's own
+frozen protocol rather than a restatement of it, and a variable that is declared
+but never applied is refused just as firmly as an undeclared one.

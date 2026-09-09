@@ -191,12 +191,12 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8D complete - the split is frozen, the holdout is locked, **the
+- **Phase:** 8E complete - the split is frozen, the holdout is locked, **the
   final detector is FROZEN (D2, YOLO11n at imgsz 768)**, the segmentation adapter
-  is audited and approved, **S0 has been trained once**, and its validation error
-  analysis is done (`S1_HYPOTHESIS_READY_FOR_PROTOCOL_FREEZE`). **No final
-  segmenter is selected** (`final_segmenter: UNSELECTED_PENDING_REVIEW`) and **no
-  S1 protocol is frozen**. Phase 8E - the human-reviewed S1 protocol freeze - has
+  is audited and approved, **S0 has been trained once and diagnosed**, and the
+  **canonical comparison protocol and S1 are now FROZEN** (`S1_PROTOCOL_FROZEN`).
+  **S1 has NOT been trained** (`FROZEN_NOT_EXECUTED`) and **no final segmenter is
+  selected** (`final_segmenter: UNSELECTED`). Phase 8F - the single S1 run - has
   not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
@@ -633,6 +633,71 @@ uv run pytest
   `MODEL_CAPACITY_LIMIT`, `INSUFFICIENT_TRAINING`, `NEEDS_MORE_DATA` and
   `ARCHITECTURE_LIMIT` raise if written into a manual attribution, because this
   phase ran no controlled experiment and could not establish any of them.
+- **A CANONICAL evaluator now exists, and it is the only thing that may rank S0
+  against S1.** `configs/segmentation_canonical_evaluation.yaml`, fingerprint
+  `282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64`: pycocotools
+  `COCOeval` at `iouType='segm'` against the canonical phase 5D COCO validation
+  masks, IoU 0.50:0.05:0.95, `maxDets` [1, 10, 100], conf **0.001**, NMS IoU 0.70,
+  imgsz 768, `retina_masks: true`, no TTA, binary-mask RLE via pycocotools,
+  canonical category ids used directly with **no remapping**.
+- **conf 0.001 is NOT an operating point.** AP integrates over the score curve
+  and needs the low-scoring tail. The phase 8C direct-IoU diagnostic keeps its own
+  operational **0.25**, and the two protocols are never mixed, averaged or
+  swapped. The model proposes up to **300** candidates while COCOeval scores at
+  its conventional cap of **100** - two different numbers, both recorded.
+- **S0 canonical reference (validation only, one run):
+  `CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95` 0.484643**, all-class
+  mAP@0.50:0.95 **0.388009**, mAP@0.50 **0.537536**. Per class AP@0.50:0.95:
+  `helmet_loose` 0.793946, `helmet_on_head` 0.609345, `vest_on_body` 0.400246,
+  `person` **0.135036**, `vest_loose` 0.001474. Classified
+  `POST_S0_PRE_S1_CANONICAL_COMPARISON_REFERENCE_EVALUATION`; deterministic across
+  two independent executions.
+- **Canonical and native numbers are NOT comparable and must never be
+  differenced.** Different ground truth, different implementation, different
+  confidence. What is legible is the *shape*: the compact classes land close under
+  both evaluators while `person` does not (canonical 0.135036 against native
+  0.271182). That **corroborates** the phase 8D overlap-target mechanism from an
+  evaluator built for another purpose - it does not prove it, and it says nothing
+  about whether S1 will be better.
+- **S0's earlier results stand, unrevised.** Native mask mAP@0.50:0.95 0.407942 is
+  still a valid `NATIVE_TARGET_EVALUATION`; direct GT-normalised mask IoU 0.556977
+  is still a valid `CANONICAL_GT_RECOVERY_DIAGNOSTIC`. The phase 8D re-score stays
+  `HYPOTHESIS_GENERATING_DIAGNOSTIC_ONLY`. Phase 8E **added** a third measurement;
+  it withdrew none and regenerated no phase 8C artifact.
+- **Native framework mask AP is `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION`.**
+  `overlap_mask` changes the training target **and** the validation ground truth
+  (`SegmentationValidator._prepare_batch` uses `masks == index`), so the two
+  experiments' native AP would be measured against different targets. It is
+  demoted, never suppressed: S1 must still report it in full.
+- **S1 is FROZEN and NOT EXECUTED.** `configs/segmentation_comparison.yaml`,
+  fingerprint `a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16`.
+  The **only** intentional difference from S0 is `overlap_mask: true -> false`;
+  43 other framework arguments are inherited unchanged and the parser refuses any
+  second override. Same `yolo11n-seg.pt` (`55ed65c5...`), same adapter label
+  bytes, same imgsz 768, batch 8, epochs 100, seed 42, **mask_ratio 4**, same
+  `ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS` checkpoint policy.
+- **The selection rule is frozen at margin 0.005 with three cases:**
+  `S1_IMPROVES_S0_BEYOND_MARGIN` above +0.005, `PRACTICALLY_EQUIVALENT` within
+  the band (**S0 preferred**, decided in advance), `S1_BELOW_S0` below -0.005. The
+  margin is an engineering threshold, **not a significance test**. If the
+  canonical AP and the direct IoU move opposite ways the outcome is
+  `CROSS_METRIC_DIRECTION_DISAGREEMENT` - recorded, ranked by the canonical
+  metric, and **never** resolved by a composite. A composite is refused by both
+  parsers.
+- **The comparison protocol was frozen AFTER S0 ran**, unlike phase 7A's which
+  predated its candidates. That asymmetry is recorded as a limitation in every
+  artifact, and `protocol_timing` must stay `POST_S0_PRE_S1_PROTOCOL_FREEZE` - the
+  parser refuses a value claiming it predated S0. No S1 number influenced any rule.
+- **`overlap_mask` changes the treatment environment, not just a hyperparameter.**
+  Each experiment's `best.pt` is chosen by native fitness computed against its own
+  target, so the two select checkpoints under different fitness definitions. That
+  is precisely why the decision is made externally against canonical masks, and it
+  is a genuine limitation rather than a detail.
+- **S1 memory feasibility is established: batch 8 at imgsz 768 with
+  `overlap_mask: false` completes a forward and backward pass**, peak 3.465 GiB
+  reserved, mask target `[33, 192, 192]` (one plane per instance instead of one
+  indexed map). `NON_EXPERIMENTAL`, **no optimizer step, no validation, no
+  checkpoint, no metric**. It establishes nothing about accuracy.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

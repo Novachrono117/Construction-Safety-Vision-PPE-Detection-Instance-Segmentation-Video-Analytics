@@ -1,0 +1,180 @@
+{
+  "canonical": {
+    "all_class_map50": 0.537536,
+    "all_class_map50_95": 0.388009,
+    "detections_scored": 6838,
+    "per_class": {
+      "helmet_loose": {
+        "AP@0.50": 0.891599,
+        "AP@0.50:0.95": 0.793946
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.793362,
+        "AP@0.50:0.95": 0.609345
+      },
+      "person": {
+        "AP@0.50": 0.309623,
+        "AP@0.50:0.95": 0.135036
+      },
+      "vest_loose": {
+        "AP@0.50": 0.007173,
+        "AP@0.50:0.95": 0.001474
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.685925,
+        "AP@0.50:0.95": 0.400246
+      }
+    }
+  },
+  "category_id_mapping": "NONE_CANONICAL_IDS_USED_DIRECTLY",
+  "checkpoint": {
+    "experiment": "S0",
+    "last_pt_used": false,
+    "name": "best.pt",
+    "selected_by": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3"
+  },
+  "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+  "cocoeval": {
+    "area_range": "all",
+    "implementation": "pycocotools.cocoeval.COCOeval",
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "iou_type": "segm",
+    "max_dets": [
+      1,
+      10,
+      100
+    ]
+  },
+  "comparison_config": "configs/segmentation_comparison.yaml",
+  "comparison_fingerprint": "a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16",
+  "direct_iou_reference": {
+    "gt_iou50_coverage": 0.588816,
+    "gt_iou75_coverage": 0.460526,
+    "gt_match_coverage": 0.776316,
+    "gt_normalized_mask_iou": 0.556977,
+    "matched_mask_iou_mean": 0.717462,
+    "protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+    "rerun_in_this_phase": false,
+    "status": "CANONICAL_GT_RECOVERY_DIAGNOSTIC",
+    "still_valid": true
+  },
+  "experiment_id": "S0",
+  "final_segmenter": "UNSELECTED",
+  "ground_truth": {
+    "annotations": 304,
+    "document": "data/processed/canonical/annotations/segmentation_validation.coco.json",
+    "images": 65,
+    "is_the_yolo_adapter": false,
+    "sha256": "e674c5df27eee3e43c6ca4249b17c541967435196151b64ceb0d351131c8098e",
+    "source": "CANONICAL_COCO_INSTANCE_SEGMENTATION"
+  },
+  "hypothesis": "Phase 8D measured that 27.3% of canonical person pixels are contested by another class, while 71.0% of the pixels S0 misses on person lie in that contested region; contested fraction versus person mask IoU has Spearman -0.5466; and re-scoring the same predictions against the overlap-resolved target recovers +0.0700 GT-normalised IoU for person and under 0.002 for every other class. S1 tests whether removing the overlap resolution from training changes canonical performance. It is a hypothesis: the measurement showed a target mismatch, not that training differently helps, and even against its own target S0's person mask IoU remained far below the compact classes.",
+  "inference": {
+    "agnostic_nms": false,
+    "augment": false,
+    "classes": "ALL_FIVE_FROZEN_CLASSES",
+    "conf": 0.001,
+    "half": false,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "retina_masks": true
+  },
+  "mask_encoding": "PYCOCOTOOLS_BINARY_MASK_RLE",
+  "native_incomparability": "Native mask AP is not wrong and is not withdrawn - it is a valid statement about each model against its own target. It simply cannot rank two models whose targets differ, because a difference between the two numbers would confound the model with the target it was scored on. The canonical COCO evaluator decides instead.",
+  "native_per_class": {
+    "helmet_loose": 0.789927,
+    "helmet_on_head": 0.586523,
+    "person": 0.271182,
+    "vest_loose": 0.001782,
+    "vest_on_body": 0.390296
+  },
+  "native_per_class_note": "Reproduced from the committed phase 8C manifest for shape comparison only. The two evaluators use different ground truth, implementations and confidences, so their absolute values are not comparable and no difference between them measures the model.",
+  "native_reference": {
+    "mask_map50": 0.57983,
+    "mask_map50_95": 0.407942,
+    "not_invalidated_by_this_phase": true,
+    "status": "NATIVE_TARGET_EVALUATION",
+    "still_valid": true
+  },
+  "phase": "8E",
+  "phase_8d_rescore_note": "The phase 8D re-score against effective overlap targets is a diagnostic. It does not replace any published S0 performance result and is not used by this protocol.",
+  "phase_8d_rescore_status": "HYPOTHESIS_GENERATING_DIAGNOSTIC_ONLY",
+  "prediction_cap_versus_metric_cap": "The model may propose up to 300 candidates per image; COCOeval applies its conventional cap of 100 when scoring. Both are recorded so neither is read as constraining the other.",
+  "protocol": "CANONICAL_COCO_MASK_AP_EVALUATION",
+  "protocol_config": "configs/segmentation_canonical_evaluation.yaml",
+  "protocol_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+  "runs": 1,
+  "runtime_seconds": 30.35,
+  "s0_native_metrics_regenerated": false,
+  "s0_retrained": false,
+  "s1_status": "FROZEN_NOT_EXECUTED",
+  "schema_version": 1,
+  "split": "validation",
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "support": {
+    "helmet_loose": {
+      "images": 11,
+      "instances": 57,
+      "supported": true
+    },
+    "helmet_on_head": {
+      "images": 26,
+      "instances": 47,
+      "supported": true
+    },
+    "person": {
+      "images": 55,
+      "instances": 137,
+      "supported": true
+    },
+    "vest_loose": {
+      "images": 1,
+      "instances": 8,
+      "supported": false
+    },
+    "vest_on_body": {
+      "images": 31,
+      "instances": 55,
+      "supported": true
+    }
+  },
+  "supported_macro": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "contributing_values": [
+      0.793946,
+      0.609345,
+      0.135036,
+      0.400246
+    ],
+    "metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "names_no_class": true,
+    "rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "rule_origin": "FROZEN_IN_PHASE_7A_REUSED_UNCHANGED",
+    "value": 0.484643
+  },
+  "test": {
+    "reason": "Phase 8E evaluated the frozen S0 checkpoint on the frozen validation split under a newly frozen canonical evaluator, and ran one non-experimental memory feasibility check. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, mask or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "timing": "POST_S0_PRE_S1_CANONICAL_COMPARISON_REFERENCE_EVALUATION",
+  "timing_note": "The canonical evaluator was frozen after S0 ran, because the need for it was discovered by the phase 8D error analysis, and before S1 exists. This evaluation is the reference the future candidate will be compared against.",
+  "why": "Phase 8D established from the installed source that the framework builds both its mask target and its validation ground truth according to overlap_mask: polygons2masks_overlap gives contested pixels to the smaller instance, and SegmentationValidator._prepare_batch scores against that same resolved target. S0 trained with the flag set; the S1 candidate clears it. Their native mask AP would therefore be measured against different ground truth, so a common reference that no training flag can move was needed before the two could be compared at all."
+}

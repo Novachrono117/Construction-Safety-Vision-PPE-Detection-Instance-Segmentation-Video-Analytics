@@ -1,0 +1,152 @@
+{
+  "candidate": {
+    "adapter_identity": "SAME_APPROVED_PHASE_8A_ADAPTER_LABEL_BYTES",
+    "checkpoint_policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "experiment_id": "S1",
+    "inherits": "S0",
+    "intentional_field": "overlap_mask",
+    "overrides": {
+      "overlap_mask": false
+    },
+    "question": "Does preserving overlapping instance-mask supervision improve canonical instance-segmentation performance relative to S0?",
+    "required_reporting": [
+      "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+      "CANONICAL_ALL_CLASS_MASK_MAP50_95",
+      "CANONICAL_ALL_CLASS_MASK_MAP50",
+      "canonical per-class mask AP@0.50:0.95 and AP@0.50",
+      "the phase 8C direct mask-IoU diagnostic, executed exactly once",
+      "native framework mask mAP@0.50:0.95, mAP@0.50, precision and recall",
+      "native framework box metrics"
+    ],
+    "status": "FROZEN_NOT_EXECUTED"
+  },
+  "candidate_values": null,
+  "candidate_values_reason": "S1 has not been executed. No number exists to record.",
+  "canonical_evaluation_config": "configs/segmentation_canonical_evaluation.yaml",
+  "canonical_evaluation_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+  "comparison_fingerprint": "a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16",
+  "disagreement_policy": {
+    "case": "CROSS_METRIC_DIRECTION_DISAGREEMENT",
+    "create_composite": false,
+    "invent_weights_after_the_fact": false,
+    "rule": "If the primary canonical AP and the direct canonical GT-normalised IoU move in opposite directions, record the disagreement and rank by the primary canonical metric. The direct IoU diagnostic informs the human reading of why the two disagree; it does not override the ranking."
+  },
+  "final_segmenter": "UNSELECTED",
+  "frozen_before_s0": false,
+  "frozen_before_s1": true,
+  "limitations": [
+    "**Frozen after S0 ran.** Phase 7A's detection policy predated both its candidates; this one could not, because the need for a common evaluator was discovered by phase 8D. No S1 number influenced any rule here, but the asymmetry is real and recorded.",
+    "**The margin is an engineering threshold.** It carries no confidence level, nothing is repeated, and run-to-run variance on this setup remains UNKNOWN.",
+    "**One dataset, one split, one seed.** 65 validation images and 304 instances; a result under this policy generalises no further than that.",
+    "**The canonical evaluator is not the framework's.** Its absolute values are not comparable with native mask AP, and no reader should difference the two.",
+    "**overlap_mask changes the treatment environment, not just a hyperparameter.** The native checkpoint fitness that selects each experiment's best.pt is itself computed against the flag's own target, so the two experiments select their checkpoints under different fitness definitions. That is why the comparison is external, and it is a genuine limitation rather than a detail."
+  ],
+  "margin": 0.005,
+  "margin_is_not_a_significance_test": true,
+  "metrics": {
+    "all_class": [
+      "CANONICAL_ALL_CLASS_MASK_MAP50_95",
+      "CANONICAL_ALL_CLASS_MASK_MAP50"
+    ],
+    "composite_score": false,
+    "native_framework": [
+      "native mask mAP@0.50:0.95",
+      "native mask mAP@0.50",
+      "native mask precision",
+      "native mask recall",
+      "native box mAP@0.50:0.95",
+      "native box mAP@0.50"
+    ],
+    "native_framework_status": "NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION",
+    "primary": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "secondary_direct_iou": [
+      "GT_NORMALIZED_MASK_IOU",
+      "MATCHED_MASK_IOU_MEAN",
+      "GT_MATCH_COVERAGE",
+      "GT_IOU50_COVERAGE",
+      "GT_IOU75_COVERAGE"
+    ]
+  },
+  "native_incomparability": "Native mask AP is not wrong and is not withdrawn - it is a valid statement about each model against its own target. It simply cannot rank two models whose targets differ, because a difference between the two numbers would confound the model with the target it was scored on. The canonical COCO evaluator decides instead.",
+  "one_variable_contract": {
+    "candidate_value": false,
+    "fields_inherited_unchanged": [
+      "amp",
+      "auto_augment",
+      "batch",
+      "bgr",
+      "close_mosaic",
+      "copy_paste",
+      "copy_paste_mode",
+      "cos_lr",
+      "cutmix",
+      "degrees",
+      "deterministic",
+      "dropout",
+      "epochs",
+      "erasing",
+      "fliplr",
+      "flipud",
+      "hsv_h",
+      "hsv_s",
+      "hsv_v",
+      "imgsz",
+      "lr0",
+      "lrf",
+      "mask_ratio",
+      "max_det",
+      "mixup",
+      "momentum",
+      "mosaic",
+      "multi_scale",
+      "optimizer",
+      "patience",
+      "perspective",
+      "pretrained",
+      "rect",
+      "retina_masks",
+      "scale",
+      "seed",
+      "shear",
+      "single_cls",
+      "translate",
+      "val",
+      "warmup_epochs",
+      "weight_decay",
+      "workers"
+    ],
+    "inherited_count": 43,
+    "intentional_field": "overlap_mask",
+    "one_variable": true,
+    "overrides_declared": [
+      "overlap_mask"
+    ],
+    "reference_value": true
+  },
+  "phase": "8E",
+  "protocol_timing": "POST_S0_PRE_S1_PROTOCOL_FREEZE",
+  "rare_class": {
+    "name": "vest_loose",
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "reference_experiment": "S0",
+  "reference_values": {
+    "canonical_all_class_mask_map50": 0.537536,
+    "canonical_all_class_mask_map50_95": 0.388009,
+    "canonical_supported_macro_mask_map50_95": 0.484643,
+    "direct_gt_normalized_mask_iou": 0.556977,
+    "direct_matched_mask_iou_mean": 0.717462,
+    "native_mask_map50_95": 0.407942
+  },
+  "schema_version": 1,
+  "selection_logic": {
+    "below": "delta < -0.005: S1_BELOW_S0.",
+    "human_review_still_required": "The rule produces a classification, not a frozen segmenter. Selecting the project's final segmenter remains a reviewed human decision, exactly as phase 7D was for detection.",
+    "improves": "delta > +0.005 on the primary canonical metric: S1_IMPROVES_S0_BEYOND_MARGIN.",
+    "practically_equivalent": "-0.005 <= delta <= +0.005: PRACTICALLY_EQUIVALENT. S0 is preferred, because the baseline already exists and no material canonical advantage was demonstrated. Preferring the incumbent on a tie is a decision rule fixed in advance, not a judgement made once the numbers are visible."
+  },
+  "test": {
+    "reason": "Phase 8E evaluated the frozen S0 checkpoint on the frozen validation split under a newly frozen canonical evaluator, and ran one non-experimental memory feasibility check. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, mask or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  }
+}
