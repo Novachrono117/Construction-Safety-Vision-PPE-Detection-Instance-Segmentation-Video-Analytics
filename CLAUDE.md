@@ -191,14 +191,13 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 10A complete - the split is frozen, the holdout is locked,
+- **Phase:** 10B complete - the split is frozen, the holdout is locked,
   **both models are FROZEN** (detector D2, YOLO11n at imgsz 768; segmenter S1,
-  YOLO11n-seg at imgsz 768 with `overlap_mask: false`), and the
-  **detector-versus-segmenter comparison protocol is FROZEN and NOT EXECUTED**
-  (`DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`). The modelling block is
-  closed: do not train, retrain, tune or benchmark anything unprompted. The
-  next work is phase 10B, the controlled validation recognition and spatial
-  comparison; do not start it unprompted.
+  YOLO11n-seg at imgsz 768 with `overlap_mask: false`), the comparison protocol
+  is frozen, and the **recognition and spatial comparison has run on
+  validation** (`DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`). The
+  modelling block is closed. **No latency or memory has been measured** - that
+  is phase 10C, which has not started; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -919,6 +918,108 @@ uv run pytest
   changed membership or benchmark order, a swapped confidence, a different
   precision, a missing CUDA sync, a changed warmup or iteration count, an
   aggregate score, and any result.
+- **Phase 10B ran the comparison, and its numbers are the only ones that may be
+  quoted.** Canonical box mAP@0.50:0.95: **D2 0.485390, S1 0.505682, delta
+  +0.020292**; mAP@0.50: D2 0.641107, S1 0.692955, delta +0.051848. Result
+  fingerprints: box `68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27`,
+  spatial `9877b88d386ba8b1a33ddf15e17bc141f729e63e8091d3fd3a973d83ece3e6a3`.
+  **All validation-only.**
+- **A descriptive support sensitivity is recorded, and it is not a metric.**
+  `POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY`, applying the project's
+  **pre-existing** support rule: D2 **0.589729**, S1 **0.581689**, delta
+  **-0.008040** over `helmet_loose`, `helmet_on_head`, `person`,
+  `vest_on_body`. It is explicitly **not** a frozen phase 10A metric, **not** a
+  selection rule and **not** a significance test, and it changes no frozen
+  number. The recorded conclusion: **S1 retains broadly similar localisation
+  capability to D2 while adding mask output, but the positive all-class delta
+  is driven by the highly uncertain `vest_loose` class and is not robust
+  evidence that S1 is the superior object localiser.**
+- **NEVER quote the +0.020292 on its own - it is carried entirely by the rare
+  class.** The all-class figure is the unweighted mean of five per-class APs, so
+  it decomposes exactly: `helmet_loose` -0.003737, `helmet_on_head` +0.000199,
+  `person` +0.006390, **`vest_loose` +0.026724**, `vest_on_body` -0.009284.
+  `vest_loose` alone contributes more than the whole delta, and it is
+  `DESCRIPTIVE_HIGH_UNCERTAINTY` with one validation image. **Excluding it the
+  delta is -0.008040 and the segmenter sits BELOW the detector.** Two supported
+  classes declined: `vest_on_body` -0.046421, `helmet_loose` -0.018685. Why any
+  class moved is UNKNOWN.
+- **These canonical box figures are NOT the native framework metrics** either
+  model reported in phase 7C or 8F, and the two must never be differenced:
+  different evaluator implementation, different ground-truth document, different
+  confidence. D2's canonical 0.485390 is not its native 0.490386.
+- **Effective FP32 parity was PROVED at runtime, not assumed from the config.**
+  Both models: backend FP16 flag `false`, parameter dtypes `['torch.float32']`,
+  input tensor `torch.float32`, autocast during forward `false`, no quantization
+  config - byte-identical evidence. A future phase that changes precision for
+  one model invalidates every comparison; the runner stops as
+  `PRECISION_PROTOCOL_MISMATCH`.
+- **The real spatial gain is representation, not association.**
+  `MASK_TO_BOX_FILL_RATIO` median **0.664** and `SHAPE_EXTENT` median **0.672** -
+  both `NO_BOX_ONLY_EQUIVALENT`, so a third of the median box is not the object
+  and instances do not fill their own tight rectangle. Where a box proxy exists
+  it is **systematically inflated**: mask area mean 144563 px against box proxy
+  237206 px; intersection 26828 px against 47281 px. Centroid displacement from
+  the box centre: median 16.0 px, P95 126.9 px, max 262.8 px.
+- **For person-PPE association at the frozen 0.50 floor, the box proxy is close,
+  and claiming otherwise would be the error.** Holding the model constant (S1's
+  own boxes, geometry-isolating): 103 agree, 3 box-only, **0 mask-only**, 66
+  neither, 1 both-but-different-person, over 173 relationships. The
+  pipeline-level reading against D2's boxes disagrees far more (81/7/6/62/17)
+  but is **confounded** - different model, different instances - and must never
+  be presented as the geometry comparison.
+- **The phase 10A association taxonomy is NON-EXHAUSTIVE, and that is recorded
+  as a coverage exception - never as a fifth category.** The four frozen
+  categories assume a rule either associates or it does not; two rules can both
+  associate and pick **different** people, which none of them describes.
+  Recorded as `association_taxonomy_status:
+  FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA`, `taxonomy_exception_type:
+  BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON`, status
+  `UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY`. **Never add it to
+  `ASSOCIATION_CATEGORIES`**, never absorb it into `BOX_ONLY` or `MASK_ONLY`,
+  and never edit the phase 10A protocol to accommodate it - the protocol is
+  historical and was not modified.
+- **The association counts and their denominator.** Geometry-isolating: **172
+  classified + 1 exception = 173**, coverage **0.994220**, frozen counts
+  103 / 3 / 0 / 66. Pipeline-level: **156 classified + 17 exceptions = 173**,
+  coverage **0.901734**, frozen counts 81 / 7 / 6 / 62. Counts are over all
+  relationships; **percentages use `classified_relationships`**, stated
+  explicitly because mixing an undeclared state into the denominator would
+  change what the frozen percentages mean. Taxonomy coverage is protocol
+  bookkeeping, **not** a spatial-performance metric.
+- **A different-person outcome is `ASSOCIATION_RULE_DISAGREEMENT`, never an
+  error.** There is no person-PPE association ground truth, so neither rule's
+  answer can be called wrong. The word "error" is not available here.
+- **The 17 pipeline-level exceptions must NOT be attributed solely to
+  geometry.** That reading compares the frozen detector's outputs with the
+  frozen segmenter's, so it varies the model and the instances as well as the
+  shape representation. Only the geometry-isolating reading holds those fixed.
+- **The taxonomy correction changed presentation, never a measurement.** It was
+  made by `scripts/correct_association_taxonomy.py`, which loads **no model** -
+  arithmetic over counts phase 10B had already recorded - and is idempotent. A
+  test asserts it imports neither torch nor ultralytics.
+- **Phase 10B's first-pass row records did not store which person each rule
+  chose**, which is why the correction worked from counts. The runner now
+  records `mask_selected_person_index` and both box indices, so a future
+  execution can reproduce an exception down to the person.
+- **11 of 349 candidate pairs (3.2%) had overlapping boxes whose masks shared no
+  pixel.** Reported as a count and a fraction, never binned: phase 10A declared
+  no threshold for "strong" or "minimal" overlap, and inventing one now would be
+  a post-hoc bin.
+- **No compliance accuracy is claimed, and none may be.** There is no compliance
+  ground truth in this project. `VISIBLE_PPE_COVERAGE_PROXY` stays
+  `INTERPRETIVE_OPERATIONAL_PROXY`: it is the one frozen quantity whose
+  definition is qualitative, its implementation is a literal reading of the
+  frozen sentence, and nothing in the analysis rests on it alone.
+- **The mask centroid carries a half-pixel convention offset.** It averages
+  pixel indices while the box is in continuous coordinates, so a mask perfectly
+  filling its box reports ~0.71 px rather than 0. Constant, far below the
+  displacements being described, and documented so a small non-zero value is not
+  read as a real shift.
+- **Phase 10B measured NO latency and NO memory.** `latency_measured: false` in
+  both artifacts. Any framework speed line emitted incidentally during its
+  inference is `INCIDENTAL_NOT_10C_BENCHMARK` and was neither recorded nor used.
+  The cost half of the scientific question is phase 10C, under the benchmark
+  protocol phase 10A already froze.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

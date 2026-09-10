@@ -1,0 +1,753 @@
+{
+  "analysis": "SPATIAL_INFORMATION_COMPARISON",
+  "association": {
+    "association_taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+    "containment_floor": 0.5,
+    "deterministic": true,
+    "fifth_peer_category_added": false,
+    "frozen_categories": [
+      "BOX_AND_MASK_AGREE",
+      "BOX_ONLY_ASSOCIATION",
+      "MASK_ONLY_ASSOCIATION",
+      "NEITHER_ASSOCIATION"
+    ],
+    "frozen_categories_unchanged": true,
+    "geometry_isolating": {
+      "box_source": "SEGMENTER_OWN_BOXES_GEOMETRY_ISOLATING",
+      "classified_relationships": 172,
+      "counts_partition": true,
+      "frozen_category_counts": {
+        "BOX_AND_MASK_AGREE": 103,
+        "BOX_ONLY_ASSOCIATION": 3,
+        "MASK_ONLY_ASSOCIATION": 0,
+        "NEITHER_ASSOCIATION": 66
+      },
+      "frozen_category_percentages": {
+        "BOX_AND_MASK_AGREE": 59.884,
+        "BOX_ONLY_ASSOCIATION": 1.744,
+        "MASK_ONLY_ASSOCIATION": 0.0,
+        "NEITHER_ASSOCIATION": 38.372
+      },
+      "percentage_denominator": "classified_relationships",
+      "taxonomy_coverage": 0.99422,
+      "taxonomy_exception": {
+        "count": 1,
+        "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+        "is_a_fifth_frozen_category": false,
+        "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+        "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+        "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+      },
+      "taxonomy_exceptions": 1,
+      "taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+      "total_relationships": 173
+    },
+    "geometry_isolating_versus_pipeline_level": "The geometry-isolating reading holds the model and its instances fixed and varies only the shape representation, so its exceptions are attributable to mask-versus-box geometry. The pipeline-level reading compares the frozen detector's outputs with the frozen segmenter's, so its exceptions reflect BOTH representational geometry AND the fact that different models produced different instances. The pipeline-level exceptions must not be attributed solely to geometry.",
+    "not_an_error": "A different-person outcome is an ASSOCIATION_RULE_DISAGREEMENT, not an association error. The project holds no person-PPE association ground truth, so neither rule's answer can be called wrong.",
+    "per_class": {
+      "helmet_loose": {
+        "classified_relationships": 66,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 6,
+          "BOX_ONLY_ASSOCIATION": 1,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 59
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 9.091,
+          "BOX_ONLY_ASSOCIATION": 1.515,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 89.394
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 1.0,
+        "taxonomy_exception": {
+          "count": 0,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 0,
+        "taxonomy_status": "FROZEN_TAXONOMY_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 66
+      },
+      "helmet_on_head": {
+        "classified_relationships": 46,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 42,
+          "BOX_ONLY_ASSOCIATION": 2,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 2
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 91.304,
+          "BOX_ONLY_ASSOCIATION": 4.348,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 4.348
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 1.0,
+        "taxonomy_exception": {
+          "count": 0,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 0,
+        "taxonomy_status": "FROZEN_TAXONOMY_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 46
+      },
+      "vest_loose": {
+        "classified_relationships": 5,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 0,
+          "BOX_ONLY_ASSOCIATION": 0,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 5
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 0.0,
+          "BOX_ONLY_ASSOCIATION": 0.0,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 100.0
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 1.0,
+        "taxonomy_exception": {
+          "count": 0,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 0,
+        "taxonomy_status": "FROZEN_TAXONOMY_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 5
+      },
+      "vest_on_body": {
+        "classified_relationships": 55,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 55,
+          "BOX_ONLY_ASSOCIATION": 0,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 0
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 100.0,
+          "BOX_ONLY_ASSOCIATION": 0.0,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 0.0
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 0.982143,
+        "taxonomy_exception": {
+          "count": 1,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 1,
+        "taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 56
+      }
+    },
+    "per_relationship": {
+      "helmet_to_person": {
+        "classified_relationships": 112,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 48,
+          "BOX_ONLY_ASSOCIATION": 3,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 61
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 42.857,
+          "BOX_ONLY_ASSOCIATION": 2.679,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 54.464
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 1.0,
+        "taxonomy_exception": {
+          "count": 0,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 0,
+        "taxonomy_status": "FROZEN_TAXONOMY_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 112
+      },
+      "vest_to_person": {
+        "classified_relationships": 60,
+        "counts_partition": true,
+        "frozen_category_counts": {
+          "BOX_AND_MASK_AGREE": 55,
+          "BOX_ONLY_ASSOCIATION": 0,
+          "MASK_ONLY_ASSOCIATION": 0,
+          "NEITHER_ASSOCIATION": 5
+        },
+        "frozen_category_percentages": {
+          "BOX_AND_MASK_AGREE": 91.667,
+          "BOX_ONLY_ASSOCIATION": 0.0,
+          "MASK_ONLY_ASSOCIATION": 0.0,
+          "NEITHER_ASSOCIATION": 8.333
+        },
+        "percentage_denominator": "classified_relationships",
+        "taxonomy_coverage": 0.983607,
+        "taxonomy_exception": {
+          "count": 1,
+          "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+          "is_a_fifth_frozen_category": false,
+          "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+          "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+          "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+        },
+        "taxonomy_exceptions": 1,
+        "taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+        "total_relationships": 61
+      }
+    },
+    "pipeline_level": {
+      "box_source": "DETECTOR_BOXES_PIPELINE_LEVEL",
+      "classified_relationships": 156,
+      "counts_partition": true,
+      "frozen_category_counts": {
+        "BOX_AND_MASK_AGREE": 81,
+        "BOX_ONLY_ASSOCIATION": 7,
+        "MASK_ONLY_ASSOCIATION": 6,
+        "NEITHER_ASSOCIATION": 62
+      },
+      "frozen_category_percentages": {
+        "BOX_AND_MASK_AGREE": 51.923,
+        "BOX_ONLY_ASSOCIATION": 4.487,
+        "MASK_ONLY_ASSOCIATION": 3.846,
+        "NEITHER_ASSOCIATION": 39.744
+      },
+      "percentage_denominator": "classified_relationships",
+      "taxonomy_coverage": 0.901734,
+      "taxonomy_exception": {
+        "count": 17,
+        "detail": "Both rules associated, to different people. None of the four frozen categories is true of that, so it is recorded as an exception to their coverage rather than as a fifth peer category, and it is excluded from the classified denominator. It is a rule disagreement, not an error: there is no person-PPE association ground truth to be wrong against.",
+        "is_a_fifth_frozen_category": false,
+        "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+        "status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+        "type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+      },
+      "taxonomy_exceptions": 17,
+      "taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+      "total_relationships": 173
+    },
+    "row_level_person_identity_note": "Phase 10B's row-level records preserve each disagreement's image, class, score and both containment values, but not which person index each rule selected. That is enough to locate and count every exception, which is all this correction needed, and it is why no model was re-run. The runner now records both selected person indices so a future execution can reproduce an exception down to the person.",
+    "row_level_person_identity_recorded": false,
+    "taxonomy_exception_note": "Phase 10A froze four categories on the implicit assumption that a rule either associates or it does not. Two rules can both associate and pick different people, and none of the four is true of that. It is recorded as an exception to the taxonomy's coverage - counted on its own, excluded from the classified denominator - rather than as a fifth peer category, because adding a category after seeing data is what a frozen taxonomy exists to prevent. The phase 10A protocol is historical and was not modified. This is a protocol-design limitation found during execution; it invalidates no canonical metric, no continuous spatial metric, no raw association decision and no model prediction.",
+    "taxonomy_exception_reading": "ASSOCIATION_RULE_DISAGREEMENT",
+    "taxonomy_exception_type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+  },
+  "box_proxies": {
+    "INSTANCE_AREA_PIXELS": {
+      "proxy": "BOX_AREA_PIXELS",
+      "statistics": {
+        "box_proxy": {
+          "count": 336,
+          "max": 3555669.822824,
+          "mean": 237205.836504,
+          "median": 81334.30387,
+          "min": 379.628829,
+          "p25": 20930.378859,
+          "p75": 247020.034232,
+          "p90": 599975.85509,
+          "p95": 865102.1419,
+          "std": 468575.173397
+        },
+        "mask_measurement": {
+          "count": 336,
+          "max": 2712388.0,
+          "mean": 144562.997024,
+          "median": 52788.0,
+          "min": 294.0,
+          "p25": 12526.75,
+          "p75": 148527.75,
+          "p90": 368353.5,
+          "p95": 524271.0,
+          "std": 300965.615254
+        }
+      }
+    },
+    "MASK_CENTROID": {
+      "proxy": "BOX_CENTER",
+      "statistics": {
+        "displacement_pixels": {
+          "count": 336,
+          "max": 262.773275,
+          "mean": 33.600488,
+          "median": 16.048565,
+          "min": 0.092067,
+          "p25": 5.685858,
+          "p75": 40.308741,
+          "p90": 88.469912,
+          "p95": 126.933417,
+          "std": 44.302987
+        }
+      }
+    },
+    "MASK_TO_BOX_FILL_RATIO": {
+      "proxy": "NO_BOX_ONLY_EQUIVALENT",
+      "statistics": null
+    },
+    "PERSON_PPE_MASK_CONTAINMENT": {
+      "proxy": "BOX_INTERSECTION_OVER_PPE_BOX_AREA",
+      "statistics": {
+        "box_proxy": {
+          "count": 349,
+          "max": 1.0,
+          "mean": 0.338868,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 0.990489,
+          "p90": 1.0,
+          "p95": 1.0,
+          "std": 0.454443
+        },
+        "mask_measurement": {
+          "count": 349,
+          "max": 1.0,
+          "mean": 0.310145,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 0.96897,
+          "p90": 0.999068,
+          "p95": 1.0,
+          "std": 0.451641
+        }
+      }
+    },
+    "PERSON_PPE_MASK_INTERSECTION": {
+      "proxy": "BOX_INTERSECTION_AREA",
+      "statistics": {
+        "box_proxy": {
+          "count": 349,
+          "max": 1905485.851149,
+          "mean": 47280.877637,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 24013.505752,
+          "p90": 146176.517535,
+          "p95": 292394.988042,
+          "std": 144095.357177
+        },
+        "mask_measurement": {
+          "count": 349,
+          "max": 1151858.0,
+          "mean": 26828.34384,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 7919.0,
+          "p90": 75573.2,
+          "p95": 178009.2,
+          "std": 87621.724531
+        }
+      }
+    },
+    "SHAPE_EXTENT": {
+      "proxy": "NO_BOX_ONLY_EQUIVALENT",
+      "statistics": null
+    },
+    "VISIBLE_PPE_COVERAGE_PROXY": {
+      "proxy": "BOX_OVERLAP_DERIVED_COVERAGE",
+      "statistics": {
+        "box_proxy": {
+          "count": 163,
+          "max": 1.022104,
+          "mean": 0.181968,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 0.326291,
+          "p90": 0.666186,
+          "p95": 0.75796,
+          "std": 0.276635
+        },
+        "mask_measurement": {
+          "count": 163,
+          "max": 0.998108,
+          "mean": 0.176234,
+          "median": 0.0,
+          "min": 0.0,
+          "p25": 0.0,
+          "p75": 0.368709,
+          "p90": 0.573063,
+          "p95": 0.793024,
+          "std": 0.26977
+        }
+      }
+    }
+  },
+  "compliance_accuracy_claimed": false,
+  "detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "experiment": "D2",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "modified_in_this_phase": false,
+    "trained_in_this_phase": false
+  },
+  "geometry_disagreement": {
+    "box_overlap_without_mask_overlap": 11,
+    "box_overlap_without_mask_overlap_fraction": 0.031519,
+    "candidate_pairs_examined": 349,
+    "note": "Pairs where the two boxes overlap but the two masks share no pixel at all. Reported as a count and a fraction rather than binned, because phase 10A declared no threshold for 'strong' or 'minimal' overlap."
+  },
+  "holdout_accessed": false,
+  "inference": {
+    "augment": false,
+    "conf": 0.25,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "precision": "FP32",
+    "purpose": "OPERATIONAL",
+    "retina_masks_for_segmenter": true,
+    "tta": false
+  },
+  "inferential_tests_run": 0,
+  "interpretation": {
+    "ASSOCIATION_DIFFERENCE": "Cases where the mask rule and the box rule reach different conclusions about which person a PPE instance belongs to.",
+    "PROXY_REFINEMENT": "Quantities a box can already approximate, where the mask changes the value: area, centroid, intersection, containment and the coverage proxy.",
+    "REPRESENTATION_GAIN": "Quantities a mask makes computable that a box cannot express at all: MASK_TO_BOX_FILL_RATIO and SHAPE_EXTENT, both frozen as NO_BOX_ONLY_EQUIVALENT.",
+    "no_compliance_claim": "No safety-compliance accuracy is claimed anywhere. The project holds no compliance ground truth, so there is nothing such a claim could be measured against."
+  },
+  "latency_measured": false,
+  "mask_reconstruction": {
+    "excluded_predictions": 0,
+    "exclusions": [],
+    "masks_on_original_canvas": 336,
+    "policy": "A predicted mask whose shape does not match its source image is excluded from every mask-derived measurement and counted here, rather than resized into agreement - which would make each measurement partly a measurement of the resize."
+  },
+  "models_trained": 0,
+  "new_metrics_introduced": 0,
+  "phase": "10B",
+  "population": {
+    "identical_images_for_both_models": true,
+    "images": 65,
+    "membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152",
+    "split": "validation"
+  },
+  "post_hoc_bins_created": false,
+  "precision_preflight_status": "EFFECTIVE_PRECISION_PARITY_VERIFIED",
+  "prediction_counts": {
+    "D2": {
+      "per_class": {
+        "helmet_loose": 55,
+        "helmet_on_head": 41,
+        "person": 120,
+        "vest_on_body": 53
+      },
+      "total": 269
+    },
+    "S1": {
+      "excluded_from_mask_analysis": 0,
+      "masks_reconstructed": 336,
+      "per_class": {
+        "helmet_loose": 66,
+        "helmet_on_head": 46,
+        "person": 163,
+        "vest_loose": 5,
+        "vest_on_body": 56
+      },
+      "total": 336
+    }
+  },
+  "protocol_config": "configs/detector_segmenter_comparison.yaml",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "rare_class": {
+    "detail": "vest_loose is reported in every per-class breakdown and decides nothing. Its validation support is one image and eight canonical instances.",
+    "name": "vest_loose",
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "schema_version": 1,
+  "segmenter": {
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "experiment": "S1",
+    "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "modified_in_this_phase": false,
+    "overlap_mask": false,
+    "trained_in_this_phase": false
+  },
+  "spatial_comparison_sha256": "3988bcf688633c63bc0c422ba515246119b94a1c6b8b508c09ff215bda74e383",
+  "spatial_features": {
+    "INSTANCE_AREA_PIXELS": {
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistics": {
+        "count": 336,
+        "max": 2712388.0,
+        "mean": 144562.997024,
+        "median": 52788.0,
+        "min": 294.0,
+        "p25": 12526.75,
+        "p75": 148527.75,
+        "p90": 368353.5,
+        "p95": 524271.0,
+        "std": 300965.615254
+      }
+    },
+    "MASK_CENTROID": {
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistic_is": "DISPLACEMENT_FROM_THE_MODELS_OWN_BOX_CENTRE_IN_PIXELS",
+      "statistics": {
+        "count": 336,
+        "max": 262.773275,
+        "mean": 33.600488,
+        "median": 16.048565,
+        "min": 0.092067,
+        "p25": 5.685858,
+        "p75": 40.308741,
+        "p90": 88.469912,
+        "p95": 126.933417,
+        "std": 44.302987
+      }
+    },
+    "MASK_TO_BOX_FILL_RATIO": {
+      "per_class": {
+        "helmet_loose": {
+          "count": 66,
+          "max": 0.91217,
+          "mean": 0.764328,
+          "median": 0.787538,
+          "min": 0.488169,
+          "p25": 0.743047,
+          "p75": 0.821356,
+          "p90": 0.83289,
+          "p95": 0.851264,
+          "std": 0.085904
+        },
+        "helmet_on_head": {
+          "count": 46,
+          "max": 0.961441,
+          "mean": 0.675846,
+          "median": 0.654846,
+          "min": 0.450137,
+          "p25": 0.574094,
+          "p75": 0.775666,
+          "p90": 0.823424,
+          "p95": 0.871102,
+          "std": 0.128586
+        },
+        "person": {
+          "count": 163,
+          "max": 0.964112,
+          "mean": 0.602999,
+          "median": 0.607486,
+          "min": 0.099862,
+          "p25": 0.523847,
+          "p75": 0.703759,
+          "p90": 0.783838,
+          "p95": 0.842896,
+          "std": 0.159423
+        },
+        "vest_loose": {
+          "count": 5,
+          "max": 0.748669,
+          "mean": 0.616042,
+          "median": 0.618413,
+          "min": 0.445045,
+          "p25": 0.604749,
+          "p75": 0.663334,
+          "p90": 0.714535,
+          "p95": 0.731602,
+          "std": 0.110905
+        },
+        "vest_on_body": {
+          "count": 56,
+          "max": 0.956094,
+          "mean": 0.633599,
+          "median": 0.672329,
+          "min": 0.093441,
+          "p25": 0.51999,
+          "p75": 0.7683,
+          "p90": 0.837909,
+          "p95": 0.861176,
+          "std": 0.185044
+        }
+      },
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistics": {
+        "count": 336,
+        "max": 0.964112,
+        "mean": 0.649956,
+        "median": 0.664433,
+        "min": 0.093441,
+        "p25": 0.555943,
+        "p75": 0.775478,
+        "p90": 0.828113,
+        "p95": 0.851913,
+        "std": 0.159737
+      }
+    },
+    "PERSON_PPE_MASK_CONTAINMENT": {
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistics": {
+        "count": 349,
+        "max": 1.0,
+        "mean": 0.310145,
+        "median": 0.0,
+        "min": 0.0,
+        "p25": 0.0,
+        "p75": 0.96897,
+        "p90": 0.999068,
+        "p95": 1.0,
+        "std": 0.451641
+      }
+    },
+    "PERSON_PPE_MASK_INTERSECTION": {
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistics": {
+        "count": 349,
+        "max": 1151858.0,
+        "mean": 26828.34384,
+        "median": 0.0,
+        "min": 0.0,
+        "p25": 0.0,
+        "p75": 7919.0,
+        "p90": 75573.2,
+        "p95": 178009.2,
+        "std": 87621.724531
+      }
+    },
+    "SHAPE_EXTENT": {
+      "per_class": {
+        "helmet_loose": {
+          "count": 66,
+          "max": 0.912793,
+          "mean": 0.76981,
+          "median": 0.796159,
+          "min": 0.490639,
+          "p25": 0.746416,
+          "p75": 0.820443,
+          "p90": 0.832854,
+          "p95": 0.868236,
+          "std": 0.086827
+        },
+        "helmet_on_head": {
+          "count": 46,
+          "max": 0.99179,
+          "mean": 0.688422,
+          "median": 0.689342,
+          "min": 0.45039,
+          "p25": 0.583729,
+          "p75": 0.781996,
+          "p90": 0.836777,
+          "p95": 0.883145,
+          "std": 0.130718
+        },
+        "person": {
+          "count": 163,
+          "max": 0.978361,
+          "mean": 0.615096,
+          "median": 0.621503,
+          "min": 0.109658,
+          "p25": 0.535307,
+          "p75": 0.716626,
+          "p90": 0.806448,
+          "p95": 0.847632,
+          "std": 0.156256
+        },
+        "vest_loose": {
+          "count": 5,
+          "max": 0.752547,
+          "mean": 0.61962,
+          "median": 0.622565,
+          "min": 0.456482,
+          "p25": 0.604726,
+          "p75": 0.661782,
+          "p90": 0.716241,
+          "p95": 0.734394,
+          "std": 0.107578
+        },
+        "vest_on_body": {
+          "count": 56,
+          "max": 0.94634,
+          "mean": 0.64848,
+          "median": 0.681199,
+          "min": 0.101474,
+          "p25": 0.530382,
+          "p75": 0.787645,
+          "p90": 0.849161,
+          "p95": 0.87036,
+          "std": 0.184278
+        }
+      },
+      "semantics": "PURE_GEOMETRIC_MEASUREMENT",
+      "statistics": {
+        "count": 336,
+        "max": 0.99179,
+        "mean": 0.661156,
+        "median": 0.672173,
+        "min": 0.101474,
+        "p25": 0.570469,
+        "p75": 0.78614,
+        "p90": 0.830013,
+        "p95": 0.869896,
+        "std": 0.157453
+      }
+    },
+    "VISIBLE_PPE_COVERAGE_PROXY": {
+      "definition_is_qualitative_in_the_frozen_protocol": true,
+      "implemented_as": "Summed PPE-mask intersection with a person mask, divided by that person's own mask area. The literal reading of the frozen sentence, which fixes the inputs and the direction but not an exact formula.",
+      "is_not_a_compliance_measure": true,
+      "semantics": "INTERPRETIVE_OPERATIONAL_PROXY",
+      "statistics": {
+        "count": 163,
+        "max": 0.998108,
+        "mean": 0.176234,
+        "median": 0.0,
+        "min": 0.0,
+        "p25": 0.0,
+        "p75": 0.368709,
+        "p90": 0.573063,
+        "p95": 0.793024,
+        "std": 0.26977
+      }
+    }
+  },
+  "statistic_set": [
+    "count",
+    "mean",
+    "median",
+    "std",
+    "p25",
+    "p75",
+    "p90",
+    "p95",
+    "min",
+    "max"
+  ],
+  "test": {
+    "reason": "Phase 10B ran controlled inference with both frozen models on the frozen validation split only. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, prediction or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "thresholds_tuned": 0
+}

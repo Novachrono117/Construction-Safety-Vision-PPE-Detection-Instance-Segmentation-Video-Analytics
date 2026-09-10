@@ -1,0 +1,246 @@
+{
+  "aggregate_score": false,
+  "all_class_delta_decomposition": {
+    "all_class_is_unweighted_mean_of_per_class": true,
+    "class_count": 5,
+    "contributions": {
+      "helmet_loose": -0.003737,
+      "helmet_on_head": 0.000199,
+      "person": 0.00639,
+      "vest_loose": 0.026724,
+      "vest_on_body": -0.009284
+    },
+    "declined_classes": [
+      "helmet_loose",
+      "vest_on_body"
+    ],
+    "delta_excluding_rare_class": -0.00804,
+    "improved_classes": [
+      "helmet_on_head",
+      "person",
+      "vest_loose"
+    ],
+    "note": "The all-class figure is an unweighted mean, so a single class can move it. The rare class is separated out because its validation support is one image; a movement there is not evidence about the models. Why any individual class moved is UNKNOWN - this phase ran no experiment isolating a cause.",
+    "rare_class": "vest_loose",
+    "rare_class_contribution": 0.026724,
+    "rare_class_contribution_exceeds_total": true,
+    "rare_class_delta": 0.13362,
+    "total_contribution": 0.020292
+  },
+  "analysis": "CANONICAL_BOX_COMPARISON",
+  "box_comparison_sha256": "68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27",
+  "cocoeval": {
+    "area_range": "all",
+    "implementation": "pycocotools.cocoeval.COCOeval",
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "iou_type": "bbox",
+    "max_dets": [
+      1,
+      10,
+      100
+    ]
+  },
+  "detections_scored": {
+    "D2": 4003,
+    "S1": 5521
+  },
+  "detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "experiment": "D2",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "modified_in_this_phase": false,
+    "trained_in_this_phase": false
+  },
+  "ground_truth": "CANONICAL_COCO_DETECTION_BOXES",
+  "holdout_accessed": false,
+  "inference": {
+    "augment": false,
+    "conf": 0.001,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "precision": "FP32",
+    "purpose": "AP_CURVE",
+    "tta": false
+  },
+  "interpretation": "Descriptive. The question is how much object-localisation capability the frozen segmenter retains relative to the frozen detector while also producing masks. Neither model changes as a result, and no winner is declared.",
+  "latency_measured": false,
+  "localization_conclusion": "S1 retains broadly similar localisation capability to D2 while additionally producing masks. The positive all-class delta of +0.020292 is driven by vest_loose, which is already frozen as DESCRIPTIVE_HIGH_UNCERTAINTY, and should not be read as robust evidence that S1 is the superior object localiser: over the adequately supported classes the same comparison gives -0.008040. Neither reading selects a model, and neither frozen model changes.",
+  "metrics": {
+    "CANONICAL_BOX_MAP50": {
+      "D2": 0.641107,
+      "S1": 0.692955,
+      "delta": 0.051848
+    },
+    "CANONICAL_BOX_MAP50_95": {
+      "D2": 0.48539,
+      "S1": 0.505682,
+      "delta": 0.020292
+    }
+  },
+  "models_trained": 0,
+  "not_comparable_to_native_metrics": "These are canonical-evaluator figures. They are NOT the native framework box metrics either model reported in its own experiment phase, and the two must never be differenced: different evaluator implementation, different ground-truth document and a different confidence. Only the D2-versus-S1 delta computed here, by one evaluator over one ground truth, is a comparison.",
+  "per_class": {
+    "helmet_loose": {
+      "D2_AP@0.50": 0.881897,
+      "D2_AP@0.50:0.95": 0.767262,
+      "S1_AP@0.50": 0.84784,
+      "S1_AP@0.50:0.95": 0.748577,
+      "delta_AP@0.50": -0.034057,
+      "delta_AP@0.50:0.95": -0.018685,
+      "status": "COMPARISON_REPORTED"
+    },
+    "helmet_on_head": {
+      "D2_AP@0.50": 0.773782,
+      "D2_AP@0.50:0.95": 0.628022,
+      "S1_AP@0.50": 0.804906,
+      "S1_AP@0.50:0.95": 0.629018,
+      "delta_AP@0.50": 0.031124,
+      "delta_AP@0.50:0.95": 0.000996,
+      "status": "COMPARISON_REPORTED"
+    },
+    "person": {
+      "D2_AP@0.50": 0.728296,
+      "D2_AP@0.50:0.95": 0.485281,
+      "S1_AP@0.50": 0.74381,
+      "S1_AP@0.50:0.95": 0.517231,
+      "delta_AP@0.50": 0.015514,
+      "delta_AP@0.50:0.95": 0.03195,
+      "status": "COMPARISON_REPORTED"
+    },
+    "vest_loose": {
+      "D2_AP@0.50": 0.165488,
+      "D2_AP@0.50:0.95": 0.068034,
+      "S1_AP@0.50": 0.423267,
+      "S1_AP@0.50:0.95": 0.201654,
+      "delta_AP@0.50": 0.257779,
+      "delta_AP@0.50:0.95": 0.13362,
+      "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+    },
+    "vest_on_body": {
+      "D2_AP@0.50": 0.656071,
+      "D2_AP@0.50:0.95": 0.47835,
+      "S1_AP@0.50": 0.64495,
+      "S1_AP@0.50:0.95": 0.431929,
+      "delta_AP@0.50": -0.011121,
+      "delta_AP@0.50:0.95": -0.046421,
+      "status": "COMPARISON_REPORTED"
+    }
+  },
+  "phase": "10B",
+  "population": {
+    "annotations": 304,
+    "document": "data/processed/canonical/annotations/detection_validation.coco.json",
+    "document_sha256": "cbafde44b3fba8a477541b6756522abf09099e0f74f197307ee77347a87e84b5",
+    "identical_images_for_both_models": true,
+    "images": 65,
+    "membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152",
+    "split": "validation"
+  },
+  "precision_preflight": {
+    "evidence": {
+      "D2": {
+        "autocast_enabled_during_forward": false,
+        "backend_fp16_flag": false,
+        "device_type": "cuda",
+        "float_buffer_dtypes": [],
+        "input_dtype": "torch.float32",
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "quantization_config_present": false,
+        "resolved_precision_argument": "quantize",
+        "resolved_precision_value": 32
+      },
+      "S1": {
+        "autocast_enabled_during_forward": false,
+        "backend_fp16_flag": false,
+        "device_type": "cuda",
+        "float_buffer_dtypes": [],
+        "input_dtype": "torch.float32",
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "quantization_config_present": false,
+        "resolved_precision_argument": "quantize",
+        "resolved_precision_value": 32
+      }
+    },
+    "frozen_intent": "FP32",
+    "identical_across_models": true,
+    "models_executed_for_probe": 2,
+    "probe_method": "One prediction per model with a forward pre-hook on the network, capturing the dtype of the tensor that actually reached it and the autocast state at that moment. Configuration values were not trusted.",
+    "status": "EFFECTIVE_PRECISION_PARITY_VERIFIED"
+  },
+  "prediction_counts": {
+    "D2": {
+      "total": 4003
+    },
+    "S1": {
+      "total": 5521
+    }
+  },
+  "protocol_config": "configs/detector_segmenter_comparison.yaml",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "rare_class": {
+    "detail": "vest_loose holds one validation source image and eight instances under the frozen split. Its AP and its delta are reported in full and carry high sampling uncertainty; neither selects or ranks anything.",
+    "drives_the_aggregate_delta": true,
+    "name": "vest_loose",
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "schema_version": 1,
+  "segmenter": {
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "experiment": "S1",
+    "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "modified_in_this_phase": false,
+    "overlap_mask": false,
+    "trained_in_this_phase": false
+  },
+  "segmenter_boxes_derived_from_masks": false,
+  "segmenter_boxes_source": "THE_SEGMENTERS_OWN_PREDICTED_BOXES",
+  "supported_class_sensitivity": {
+    "D2_supported_macro": 0.589729,
+    "S1_supported_macro": 0.581689,
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "changes_any_frozen_number": false,
+    "delta": -0.00804,
+    "excluded_classes": [
+      "vest_loose"
+    ],
+    "is_a_frozen_phase_10a_metric": false,
+    "is_a_selection_rule": false,
+    "is_a_significance_test": false,
+    "label": "POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY",
+    "support_rule_origin": "PREEXISTING_PHASE_7A_SUPPORT_RULE_REUSED_UNCHANGED",
+    "why": "The all-class canonical figure is an unweighted mean over five classes, so a class with one validation image can move it more than the aggregate itself. This shows the same comparison over the classes the project's pre-existing support rule already admits. It is descriptive and selects nothing."
+  },
+  "test": {
+    "reason": "Phase 10B ran controlled inference with both frozen models on the frozen validation split only. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, prediction or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "thresholds_tuned": 0,
+  "winner_declared": false
+}

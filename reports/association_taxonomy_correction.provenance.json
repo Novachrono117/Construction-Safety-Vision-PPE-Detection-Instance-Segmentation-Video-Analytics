@@ -1,0 +1,62 @@
+{
+  "config": {
+    "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d"
+  },
+  "created_at": "2026-09-10T23:12:17+00:00",
+  "details": {
+    "association_taxonomy_status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA",
+    "classification": "ASSOCIATION_TAXONOMY_CORRECTED",
+    "fifth_peer_category_added": false,
+    "frozen_categories_unchanged": true,
+    "geometry_isolating": {
+      "classified": 172,
+      "coverage": 0.99422,
+      "exceptions": 1
+    },
+    "historical_artifacts_unchanged": true,
+    "inference_run": false,
+    "models_executed": 0,
+    "models_loaded": 0,
+    "phase": "10B",
+    "phase_10a_protocol_modified": false,
+    "pipeline_level": {
+      "classified": 156,
+      "coverage": 0.901734,
+      "exceptions": 17
+    },
+    "spatial_comparison_sha256": "3988bcf688633c63bc0c422ba515246119b94a1c6b8b508c09ff215bda74e383",
+    "supported_class_sensitivity": {
+      "D2_supported_macro": 0.589729,
+      "S1_supported_macro": 0.581689,
+      "admitted_classes": [
+        "helmet_loose",
+        "helmet_on_head",
+        "person",
+        "vest_on_body"
+      ],
+      "changes_any_frozen_number": false,
+      "delta": -0.00804,
+      "excluded_classes": [
+        "vest_loose"
+      ],
+      "is_a_frozen_phase_10a_metric": false,
+      "is_a_selection_rule": false,
+      "is_a_significance_test": false,
+      "label": "POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY",
+      "support_rule_origin": "PREEXISTING_PHASE_7A_SUPPORT_RULE_REUSED_UNCHANGED",
+      "why": "The all-class canonical figure is an unweighted mean over five classes, so a class with one validation image can move it more than the aggregate itself. This shows the same comparison over the classes the project's pre-existing support rule already admits. It is descriptive and selects nothing."
+    },
+    "taxonomy_exception_type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "17a2810aa84d6531701afbfd8526bb602ada71ea",
+  "inputs": [],
+  "name": "association_taxonomy_correction",
+  "outputs": [],
+  "phase": 10,
+  "schema_version": 1
+}

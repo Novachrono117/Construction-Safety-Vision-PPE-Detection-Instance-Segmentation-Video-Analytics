@@ -42,6 +42,7 @@ undocumented one-off shell invocation.
 | `train_segmentation_comparison.py` | 8F | Run S1 exactly once under the frozen phase 8E protocol, validate it natively once, evaluate it under the canonical evaluator once, and run the phase 8C direct mask-IoU diagnostic once. Reads S0, never re-runs it, and selects no final segmenter. |
 | `freeze_final_segmenter.py` | 8G | Apply the frozen phase 8E policy to the committed S0 and S1 results, record the human-reviewed selection, and freeze the selected checkpoint's identity. Trains nothing, evaluates nothing and runs no inference. |
 | `freeze_detector_segmenter_comparison.py` | 10A | Freeze the detector-versus-segmenter comparison protocol and its deterministic benchmark membership. Executes no model, produces no prediction and measures no latency. |
+| `compare_detector_segmenter.py` | 10B | Run controlled validation inference with both frozen models under the frozen protocols, score their boxes with one canonical evaluator, and compute the frozen spatial quantities and box proxies. Trains nothing, modifies neither model and measures no latency. |
 
 ## Rules
 
@@ -580,6 +581,35 @@ later comparison will score against, and the script aborts if the declared
 fingerprint disagrees with the file.
 
 `--verify-only` runs every precondition and writes nothing.
+
+`compare_detector_segmenter.py` (phase 10B) executes the comparison the
+previous phase froze. It trains nothing, modifies neither frozen model, tunes
+no threshold and runs no benchmark.
+
+**Precision parity is proved before any comparison number exists.** A
+configuration value is an intention; the script loads both models, attaches a
+forward pre-hook, and records what the runtime actually did - backend precision
+flag, every parameter dtype, the dtype of the tensor that reached the network,
+and the autocast state. If the two differ, or either departs from the frozen
+FP32 intent, the phase stops as `PRECISION_PROTOCOL_MISMATCH`.
+
+**The two inference protocols are separate passes and never cross.** AP at conf
+0.001, because average precision needs the low-scoring tail; operational at
+conf 0.25, because the spatial analysis needs the model to commit to a set of
+instances.
+
+**A predicted mask is used on the original canvas or not at all.** One whose
+shape does not match its source image is excluded from every mask-derived
+measurement and counted, rather than resized into agreement - which would make
+each measurement partly a measurement of the resize.
+
+**The aggregate box delta is decomposed mechanically.** `COCOeval`'s all-class
+AP is the unweighted mean of the per-class APs, so each class's contribution is
+exact; the rare class is separated out, because a class with one validation
+image can move an unweighted mean without that meaning anything.
+
+`--verify-only` checks preconditions and writes nothing; `--preflight-only`
+runs the precision probe and stops.
 
 ## Planned scripts
 

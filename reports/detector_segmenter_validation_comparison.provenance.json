@@ -1,0 +1,115 @@
+{
+  "config": {
+    "detector_segmenter_comparison": "configs/detector_segmenter_comparison.yaml",
+    "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d"
+  },
+  "created_at": "2026-09-10T22:50:23+00:00",
+  "details": {
+    "box_comparison_sha256": "68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27",
+    "canonical_box_map50": {
+      "D2": 0.641107,
+      "S1": 0.692955,
+      "delta": 0.051848
+    },
+    "canonical_box_map50_95": {
+      "D2": 0.48539,
+      "S1": 0.505682,
+      "delta": 0.020292
+    },
+    "classification": "DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE",
+    "detector_checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "latency_measured": false,
+    "membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152",
+    "memory_measured": false,
+    "models_modified": 0,
+    "models_trained": 0,
+    "operational_counts": {
+      "D2": {
+        "per_class": {
+          "helmet_loose": 55,
+          "helmet_on_head": 41,
+          "person": 120,
+          "vest_on_body": 53
+        },
+        "total": 269
+      },
+      "S1": {
+        "excluded_from_mask_analysis": 0,
+        "masks_reconstructed": 336,
+        "per_class": {
+          "helmet_loose": 66,
+          "helmet_on_head": 46,
+          "person": 163,
+          "vest_loose": 5,
+          "vest_on_body": 56
+        },
+        "total": 336
+      }
+    },
+    "phase": "10B",
+    "precision_status": "EFFECTIVE_PRECISION_PARITY_VERIFIED",
+    "segmenter_checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "spatial_comparison_sha256": "9877b88d386ba8b1a33ddf15e17bc141f729e63e8091d3fd3a973d83ece3e6a3",
+    "thresholds_tuned": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "bde4a692939b8f70a64cb55394f3c2d46486d095",
+  "inputs": [
+    {
+      "path": "configs/detector_segmenter_comparison.yaml",
+      "sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "size_bytes": 17494
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    },
+    {
+      "path": "reports/detector_segmenter_comparison_protocol.json",
+      "sha256": "cdef5fb260b87374cc506a314de1127ccad22d91914a5f9550697b40f48eb40e",
+      "size_bytes": 20060
+    }
+  ],
+  "name": "detector_segmenter_validation_comparison",
+  "outputs": [
+    {
+      "path": "reports/detector_segmenter_box_comparison.json",
+      "sha256": "d274a4563a3a13802834728bf8970b748f23b39e1f507500de702c546adbc13e",
+      "size_bytes": 7798
+    },
+    {
+      "path": "reports/detector_segmenter_box_comparison.csv",
+      "sha256": "765755cb0e5f64559558bd693edb43675958e534da799f4ee2dfc37587350cd7",
+      "size_bytes": 612
+    },
+    {
+      "path": "reports/detector_segmenter_spatial_comparison.json",
+      "sha256": "9e42b5b5a39f7bfdf21425187fa9bdca1470311b6d33ebdf63c05a32d4d6c287",
+      "size_bytes": 19428
+    },
+    {
+      "path": "reports/detector_segmenter_validation_comparison.md",
+      "sha256": "19abe3d05736b85fc37cb1f856f74453baa81703ab4e625664117097b8d031ee",
+      "size_bytes": 15832
+    },
+    {
+      "path": "reports/detector_segmenter_comparison_examples.csv",
+      "sha256": "a5daa9322e0448ae4c2d8533948ac5c21bf5bee8f337122e2b0398bbba73f2ea",
+      "size_bytes": 2578
+    }
+  ],
+  "phase": 10,
+  "schema_version": 1
+}

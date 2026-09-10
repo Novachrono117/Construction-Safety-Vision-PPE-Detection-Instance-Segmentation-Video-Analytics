@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and the detector-versus-segmenter comparison protocol is frozen and not yet executed (phase 10A). The holdout has still never been evaluated.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol (phase 10B). The latency benchmark is pending and the holdout has never been evaluated.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -41,7 +41,12 @@
 > selected on validation evidence alone. Phase 10A then **froze the
 > detector-versus-segmenter comparison protocol** - what will be measured, at
 > which settings, and what the measurements may not claim - **before running
-> any of it**.
+> any of it**. Phase 10B then ran it: on canonical box localisation the
+> segmenter scores **+0.020292** above the detector, but **that entire gain is
+> carried by `vest_loose`**, the one-image high-uncertainty class - excluding
+> it the delta is **-0.008040**. What masks add is elsewhere: a third of the
+> median predicted box is not the object, and the box proxy for area and
+> overlap is systematically inflated.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -146,7 +151,13 @@ Two design decisions define this architecture:
 | Segmenter trade-off | Published, not buried: `person` +0.317316 carries most of the gain, `helmet_loose` **regressed** -0.059035. Selection does not require every class to improve. Why any class moved is UNKNOWN. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
-| Detector-vs-segmenter comparison | **Protocol frozen (phase 10A), not executed.** `DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`, fingerprint `d92a1576...`. Validation only, both models at imgsz 768, AP at conf 0.001 and operational analysis at conf 0.25, FP32 for both. No result exists. |
+| Detector-vs-segmenter protocol | **Frozen (phase 10A)**, fingerprint `d92a1576...`. Validation only, both models at imgsz 768, AP at conf 0.001 and operational analysis at conf 0.25, FP32 for both. |
+| Recognition comparison | **Computed (phase 10B), validation only.** Canonical box mAP@0.50:0.95: D2 **0.485390**, S1 **0.505682**, delta **+0.020292**. One external `COCOeval` over one ground truth; each model's own predicted boxes. |
+| Recognition caveat | **The aggregate gain is carried entirely by `vest_loose`** (+0.026724 of the +0.020292). Over the four adequately supported classes the delta is **-0.008040** (`POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY`, descriptive only). `vest_on_body` -0.046421 and `helmet_loose` -0.018685 both declined. |
+| Spatial information gain | Median mask-to-box fill ratio **0.664** and shape extent **0.672** - neither has a box-only equivalent. Box proxies overstate: area 237206 px against 144563 px measured; intersection 47281 px against 26828 px. Centroid displacement median **16.0 px**, P95 **126.9 px**. |
+| Person-PPE association | At the frozen 0.50 containment floor, holding the model constant: **172 of 173 relationships classified** by the frozen taxonomy (coverage 0.994220), with 103 agreements and **0 mask-only** associations - the box proxy is close. Descriptive only; there is no association ground truth. |
+| Association taxonomy | `FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA`. Both rules associating to **different** people is recorded as a coverage exception (`BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON`), never as a fifth category; 1 geometry-isolating and 17 pipeline-level. The phase 10A protocol was not modified. |
+| Latency / memory comparison | **Not measured.** `LATENCY_PENDING`, phase 10C. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -1472,6 +1483,119 @@ index invented once the numbers are visible would hide the trade-off.
 
 ```bash
 uv run python scripts/freeze_detector_segmenter_comparison.py --verify-only
+```
+
+
+## Phase 10B - what the masks actually bought
+
+**Validation only, and the cost half is still unmeasured.** This phase ran both
+frozen models under the two protocols phase 10A froze, scored their boxes with
+one external evaluator, and computed the frozen spatial quantities. No latency
+benchmark - that is phase 10C.
+
+**Precision parity was proved, not assumed.** Both models were probed at
+runtime before any comparison number existed: backend FP16 flag `false`,
+parameter dtypes `['torch.float32']`, input tensor `torch.float32`, autocast
+`false`, no quantization config - identical for both. A comparison across two
+precisions would have measured the precision.
+
+### Recognition: the headline is misleading on its own
+
+| Metric | D2 | S1 | delta |
+| --- | --- | --- | --- |
+| `CANONICAL_BOX_MAP50_95` | 0.485390 | 0.505682 | **+0.020292** |
+| `CANONICAL_BOX_MAP50` | 0.641107 | 0.692955 | **+0.051848** |
+
+The all-class figure is the unweighted mean of five per-class APs, so it
+decomposes exactly:
+
+| Class | D2 | S1 | delta | contributes |
+| --- | --- | --- | --- | --- |
+| `helmet_loose` | 0.767262 | 0.748577 | **-0.018685** | -0.003737 |
+| `helmet_on_head` | 0.628022 | 0.629018 | +0.000996 | +0.000199 |
+| `person` | 0.485281 | 0.517231 | +0.031950 | +0.006390 |
+| `vest_loose` | 0.068034 | 0.201654 | +0.133620 | **+0.026724** |
+| `vest_on_body` | 0.478350 | 0.431929 | **-0.046421** | -0.009284 |
+
+**`vest_loose` alone contributes more than the entire aggregate delta**, and it
+is the class the project already classifies `DESCRIPTIVE_HIGH_UNCERTAINTY` with
+one validation image. Quoting "+0.020292" without this would be the
+metric-shopping the project's phase 7A policy forbids.
+
+Applying the project's **pre-existing** support rule as a descriptive
+sensitivity check (`POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY` - not a frozen
+metric, not a selection rule, not a significance test):
+
+| | D2 | S1 | delta |
+| --- | --- | --- | --- |
+| All-class canonical box mAP@0.50:0.95 | 0.485390 | 0.505682 | **+0.020292** |
+| Supported-class macro (4 classes) | 0.589729 | 0.581689 | **-0.008040** |
+
+**The conclusion:** S1 retains broadly similar localisation capability to D2
+while additionally producing masks, but the positive all-class delta is driven
+by the highly uncertain `vest_loose` class and should **not** be read as robust
+evidence that S1 is the superior object localiser. Neither reading selects a
+model, and neither frozen model changes.
+
+These are canonical-evaluator figures and are **not** the native framework
+metrics either model reported in its own phase; the two must never be
+differenced.
+
+### Spatial information: this is where the mask earns its place
+
+Two quantities have no box-only equivalent at all:
+
+* **`MASK_TO_BOX_FILL_RATIO`** median **0.664** (P25 0.556, P75 0.775). On the
+  median prediction, a third of the box is not the object.
+* **`SHAPE_EXTENT`** median **0.672**. Instances do not fill even their own
+  tight rectangle.
+
+Where a box proxy does exist, it is **systematically biased rather than merely
+noisy**, because a box counts background as object:
+
+| Quantity | mask measurement | box proxy |
+| --- | --- | --- |
+| Instance area (mean px) | 144563 | 237206 |
+| Person-PPE intersection (mean px) | 26828 | 47281 |
+| Centroid vs box centre | median 16.0 px, P95 126.9 px, max 262.8 px | — |
+
+### Association: the honest result is that the box proxy is close
+
+Holding the model constant - S1's own boxes, so only the shape representation
+varies - across 173 person-PPE relationships at the frozen 0.50 containment
+floor: **103 agree, 3 box-only, 0 mask-only, 66 neither, 1 both-but-different-
+person**. At this floor the mask changes almost no association decision. The
+pipeline-level reading against the detector's boxes disagrees much more
+(81/7/6/62/17), but that is confounded - different model, different instances -
+and is reported as a separate question.
+
+**The frozen taxonomy turned out to be non-exhaustive.** Phase 10A froze four
+categories assuming a rule either associates or does not; two rules can both
+associate and pick *different* people, which none of the four describes. That
+state is recorded as a **coverage exception**
+(`BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON`,
+`UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY`), **not** as a fifth peer
+category, and it is excluded from the denominator the frozen percentages use.
+The phase 10A protocol itself was not modified.
+
+| Reading | classified | exceptions | total | coverage |
+| --- | --- | --- | --- | --- |
+| Geometry-isolating | 172 | 1 | 173 | 0.994220 |
+| Pipeline-level | 156 | 17 | 173 | 0.901734 |
+
+A different-person outcome is an **`ASSOCIATION_RULE_DISAGREEMENT`, not an
+error** - there is no association ground truth to be wrong against. And the 17
+pipeline-level exceptions must not be read as pure geometry: that comparison
+also changes the model and the instances.
+
+**No compliance claim is made anywhere.** There is no compliance ground truth
+in this project, so the association analysis reports agreement between two
+geometric rules and no accuracy. `VISIBLE_PPE_COVERAGE_PROXY` stays an
+`INTERPRETIVE_OPERATIONAL_PROXY` - it is the one frozen quantity whose
+definition is qualitative, and nothing here rests on it.
+
+```bash
+uv run python scripts/compare_detector_segmenter.py --preflight-only
 ```
 
 
