@@ -191,14 +191,13 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8F complete - the split is frozen, the holdout is locked, **the
-  final detector is FROZEN (D2, YOLO11n at imgsz 768)**, the segmentation adapter
-  is audited and approved, and **both S0 and S1 have been trained exactly once
-  and compared under the frozen canonical evaluator**
-  (`S1_CONTROLLED_EXPERIMENT_COMPLETE`). **No final segmenter is selected**
-  (`final_segmenter: UNSELECTED_PENDING_REVIEW`): the frozen rule produced a
-  classification, not a decision. Phase 8G has not started; do not start it
-  unprompted, and no further segmentation experiment is authorised.
+- **Phase:** 8G complete - the split is frozen, the holdout is locked, and
+  **both models are now FROZEN**: the detector is D2 (YOLO11n at imgsz 768) and
+  the segmenter is **S1 (YOLO11n-seg at imgsz 768 with `overlap_mask: false`)**,
+  `SEGMENTER_FROZEN`. Both selections rest entirely on validation evidence.
+  The modelling block is closed: do not train, retrain, tune or benchmark
+  anything unprompted. The next phase of actual work is the controlled
+  validation comparison of the two frozen models (roadmap phase 10).
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -783,6 +782,61 @@ uv run pytest
   evaluator and do not train an S2. Record hypotheses only. Selecting the final
   segmenter is a separate, reviewed human decision, exactly as phase 7D was for
   detection.
+- **The segmenter is FROZEN (phase 8G): S1, YOLO11n-seg at imgsz 768 with
+  `overlap_mask: false`.** `selection_status: FINAL_SELECTED`, `selection_method:
+  PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW`, `margin_classification:
+  S1_IMPROVES_S0_BEYOND_MARGIN`. Recorded in
+  `reports/final_segmenter_manifest.json` with `final_segmenter_sha256`
+  `63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7`. **The
+  selection is validation-only and says nothing about test performance.** S0 is
+  no longer a candidate - it is the reference experiment, not the project's
+  segmenter.
+- **Reach for the frozen segmenter only through
+  `construction_safety_vision.segmentation_freeze`.** It resolves by digest, not
+  by path: SHA-256
+  `29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20`, 6041685
+  bytes, with a byte-identical git-ignored copy at
+  `artifacts/frozen/segmentation/S1_best.pt` kept outside the run directory a
+  re-run would overwrite. A missing artifact is `BLOCKED_MISSING_MODEL_ARTIFACT`,
+  never a reason to train.
+- **S0's checkpoint is rejected BY DIGEST, and that matters more here than it did
+  for detection.** S0 and S1 are the same architecture at the same size, produced
+  by the same protocol, and their checkpoints are **the same number of bytes**.
+  What separates them is `overlap_mask` - what the model was trained to predict.
+  Loading `artifacts/segmentation/S0/weights/best.pt` expecting the frozen
+  segmenter would work, load without complaint and predict against a different
+  target. `overlap_mask` is therefore part of the recorded identity and of the
+  semantic fingerprint, and the accessor refuses S0's `d7b512b9...` and any
+  `last.pt`.
+- **The winner was derived, not asserted, and it must stay that way.**
+  `scripts/freeze_final_segmenter.py` reads both experiments' committed canonical
+  evaluations, recomputes the delta, and reapplies the frozen margin through
+  `classify_delta`. It names no experiment id as the answer, contains no
+  training, validation or inference call path, and both facts are asserted by
+  test. Never hardcode the winner.
+- **The gain is NOT uniform, and quoting the aggregate alone is the error.**
+  `person` +0.317316 carries most of it; **`helmet_loose` REGRESSED -0.059035**.
+  Selection did not require every class to improve - it required the predeclared
+  metric to clear the predeclared margin. Always report the regression alongside
+  the +0.074820.
+- **`person`'s improvement is `CONSISTENT_WITH_PHASE_8D_OVERLAP_TARGET_HYPOTHESIS`
+  and explicitly NOT `PROOF_OF_CAUSAL_MECHANISM`.** Phase 8D was
+  `POST_HOC_HYPOTHESIS_GENERATING`, and phase 8G ran no experiment. Never convert
+  the consistency into a causal claim, and never present the hypothesis as having
+  been predeclared.
+- **Phase 8G trained, evaluated, inferred and benchmarked NOTHING**, and its
+  artifacts record that as counts (`models_trained_in_this_phase: 0`,
+  `benchmarks_run: 0`). The freeze is idempotent: generating it twice produces
+  byte-identical semantic artifacts, which is why `frozen_copy.action` lives in
+  the provenance record rather than the manifest.
+- **No standardised latency, throughput or memory benchmark exists for either
+  model.** The detector-versus-segmenter operational comparison is still owed by
+  the project's scientific question and belongs to a later phase; the framework's
+  own validation speeds are descriptive and were not used in any selection.
+- **The roadmap's planned phase 9 was delivered by phases 8E-8G**, so the next
+  phase of actual work is phase 10, the controlled validation comparison of the
+  two frozen models. The roadmap is not renumbered, because earlier artifacts
+  reference these phase numbers; the discrepancy is recorded in it.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

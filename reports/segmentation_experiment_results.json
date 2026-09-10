@@ -1,4 +1,5 @@
 {
+  "binary_distribution_status": "LOCAL_IGNORED_FROZEN_ARTIFACT",
   "candidate_experiment": "S1",
   "composite_score": false,
   "cross_metric_direction": {
@@ -58,6 +59,7 @@
       "retrained_in_phase_8f": false,
       "revalidated_in_phase_8f": false,
       "role": "REFERENCE",
+      "selected": false,
       "status": "S0_COMPLETE"
     },
     {
@@ -101,24 +103,42 @@
       "retrained_in_phase_8f": true,
       "revalidated_in_phase_8f": true,
       "role": "CANDIDATE",
+      "selected": true,
       "status": "S1_CONTROLLED_EXPERIMENT_COMPLETE"
     }
   ],
-  "final_segmenter": "UNSELECTED_PENDING_REVIEW",
-  "final_segmenter_note": "The frozen rule produces a classification, not a frozen segmenter. Selecting the project's final segmenter remains a reviewed human decision, exactly as phase 7D was for detection.",
+  "final_segmenter": "S1",
+  "final_segmenter_manifest": "reports/final_segmenter_manifest.json",
+  "final_segmenter_note": "Selected by the predeclared canonical policy and accepted by human review. Selection is validation-only; no test number exists.",
+  "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+  "final_selected_experiment": "S1",
   "further_experiments_authorised": 0,
   "holdout_accessed": false,
+  "human_review": {
+    "confirms_policy_result": true,
+    "note": "The frozen policy produced the classification mechanically from committed artifacts; human review accepted it. Had the derived classification differed from the reviewed decision, this phase would have stopped rather than record a selection the evidence does not support.",
+    "overrides_policy_result": false,
+    "status": "HUMAN_REVIEWED_AND_ACCEPTED"
+  },
   "margin": 0.005,
+  "margin_classification": "S1_IMPROVES_S0_BEYOND_MARGIN",
   "native_metric_status": "NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION",
-  "pending_human_review": true,
-  "phase": "8F",
+  "pending_human_review": false,
+  "phase": "8G",
+  "preferred_experiment": "S1",
   "primary_comparison_status": "COMPUTED",
   "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
   "reference_experiment": "S0",
+  "regressed_supported_classes": [
+    "helmet_loose"
+  ],
   "schema_version": 1,
+  "selected_checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+  "selection_method": "PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW",
+  "selection_status": "FINAL_SELECTED",
   "task": "segmentation",
   "test": {
-    "reason": "Phase 8F trained S1 on the frozen train split, validated it on the frozen validation split, and ran the canonical COCO evaluation and the direct mask-IoU diagnostic on that same validation split. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, label, prediction or statistic exists in any artifact this phase wrote, and the dataset descriptor the framework read carries no holdout key.",
+    "reason": "Phase 8G selected and froze the final segmenter from artifacts that already existed. It trained nothing, evaluated nothing and ran no inference. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, label, prediction or statistic exists in any artifact this phase wrote.",
     "status": "PROTECTED_NOT_ACCESSED"
   }
 }

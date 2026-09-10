@@ -863,12 +863,24 @@ def test_the_live_results_artifact_records_both_experiments(manifest: dict, resu
     assert results["composite_score"] is False
 
 
-def test_no_final_segmenter_is_selected(manifest: dict, results: dict) -> None:
-    """Running an experiment produces a classification, not a decision."""
+def test_phase_8f_itself_selected_nothing(manifest: dict, results: dict) -> None:
+    """Running an experiment produces a classification, not a decision.
+
+    This originally also asserted that the live results artifact still carried
+    no selection. Phase 8G has since frozen S1 as the final segmenter under the
+    policy phase 8E froze, so that assertion would now fail for an authorised
+    reason, and the live artifact is by design the place the selection lands.
+    What it was protecting - that **S1's own result manifest** claims no
+    selection and leaves the decision to a reviewed human one - is asserted here
+    directly, and is unaffected by a later phase.
+    """
     assert manifest["final_segmenter"] == FINAL_SEGMENTER
-    assert results["final_segmenter"] == FINAL_SEGMENTER
     assert manifest["pending_human_review"] is True
-    assert results["pending_human_review"] is True
+    assert manifest["models_trained_in_this_phase"] == 1
+    assert "not a frozen segmenter" in manifest["final_segmenter_note"]
+    # The live artifact is shared state that phase 8G updates. All that phase 8F
+    # requires of it is that it still describes the same two experiments.
+    assert {row["experiment_id"] for row in results["experiments"]} == {"S0", "S1"}
     assert results["further_experiments_authorised"] == 0
 
 

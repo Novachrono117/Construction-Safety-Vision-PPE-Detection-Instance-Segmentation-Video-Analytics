@@ -1,0 +1,344 @@
+{
+  "batch": 8,
+  "benchmarks_run": 0,
+  "best_epoch": 77,
+  "binary_distribution_status": "LOCAL_IGNORED_FROZEN_ARTIFACT",
+  "canonical_all_class": {
+    "candidate_map50": 0.634023,
+    "candidate_map50_95": 0.455034,
+    "delta_map50_95": 0.067025,
+    "is_not_the_selection_metric": true,
+    "reference_map50": 0.537536,
+    "reference_map50_95": 0.388009
+  },
+  "canonical_evaluator_sha256": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+  "canonical_per_class_comparison": {
+    "helmet_loose": {
+      "S0_AP@0.50": 0.891599,
+      "S0_AP@0.50:0.95": 0.793946,
+      "S1_AP@0.50": 0.852829,
+      "S1_AP@0.50:0.95": 0.734911,
+      "delta_AP@0.50": -0.03877,
+      "delta_AP@0.50:0.95": -0.059035,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "helmet_on_head": {
+      "S0_AP@0.50": 0.793362,
+      "S0_AP@0.50:0.95": 0.609345,
+      "S1_AP@0.50": 0.804906,
+      "S1_AP@0.50:0.95": 0.637685,
+      "delta_AP@0.50": 0.011544,
+      "delta_AP@0.50:0.95": 0.02834,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "person": {
+      "S0_AP@0.50": 0.309623,
+      "S0_AP@0.50:0.95": 0.135036,
+      "S1_AP@0.50": 0.716194,
+      "S1_AP@0.50:0.95": 0.452352,
+      "delta_AP@0.50": 0.406571,
+      "delta_AP@0.50:0.95": 0.317316,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "vest_loose": {
+      "S0_AP@0.50": 0.007173,
+      "S0_AP@0.50:0.95": 0.001474,
+      "S1_AP@0.50": 0.12602,
+      "S1_AP@0.50:0.95": 0.037319,
+      "delta_AP@0.50": 0.118847,
+      "delta_AP@0.50:0.95": 0.035845,
+      "status": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "supported": false
+    },
+    "vest_on_body": {
+      "S0_AP@0.50": 0.685925,
+      "S0_AP@0.50:0.95": 0.400246,
+      "S1_AP@0.50": 0.670165,
+      "S1_AP@0.50:0.95": 0.412905,
+      "delta_AP@0.50": -0.01576,
+      "delta_AP@0.50:0.95": 0.012659,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    }
+  },
+  "checkpoint_selection_policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+  "comparison": {
+    "candidate_experiment": "S1",
+    "candidate_supported_macro": 0.559463,
+    "delta": 0.07482,
+    "derived_from": "COMMITTED_CANONICAL_EVALUATION_ARTIFACTS_ONLY",
+    "margin": 0.005,
+    "margin_is_not_a_significance_test": true,
+    "predictions_recomputed": false,
+    "recomputed_in_this_phase": true,
+    "reference_experiment": "S0",
+    "reference_supported_macro": 0.484643,
+    "verdict": "S1_IMPROVES_S0_BEYOND_MARGIN"
+  },
+  "comparison_policy_sha256": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+  "dataset_fingerprints": {
+    "adapter": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "canonical_task_manifest_sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "validation_annotations_sha256": "e674c5df27eee3e43c6ca4249b17c541967435196151b64ceb0d351131c8098e"
+  },
+  "detector_touched": false,
+  "direct_iou_comparison": {
+    "candidate": {
+      "gt_iou50_coverage": 0.707237,
+      "gt_iou75_coverage": 0.595395,
+      "gt_match_coverage": 0.799342,
+      "gt_normalized_mask_iou": 0.635356,
+      "matched_mask_iou_mean": 0.794849
+    },
+    "composite_created": false,
+    "deltas": {
+      "gt_iou50_coverage": 0.118421,
+      "gt_iou75_coverage": 0.134869,
+      "gt_match_coverage": 0.023026,
+      "gt_normalized_mask_iou": 0.078379,
+      "matched_mask_iou_mean": 0.077387
+    },
+    "does_not_rank": true,
+    "label": "SECONDARY_CANONICAL_DIAGNOSTIC",
+    "protocol": "UNCHANGED_PHASE_8C_PROTOCOL",
+    "reference": {
+      "gt_iou50_coverage": 0.588816,
+      "gt_iou75_coverage": 0.460526,
+      "gt_match_coverage": 0.776316,
+      "gt_normalized_mask_iou": 0.556977,
+      "matched_mask_iou_mean": 0.717462
+    },
+    "status": "CROSS_METRIC_DIRECTION_CONSISTENT"
+  },
+  "epochs": 100,
+  "experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+  "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+  "frozen_copy": {
+    "committed": false,
+    "immutable": true,
+    "note": "A byte-identical copy of the selected checkpoint, kept outside the training run's output directory so that re-running an experiment cannot overwrite the frozen model. Git-ignored: the repository commits the record, not the binary.",
+    "relative_path": "artifacts/frozen/segmentation/S1_best.pt",
+    "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "size_bytes": 6041685
+  },
+  "frozen_detector": {
+    "benchmarked": false,
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "selected_experiment": "D2",
+    "status": "UNCHANGED_DETECTION_BLOCK_CLOSED",
+    "trained": false,
+    "validated": false
+  },
+  "historical_artifact_digests": {
+    "configs/segmentation_baseline.yaml": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+    "configs/segmentation_canonical_evaluation.yaml": "7f560d751a55c36d72b1ef59b18eb72e4682b931095261298a160224917b8b44",
+    "configs/segmentation_comparison.yaml": "b7f5d174d6bedb40106521adaf950b74353b7d08c38fdf930281513e60b4de45",
+    "configs/segmentation_mask_iou_evaluation.yaml": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+    "reports/detection_experiment_results.json": "ade35948f9c962a2679b18660d0aac6ab9273e9b34f69eba0d541aff9bf5f79e",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "reports/segmentation_S0_canonical_evaluation.json": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+    "reports/segmentation_S0_error_analysis.json": "a1eae1b7f3d719859e125318bae553bf4cef8b958aa690255767f1e4d6abf82e",
+    "reports/segmentation_S0_error_analysis.md": "b0bca820072448dad012df95614b1c23e22c77d002f032d01595b62ed8c0b01b",
+    "reports/segmentation_S0_error_instances.csv": "16b754bb689ba635999f552dec7063e7be3382ae7fafc3a10d4c06335525724d",
+    "reports/segmentation_S0_manifest.json": "09f6ddc9a08bc66e48d5deac49c1734dad89e0bd564afd92168b3518407d0ce9",
+    "reports/segmentation_S0_mask_iou.json": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+    "reports/segmentation_S0_protocol.md": "d84717b2ffae0707b32330db35c6298f0966dc74acb9473f7d1d6169cb1945d9",
+    "reports/segmentation_S0_report.md": "6170b7dbe6ea99c8fbd170abbac430311110f5871bcab9327ca1fed0860191d8",
+    "reports/segmentation_S0_result_manifest.json": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+    "reports/segmentation_S1_canonical_evaluation.json": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1",
+    "reports/segmentation_S1_mask_iou.json": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d",
+    "reports/segmentation_S1_protocol.md": "8f3dcd808e326ba948c5b9bcd3ff9847fd72c494c91f91a51e6c122147c7ed23",
+    "reports/segmentation_S1_protocol_manifest.json": "b4b4d4243f44c1d57baf147e4a129c20c48d9090d3133a7c6a0754e42a647f96",
+    "reports/segmentation_S1_report.md": "66ec166c835d3e3a2bb3cb4b5e0ecd1a8ffd3df9cfee88cbe8eb092f05735210",
+    "reports/segmentation_S1_result_manifest.json": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723",
+    "reports/segmentation_adapter_approval.json": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+    "reports/segmentation_adapter_audit_manifest.json": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "reports/segmentation_adapter_fidelity.csv": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+    "reports/segmentation_adapter_fidelity_report.md": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83",
+    "reports/segmentation_canonical_comparison_reference.md": "a7d234bb0a87e77ca9e0ec2913edabba6d25753403eda742abcebbe739516bef",
+    "reports/segmentation_comparison_policy.json": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+    "reports/segmentation_comparison_policy.md": "645f29126aa4279a364d4ff60483a6381e39a5be765ff6297634d7ba44a35388"
+  },
+  "historical_artifacts_unchanged": true,
+  "holdout_accessed": false,
+  "human_review": {
+    "confirms_policy_result": true,
+    "note": "The frozen policy produced the classification mechanically from committed artifacts; human review accepted it. Had the derived classification differed from the reviewed decision, this phase would have stopped rather than record a selection the evidence does not support.",
+    "overrides_policy_result": false,
+    "status": "HUMAN_REVIEWED_AND_ACCEPTED"
+  },
+  "imgsz": 768,
+  "inference_run_in_this_phase": false,
+  "limitations": [
+    "Every figure is a validation figure. Nothing here says anything about test performance, and the holdout has never been evaluated.",
+    "One run per experiment. Run-to-run variance on this setup is UNKNOWN, and the 0.005 margin is an engineering threshold rather than a significance test.",
+    "The comparison policy was frozen after S0 ran (POST_S0_PRE_S1_PROTOCOL_FREEZE), unlike phase 7A's, which predated its candidates. No S1 number influenced any rule.",
+    "Both checkpoints were selected by the same native fitness rule computed against different targets, because overlap_mask reshapes the target. That is why the decision was made externally against canonical COCO masks.",
+    "The aggregate gain is not uniform: person carries most of it and helmet_loose regressed. Why any individual class moved is UNKNOWN.",
+    "No standardised latency or throughput benchmark has been run for either model."
+  ],
+  "margin_classification": "S1_IMPROVES_S0_BEYOND_MARGIN",
+  "mask_ratio": 4,
+  "model": "YOLO11n-seg",
+  "models_evaluated_in_this_phase": 0,
+  "models_trained_in_this_phase": 0,
+  "native_metrics_comparison": {
+    "candidate": {
+      "box": {
+        "mAP@0.50": 0.727308,
+        "mAP@0.50:0.95": 0.518779,
+        "precision": 0.781121,
+        "recall": 0.633628
+      },
+      "mask": {
+        "mAP@0.50": 0.663319,
+        "mAP@0.50:0.95": 0.458206,
+        "precision": 0.719937,
+        "recall": 0.599587
+      },
+      "supported_macro": 0.549273
+    },
+    "reference": {
+      "box": {
+        "mAP@0.50": 0.647256,
+        "mAP@0.50:0.95": 0.478156,
+        "precision": 0.88616,
+        "recall": 0.552147
+      },
+      "mask": {
+        "mAP@0.50": 0.57983,
+        "mAP@0.50:0.95": 0.407942,
+        "precision": 0.850509,
+        "recall": 0.528435
+      },
+      "supported_macro": 0.509482
+    },
+    "status": "NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION",
+    "used_to_arbitrate": false,
+    "why_not_used": "overlap_mask changes the framework's validation ground truth as well as its training target, so the two experiments' native mask AP is measured against different targets. The figures are reported in full for each model against its own target and are never differenced."
+  },
+  "next_phase": "PHASE_9_DETECTOR_VERSUS_SEGMENTER_OPERATIONAL_COMPARISON",
+  "one_variable_contract": {
+    "candidate_value": false,
+    "fields_verified_identical": [
+      "adapter_fingerprints",
+      "batch",
+      "checkpoint_policy",
+      "class_map_sha256",
+      "epochs",
+      "imgsz",
+      "mask_ratio",
+      "model",
+      "pretrained_weight_sha256",
+      "seed",
+      "split_assignment_sha256"
+    ],
+    "intentional_field": "overlap_mask",
+    "one_variable": true,
+    "reference_value": true,
+    "verified_against": "EACH_EXPERIMENTS_OWN_COMMITTED_EFFECTIVE_CONFIGURATION"
+  },
+  "overlap_mask": false,
+  "person_diagnostic": {
+    "candidate_AP@0.50:0.95": 0.452352,
+    "class": "person",
+    "delta_AP@0.50:0.95": 0.317316,
+    "largest_canonical_improvement": true,
+    "mechanism_is_not": "PROOF_OF_CAUSAL_MECHANISM",
+    "mechanism_status": "CONSISTENT_WITH_PHASE_8D_OVERLAP_TARGET_HYPOTHESIS",
+    "note": "person showed the largest canonical improvement, which is consistent with the phase 8D overlap-target observation. Phase 8D was POST_HOC_HYPOTHESIS_GENERATING and this phase ran no experiment to test the mechanism, so the consistency is not converted into a causal claim and the hypothesis is not retroactively presented as predeclared.",
+    "reference_AP@0.50:0.95": 0.135036,
+    "selected_the_model": false
+  },
+  "phase": "8G",
+  "practical_equivalence_margin": 0.005,
+  "pretrained_weights": {
+    "committed": false,
+    "identifier": "yolo11n-seg.pt",
+    "relative_path": "artifacts/weights/yolo11n-seg.pt",
+    "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+    "size_bytes": 6182636,
+    "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+    "ultralytics_version": "8.4.138"
+  },
+  "primary_selection_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+  "primary_selection_metric_label": "CANONICAL_PRIMARY_METRIC",
+  "rare_class": {
+    "candidate_AP@0.50:0.95": 0.037319,
+    "delta_AP@0.50:0.95": 0.035845,
+    "in_supported_macro": false,
+    "limitation": "vest_loose holds one validation source image and eight instances under the frozen split. Its movement is reported for completeness and took no part in the selection.",
+    "may_decide_anything": false,
+    "name": "vest_loose",
+    "reference_AP@0.50:0.95": 0.001474,
+    "reported_in_full": true,
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+  },
+  "reference_experiment_sha256": "1761007ab1fd3937a56a870618c11115307988f2031598980e8dfea0e218f7bc",
+  "regression_note": {
+    "deltas": {
+      "helmet_loose": -0.059035
+    },
+    "detail": "Selection does not require every class to improve. The primary metric is an unweighted mean over the admitted classes and it moved beyond the margin, while these supported classes moved the other way. The trade-off is recorded here and in the selection report rather than left inside the mean.",
+    "regressed_supported_classes": [
+      "helmet_loose"
+    ],
+    "why_it_moved": "UNKNOWN",
+    "why_unknown": "The experiment varied one flag and measured the outcome. It tested no per-class mechanism, and one run cannot separate a per-class movement from run-to-run variance, which on this setup is UNKNOWN because nothing was repeated."
+  },
+  "rejected_checkpoints": {
+    "last_pt_reason": "The final epoch's weights are not the checkpoint the predeclared native rule selected.",
+    "last_pt_rejected": true,
+    "reason": "S0 was trained with overlap_mask=True and predicts a different target. Its checkpoint is the same architecture and the same number of bytes as the selected one, so it is rejected by digest rather than by inspection.",
+    "reference_experiment": "S0",
+    "reference_experiment_checkpoint_sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3"
+  },
+  "repository_contains_model_binary": false,
+  "schema_version": 1,
+  "seed": 42,
+  "selected_checkpoint": {
+    "committed": false,
+    "is_best_not_last": true,
+    "relative_path": "artifacts/segmentation/S1/weights/best.pt",
+    "selected_by": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "size_bytes": 6041685
+  },
+  "selected_experiment": "S1",
+  "selection_method": "PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW",
+  "selection_rationale": [
+    "S1 improves S0 on the primary canonical metric by +0.074820, which clears the frozen practical-equivalence margin of 0.005.",
+    "The improvement is roughly 15.0x the engineering margin, so the verdict does not rest on a value near the boundary. The margin remains a threshold, not a significance test.",
+    "Canonical all-class mAP@0.50:0.95 moves in the same favourable direction (+0.067025), so the selection metric and the mandatory all-class figure do not disagree.",
+    "The secondary canonical diagnostic moves the same way: GT-normalised direct mask IoU +0.078379, giving CROSS_METRIC_DIRECTION_CONSISTENT.",
+    "Native framework AP was not used to arbitrate, because overlap_mask changes the native validation target and the two experiments' native numbers are therefore measured against different ground truth.",
+    "Trade-off, recorded rather than hidden: helmet_loose regressed -0.059035. Selection does not require every class to improve, and why any individual class moved is UNKNOWN."
+  ],
+  "selection_status": "FINAL_SELECTED",
+  "split_reference": {
+    "manifest": "reports/split_manifest.json",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+    "splits_used": [
+      "train",
+      "validation"
+    ]
+  },
+  "status": "FROZEN",
+  "task": "instance_segmentation",
+  "test": {
+    "reason": "Phase 8G selected and froze the final segmenter from artifacts that already existed. It trained nothing, evaluated nothing and ran no inference. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, label, prediction or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "thresholds_tuned": 0
+}

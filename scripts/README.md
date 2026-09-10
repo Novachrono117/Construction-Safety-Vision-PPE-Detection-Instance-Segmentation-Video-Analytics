@@ -40,6 +40,7 @@ undocumented one-off shell invocation.
 | `analyze_segmentation_errors.py` | 8D | Attribute S0's validation errors one canonical instance at a time, from a frozen taxonomy and a deterministic review set. Trains nothing, re-validates nothing and selects nothing. |
 | `freeze_segmentation_comparison.py` | 8E | Freeze the canonical COCOeval protocol, evaluate S0 under it exactly once, freeze S1 as a one-variable `overlap_mask` change, and size its batch. Trains nothing. |
 | `train_segmentation_comparison.py` | 8F | Run S1 exactly once under the frozen phase 8E protocol, validate it natively once, evaluate it under the canonical evaluator once, and run the phase 8C direct mask-IoU diagnostic once. Reads S0, never re-runs it, and selects no final segmenter. |
+| `freeze_final_segmenter.py` | 8G | Apply the frozen phase 8E policy to the committed S0 and S1 results, record the human-reviewed selection, and freeze the selected checkpoint's identity. Trains nothing, evaluates nothing and runs no inference. |
 
 ## Rules
 
@@ -532,6 +533,31 @@ rather than trusted. `--validate-only` re-runs all four against the committed
 artifacts.
 
 `--verify-only` runs every precondition and writes nothing.
+
+`freeze_final_segmenter.py` (phase 8G) selects and freezes the project's
+segmenter. It **trains nothing, evaluates nothing and runs no inference** - a
+test asserts the script contains no such call path, because a freeze that could
+train is a freeze that might.
+
+**The winner is derived, not asserted.** Both primary figures are read out of
+each experiment's own committed canonical evaluation, the delta is recomputed,
+and the frozen margin is reapplied by the same function the policy names. No
+experiment id appears in the script as the answer, and a test asserts that too.
+Human review **confirms** the derived result; if the arithmetic said anything
+else, the script stops as `INVALID_SELECTION_STATE` rather than record a
+selection the evidence does not support.
+
+**The checkpoint is frozen by digest.** The runtime file is verified against the
+committed manifest before anything is written, and a byte-identical copy is
+placed outside the run directory a re-run would overwrite. An existing frozen
+copy holding different bytes stops the phase rather than being replaced.
+
+**Two wrong checkpoints are rejected by identity.** S0's `best.pt` and any
+`last.pt`. S0 and S1 are the same architecture, the same size and the same
+number of bytes, differing only in what they were trained to predict, so a
+digest check is the only thing that separates them.
+
+`--verify-only` derives the comparison and writes nothing.
 
 ## Planned scripts
 

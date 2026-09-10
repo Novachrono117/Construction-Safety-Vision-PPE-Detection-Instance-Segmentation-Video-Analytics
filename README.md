@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detector frozen - YOLO11n @ 768; S0 and S1 both trained once and compared under a canonical evaluator (phase 8F of 14 complete). No final segmenter is selected.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1). Phase 8G of 14 complete; the holdout has still never been evaluated.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -35,9 +35,10 @@
 > under the margin frozen before the run, with the direct-IoU diagnostic moving
 > the same way. **The aggregate is not a uniform effect**: `person` carries 88.6%
 > of the gain while `helmet_loose` **regressed** -0.059035, and why any
-> individual class moved is UNKNOWN. **No final segmenter is selected**
-> (`UNSELECTED_PENDING_REVIEW`) - the frozen rule produces a classification, not
-> a decision.
+> individual class moved is UNKNOWN. Phase 8G applied the frozen policy
+> mechanically and, after human review, **froze S1 - YOLO11n-seg at imgsz 768
+> with `overlap_mask: false` - as the final segmenter**. Both frozen models were
+> selected on validation evidence alone.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -137,7 +138,9 @@ Two design decisions define this architecture:
 | S0-vs-S1 comparison | **Computed (phase 8F).** Canonical supported macro: S0 0.484643 -> S1 **0.559463**, delta **+0.074820**, `S1_IMPROVES_S0_BEYOND_MARGIN` at the frozen 0.005 margin. Direct GT-normalised mask IoU 0.556977 -> **0.635356**; `CROSS_METRIC_DIRECTION_CONSISTENT`. |
 | S1 per-class movement | `person` **+0.317316** (88.6% of the total gain), `helmet_on_head` +0.028340, `vest_on_body` +0.012659, `helmet_loose` **-0.059035** (a supported class regressed). `vest_loose` +0.035845 stays `DESCRIPTIVE_HIGH_UNCERTAINTY` and decides nothing. |
 | S1 native metrics | Reported, **demoted**: mask mAP@0.50:0.95 0.458206, box 0.518779. `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` - `overlap_mask` reshapes the native validation target, so S0's and S1's native AP are never differenced. |
-| Final segmenter | **Not selected.** `UNSELECTED_PENDING_REVIEW`. The frozen policy produced a classification; choosing the project's segmenter remains a reviewed human decision, exactly as phase 7D was for detection. |
+| Final segmenter | **Frozen (phase 8G): S1 - YOLO11n-seg @ imgsz 768, `overlap_mask: false`.** `SEGMENTER_FROZEN`, `PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW`. Selection is **validation-only**; no test number exists. |
+| Final segmenter artifact | `reports/final_segmenter_manifest.json` · `final_segmenter_sha256` `63ef4196...`. Checkpoint `29337d67...` (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain the weights rather than retrain. S0's checkpoint and any `last.pt` are rejected **by digest**. |
+| Segmenter trade-off | Published, not buried: `person` +0.317316 carries most of the gain, `helmet_loose` **regressed** -0.059035. Selection does not require every class to improve. Why any class moved is UNKNOWN. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
@@ -1352,6 +1355,48 @@ no threshold tuned, no metric added, no composite score.
 ```bash
 uv run python scripts/train_segmentation_comparison.py --verify-only
 uv run python scripts/train_segmentation_comparison.py --validate-only
+```
+
+
+## Phase 8G - freezing the segmenter
+
+**Nothing was trained, evaluated or inferred.** Phase 8G reads the committed S0
+and S1 artifacts, re-derives the comparison arithmetically, records the human
+review that accepted the policy's answer, and freezes the selected checkpoint's
+identity.
+
+**The winner is derived, not asserted.** Both primary figures are read out of
+each experiment's own canonical evaluation, the delta is recomputed, and the
+frozen 0.005 margin is reapplied by the same function the policy names. No
+experiment id appears in the freeze script as the answer, and a test asserts
+that. Human review **confirms** the policy result; it does not override it, and
+the script stops rather than record a selection the arithmetic does not
+support.
+
+**Selected: S1** - YOLO11n-seg, imgsz 768, batch 8, `mask_ratio` 4,
+**`overlap_mask: false`**, best epoch 77. The primary metric moved 0.484643 ->
+**0.559463**, a delta of **+0.074820**, roughly 15x the engineering margin; the
+all-class canonical figure and the direct-IoU diagnostic both move the same way.
+
+**The trade-off is in the manifest and the report.** `helmet_loose` regressed
+-0.059035 while the aggregate rose, and `person` (+0.317316) carries most of the
+gain. Selection does not require every class to improve - it requires the
+predeclared metric to clear the predeclared margin. Why any individual class
+moved is **UNKNOWN**, and the `person` result is recorded as
+`CONSISTENT_WITH_PHASE_8D_OVERLAP_TARGET_HYPOTHESIS`, explicitly **not** as
+proof of the mechanism.
+
+**One rejection is specific to segmentation.** S0 and S1 are the same
+architecture at the same size, produced by the same protocol, and their
+checkpoints are the same number of bytes. What separates them is
+`overlap_mask` - what the model was trained to predict. Loading S0's weights
+expecting the frozen segmenter would work, load without complaint, and predict
+against a different target. So `overlap_mask` is part of the recorded identity
+and of the semantic fingerprint, and the accessor rejects S0's checkpoint **by
+digest**, alongside any `last.pt`.
+
+```bash
+uv run python scripts/freeze_final_segmenter.py --verify-only
 ```
 
 
