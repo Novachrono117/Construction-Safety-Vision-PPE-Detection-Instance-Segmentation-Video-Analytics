@@ -1,6 +1,7 @@
-"""Run primitives for the S0 segmentation experiment.
+"""Run primitives for the project's segmentation experiments.
 
-Phase 8C. Sibling of :mod:`construction_safety_vision.detection_run`, which
+Phase 8C for S0, extended in phase 8F for S1. Sibling of
+:mod:`construction_safety_vision.detection_run`, which
 already supplies everything the two tasks share - pretrained-weight
 fingerprinting, runtime facts, framework log capture and optimizer evidence -
 and is imported rather than copied.
@@ -35,6 +36,7 @@ from __future__ import annotations
 
 import csv
 import os
+import re
 import shutil
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -433,3 +435,216 @@ def copy_metric_figures(figures_directory: Path, sources: Sequence[Path]) -> lis
         shutil.copy2(source, figures_directory / source.name)
         copied.append(source.name)
     return sorted(copied)
+
+
+# --- run reporting, shared from phase 8F onwards --------------------------------
+#
+# Phase 8C's ``scripts/train_segmentation_baseline.py`` carries its own copies of
+# the functions below. They are lifted here rather than imported from there
+# because a script is not importable, and phase 8C's script is deliberately left
+# alone: it produced S0's committed evidence, S0 is never re-run, and putting a
+# newer implementation under its name would risk an untested change beneath
+# published numbers. Same reasoning, same classification (``LOW``) and same
+# resolution as the phase 8B note above: a later cleanup phase, never an
+# experiment phase.
+
+METRIC_PRECISION = 6
+"""Decimal places every reported metric is rounded to."""
+
+NOT_EXPOSED = "NOT_EXPOSED_RELIABLY"
+"""Recorded where the installed framework does not expose a value dependably."""
+
+EPOCH_TIME_COLUMN = "time"
+"""Cumulative training seconds, as ``results.csv`` names it."""
+
+REDACTED_PATH = "EXTERNAL_ABSOLUTE_PATH_REDACTED"
+"""Stand-in for an absolute path that lies outside the repository."""
+
+_DRIVE_LETTER_PATH = re.compile(r"^[A-Za-z]:/")
+_EXTERNAL_PREFIXES = ("/home/", "/Users/", "/root/", "//")
+
+SUMMARY_PATTERN = re.compile(
+    r"summary(?P<fused>\s*\(fused\))?:\s*(?P<layers>[\d,]+)\s+layers,\s*"
+    r"(?P<parameters>[\d,]+)\s+parameters.*?(?P<gflops>[\d.]+)\s+GFLOPs"
+)
+"""The framework's own model summary line.
+
+Parsed with a regex rather than by splitting on commas: the counts carry
+thousands separators, so ``2,843,583 parameters`` splits into three fields and a
+naive parser silently records 543.
+"""
+
+EPOCHS_COMPLETED_PATTERN = re.compile(r"(\d+) epochs completed in ([\d.]+) hours")
+"""The framework's end-of-training line, used to corroborate the duration."""
+
+
+def relativise(value: Any, root: Path) -> Any:
+    """Strip machine-specific absolute paths out of a recorded value.
+
+    Ultralytics records absolute paths for ``model``, ``data`` and its output
+    directories, and those name this machine and this user. A committed artifact
+    must not, so a path under the repository root becomes repository-relative and
+    anything else absolute becomes a sentinel.
+
+    Args:
+        value: A recorded configuration value.
+        root: Repository root.
+
+    Returns:
+        The value, with any absolute path rewritten.
+    """
+    if not isinstance(value, str):
+        return value
+    text = value.replace("\\", "/")
+    base = str(root).replace("\\", "/").rstrip("/")
+    if text.startswith(base + "/"):
+        return text[len(base) + 1 :]
+    if _DRIVE_LETTER_PATH.match(text) or text.startswith(_EXTERNAL_PREFIXES):
+        return REDACTED_PATH
+    return value
+
+
+def rounded(value: Any) -> Any:
+    """Round a metric to the reported precision, passing non-numbers through.
+
+    Args:
+        value: A metric or a sentinel.
+
+    Returns:
+        The rounded value, or the input unchanged.
+    """
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return round(float(value), METRIC_PRECISION)
+    return value
+
+
+def resolved_training_arguments(run_directory: Path, root: Path) -> dict[str, Any]:
+    """Read the arguments the framework recorded for a run.
+
+    Args:
+        run_directory: The run's output directory.
+        root: Repository root, for path rewriting.
+
+    Returns:
+        The parsed ``args.yaml``, or an empty mapping when absent.
+    """
+    import yaml
+
+    path = run_directory / "args.yaml"
+    if not path.is_file():
+        return {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(data, Mapping):
+        return {}
+    return {key: relativise(value, root) for key, value in data.items()}
+
+
+def model_complexity(log_text: str) -> dict[str, Any]:
+    """Read parameter, layer and FLOP counts out of the framework's summary lines.
+
+    Both the unfused training model and the fused inference model are recorded:
+    they differ, and quoting one as the other would misstate the model.
+
+    Args:
+        log_text: Captured framework log.
+
+    Returns:
+        The counts, with ``None`` where the line was absent.
+    """
+    found: dict[str, dict[str, Any]] = {}
+    for match in SUMMARY_PATTERN.finditer(log_text):
+        key = "fused" if match.group("fused") else "unfused"
+        found.setdefault(
+            key,
+            {
+                "layers": int(match.group("layers").replace(",", "")),
+                "parameters": int(match.group("parameters").replace(",", "")),
+                "gflops": float(match.group("gflops")),
+            },
+        )
+    unfused = found.get("unfused", {})
+    fused = found.get("fused", {})
+    return {
+        "parameters": unfused.get("parameters"),
+        "layers": unfused.get("layers"),
+        "gflops": unfused.get("gflops"),
+        "fused_parameters": fused.get("parameters"),
+        "fused_layers": fused.get("layers"),
+        "fused_gflops": fused.get("gflops"),
+        "source": "FRAMEWORK_MODEL_SUMMARY_LINE",
+    }
+
+
+def training_duration(history: Sequence[Mapping[str, str]], log_text: str) -> dict[str, Any]:
+    """Recover a training run's duration from artifacts that are on disk.
+
+    Deliberately not taken from a wall-clock timer held in the running process:
+    a figure that cannot be pointed at a file is a figure a reader cannot check.
+    ``results.csv`` carries the framework's own cumulative time, and the log line
+    corroborates it independently.
+
+    Args:
+        history: Parsed ``results.csv`` rows.
+        log_text: Captured framework log.
+
+    Returns:
+        The duration and where each figure came from.
+    """
+    cumulative = None
+    if history and EPOCH_TIME_COLUMN in history[-1]:
+        try:
+            cumulative = round(float(history[-1][EPOCH_TIME_COLUMN]), 3)
+        except (TypeError, ValueError):
+            cumulative = None
+    match = EPOCHS_COMPLETED_PATTERN.search(log_text)
+    return {
+        "training_seconds": cumulative,
+        "training_seconds_source": "FRAMEWORK_RESULTS_CSV_CUMULATIVE_TIME",
+        "framework_reported_hours": float(match.group(2)) if match else None,
+        "framework_reported_epochs": int(match.group(1)) if match else None,
+        "framework_reported_source": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE",
+    }
+
+
+def summarise_curves(history: Sequence[Mapping[str, str]], best_epoch: int) -> dict[str, Any]:
+    """Describe the training dynamics without opening a single image.
+
+    Args:
+        history: Parsed ``results.csv`` rows.
+        best_epoch: The epoch the frozen rule selected.
+
+    Returns:
+        Loss endpoints, the fitness trajectory and where the best epoch sits.
+    """
+    if not history:
+        return {}
+    columns = [name for name in history[0] if name.startswith(("train/", "val/", "lr/"))]
+    first, last = history[0], history[-1]
+
+    def value(row: Mapping[str, str], name: str) -> Any:
+        try:
+            return round(float(row[name]), METRIC_PRECISION)
+        except (KeyError, TypeError, ValueError):
+            return NOT_EXPOSED
+
+    curve = native_fitness_curve(history)
+    tail = [item for epoch, item in curve if epoch > best_epoch]
+    best = max((item for _, item in curve), default=None)
+    return {
+        "epochs_logged": len(history),
+        "loss_and_lr_columns": sorted(columns),
+        "first_epoch": {name: value(first, name) for name in sorted(columns)},
+        "last_epoch": {name: value(last, name) for name in sorted(columns)},
+        "native_fitness_first": round(curve[0][1], METRIC_PRECISION) if curve else None,
+        "native_fitness_last": round(curve[-1][1], METRIC_PRECISION) if curve else None,
+        "native_fitness_best": round(best, METRIC_PRECISION) if best is not None else None,
+        "best_epoch": best_epoch,
+        "epochs_after_best": len(tail),
+        "improved_after_best": bool(
+            best is not None and tail and max(tail) > best + FITNESS_TOLERANCE
+        ),
+        "observation": (
+            "Read from results.csv only. No validation image was opened: image-level error "
+            "analysis is a later, deliberate phase and starting it here would pre-empt it."
+        ),
+    }

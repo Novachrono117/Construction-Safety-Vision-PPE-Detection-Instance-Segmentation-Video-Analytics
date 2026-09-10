@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: detector frozen - YOLO11n @ 768; S0 trained and diagnosed, canonical comparison protocol and S1 frozen (phase 8E of 14 complete).** The
+> **Status: detector frozen - YOLO11n @ 768; S0 and S1 both trained once and compared under a canonical evaluator (phase 8F of 14 complete). No final segmenter is selected.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -29,8 +29,15 @@
 > mismatch created by the frozen `overlap_mask: true` policy**, not a failure to
 > learn. Phase 8E froze a **canonical COCO evaluator** so two models trained
 > against different targets can be compared at all, evaluated S0 under it once,
-> and froze **S1 as a one-variable `overlap_mask` intervention**. **S1 has not
-> been trained** and **no final segmenter is selected** (`UNSELECTED`).
+> and froze **S1 as a one-variable `overlap_mask` intervention**. Phase 8F then
+> ran **S1 exactly once**: canonical supported macro **0.559463** against S0's
+> **0.484643**, delta **+0.074820**, classified `S1_IMPROVES_S0_BEYOND_MARGIN`
+> under the margin frozen before the run, with the direct-IoU diagnostic moving
+> the same way. **The aggregate is not a uniform effect**: `person` carries 88.6%
+> of the gain while `helmet_loose` **regressed** -0.059035, and why any
+> individual class moved is UNKNOWN. **No final segmenter is selected**
+> (`UNSELECTED_PENDING_REVIEW`) - the frozen rule produces a classification, not
+> a decision.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -126,8 +133,11 @@ Two design decisions define this architecture:
 | Direct mask IoU | **Measured (phase 8C)** against canonical COCO masks at a predeclared operating point: `matched_mask_iou_mean` 0.717462, `gt_normalized_mask_iou` 0.556977, coverage 0.776316. |
 | S0 error analysis | Done (phase 8D). 304 instances: 68 misses, 57 low-overlap, 39 moderate, 140 high-quality. `person` weaker than every class at every size quartile. |
 | Canonical evaluation | Frozen (phase 8E). pycocotools `COCOeval` segm against canonical COCO masks. S0 reference: supported macro **0.484643**, all-class mAP@0.50:0.95 **0.388009**. |
-| S1 | **Frozen, not executed** (phase 8E). One variable: `overlap_mask` `true` -> `false`. Batch-8 feasibility established; nothing trained. |
-| Final segmenter | **Not selected.** `UNSELECTED`. S1 has not run, and the comparison policy decides a classification, not a freeze. |
+| S1 | **Trained once (phase 8F).** One intentional variable: `overlap_mask` `true` -> `false`, 43 framework arguments inherited unchanged. 100/100 epochs, best epoch 77, `S1_experiment_sha256` `d14b98fb...`. |
+| S0-vs-S1 comparison | **Computed (phase 8F).** Canonical supported macro: S0 0.484643 -> S1 **0.559463**, delta **+0.074820**, `S1_IMPROVES_S0_BEYOND_MARGIN` at the frozen 0.005 margin. Direct GT-normalised mask IoU 0.556977 -> **0.635356**; `CROSS_METRIC_DIRECTION_CONSISTENT`. |
+| S1 per-class movement | `person` **+0.317316** (88.6% of the total gain), `helmet_on_head` +0.028340, `vest_on_body` +0.012659, `helmet_loose` **-0.059035** (a supported class regressed). `vest_loose` +0.035845 stays `DESCRIPTIVE_HIGH_UNCERTAINTY` and decides nothing. |
+| S1 native metrics | Reported, **demoted**: mask mAP@0.50:0.95 0.458206, box 0.518779. `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` - `overlap_mask` reshapes the native validation target, so S0's and S1's native AP are never differenced. |
+| Final segmenter | **Not selected.** `UNSELECTED_PENDING_REVIEW`. The frozen policy produced a classification; choosing the project's segmenter remains a reviewed human decision, exactly as phase 7D was for detection. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
 | Video inference | Not implemented. |
@@ -1269,6 +1279,79 @@ rule.
 
 ```bash
 uv run python scripts/freeze_segmentation_comparison.py --verify-only
+```
+
+
+## Phase 8F - S1, and what the comparison actually shows
+
+**S1 ran exactly once**, under the protocol phase 8E froze before it existed.
+The only intentional difference from S0 is `overlap_mask` `true -> false`;
+43 framework arguments are resolved from S0's own protocol and inherited
+unchanged, and the run's `args.yaml` was checked afterwards so the intervention
+is known to have reached the trainer rather than merely been requested.
+
+**A trap worth naming.** Read from the installed source:
+`Model._reset_ckpt_args` keeps only `imgsz`, `data`, `task` and `single_cls`
+from a checkpoint, and the framework default is `overlap_mask: True`. Validating
+S1 without passing the flag would have scored its predictions against **S0's**
+overlap-resolved target - silently, and with a plausible-looking number. The
+runner passes it explicitly and refuses to continue if the resolved value is
+not `False`.
+
+**The primary result, validation only.**
+`CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95` **0.559463** against S0's committed
+**0.484643**: delta **+0.074820**, classified `S1_IMPROVES_S0_BEYOND_MARGIN`
+under the 0.005 margin frozen before the run. All-class canonical mAP@0.50:0.95
+0.455034 against 0.388009. The secondary diagnostic moves the same way -
+GT-normalised mask IoU 0.556977 -> **0.635356** under the unchanged phase 8C
+protocol - so the outcome is `CROSS_METRIC_DIRECTION_CONSISTENT`.
+
+**The aggregate is not a uniform effect, and reading it as one would be the
+mistake.** `person` moved **+0.317316** and carries **88.6%** of the total gain
+across the admitted classes; `helmet_loose` **regressed -0.059035**. The
+decomposition is computed mechanically rather than written by hand, and the
+report names the regression instead of leaving it inside the mean.
+
+| Class | S0 canonical AP@0.50:0.95 | S1 | delta |
+| --- | --- | --- | --- |
+| `person` | 0.135036 | 0.452352 | **+0.317316** |
+| `helmet_on_head` | 0.609345 | 0.637685 | +0.028340 |
+| `vest_on_body` | 0.400246 | 0.412905 | +0.012659 |
+| `helmet_loose` | 0.793946 | 0.734911 | **-0.059035** |
+| `vest_loose` | 0.001474 | 0.037319 | +0.035845 (`DESCRIPTIVE_HIGH_UNCERTAINTY`) |
+
+**What this does and does not establish.** The experiment is controlled: one
+declared variable, everything else inherited and verified. So the movement is
+attributable to `overlap_mask` **for this pair of runs**. It is not a
+measurement of an effect size: nothing was repeated, so run-to-run variance on
+this setup remains UNKNOWN, and the margin is an engineering threshold rather
+than a significance test. The direction is consistent with the phase 8D
+overlap-target mechanism, which remains `POST_HOC_HYPOTHESIS_GENERATING` - a
+result consistent with a hypothesis does not confirm it, and nothing here
+explains why `helmet_loose` fell.
+
+**Native metrics are reported in full and demoted.** Mask mAP@0.50:0.95
+0.458206, mAP@0.50 0.663319, precision 0.719937, recall 0.599587; box
+mAP@0.50:0.95 0.518779. They are marked
+`NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` and never differenced against
+S0's, because `overlap_mask` reshapes the native validation ground truth as well
+as the training target. The two experiments' checkpoints were also selected by
+the same native rule computed against **different** targets - a genuine
+limitation of the comparison, and precisely why the decision is external.
+
+**Determinism, measured rather than assumed.** Validation, the canonical
+evaluation and the diagnostic were re-executed on the same frozen checkpoint to
+re-render a prose addition, and the canonical, direct-IoU and results artifacts
+came back **byte-identical**, with `S1_experiment_sha256` unchanged. Training
+was not repeated: this is one experiment, not two.
+
+**Nothing was selected.** `final_segmenter: UNSELECTED_PENDING_REVIEW`. No S1
+re-run, no `mask_ratio` variant, no YOLO11s-seg, no resolution or batch change,
+no threshold tuned, no metric added, no composite score.
+
+```bash
+uv run python scripts/train_segmentation_comparison.py --verify-only
+uv run python scripts/train_segmentation_comparison.py --validate-only
 ```
 
 

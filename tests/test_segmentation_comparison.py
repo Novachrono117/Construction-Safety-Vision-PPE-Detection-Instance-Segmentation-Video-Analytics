@@ -482,7 +482,21 @@ def test_the_historical_artifacts_are_unchanged(paths: ProjectPaths):
         assert sha256_file(paths.root / name) == digest, f"{name} changed"
 
 
-def test_no_s1_result_artifact_exists(paths: ProjectPaths):
-    assert not (paths.reports / "segmentation_S1_result_manifest.json").exists()
-    assert not (paths.reports / "segmentation_S1_report.md").exists()
-    assert not (paths.reports / "segmentation_S1_mask_iou.json").exists()
+def test_the_frozen_s1_protocol_still_records_that_it_was_not_executed(paths: ProjectPaths):
+    """The phase 8E protocol artifact is historical and never absorbs a result.
+
+    Until phase 8F ran, this was asserted by the absence of any S1 result file.
+    That assertion has served its purpose and would now be false by design, so
+    what it protected is stated directly instead: phase 8E's own artifacts must
+    still describe a protocol that had not been executed when they were written,
+    and S1's result must live in separate phase 8F artifacts rather than being
+    written back into them.
+    """
+    manifest = json.loads((paths.reports / S1_MANIFEST_JSON).read_text(encoding="utf-8"))
+
+    assert manifest["status"] == S1_STATUS
+    assert manifest["phase"] == "8E"
+    assert manifest["models_trained_in_this_phase"] == 0
+    assert manifest["final_segmenter"] == "UNSELECTED"
+    for forbidden in ("result", "metrics", "canonical_metrics", "primary_delta"):
+        assert forbidden not in manifest, forbidden

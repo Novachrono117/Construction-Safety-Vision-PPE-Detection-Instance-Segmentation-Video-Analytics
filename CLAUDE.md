@@ -191,13 +191,14 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8E complete - the split is frozen, the holdout is locked, **the
+- **Phase:** 8F complete - the split is frozen, the holdout is locked, **the
   final detector is FROZEN (D2, YOLO11n at imgsz 768)**, the segmentation adapter
-  is audited and approved, **S0 has been trained once and diagnosed**, and the
-  **canonical comparison protocol and S1 are now FROZEN** (`S1_PROTOCOL_FROZEN`).
-  **S1 has NOT been trained** (`FROZEN_NOT_EXECUTED`) and **no final segmenter is
-  selected** (`final_segmenter: UNSELECTED`). Phase 8F - the single S1 run - has
-  not started; do not start it unprompted.
+  is audited and approved, and **both S0 and S1 have been trained exactly once
+  and compared under the frozen canonical evaluator**
+  (`S1_CONTROLLED_EXPERIMENT_COMPLETE`). **No final segmenter is selected**
+  (`final_segmenter: UNSELECTED_PENDING_REVIEW`): the frozen rule produced a
+  classification, not a decision. Phase 8G has not started; do not start it
+  unprompted, and no further segmentation experiment is authorised.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -698,6 +699,90 @@ uv run pytest
   reserved, mask target `[33, 192, 192]` (one plane per instance instead of one
   indexed map). `NON_EXPERIMENTAL`, **no optimizer step, no validation, no
   checkpoint, no metric**. It establishes nothing about accuracy.
+- **S1 HAS NOW BEEN RUN, exactly once, and must not be re-run, retuned or
+  averaged.** `S1_experiment_sha256`
+  `d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402`. YOLO11n-seg,
+  imgsz 768, batch 8, mask_ratio 4, **`overlap_mask: false`**, 100/100 epochs,
+  `ALL_EPOCHS_COMPLETED`, training time 1195.052 s, peak **4.102 GiB** reserved
+  (no OOM at the frozen batch), best epoch **77** at native composite fitness
+  **0.974520**, verified as the argmax of the composite recomputed from
+  `results.csv`. `optimizer: auto` resolved to **AdamW at lr0 0.001111,
+  momentum 0.9**, captured directly from the framework log - **the same as S0**,
+  so the optimizer does not confound the comparison. `best.pt` SHA-256
+  `29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20`, `last.pt`
+  `06a9af1d...`, 6041685 B each. Neither is committed.
+- **S1 primary result (validation only):
+  `CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95` `0.559463`**, against S0's committed
+  `0.484643`. Delta **+0.074820**, classified **`S1_IMPROVES_S0_BEYOND_MARGIN`**
+  under the 0.005 margin frozen before the run. Canonical all-class
+  mAP@0.50:0.95 **0.455034** (S0 0.388009), mAP@0.50 **0.634023**, over 5485
+  scored detections. **Every one of these is a validation number and says
+  nothing about test performance.**
+- **S1 canonical per-class AP@0.50:0.95: `helmet_loose` 0.734911,
+  `helmet_on_head` 0.637685, `person` 0.452352, `vest_on_body` 0.412905,
+  `vest_loose` 0.037319.**
+- **The aggregate is NOT a uniform effect, and quoting it as one is the error.**
+  `person` moved **+0.317316** and carries **88.6%** of the total gain across the
+  admitted classes; **`helmet_loose` REGRESSED -0.059035**. Per-class
+  contributions to the primary delta: -0.014759 / +0.007085 / +0.079329 /
+  +0.003165. Never present +0.074820 as an across-the-board improvement, and
+  never omit the regression.
+- **Why any individual class moved is UNKNOWN.** The comparison is controlled -
+  one declared variable, everything else inherited and verified - so the movement
+  is attributable to `overlap_mask` **for this pair of runs**. It is not an
+  effect size: nothing was repeated, run-to-run variance on this setup stays
+  UNKNOWN, and the margin is an engineering threshold, not a significance test.
+  The direction is *consistent with* the phase 8D overlap-target mechanism, which
+  remains `POST_HOC_HYPOTHESIS_GENERATING`; consistency is not confirmation, and
+  nothing here explains `helmet_loose`.
+- **S1 direct mask-IoU (unchanged phase 8C protocol, conf 0.25):**
+  `matched_mask_iou_mean` **0.794849** (S0 0.717462), `gt_normalized_mask_iou`
+  **0.635356** (S0 0.556977), `gt_match_coverage` 0.799342, `gt_iou50_coverage`
+  0.707237, `gt_iou75_coverage` 0.595395, over 304 canonical instances with 336
+  predictions, 243 matched, 61 unmatched GT and 93 unmatched predictions.
+  `CROSS_METRIC_DIRECTION_CONSISTENT` under a boundary rule frozen before S1 ran:
+  a disagreement needs **strictly opposite signs**, and a delta of exactly zero
+  has no direction.
+- **S1 native metrics are reported IN FULL and DEMOTED:** mask mAP@0.50:0.95
+  0.458206, mAP@0.50 0.663319, precision 0.719937, recall 0.599587; box
+  mAP@0.50:0.95 0.518779, mAP@0.50 0.727308, precision 0.781121, recall 0.633628.
+  Descriptive native supported macro 0.549273. All marked `NATIVE_TARGET_METRIC` /
+  `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` and **never differenced
+  against S0's** - `overlap_mask` reshapes the native validation ground truth as
+  well as the training target.
+- **The native validation had to be given `overlap_mask: false` explicitly, and
+  that is a structural fact read from the installed source.**
+  `Model._reset_ckpt_args` keeps only `imgsz`, `data`, `task` and `single_cls`
+  from a checkpoint, and the framework default is `True`. Omitting the flag would
+  have scored S1 against **S0's** target and produced a plausible-looking wrong
+  number. The runner passes it and refuses to continue if the resolved value is
+  not `False`. Never remove that guard.
+- **S1 was resolved from S0's protocol in code, not copied.**
+  `resolve_candidate_arguments` applies the single declared override to S0's own
+  `training_arguments()`, and the result is checked against phase 8E's
+  `inherited_protocol` block *and* against the run's own `args.yaml` afterwards.
+  Never write S1's argument set out independently: a second copy would mask a
+  drift in S0's protocol.
+- **The S1 downstream evaluations are deterministic, and that was measured.**
+  Validation, the canonical evaluation and the diagnostic were re-executed on the
+  same frozen checkpoint to re-render a prose addition, and the canonical,
+  direct-IoU and results artifacts came back **byte-identical** with
+  `S1_experiment_sha256` unchanged. Training was **not** repeated. Never present
+  this as a second experiment or as evidence about run-to-run variance.
+- **A re-render may never downgrade measured evidence.** Peak GPU memory and wall
+  clock can only be measured inside the training process; the runner carries them
+  forward from the manifest that process itself wrote, labelled
+  `measured_fields_carried_forward`. Writing `NOT_PERSISTED_FOR_THIS_RUN` over a
+  figure that was measured would destroy evidence to make a prose change.
+- **`--from-completed-run` is for re-rendering an artifact, never for retrying a
+  disliked result.** It reuses the completed run, trains nothing, and records the
+  operator's stated reason verbatim.
+- **NO further segmentation experiment is authorised.** Do not re-run S1, do not
+  flip `overlap_mask` back, do not try `mask_ratio: 2` or YOLO11s-seg, do not
+  change imgsz or batch, do not tune a threshold, do not alter the canonical
+  evaluator and do not train an S2. Record hypotheses only. Selecting the final
+  segmenter is a separate, reviewed human decision, exactly as phase 7D was for
+  detection.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

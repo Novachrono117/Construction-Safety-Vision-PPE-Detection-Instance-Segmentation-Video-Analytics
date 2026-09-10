@@ -1,0 +1,982 @@
+{
+  "S1_experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+  "adapter": {
+    "approval_sha256": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+    "canonical_ground_truth": "COCO_INSTANCE_SEGMENTATION",
+    "counts": {
+      "instances": 1726,
+      "negative_images": 12,
+      "train_images": 303,
+      "train_instances": 1422,
+      "validation_images": 65,
+      "validation_instances": 304
+    },
+    "filtered": false,
+    "fingerprints": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "identical_to_reference": true,
+    "modified": false,
+    "regenerated": false,
+    "role": "MODEL_SPECIFIC_DERIVED_REPRESENTATION"
+  },
+  "aggregate_composition": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "contribution_to_primary_delta": {
+      "helmet_loose": -0.014759,
+      "helmet_on_head": 0.007085,
+      "person": 0.079329,
+      "vest_on_body": 0.003165
+    },
+    "dominant_class_share_of_total_gain": 0.885578,
+    "largest_decline": "helmet_loose",
+    "largest_decline_delta": -0.059035,
+    "largest_gain": "person",
+    "largest_gain_delta": 0.317316,
+    "note": "Arithmetic only. The aggregate moving in one direction does not mean every class did, and the class carrying most of the movement is named so the mean is not read as a uniform effect. Why any individual class moved is UNKNOWN: the experiment varied one flag and measured the outcome, it did not test a per-class mechanism.",
+    "regressed_supported_classes": [
+      "helmet_loose"
+    ]
+  },
+  "alternative_segmenters_trained": 0,
+  "architecture": "YOLO11n-seg",
+  "batch_variants_tried": 0,
+  "canonical_all_class_delta": {
+    "S0": 0.388009,
+    "S1": 0.455034,
+    "delta": 0.067025,
+    "is_not_the_selection_metric": true
+  },
+  "canonical_evaluation": {
+    "protocol": "CANONICAL_COCO_MASK_AP_EVALUATION",
+    "protocol_config": "configs/segmentation_canonical_evaluation.yaml",
+    "protocol_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+    "result_artifact": "reports/segmentation_S1_canonical_evaluation.json",
+    "result_sha256": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1",
+    "runs": 1,
+    "unchanged_from_phase_8e": true
+  },
+  "canonical_evaluator_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+  "canonical_fingerprints": {
+    "canonical_task_manifest_sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+    "validation_annotations_sha256": "e674c5df27eee3e43c6ca4249b17c541967435196151b64ceb0d351131c8098e"
+  },
+  "canonical_metrics": {
+    "CANONICAL_ALL_CLASS_MASK_MAP50": 0.634023,
+    "CANONICAL_ALL_CLASS_MASK_MAP50_95": 0.455034,
+    "detections_scored": 5485,
+    "label": "CANONICAL_PRIMARY_METRIC",
+    "per_class": {
+      "helmet_loose": {
+        "AP@0.50": 0.852829,
+        "AP@0.50:0.95": 0.734911
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.804906,
+        "AP@0.50:0.95": 0.637685
+      },
+      "person": {
+        "AP@0.50": 0.716194,
+        "AP@0.50:0.95": 0.452352
+      },
+      "vest_loose": {
+        "AP@0.50": 0.12602,
+        "AP@0.50:0.95": 0.037319
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.670165,
+        "AP@0.50:0.95": 0.412905
+      }
+    }
+  },
+  "canonical_per_class_comparison": {
+    "helmet_loose": {
+      "S0_AP@0.50": 0.891599,
+      "S0_AP@0.50:0.95": 0.793946,
+      "S1_AP@0.50": 0.852829,
+      "S1_AP@0.50:0.95": 0.734911,
+      "delta_AP@0.50": -0.03877,
+      "delta_AP@0.50:0.95": -0.059035,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "helmet_on_head": {
+      "S0_AP@0.50": 0.793362,
+      "S0_AP@0.50:0.95": 0.609345,
+      "S1_AP@0.50": 0.804906,
+      "S1_AP@0.50:0.95": 0.637685,
+      "delta_AP@0.50": 0.011544,
+      "delta_AP@0.50:0.95": 0.02834,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "person": {
+      "S0_AP@0.50": 0.309623,
+      "S0_AP@0.50:0.95": 0.135036,
+      "S1_AP@0.50": 0.716194,
+      "S1_AP@0.50:0.95": 0.452352,
+      "delta_AP@0.50": 0.406571,
+      "delta_AP@0.50:0.95": 0.317316,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "vest_loose": {
+      "S0_AP@0.50": 0.007173,
+      "S0_AP@0.50:0.95": 0.001474,
+      "S1_AP@0.50": 0.12602,
+      "S1_AP@0.50:0.95": 0.037319,
+      "caveat": "vest_loose does not meet the frozen support rule. Its movement is reported in full and decides nothing.",
+      "delta_AP@0.50": 0.118847,
+      "delta_AP@0.50:0.95": 0.035845,
+      "status": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "supported": false
+    },
+    "vest_on_body": {
+      "S0_AP@0.50": 0.685925,
+      "S0_AP@0.50:0.95": 0.400246,
+      "S1_AP@0.50": 0.670165,
+      "S1_AP@0.50:0.95": 0.412905,
+      "delta_AP@0.50": -0.01576,
+      "delta_AP@0.50:0.95": 0.012659,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    }
+  },
+  "canonical_supported_macro": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "contributing_values": [
+      0.734911,
+      0.637685,
+      0.452352,
+      0.412905
+    ],
+    "label": "CANONICAL_PRIMARY_METRIC",
+    "metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "names_no_class": true,
+    "rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "rule_origin": "FROZEN_IN_PHASE_7A_REUSED_UNCHANGED",
+    "value": 0.559463
+  },
+  "checkpoint_selection": {
+    "best_epoch": 77,
+    "best_native_fitness": 0.97452,
+    "computed_against_own_target": true,
+    "epochs_configured": 100,
+    "epochs_logged": 100,
+    "identical_policy_to_reference": true,
+    "manual_epoch_selection": false,
+    "mask_only_checkpoint_created": false,
+    "next_best_epoch": 78,
+    "next_best_native_fitness": 0.95359,
+    "policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "reconstruction": "The composite is recomputed from results.csv as metrics/mAP50-95(B) + metrics/mAP50-95(M), which is exactly SegmentMetrics.fitness for the installed version, and the recorded best epoch is its argmax.",
+    "semantics": "BOX_MAP50_95_PLUS_MASK_MAP50_95",
+    "tolerance": 1e-06,
+    "verified": true
+  },
+  "checkpoints": {
+    "best": {
+      "committed": false,
+      "name": "best.pt",
+      "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+      "size_bytes": 6041685
+    },
+    "last": {
+      "committed": false,
+      "name": "last.pt",
+      "sha256": "06a9af1d6e62be0bd8625a6e42f6a126ff79f61611872f2ebd39f1ec6cdfb765",
+      "size_bytes": 6041685
+    }
+  },
+  "committed_figures": [
+    "BoxF1_curve.png",
+    "BoxPR_curve.png",
+    "BoxP_curve.png",
+    "BoxR_curve.png",
+    "MaskF1_curve.png",
+    "MaskPR_curve.png",
+    "MaskP_curve.png",
+    "MaskR_curve.png",
+    "confusion_matrix.png",
+    "confusion_matrix_normalized.png",
+    "results.png"
+  ],
+  "comparison_policy_fingerprint": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+  "composite_box_mask_score": false,
+  "cross_metric_direction": {
+    "composite_created": false,
+    "primary_delta": 0.07482,
+    "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "ranked_by": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "resolved_by_weighting": false,
+    "rule": "A disagreement requires strictly opposite signs. A delta of exactly zero has no direction and does not disagree with anything.",
+    "rule_frozen_before_s1": true,
+    "secondary_delta": 0.078379,
+    "secondary_metric": "gt_normalized_mask_iou",
+    "status": "CROSS_METRIC_DIRECTION_CONSISTENT"
+  },
+  "descriptive_native_supported_macro": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "classification": {
+      "helmet_loose": "COMPARISON_SUPPORTED",
+      "helmet_on_head": "COMPARISON_SUPPORTED",
+      "person": "COMPARISON_SUPPORTED",
+      "vest_loose": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "vest_on_body": "COMPARISON_SUPPORTED"
+    },
+    "contributing_values": [
+      0.70902,
+      0.606724,
+      0.470086,
+      0.411264
+    ],
+    "label": "DESCRIPTIVE_NATIVE_TARGET_METRIC",
+    "metric": "supported_macro_mask_map50_95",
+    "reason": "Computed for descriptive continuity with S0's reported figure. It may not select between S0 and S1: overlap_mask changes the native target, so the two experiments' native mask AP is measured against different ground truth.",
+    "rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "rule_origin": "FROZEN_IN_PHASE_7A_REUSED_UNCHANGED",
+    "used_for_selection": false,
+    "value": 0.549273
+  },
+  "detector_touched": false,
+  "direct_iou_protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+  "direct_mask_iou": {
+    "counts": {
+      "gt_count": 304,
+      "matched_count": 243,
+      "prediction_count": 336,
+      "unmatched_gt": 61,
+      "unmatched_predictions": 93
+    },
+    "deltas_vs_reference": {
+      "gt_iou50_coverage": 0.118421,
+      "gt_iou75_coverage": 0.134869,
+      "gt_match_coverage": 0.023026,
+      "gt_normalized_mask_iou": 0.078379,
+      "matched_mask_iou_mean": 0.077387
+    },
+    "headline": {
+      "gt_iou50_coverage": 0.707237,
+      "gt_iou75_coverage": 0.595395,
+      "gt_match_coverage": 0.799342,
+      "gt_normalized_mask_iou": 0.635356,
+      "matched_mask_iou_mean": 0.794849
+    },
+    "is_not_average_precision": "Neither figure is a COCO AP. AP is a ranking-sensitive average over IoU thresholds; these are mask overlap at one predeclared operating point.",
+    "label": "DIRECT_IOU_DIAGNOSTIC",
+    "protocol": "DIRECT_INSTANCE_MASK_IOU_DIAGNOSTIC",
+    "protocol_config": "configs/segmentation_mask_iou_evaluation.yaml",
+    "protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+    "result_artifact": "reports/segmentation_S1_mask_iou.json",
+    "result_sha256": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d",
+    "runs": 1,
+    "unchanged_from_phase_8c": true
+  },
+  "effective_training_configuration": {
+    "amp": true,
+    "auto_augment": "randaugment",
+    "batch": 8,
+    "bgr": 0.0,
+    "close_mosaic": 10,
+    "copy_paste": 0.0,
+    "copy_paste_mode": "flip",
+    "cos_lr": false,
+    "cutmix": 0.0,
+    "degrees": 0.0,
+    "deterministic": true,
+    "device": "",
+    "dropout": 0.0,
+    "epochs": 100,
+    "erasing": 0.4,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "imgsz": 768,
+    "lr0": 0.01,
+    "lrf": 0.01,
+    "mask_ratio": 4,
+    "max_det": 300,
+    "mixup": 0.0,
+    "model": "artifacts/weights/yolo11n-seg.pt",
+    "momentum": 0.937,
+    "mosaic": 1.0,
+    "multi_scale": 0.0,
+    "optimizer": "auto",
+    "overlap_mask": false,
+    "patience": 50,
+    "perspective": 0.0,
+    "rect": false,
+    "retina_masks": false,
+    "scale": 0.5,
+    "seed": 42,
+    "shear": 0.0,
+    "single_cls": false,
+    "translate": 0.1,
+    "warmup_bias_lr": 0.1,
+    "warmup_epochs": 3.0,
+    "warmup_momentum": 0.8,
+    "weight_decay": 0.0005,
+    "workers": 8
+  },
+  "effective_training_configuration_note": "Read back from the framework's own args.yaml. Absolute paths are rewritten repository-relative so a committed artifact does not name this machine.",
+  "execution": {
+    "artifact_write_reexecution": {
+      "occurred": true,
+      "reason": "Re-rendered the result manifest and report to add a mechanically derived decomposition of the primary delta into its per-class contributions, so a supported class that regressed is named rather than left inside the mean, and to split an ambiguous execution field into two unambiguous facts. No metric, threshold, protocol or checkpoint was touched; training was not repeated, and the canonical, direct-IoU and results artifacts came back byte-identical across every re-execution.",
+      "what_was_not_reexecuted": "training - the single S1 run and its weights are unchanged, and the checkpoint the frozen rule selected is the same file",
+      "what_was_reexecuted": [
+        "the authoritative native validation",
+        "the canonical COCO evaluation",
+        "the direct mask-IoU diagnostic"
+      ],
+      "why_this_is_not_a_second_experiment": "Validation, the canonical evaluation and the diagnostic are deterministic functions of a fixed checkpoint, fixed data and fixed settings, all of which are unchanged."
+    },
+    "early_stopping": false,
+    "engineering_aborts": 0,
+    "epochs_completed": 100,
+    "epochs_configured": 100,
+    "framework_reported_epochs": 100,
+    "framework_reported_hours": 0.323,
+    "framework_reported_source": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE",
+    "measured_fields_carried_forward": [
+      "peak_gpu_memory_allocated_bytes",
+      "peak_gpu_memory_reserved_bytes",
+      "peak_gpu_memory_reserved_gib",
+      "wall_clock_seconds"
+    ],
+    "measured_fields_carried_forward_source": "THE_TRAINING_RUNS_OWN_RESULT_MANIFEST",
+    "peak_gpu_memory_allocated_bytes": 2634805760,
+    "peak_gpu_memory_reserved_bytes": 4404019200,
+    "peak_gpu_memory_reserved_gib": 4.102,
+    "peak_gpu_memory_source": "TORCH_CUDA_MAX_MEMORY_RESERVED_IN_THE_TRAINING_PROCESS",
+    "resumed": false,
+    "reused_completed_run": true,
+    "run_directory": "artifacts/segmentation/S1",
+    "runs": 1,
+    "termination": "ALL_EPOCHS_COMPLETED",
+    "this_invocation_trained": false,
+    "training_seconds": 1160.93,
+    "training_seconds_source": "FRAMEWORK_RESULTS_CSV_CUMULATIVE_TIME",
+    "training_was_a_fresh_single_run": true,
+    "wall_clock_seconds": 1195.052
+  },
+  "experiment_fingerprint_inputs": [
+    "adapter_approval_sha256",
+    "adapter_fingerprints",
+    "best_checkpoint_sha256",
+    "canonical_evaluator_fingerprint",
+    "canonical_task_manifest_sha256",
+    "checkpoint_selection_policy",
+    "checkpoint_selection_semantics",
+    "class_map_sha256",
+    "comparison_protocol_fingerprint",
+    "critical_training_config",
+    "direct_iou_protocol_fingerprint",
+    "experiment_id",
+    "intentional_difference",
+    "pretrained_weight_sha256",
+    "s0_protocol_fingerprint",
+    "split_assignment_sha256"
+  ],
+  "experiment_id": "S1",
+  "experiment_question": "Does preserving overlapping instance-mask supervision improve canonical instance-segmentation performance relative to S0?",
+  "experiment_role": "CONTROLLED_CANDIDATE_NOT_THE_FINAL_SEGMENTER",
+  "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+  "final_segmenter_note": "The frozen rule produces a classification, not a frozen segmenter. Selecting the project's final segmenter remains a reviewed human decision, exactly as phase 7D was for detection.",
+  "frozen_detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "checkpoint_state": "PRESENT_VERIFIED",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "selected_experiment": "D2",
+    "status": "UNCHANGED_DETECTION_BLOCK_CLOSED",
+    "trained": false,
+    "validated": false
+  },
+  "frozen_policies": {
+    "candidate_experiment": "S1",
+    "canonical_evaluator_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+    "comparison_policy_sha256": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+    "comparison_protocol_fingerprint": "a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16",
+    "direct_iou_protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+    "margin": 0.005,
+    "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "reference_experiment": "S0",
+    "s0_protocol_fingerprint": "0c6bbcd8529be08b1ef328edd3d8cd13739f3b7eab24b627220cdb5bf8a5dd9e",
+    "s1_protocol_manifest_sha256": "b4b4d4243f44c1d57baf147e4a129c20c48d9090d3133a7c6a0754e42a647f96",
+    "s1_status_before_run": "FROZEN_NOT_EXECUTED"
+  },
+  "historical_artifact_digests": {
+    "configs/segmentation_adapter_audit.yaml": "b4945ddaebb48db007ac30c97334f2a2dee767f3a39c51bcaa28e96b881fc4f7",
+    "configs/segmentation_baseline.yaml": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+    "configs/segmentation_canonical_evaluation.yaml": "7f560d751a55c36d72b1ef59b18eb72e4682b931095261298a160224917b8b44",
+    "configs/segmentation_comparison.yaml": "b7f5d174d6bedb40106521adaf950b74353b7d08c38fdf930281513e60b4de45",
+    "configs/segmentation_mask_iou_evaluation.yaml": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+    "reports/detection_experiment_results.json": "ade35948f9c962a2679b18660d0aac6ab9273e9b34f69eba0d541aff9bf5f79e",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "reports/segmentation_S0_canonical_evaluation.json": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+    "reports/segmentation_S0_error_analysis.json": "a1eae1b7f3d719859e125318bae553bf4cef8b958aa690255767f1e4d6abf82e",
+    "reports/segmentation_S0_error_analysis.md": "b0bca820072448dad012df95614b1c23e22c77d002f032d01595b62ed8c0b01b",
+    "reports/segmentation_S0_error_instances.csv": "16b754bb689ba635999f552dec7063e7be3382ae7fafc3a10d4c06335525724d",
+    "reports/segmentation_S0_manifest.json": "09f6ddc9a08bc66e48d5deac49c1734dad89e0bd564afd92168b3518407d0ce9",
+    "reports/segmentation_S0_mask_iou.json": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+    "reports/segmentation_S0_protocol.md": "d84717b2ffae0707b32330db35c6298f0966dc74acb9473f7d1d6169cb1945d9",
+    "reports/segmentation_S0_report.md": "6170b7dbe6ea99c8fbd170abbac430311110f5871bcab9327ca1fed0860191d8",
+    "reports/segmentation_S0_result_manifest.json": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+    "reports/segmentation_S1_protocol.md": "8f3dcd808e326ba948c5b9bcd3ff9847fd72c494c91f91a51e6c122147c7ed23",
+    "reports/segmentation_S1_protocol_manifest.json": "b4b4d4243f44c1d57baf147e4a129c20c48d9090d3133a7c6a0754e42a647f96",
+    "reports/segmentation_adapter_approval.json": "60513a360aca2194d3f2883931ab4318862067eb3a28de0fd5e1242e6cad681d",
+    "reports/segmentation_adapter_audit.provenance.json": "b9ae44470b0b5608f3c11a8fbb470c64b0bbd38315ebf8f51022e79be5ca3487",
+    "reports/segmentation_adapter_audit_manifest.json": "9b469264727cee27dcd365aa90f0e2e43feb706bb570e7bd5b4680b0ddb24bdc",
+    "reports/segmentation_adapter_fidelity.csv": "32cf2fff8f4b367157f67f5d93603080e1ada9be33ac35349d1df056855e90d2",
+    "reports/segmentation_adapter_fidelity_report.md": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83",
+    "reports/segmentation_canonical_comparison_reference.md": "a7d234bb0a87e77ca9e0ec2913edabba6d25753403eda742abcebbe739516bef",
+    "reports/segmentation_comparison_policy.json": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+    "reports/segmentation_comparison_policy.md": "645f29126aa4279a364d4ff60483a6381e39a5be765ff6297634d7ba44a35388"
+  },
+  "historical_artifacts_unchanged": true,
+  "holdout_accessed": false,
+  "hypothesis": "Phase 8D measured that 27.3% of canonical person pixels are contested by another class, while 71.0% of the pixels S0 misses on person lie in that contested region; contested fraction versus person mask IoU has Spearman -0.5466; and re-scoring the same predictions against the overlap-resolved target recovers +0.0700 GT-normalised IoU for person and under 0.002 for every other class. S1 tests whether removing the overlap resolution from training changes canonical performance. It is a hypothesis: the measurement showed a target mismatch, not that training differently helps, and even against its own target S0's person mask IoU remained far below the compact classes.",
+  "hypothesis_label": "PREDECLARED_S1_HYPOTHESIS",
+  "imgsz_variants_tried": 0,
+  "inherited_protocol_verified": {
+    "inherited_count": 43,
+    "inherited_fields_verified": [
+      "amp",
+      "auto_augment",
+      "batch",
+      "bgr",
+      "close_mosaic",
+      "copy_paste",
+      "copy_paste_mode",
+      "cos_lr",
+      "cutmix",
+      "degrees",
+      "deterministic",
+      "dropout",
+      "epochs",
+      "erasing",
+      "fliplr",
+      "flipud",
+      "hsv_h",
+      "hsv_s",
+      "hsv_v",
+      "imgsz",
+      "lr0",
+      "lrf",
+      "mask_ratio",
+      "max_det",
+      "mixup",
+      "momentum",
+      "mosaic",
+      "multi_scale",
+      "optimizer",
+      "patience",
+      "perspective",
+      "pretrained",
+      "rect",
+      "retina_masks",
+      "scale",
+      "seed",
+      "shear",
+      "single_cls",
+      "translate",
+      "val",
+      "warmup_epochs",
+      "weight_decay",
+      "workers"
+    ],
+    "intentional_field": "overlap_mask",
+    "intentional_value": false,
+    "one_variable": true
+  },
+  "intentional_difference": {
+    "candidate_value": false,
+    "declared_in": "configs/segmentation_comparison.yaml",
+    "field": "overlap_mask",
+    "fields_inherited_unchanged": [
+      "amp",
+      "auto_augment",
+      "batch",
+      "bgr",
+      "close_mosaic",
+      "copy_paste",
+      "copy_paste_mode",
+      "cos_lr",
+      "cutmix",
+      "degrees",
+      "deterministic",
+      "dropout",
+      "epochs",
+      "erasing",
+      "fliplr",
+      "flipud",
+      "hsv_h",
+      "hsv_s",
+      "hsv_v",
+      "imgsz",
+      "lr0",
+      "lrf",
+      "mask_ratio",
+      "max_det",
+      "mixup",
+      "momentum",
+      "mosaic",
+      "multi_scale",
+      "optimizer",
+      "patience",
+      "perspective",
+      "pretrained",
+      "rect",
+      "retina_masks",
+      "scale",
+      "seed",
+      "shear",
+      "single_cls",
+      "translate",
+      "val",
+      "warmup_epochs",
+      "weight_decay",
+      "workers"
+    ],
+    "inherited_count": 43,
+    "label": "ONE_VARIABLE_INTERVENTION",
+    "one_variable": true,
+    "reference_value": true,
+    "resolved_from": "configs/segmentation_baseline.yaml"
+  },
+  "mask_ratio_variants_tried": 0,
+  "metrics_are_validation_only": true,
+  "model": "YOLO11n-seg",
+  "model_complexity": {
+    "fused_gflops": 9.6,
+    "fused_layers": 114,
+    "fused_parameters": 2835543,
+    "gflops": 9.8,
+    "layers": 204,
+    "parameters": 2843583,
+    "source": "FRAMEWORK_MODEL_SUMMARY_LINE"
+  },
+  "models_trained_in_this_phase": 1,
+  "native_metrics": {
+    "box": {
+      "mAP@0.50": 0.727308,
+      "mAP@0.50:0.95": 0.518779,
+      "precision": 0.781121,
+      "recall": 0.633628
+    },
+    "cross_target_status": "NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION",
+    "framework_fitness_at_validation": 0.976985,
+    "is_primary_for_selection": false,
+    "label": "NATIVE_TARGET_METRIC",
+    "mask": {
+      "mAP@0.50": 0.663319,
+      "mAP@0.50:0.95": 0.458206,
+      "precision": 0.719937,
+      "recall": 0.599587
+    },
+    "per_class": {
+      "helmet_loose": {
+        "box": {
+          "AP@0.50": 0.852965,
+          "AP@0.50:0.95": 0.741432,
+          "precision": 0.80961,
+          "recall": 0.789474
+        },
+        "mask": {
+          "AP@0.50": 0.840625,
+          "AP@0.50:0.95": 0.70902,
+          "precision": 0.820882,
+          "recall": 0.789474
+        }
+      },
+      "helmet_on_head": {
+        "box": {
+          "AP@0.50": 0.821506,
+          "AP@0.50:0.95": 0.643051,
+          "precision": 0.794551,
+          "recall": 0.765957
+        },
+        "mask": {
+          "AP@0.50": 0.809125,
+          "AP@0.50:0.95": 0.606724,
+          "precision": 0.800469,
+          "recall": 0.744681
+        }
+      },
+      "person": {
+        "box": {
+          "AP@0.50": 0.773023,
+          "AP@0.50:0.95": 0.545228,
+          "precision": 0.695755,
+          "recall": 0.744526
+        },
+        "mask": {
+          "AP@0.50": 0.721904,
+          "AP@0.50:0.95": 0.470086,
+          "precision": 0.693183,
+          "recall": 0.693431
+        }
+      },
+      "vest_loose": {
+        "box": {
+          "AP@0.50": 0.524306,
+          "AP@0.50:0.95": 0.237243,
+          "precision": 0.95763,
+          "recall": 0.25
+        },
+        "mask": {
+          "AP@0.50": 0.247262,
+          "AP@0.50:0.95": 0.093935,
+          "precision": 0.595891,
+          "recall": 0.125
+        }
+      },
+      "vest_on_body": {
+        "box": {
+          "AP@0.50": 0.664741,
+          "AP@0.50:0.95": 0.426944,
+          "precision": 0.64806,
+          "recall": 0.618182
+        },
+        "mask": {
+          "AP@0.50": 0.697679,
+          "AP@0.50:0.95": 0.411264,
+          "precision": 0.689257,
+          "recall": 0.645352
+        }
+      }
+    },
+    "why_not_primary": "overlap_mask changes the framework's validation ground truth as well as its training target - SegmentationValidator._prepare_batch builds its masks with `masks == index` only when the flag is set - so S0's and S1's native mask AP are measured against different targets. Reported in full, never differenced against S0's, and never used to rank."
+  },
+  "native_validation": {
+    "effective_arguments": {
+      "augment": false,
+      "batch": 8,
+      "conf": null,
+      "half": "NOT_EXPOSED_RELIABLY",
+      "imgsz": 768,
+      "iou": 0.7,
+      "mask_ratio": 4,
+      "max_det": 300,
+      "overlap_mask": false,
+      "overlap_mask_passed_explicitly": true,
+      "rect": false,
+      "retina_masks": false,
+      "single_cls": false,
+      "source": "RESOLVED_FROM_INSTALLED_CFG_WITH_THE_SAME_OVERRIDES",
+      "split": "val",
+      "why_overlap_mask_is_passed": "Model._reset_ckpt_args keeps only imgsz, data, task and single_cls from a checkpoint, and the framework default is True. Omitting the flag would have validated S1 against S0's overlap-resolved target instead of its own."
+    },
+    "output_directory": "artifacts/segmentation/S1_val",
+    "runs": 1,
+    "split": "validation"
+  },
+  "optimizer": {
+    "actual_resolved_optimizer": "AdamW",
+    "declared_optimizer_policy": "auto",
+    "declared_policy": "auto",
+    "declared_values_are_not_what_ran": "optimizer: auto overrides the file's lr0 and momentum. The declared values are the protocol's policy inputs, never a statement of what ran.",
+    "effective_lr0": 0.001111,
+    "effective_momentum": 0.9,
+    "evidence_line": "optimizer: AdamW(lr=0.001111, momentum=0.9)",
+    "inferred": false,
+    "lrf": 0.01,
+    "resolution_evidence": "FRAMEWORK_LOG_LINE_DIRECT_CAPTURE",
+    "scheduler": "LINEAR_LAMBDA_LR0_TO_LR0_TIMES_LRF",
+    "warmup_bias_lr": 0.1,
+    "warmup_epochs": 3.0,
+    "warmup_momentum": 0.8,
+    "weight_decay": 0.0005
+  },
+  "pending_human_review": true,
+  "person_diagnostic": {
+    "canonical": {
+      "S0_AP@0.50": 0.309623,
+      "S0_AP@0.50:0.95": 0.135036,
+      "S1_AP@0.50": 0.716194,
+      "S1_AP@0.50:0.95": 0.452352,
+      "delta_AP@0.50": 0.406571,
+      "delta_AP@0.50:0.95": 0.317316,
+      "reference_source": "COMMITTED_PHASE_8E_CANONICAL_EVALUATION"
+    },
+    "caveat": "The phase 8D overlap-target analysis that motivated this focus is POST_HOC_HYPOTHESIS_GENERATING. A movement here is consistent with that mechanism; it does not confirm it, and one run cannot separate it from run-to-run variance.",
+    "class": "person",
+    "direct_iou": {
+      "gt_match_coverage": {
+        "S0": 0.751825,
+        "S1": 0.839416,
+        "delta": 0.087591
+      },
+      "gt_normalized_mask_iou": {
+        "S0": 0.434635,
+        "S1": 0.621189,
+        "delta": 0.186554
+      },
+      "matched_mask_iou_mean": {
+        "S0": 0.578106,
+        "S1": 0.740025,
+        "delta": 0.161919
+      }
+    },
+    "direct_reference_source": "COMMITTED_PHASE_8C_DIAGNOSTIC",
+    "is_mechanism_evidence_not_the_decision": true,
+    "may_select_final_model": false,
+    "status": "PREDECLARED_PHASE_8D_DIAGNOSTIC_FOCUS"
+  },
+  "phase": "8F",
+  "pretrained_weights": {
+    "committed": false,
+    "identifier": "yolo11n-seg.pt",
+    "relative_path": "artifacts/weights/yolo11n-seg.pt",
+    "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+    "size_bytes": 6182636,
+    "source_mechanism": "ULTRALYTICS_ASSET_DOWNLOAD",
+    "ultralytics_version": "8.4.138"
+  },
+  "primary_delta": {
+    "candidate": 0.559463,
+    "delta": 0.07482,
+    "margin": 0.005,
+    "margin_is_not_a_significance_test": true,
+    "practically_equivalent_prefers_reference": false,
+    "reference": 0.484643,
+    "verdict": "S1_IMPROVES_S0_BEYOND_MARGIN"
+  },
+  "rare_class": {
+    "limitation": "vest_loose occupies 1 validation source image carrying 8 instances under the frozen split, so it is classified DESCRIPTIVE_HIGH_UNCERTAINTY by the frozen support rule and its validation AP is not a usable selection signal. Therefore: do not tune hyperparameters against vest_loose; do not prefer or reject a model because vest_loose moved; do not rank it against the supported classes. It remains a required class and is reported in full - mask and box, AP@0.50 and AP@0.50:0.95, precision and recall - always with an explicit small-sample caveat. The holdout also cannot be consulted to resolve the uncertainty.",
+    "may_decide_anything": false,
+    "name": "vest_loose",
+    "reported_in_full": true,
+    "status": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+    "support_rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "validation_support": {
+      "images": 1,
+      "instances": 8,
+      "supported": false
+    }
+  },
+  "reference_experiment": "S0",
+  "reference_metrics": {
+    "canonical_all_class_map50": 0.537536,
+    "canonical_all_class_map50_95": 0.388009,
+    "canonical_per_class": {
+      "helmet_loose": {
+        "AP@0.50": 0.891599,
+        "AP@0.50:0.95": 0.793946
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.793362,
+        "AP@0.50:0.95": 0.609345
+      },
+      "person": {
+        "AP@0.50": 0.309623,
+        "AP@0.50:0.95": 0.135036
+      },
+      "vest_loose": {
+        "AP@0.50": 0.007173,
+        "AP@0.50:0.95": 0.001474
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.685925,
+        "AP@0.50:0.95": 0.400246
+      }
+    },
+    "canonical_supported_macro": 0.484643,
+    "direct_iou_global": {
+      "gt_count": 304,
+      "gt_iou50_coverage": 0.588816,
+      "gt_iou75_coverage": 0.460526,
+      "gt_match_coverage": 0.776316,
+      "gt_normalized_mask_iou": 0.556977,
+      "matched_count": 236,
+      "matched_mask_iou_mean": 0.717462,
+      "prediction_count": 304,
+      "unmatched_gt": 68,
+      "unmatched_predictions": 68
+    },
+    "experiment_id": "S0",
+    "native_mask": {
+      "mAP@0.50": 0.57983,
+      "mAP@0.50:0.95": 0.407942,
+      "precision": 0.850509,
+      "recall": 0.528435
+    },
+    "recomputed": false,
+    "retrained": false,
+    "revalidated": false,
+    "source": "COMMITTED_ARTIFACTS_READ_NOT_EXECUTED"
+  },
+  "resources": {
+    "batch": 8,
+    "best_epoch": 77,
+    "epochs_completed": 100,
+    "epochs_configured": 100,
+    "framework_reported_hours": 0.323,
+    "framework_validation_speed_label": "FRAMEWORK_VALIDATION_SPEED",
+    "framework_validation_speed_ms_per_image": {
+      "inference": 10.508565,
+      "loss": 0.001155,
+      "postprocess": 1.600334,
+      "preprocess": 2.471532
+    },
+    "fused_gflops": 9.6,
+    "fused_parameters": 2835543,
+    "gflops": 9.8,
+    "gpu_arch": "sm_120",
+    "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "imgsz": 768,
+    "parameters": 2843583,
+    "peak_gpu_memory_reserved_bytes": 4404019200,
+    "peak_gpu_memory_reserved_gib": 4.102,
+    "peak_gpu_memory_source": "TORCH_CUDA_MAX_MEMORY_RESERVED_IN_THE_TRAINING_PROCESS",
+    "standardised_latency_benchmark": "NOT_RUN_IN_THIS_PHASE",
+    "training_seconds_from_results_csv": 1160.93,
+    "training_wall_clock_seconds": 1195.052
+  },
+  "runtime": {
+    "cuda_runtime": "12.8",
+    "cudnn": 91900,
+    "gpu_arch": "sm_120",
+    "gpu_name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "gpu_total_memory_bytes": 8546484224,
+    "python": "3.12.13",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "ultralytics": "8.4.138"
+  },
+  "runtime_view": {
+    "committed": false,
+    "descriptor": "dataset.yaml",
+    "image_counts": {
+      "train": 303,
+      "validation": 65
+    },
+    "image_transformation": "NONE",
+    "label_conversion": "NONE",
+    "labels_verified_against_approved_digests": true,
+    "root": "yolo_segmentation_s1_runtime",
+    "transfer_modes": [
+      "REUSED_EXISTING_VIEW"
+    ]
+  },
+  "s0_artifacts_regenerated": false,
+  "s0_protocol_fingerprint": "0c6bbcd8529be08b1ef328edd3d8cd13739f3b7eab24b627220cdb5bf8a5dd9e",
+  "s0_retrained": false,
+  "s0_revalidated": false,
+  "s1_protocol_fingerprint": "a74609c1c58371f91de2b1699e695fcbdf3fed6ac9a68237c190cfb1d1393f16",
+  "schema_version": 1,
+  "status": "S1_CONTROLLED_EXPERIMENT_COMPLETE",
+  "support": {
+    "helmet_loose": {
+      "images": 11,
+      "instances": 57,
+      "supported": true
+    },
+    "helmet_on_head": {
+      "images": 26,
+      "instances": 47,
+      "supported": true
+    },
+    "person": {
+      "images": 55,
+      "instances": 137,
+      "supported": true
+    },
+    "vest_loose": {
+      "images": 1,
+      "instances": 8,
+      "supported": false
+    },
+    "vest_on_body": {
+      "images": 31,
+      "instances": 55,
+      "supported": true
+    }
+  },
+  "task": "segmentation",
+  "test": {
+    "reason": "Phase 8F trained S1 on the frozen train split, validated it on the frozen validation split, and ran the canonical COCO evaluation and the direct mask-IoU diagnostic on that same validation split. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, label, prediction or statistic exists in any artifact this phase wrote, and the dataset descriptor the framework read carries no holdout key.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "thresholds_tuned": 0,
+  "training_curves": {
+    "best_epoch": 77,
+    "epochs_after_best": 23,
+    "epochs_logged": 100,
+    "first_epoch": {
+      "lr/pg0": 0.000361,
+      "lr/pg1": 0.000361,
+      "lr/pg2": 0.000361,
+      "train/box_loss": 0.87441,
+      "train/cls_loss": 3.42249,
+      "train/dfl_loss": 1.16492,
+      "train/seg_loss": 2.23655,
+      "train/sem_loss": 0.0,
+      "val/box_loss": 0.80625,
+      "val/cls_loss": 3.73484,
+      "val/dfl_loss": 1.19879,
+      "val/seg_loss": 2.27435,
+      "val/sem_loss": 0.0
+    },
+    "improved_after_best": false,
+    "last_epoch": {
+      "lr/pg0": 2.2e-05,
+      "lr/pg1": 2.2e-05,
+      "lr/pg2": 2.2e-05,
+      "train/box_loss": 0.47102,
+      "train/cls_loss": 0.47913,
+      "train/dfl_loss": 0.8897,
+      "train/seg_loss": 0.80083,
+      "train/sem_loss": 0.0,
+      "val/box_loss": 0.75609,
+      "val/cls_loss": 0.89359,
+      "val/dfl_loss": 1.16246,
+      "val/seg_loss": 1.79044,
+      "val/sem_loss": 0.0
+    },
+    "loss_and_lr_columns": [
+      "lr/pg0",
+      "lr/pg1",
+      "lr/pg2",
+      "train/box_loss",
+      "train/cls_loss",
+      "train/dfl_loss",
+      "train/seg_loss",
+      "train/sem_loss",
+      "val/box_loss",
+      "val/cls_loss",
+      "val/dfl_loss",
+      "val/seg_loss",
+      "val/sem_loss"
+    ],
+    "native_fitness_best": 0.97452,
+    "native_fitness_first": 0.1423,
+    "native_fitness_last": 0.94407,
+    "observation": "Read from results.csv only. No validation image was opened: image-level error analysis is a later, deliberate phase and starting it here would pre-empt it."
+  },
+  "treatment_semantics": "S1 does not merely change a reporting flag. overlap_mask=false changes the framework's instance-mask target construction: the loader returns one mask plane per instance instead of a single indexed map in which the smaller instance owns contested pixels, and SegmentationValidator._prepare_batch builds its ground truth the same way. That consequence is part of the S1 treatment, not a side effect to be corrected for. Both experiments keep ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS for selecting their own best.pt, so each checkpoint is chosen against its own target - which is precisely why the final S0-versus-S1 comparison is made externally, against canonical COCO masks that neither flag can move.",
+  "treatment_semantics_label": "PREDECLARED_TREATMENT_DESCRIPTION"
+}

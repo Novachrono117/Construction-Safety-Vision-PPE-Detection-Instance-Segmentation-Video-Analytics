@@ -39,6 +39,7 @@ undocumented one-off shell invocation.
 | `train_segmentation_baseline.py` | 8C | Run the S0 baseline exactly once, validate the natively selected checkpoint once, and execute the predeclared direct mask-IoU diagnostic once. Selects no final segmenter and tunes nothing. |
 | `analyze_segmentation_errors.py` | 8D | Attribute S0's validation errors one canonical instance at a time, from a frozen taxonomy and a deterministic review set. Trains nothing, re-validates nothing and selects nothing. |
 | `freeze_segmentation_comparison.py` | 8E | Freeze the canonical COCOeval protocol, evaluate S0 under it exactly once, freeze S1 as a one-variable `overlap_mask` change, and size its batch. Trains nothing. |
+| `train_segmentation_comparison.py` | 8F | Run S1 exactly once under the frozen phase 8E protocol, validate it natively once, evaluate it under the canonical evaluator once, and run the phase 8C direct mask-IoU diagnostic once. Reads S0, never re-runs it, and selects no final segmenter. |
 
 ## Rules
 
@@ -497,6 +498,38 @@ pass, the loss, a backward pass - enough to size the target tensor that grows
 when each instance gets its own mask plane, and nothing more. No validation, no
 checkpoint, no metric. A genuine OOM is `MEMORY_CONSTRAINT_REVIEW_REQUIRED`; the
 batch is never reduced to rescue it.
+
+`--verify-only` runs every precondition and writes nothing.
+
+`train_segmentation_comparison.py` (phase 8F) executes S1. Exactly one training
+run, one native validation, one canonical evaluation, one direct mask-IoU
+diagnostic. It selects no final segmenter, tunes nothing and never touches the
+holdout.
+
+**S1 has no protocol of its own.** Its framework arguments are resolved in code
+from S0's, with the single override the frozen comparison protocol declares, so
+a drift in S0's protocol surfaces as a changed S1 argument rather than being
+masked by a second copy of the same values. The resolved set is then checked
+against the `inherited_protocol` block phase 8E recorded, and the run's own
+`args.yaml` is checked afterwards - the intervention has to have actually
+reached the trainer, not merely been requested.
+
+**The native validation is given `overlap_mask: false` explicitly.** Read from
+the installed source: `Model._reset_ckpt_args` keeps only `imgsz`, `data`,
+`task` and `single_cls` from a checkpoint, and the framework default is `True`.
+Omitting the flag would have scored S1's predictions against S0's
+overlap-resolved target, which is the precise confusion the phase exists to
+avoid. The runner refuses to continue if the resolved value is not `False`.
+
+**S0 is read, never executed.** Its checkpoint bytes are verified by digest and
+its committed canonical, native and direct-IoU figures are quoted. Every phase
+8A-8E artifact is digested before and after and required to be byte-identical.
+
+**Four validators run before anything is published**, not after: the result
+manifest, the canonical evaluation, the direct-IoU diagnostic and the
+S0-versus-S1 comparison, whose delta is recomputed from the committed S0 value
+rather than trusted. `--validate-only` re-runs all four against the committed
+artifacts.
 
 `--verify-only` runs every precondition and writes nothing.
 

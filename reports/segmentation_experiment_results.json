@@ -1,0 +1,124 @@
+{
+  "candidate_experiment": "S1",
+  "composite_score": false,
+  "cross_metric_direction": {
+    "composite_created": false,
+    "primary_delta": 0.07482,
+    "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "ranked_by": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "resolved_by_weighting": false,
+    "rule": "A disagreement requires strictly opposite signs. A delta of exactly zero has no direction and does not disagree with anything.",
+    "rule_frozen_before_s1": true,
+    "secondary_delta": 0.078379,
+    "secondary_metric": "gt_normalized_mask_iou",
+    "status": "CROSS_METRIC_DIRECTION_CONSISTENT"
+  },
+  "descriptive_classes": [
+    "vest_loose"
+  ],
+  "experiments": [
+    {
+      "canonical_all_class_map50": 0.537536,
+      "canonical_all_class_map50_95": 0.388009,
+      "canonical_per_class": {
+        "helmet_loose": {
+          "AP@0.50": 0.891599,
+          "AP@0.50:0.95": 0.793946
+        },
+        "helmet_on_head": {
+          "AP@0.50": 0.793362,
+          "AP@0.50:0.95": 0.609345
+        },
+        "person": {
+          "AP@0.50": 0.309623,
+          "AP@0.50:0.95": 0.135036
+        },
+        "vest_loose": {
+          "AP@0.50": 0.007173,
+          "AP@0.50:0.95": 0.001474
+        },
+        "vest_on_body": {
+          "AP@0.50": 0.685925,
+          "AP@0.50:0.95": 0.400246
+        }
+      },
+      "canonical_supported_macro": 0.484643,
+      "checkpoint_sha256": "d7b512b95fafdc8658fd802459d2c87d9ad3f11f922162a774dacf8ca75b87a3",
+      "delta_primary_vs_reference": 0.0,
+      "direct_gt_normalized_mask_iou": 0.556977,
+      "direct_matched_mask_iou_mean": 0.717462,
+      "experiment_id": "S0",
+      "experiment_phase": "8C",
+      "experiment_sha256": "1761007ab1fd3937a56a870618c11115307988f2031598980e8dfea0e218f7bc",
+      "intentional_variable": "NONE_REFERENCE",
+      "margin_status": "REFERENCE",
+      "native_mask_map50_95": 0.407942,
+      "native_supported_macro": 0.509482,
+      "overlap_mask": true,
+      "retrained_in_phase_8f": false,
+      "revalidated_in_phase_8f": false,
+      "role": "REFERENCE",
+      "status": "S0_COMPLETE"
+    },
+    {
+      "canonical_all_class_map50": 0.634023,
+      "canonical_all_class_map50_95": 0.455034,
+      "canonical_per_class": {
+        "helmet_loose": {
+          "AP@0.50": 0.852829,
+          "AP@0.50:0.95": 0.734911
+        },
+        "helmet_on_head": {
+          "AP@0.50": 0.804906,
+          "AP@0.50:0.95": 0.637685
+        },
+        "person": {
+          "AP@0.50": 0.716194,
+          "AP@0.50:0.95": 0.452352
+        },
+        "vest_loose": {
+          "AP@0.50": 0.12602,
+          "AP@0.50:0.95": 0.037319
+        },
+        "vest_on_body": {
+          "AP@0.50": 0.670165,
+          "AP@0.50:0.95": 0.412905
+        }
+      },
+      "canonical_supported_macro": 0.559463,
+      "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+      "delta_primary_vs_reference": 0.07482,
+      "direct_gt_normalized_mask_iou": 0.635356,
+      "direct_matched_mask_iou_mean": 0.794849,
+      "experiment_id": "S1",
+      "experiment_phase": "8F",
+      "experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+      "intentional_variable": "overlap_mask",
+      "margin_status": "S1_IMPROVES_S0_BEYOND_MARGIN",
+      "native_mask_map50_95": 0.458206,
+      "native_supported_macro": 0.549273,
+      "overlap_mask": false,
+      "retrained_in_phase_8f": true,
+      "revalidated_in_phase_8f": true,
+      "role": "CANDIDATE",
+      "status": "S1_CONTROLLED_EXPERIMENT_COMPLETE"
+    }
+  ],
+  "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+  "final_segmenter_note": "The frozen rule produces a classification, not a frozen segmenter. Selecting the project's final segmenter remains a reviewed human decision, exactly as phase 7D was for detection.",
+  "further_experiments_authorised": 0,
+  "holdout_accessed": false,
+  "margin": 0.005,
+  "native_metric_status": "NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION",
+  "pending_human_review": true,
+  "phase": "8F",
+  "primary_comparison_status": "COMPUTED",
+  "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+  "reference_experiment": "S0",
+  "schema_version": 1,
+  "task": "segmentation",
+  "test": {
+    "reason": "Phase 8F trained S1 on the frozen train split, validated it on the frozen validation split, and ran the canonical COCO evaluation and the direct mask-IoU diagnostic on that same validation split. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, label, prediction or statistic exists in any artifact this phase wrote, and the dataset descriptor the framework read carries no holdout key.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  }
+}

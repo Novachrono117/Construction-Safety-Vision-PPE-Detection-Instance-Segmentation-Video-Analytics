@@ -1,0 +1,164 @@
+{
+  "canonical": {
+    "all_class_map50": 0.634023,
+    "all_class_map50_95": 0.455034,
+    "detections_scored": 5485,
+    "per_class": {
+      "helmet_loose": {
+        "AP@0.50": 0.852829,
+        "AP@0.50:0.95": 0.734911
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.804906,
+        "AP@0.50:0.95": 0.637685
+      },
+      "person": {
+        "AP@0.50": 0.716194,
+        "AP@0.50:0.95": 0.452352
+      },
+      "vest_loose": {
+        "AP@0.50": 0.12602,
+        "AP@0.50:0.95": 0.037319
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.670165,
+        "AP@0.50:0.95": 0.412905
+      }
+    }
+  },
+  "category_id_mapping": "CANONICAL_CATEGORY_IDS_USED_DIRECTLY_NO_REMAPPING",
+  "checkpoint": {
+    "name": "best.pt",
+    "selected_by": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "size_bytes": 6041685
+  },
+  "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+  "cocoeval": {
+    "area_range": "all",
+    "implementation": "pycocotools.cocoeval.COCOeval",
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "iou_type": "segm",
+    "max_dets": [
+      1,
+      10,
+      100
+    ]
+  },
+  "conf_is_not_an_operating_point": "0.001 preserves the low-scoring tail average precision integrates over. The operational threshold lives in the separate direct-IoU diagnostic, at 0.25, and the two protocols are never mixed, averaged or swapped.",
+  "contains_raw_masks_or_imagery": false,
+  "experiment_id": "S1",
+  "ground_truth": {
+    "document": "data/processed/canonical/annotations/segmentation_validation.coco.json",
+    "is_the_yolo_adapter": false,
+    "sha256": "e674c5df27eee3e43c6ca4249b17c541967435196151b64ceb0d351131c8098e",
+    "source": "CANONICAL_COCO_INSTANCE_SEGMENTATION"
+  },
+  "holdout_accessed": false,
+  "inference": {
+    "agnostic_nms": false,
+    "augment": false,
+    "classes": "ALL_FIVE_FROZEN_CLASSES",
+    "conf": 0.001,
+    "half": false,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "retina_masks": true
+  },
+  "mask_encoding": "PYCOCOTOOLS_BINARY_MASK_RLE_ON_ORIGINAL_CANVAS",
+  "phase": "8F",
+  "prediction_cap_versus_metric_cap": {
+    "cocoeval_max_dets": [
+      1,
+      10,
+      100
+    ],
+    "model_side_max_det": 300,
+    "note": "The model is given room to propose and the metric applies its conventional cap when scoring. Two different numbers, both recorded."
+  },
+  "protocol": "CANONICAL_COCO_MASK_AP_EVALUATION",
+  "protocol_config": "configs/segmentation_canonical_evaluation.yaml",
+  "protocol_fingerprint": "282eb0ec125c47687340325266a2ea397bc0f85e239290a26a5c1ec8d8721e64",
+  "protocol_unchanged_from_phase_8e": true,
+  "reference_comparison": {
+    "candidate": 0.559463,
+    "delta": 0.07482,
+    "margin": 0.005,
+    "margin_is_not_a_significance_test": true,
+    "practically_equivalent_prefers_reference": false,
+    "reference": 0.484643,
+    "reference_artifact": "reports/segmentation_S0_canonical_evaluation.json",
+    "reference_artifact_sha256": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+    "reference_experiment": "S0",
+    "reference_supported_macro": 0.484643,
+    "verdict": "S1_IMPROVES_S0_BEYOND_MARGIN"
+  },
+  "runs": 1,
+  "s0_reevaluated": false,
+  "s1_retuned": false,
+  "schema_version": 1,
+  "split": "validation",
+  "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc",
+  "support": {
+    "helmet_loose": {
+      "images": 11,
+      "instances": 57,
+      "supported": true
+    },
+    "helmet_on_head": {
+      "images": 26,
+      "instances": 47,
+      "supported": true
+    },
+    "person": {
+      "images": 55,
+      "instances": 137,
+      "supported": true
+    },
+    "vest_loose": {
+      "images": 1,
+      "instances": 8,
+      "supported": false
+    },
+    "vest_on_body": {
+      "images": 31,
+      "instances": 55,
+      "supported": true
+    }
+  },
+  "supported_macro": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "contributing_values": [
+      0.734911,
+      0.637685,
+      0.452352,
+      0.412905
+    ],
+    "metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "names_no_class": true,
+    "rule": "COMPARISON_SUPPORTED requires >= 5 positive validation source images AND >= 20 validation instances",
+    "rule_origin": "FROZEN_IN_PHASE_7A_REUSED_UNCHANGED",
+    "value": 0.559463
+  },
+  "test": {
+    "reason": "Phase 8F trained S1 on the frozen train split, validated it on the frozen validation split, and ran the canonical COCO evaluation and the direct mask-IoU diagnostic on that same validation split. The holdout was not read, materialised, adapted, counted, predicted on, inspected or plotted; no holdout identifier, label, prediction or statistic exists in any artifact this phase wrote, and the dataset descriptor the framework read carries no holdout key.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  }
+}

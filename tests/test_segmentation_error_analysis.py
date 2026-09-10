@@ -520,9 +520,17 @@ def test_the_overlap_analysis_is_labelled_post_hoc(analysis: dict):
     assert person_delta > 0.01
 
 
-def test_no_s1_result_exists(analysis: dict, paths: ProjectPaths):
+def test_the_analysis_selected_nothing(analysis: dict):
+    """Phase 8D assessed candidates and chose none, and still says so.
+
+    This originally also asserted that no S1 result file existed anywhere in the
+    repository. Phase 8F has since run S1 under a protocol frozen in phase 8E,
+    so that assertion would now fail for an authorised reason. What it was
+    protecting - that the *error analysis* selected nothing and named no winner -
+    is asserted here directly, and is unaffected by a later phase.
+    """
     assert analysis["final_segmenter"] == "UNSELECTED_PENDING_REVIEW"
-    assert not (paths.reports / "segmentation_S1_result_manifest.json").exists()
+    assert analysis["models_trained"] == 0
     for entry in analysis["candidates"].values():
         assert "verdict" in entry
         assert entry["verdict"] != "SELECTED"

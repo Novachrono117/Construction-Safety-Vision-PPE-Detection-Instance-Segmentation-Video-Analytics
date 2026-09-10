@@ -1,0 +1,124 @@
+{
+  "config": {
+    "canonical_evaluation": "configs/segmentation_canonical_evaluation.yaml",
+    "direct_mask_iou_protocol": "configs/segmentation_mask_iou_evaluation.yaml",
+    "segmentation_baseline": "configs/segmentation_baseline.yaml",
+    "segmentation_comparison": "configs/segmentation_comparison.yaml"
+  },
+  "created_at": "2026-09-10T14:15:43+00:00",
+  "details": {
+    "S1_experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+    "adapter_fingerprints": {
+      "image_membership_sha256": "616701e18deb1e6d873459c94e702d33752f1d712fe0f6eebb0fa8288f126d41",
+      "labels_development_sha256": "ff21c7822921601a5c2ac6d0d324eb9f234f1a13ce16647f834936de5d5682f2",
+      "labels_train_sha256": "63a8145d976f7a4c9d1e2868b052c0e0d4233a15f7c6e6b3a1a0e25be6b4cd17",
+      "labels_validation_sha256": "dae69290936641d73e576682631ef73e026bf7f33cec8c2a60a7789ac054e83f"
+    },
+    "adapter_regenerated": false,
+    "best_checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "best_epoch": 77,
+    "best_native_fitness": 0.97452,
+    "checkpoint_selection_policy": "ULTRALYTICS_NATIVE_SEGMENTATION_FITNESS",
+    "classification": "S1_CONTROLLED_EXPERIMENT_COMPLETE",
+    "cross_metric_direction": "CROSS_METRIC_DIRECTION_CONSISTENT",
+    "detector_touched": false,
+    "direct_mask_iou_gt_normalized": 0.635356,
+    "direct_mask_iou_matched_mean": 0.794849,
+    "epochs_completed": 100,
+    "epochs_configured": 100,
+    "experiment_id": "S1",
+    "final_segmenter": "UNSELECTED_PENDING_REVIEW",
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "intentional_difference": "overlap_mask True -> False",
+    "margin_classification": "S1_IMPROVES_S0_BEYOND_MARGIN",
+    "models_trained_in_this_phase": 1,
+    "native_mask_map50_95": 0.458206,
+    "phase": "8F",
+    "primary_delta": 0.07482,
+    "primary_metric": "CANONICAL_SUPPORTED_MACRO_MASK_MAP50_95",
+    "primary_reference": 0.484643,
+    "primary_value": 0.559463,
+    "reference_experiment": "S0",
+    "s0_retrained": false,
+    "s0_revalidated": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "426669ff041887f048d471964da1dc3ed5e5be40",
+  "inputs": [
+    {
+      "path": "configs/segmentation_baseline.yaml",
+      "sha256": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+      "size_bytes": 15018
+    },
+    {
+      "path": "configs/segmentation_comparison.yaml",
+      "sha256": "b7f5d174d6bedb40106521adaf950b74353b7d08c38fdf930281513e60b4de45",
+      "size_bytes": 5386
+    },
+    {
+      "path": "configs/segmentation_canonical_evaluation.yaml",
+      "sha256": "7f560d751a55c36d72b1ef59b18eb72e4682b931095261298a160224917b8b44",
+      "size_bytes": 7645
+    },
+    {
+      "path": "configs/segmentation_mask_iou_evaluation.yaml",
+      "sha256": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+      "size_bytes": 6270
+    },
+    {
+      "path": "reports/segmentation_S1_protocol_manifest.json",
+      "sha256": "b4b4d4243f44c1d57baf147e4a129c20c48d9090d3133a7c6a0754e42a647f96",
+      "size_bytes": 7134
+    },
+    {
+      "path": "reports/segmentation_S0_canonical_evaluation.json",
+      "sha256": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+      "size_bytes": 7585
+    },
+    {
+      "path": "reports/segmentation_S0_result_manifest.json",
+      "sha256": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+      "size_bytes": 20541
+    },
+    {
+      "path": "reports/segmentation_S0_mask_iou.json",
+      "sha256": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+      "size_bytes": 4644
+    }
+  ],
+  "name": "segmentation_S1_experiment",
+  "outputs": [
+    {
+      "path": "reports/segmentation_S1_result_manifest.json",
+      "sha256": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723",
+      "size_bytes": 36791
+    },
+    {
+      "path": "reports/segmentation_S1_canonical_evaluation.json",
+      "sha256": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1",
+      "size_bytes": 5102
+    },
+    {
+      "path": "reports/segmentation_S1_mask_iou.json",
+      "sha256": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d",
+      "size_bytes": 5517
+    },
+    {
+      "path": "reports/segmentation_S1_report.md",
+      "sha256": "66ec166c835d3e3a2bb3cb4b5e0ecd1a8ffd3df9cfee88cbe8eb092f05735210",
+      "size_bytes": 17243
+    },
+    {
+      "path": "reports/segmentation_experiment_results.json",
+      "sha256": "6f611aeb2204e9c1616da8480e5792e4a2c924b24fd5180dfbc52e8a3b830b85",
+      "size_bytes": 4766
+    }
+  ],
+  "phase": 8,
+  "schema_version": 1
+}
