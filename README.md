@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1). Phase 8G of 14 complete; the holdout has still never been evaluated.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and the detector-versus-segmenter comparison protocol is frozen and not yet executed (phase 10A). The holdout has still never been evaluated.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -38,7 +38,10 @@
 > individual class moved is UNKNOWN. Phase 8G applied the frozen policy
 > mechanically and, after human review, **froze S1 - YOLO11n-seg at imgsz 768
 > with `overlap_mask: false` - as the final segmenter**. Both frozen models were
-> selected on validation evidence alone.
+> selected on validation evidence alone. Phase 10A then **froze the
+> detector-versus-segmenter comparison protocol** - what will be measured, at
+> which settings, and what the measurements may not claim - **before running
+> any of it**.
 
 A reproducible computer-vision system for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with a controlled
@@ -143,6 +146,7 @@ Two design decisions define this architecture:
 | Segmenter trade-off | Published, not buried: `person` +0.317316 carries most of the gain, `helmet_loose` **regressed** -0.059035. Selection does not require every class to improve. Why any class moved is UNKNOWN. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
 | Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
+| Detector-vs-segmenter comparison | **Protocol frozen (phase 10A), not executed.** `DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`, fingerprint `d92a1576...`. Validation only, both models at imgsz 768, AP at conf 0.001 and operational analysis at conf 0.25, FP32 for both. No result exists. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -1397,6 +1401,77 @@ digest**, alongside any `last.pt`.
 
 ```bash
 uv run python scripts/freeze_final_segmenter.py --verify-only
+```
+
+
+## Phase 10A - what the segmenter adds, and what it costs
+
+**This phase produced no results, deliberately.** It froze the protocol for
+comparing the two frozen models, before running any of it and after both models
+were already frozen - so nothing in it could have been chosen to flatter
+either.
+
+**The question is not which model wins.** The detector emits a class, a
+confidence and a box. The segmenter emits those plus an instance mask. They do
+not produce the same output, so a single ranking would be meaningless. The
+protocol asks what the mask *adds* and what it *costs*, along four axes:
+recognition, spatial information, computational cost, and operational
+person-PPE reasoning.
+
+**Two confidence thresholds, and they are never mixed.** Average precision
+integrates over the score curve and needs the low-scoring tail, so the AP
+protocol uses **0.001**. The spatial and association analysis needs a model to
+commit to a set of instances, so the operational protocol uses **0.25**. Each
+belongs to one protocol; a number from one may not be reported under the
+other's name.
+
+**Both models are measured in one precision, pinned explicitly.** `half` is
+deprecated in the installed ultralytics 8.4.138, and leaving its replacement
+`quantize` unset delegates the choice to the runtime - which could differ
+between the two models and would silently turn a latency comparison into a
+precision comparison. So it is fixed at FP32 for both.
+
+**Every mask quantity is paired with a box proxy, or declared to have none.**
+
+| Mask measurement | Box proxy |
+| --- | --- |
+| `INSTANCE_AREA_PIXELS` | `BOX_AREA_PIXELS` |
+| `MASK_TO_BOX_FILL_RATIO` | **`NO_BOX_ONLY_EQUIVALENT`** |
+| `MASK_CENTROID` | `BOX_CENTER` |
+| `SHAPE_EXTENT` | **`NO_BOX_ONLY_EQUIVALENT`** |
+| `PERSON_PPE_MASK_INTERSECTION` | `BOX_INTERSECTION_AREA` |
+| `PERSON_PPE_MASK_CONTAINMENT` | `BOX_INTERSECTION_OVER_PPE_BOX_AREA` |
+| `VISIBLE_PPE_COVERAGE_PROXY` | `BOX_OVERLAP_DERIVED_COVERAGE` |
+
+That pairing *is* the answer to "what does segmentation add": a quantity with a
+good box proxy adds little, and one with no box equivalent is the actual gain.
+Deciding which is which after seeing the numbers would be circular, so it is
+decided now.
+
+**The association analysis is descriptive and named as such.**
+`SPATIAL_ASSOCIATION_ANALYSIS`, not compliance accuracy. The project holds no
+canonical compliance ground truth, and the provider's `helmet_on_head` and
+`vest_on_body` already encode a worn state - inventing a compliance label on
+top of them would be manufacturing ground truth. Each person-PPE candidate pair
+will fall into one of `BOX_AND_MASK_AGREE`, `BOX_ONLY_ASSOCIATION`,
+`MASK_ONLY_ASSOCIATION` or `NEITHER_ASSOCIATION`.
+
+**The latency benchmark is frozen before anything is timed.** batch 1, imgsz
+768, FP32, 20 warmup iterations discarded, 30 timed repetitions over 20
+benchmark images chosen by ranking validation ids by their own SHA-256 - so the
+subset cannot have been picked for being easy or crowded, because no image was
+opened to choose it. Execution interleaves the two models and reverses the
+order on a second pass, because benchmarking one to completion first would
+measure the laptop's thermal state as much as the model. Two boundaries are
+reported: the forward pass alone, and end-to-end including NMS and **mask
+reconstruction** - putting the latter outside the segmenter's measurement would
+hide exactly the cost being quantified.
+
+**No aggregate score.** Benefit and cost are reported side by side. A weighted
+index invented once the numbers are visible would hide the trade-off.
+
+```bash
+uv run python scripts/freeze_detector_segmenter_comparison.py --verify-only
 ```
 
 

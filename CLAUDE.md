@@ -191,13 +191,14 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 8G complete - the split is frozen, the holdout is locked, and
-  **both models are now FROZEN**: the detector is D2 (YOLO11n at imgsz 768) and
-  the segmenter is **S1 (YOLO11n-seg at imgsz 768 with `overlap_mask: false`)**,
-  `SEGMENTER_FROZEN`. Both selections rest entirely on validation evidence.
-  The modelling block is closed: do not train, retrain, tune or benchmark
-  anything unprompted. The next phase of actual work is the controlled
-  validation comparison of the two frozen models (roadmap phase 10).
+- **Phase:** 10A complete - the split is frozen, the holdout is locked,
+  **both models are FROZEN** (detector D2, YOLO11n at imgsz 768; segmenter S1,
+  YOLO11n-seg at imgsz 768 with `overlap_mask: false`), and the
+  **detector-versus-segmenter comparison protocol is FROZEN and NOT EXECUTED**
+  (`DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`). The modelling block is
+  closed: do not train, retrain, tune or benchmark anything unprompted. The
+  next work is phase 10B, the controlled validation recognition and spatial
+  comparison; do not start it unprompted.
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -837,6 +838,87 @@ uv run pytest
   phase of actual work is phase 10, the controlled validation comparison of the
   two frozen models. The roadmap is not renumbered, because earlier artifacts
   reference these phase numbers; the discrepancy is recorded in it.
+- **The detector-versus-segmenter comparison protocol is FROZEN and NOT
+  EXECUTED (phase 10A).** `configs/detector_segmenter_comparison.yaml`,
+  fingerprint
+  `d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d`, recorded
+  in `reports/detector_segmenter_comparison_protocol.json`. **No model has been
+  executed, no prediction produced, no latency measured and no image read** -
+  the manifest records those as counts, all zero. Phase 10B runs the
+  recognition and spatial comparison, 10C the latency and memory benchmark, 10D
+  the synthesis. None has started.
+- **The comparison is NOT a contest, and framing it as one is the error.** D2
+  emits class + confidence + box; S1 emits those **plus a mask**. They do not
+  solve the same output task. The question is what the mask adds and what it
+  costs. `aggregate_benefit_score: false`, `winner_declared: false`, and both
+  parsers refuse a composite. Never rank the two models, and never let this
+  comparison change either frozen model.
+- **TWO confidence thresholds, never mixed.** AP protocol **conf 0.001**
+  (average precision needs the low-scoring tail); operational protocol **conf
+  0.25** (the spatial and association analysis needs a working point). Both at
+  NMS IoU 0.70, max_det 300, imgsz 768, no TTA. A number produced at one
+  threshold may never be reported under the other protocol's name, and neither
+  threshold is tuned for either model.
+- **Both models are measured in FP32, pinned as `quantize: 32`, and that is a
+  fact read from the installed source.** `half` is **deprecated** in
+  ultralytics 8.4.138 in favour of `quantize`, and leaving `quantize` unset
+  means "the runtime decides" - which could differ between the two models and
+  would silently make the latency comparison a precision comparison. Never
+  benchmark one model in FP16 and the other in FP32.
+- **S1's boxes in the comparison are S1's OWN predicted boxes.**
+  `segmenter_boxes_derived_from_masks: false`. Re-deriving them from its masks
+  would improve their geometric consistency with the mask branch and would then
+  be measuring a post-processing choice this project invented, not the model.
+  The parser refuses it.
+- **Recognition is judged by ONE external evaluator**, not by the two
+  frameworks' native metrics: pycocotools `COCOeval` at `iouType='bbox'`
+  against the canonical phase 5D boxes, IoU 0.50:0.05:0.95, `maxDets`
+  [1, 10, 100]. The two models run through different validation paths, so their
+  native box numbers are not guaranteed to be computed identically.
+- **Every mask quantity is paired with a box proxy, or declared to have none,
+  and that pairing was fixed BEFORE any measurement.** Seven spatial features;
+  `MASK_TO_BOX_FILL_RATIO` and `SHAPE_EXTENT` are `NO_BOX_ONLY_EQUIVALENT`.
+  Deciding which quantities a box could approximate after seeing the numbers
+  would be circular. The parser refuses an unpaired feature.
+- **The association analysis is `SPATIAL_ASSOCIATION_ANALYSIS`, never
+  compliance accuracy.** There is **no canonical compliance ground truth** in
+  this project, so there is nothing to be accurate against; `helmet_on_head`
+  and `vest_on_body` already encode a provider-level worn state, and inventing
+  a label on top of them would be manufacturing ground truth. Four categories
+  partition every candidate pair. No embeddings, no tracking, no learned rule,
+  and the five classes are never collapsed.
+- **The latency benchmark is frozen down to the iteration count**: batch 1,
+  imgsz 768, FP32, **warmup 20** discarded, **30 timed repetitions**, **20
+  benchmark images** selected by `STABLE_SHA256_RANK_OF_IMAGE_ID` with ordered
+  fingerprint `45059c2c...`. Never change the repetitions after observing
+  variance - that is the move the frozen count exists to prevent.
+- **Execution order is interleaved and symmetric in both directions**, because
+  running one model to completion and then the other measures the laptop's
+  thermal state as well as the models. `randomized: false`; the design is fixed
+  in advance and the runner aborts if either model deviates from the frozen
+  invariants.
+- **Mask reconstruction is INSIDE the segmenter's end-to-end timing.** Two
+  boundaries are reported - `MODEL_INFERENCE_LATENCY_MS` (forward pass) and
+  `END_TO_END_MODEL_OUTPUT_LATENCY_MS` (preprocessing + forward + NMS + mask
+  reconstruction). Moving mask reconstruction outside would hide precisely the
+  cost this comparison exists to quantify, and the parser refuses it.
+- **CUDA timing requires explicit synchronisation on BOTH edges** of every
+  timed region, with the same primitive for both models. CUDA work is
+  asynchronous; an unsynchronised wall-clock reading measures dispatch, not
+  execution, and the faster-to-queue model would look faster.
+- **The latency result will be `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`** - valid
+  for this machine, this runtime and this protocol. Never present it as a
+  universal statement about either architecture; a laptop GPU throttles, and
+  batch 1 measures latency, not throughput under load.
+- **The benchmark subset was chosen without opening a single image**, by
+  ranking validation ids by their own SHA-256. Never re-select it, and never
+  pick "representative" or "interesting" images for a latency benchmark.
+- **Reach for the comparison protocol through
+  `construction_safety_vision.detector_segmenter_comparison`.** Its
+  `validate_protocol_manifest` rejects a wrong checkpoint, a wrong imgsz, a
+  changed membership or benchmark order, a swapped confidence, a different
+  precision, a missing CUDA sync, a changed warmup or iteration count, an
+  aggregate score, and any result.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

@@ -1,0 +1,370 @@
+{
+  "ap_inference": {
+    "augment": false,
+    "conf": 0.001,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "purpose": "Average precision integrates precision over recall and needs the low-scoring tail, so this is deliberately not an operating point.",
+    "tta": false
+  },
+  "association": {
+    "appearance_embeddings": false,
+    "box_rule": "The same rule computed on the models' predicted boxes: intersection over the PPE box's own area, associating with the highest-scoring person box.",
+    "classes_collapsed": false,
+    "containment_floor": 0.5,
+    "deterministic": true,
+    "disagreement_categories": [
+      "BOX_AND_MASK_AGREE",
+      "BOX_ONLY_ASSOCIATION",
+      "MASK_ONLY_ASSOCIATION",
+      "NEITHER_ASSOCIATION"
+    ],
+    "label": "SPATIAL_ASSOCIATION_ANALYSIS",
+    "learned_association": false,
+    "mask_rule": "A PPE instance is associated with the person instance whose mask it overlaps most, subject to a containment floor declared before any result exists.",
+    "relationships": [
+      "helmet_to_person",
+      "vest_to_person"
+    ],
+    "semantics": "The five frozen classes stay distinct. `helmet_on_head` and `vest_on_body` already encode a provider-level worn state, so this analysis does not invent a compliance label on top of them and does not report accuracy: there is no canonical compliance ground truth in this project to be accurate against.",
+    "status": "DESCRIPTIVE_OPERATIONAL_ANALYSIS_NOT_AN_ACCURACY_METRIC",
+    "threshold_source": "operational_inference",
+    "tie_breaking": "HIGHEST_OVERLAP_THEN_LOWEST_PERSON_INSTANCE_INDEX",
+    "tracking": false
+  },
+  "box_comparability": {
+    "detector_boxes": "THE_DETECTORS_OWN_PREDICTED_BOXES",
+    "ground_truth": "COMMON_CANONICAL_BOX_GROUND_TRUTH",
+    "reason": "S1 predicts boxes directly, and those are what a user of the model would get. Re-deriving them from its masks after inference would improve their geometric consistency with the mask branch and would then be measuring a post-processing choice this project invented, not the model.",
+    "segmenter_boxes": "THE_SEGMENTERS_OWN_PREDICTED_BOXES",
+    "segmenter_boxes_derived_from_masks": false
+  },
+  "box_proxies": {
+    "INSTANCE_AREA_PIXELS": "BOX_AREA_PIXELS",
+    "MASK_CENTROID": "BOX_CENTER",
+    "MASK_TO_BOX_FILL_RATIO": "NO_BOX_ONLY_EQUIVALENT",
+    "PERSON_PPE_MASK_CONTAINMENT": "BOX_INTERSECTION_OVER_PPE_BOX_AREA",
+    "PERSON_PPE_MASK_INTERSECTION": "BOX_INTERSECTION_AREA",
+    "SHAPE_EXTENT": "NO_BOX_ONLY_EQUIVALENT",
+    "VISIBLE_PPE_COVERAGE_PROXY": "BOX_OVERLAP_DERIVED_COVERAGE"
+  },
+  "box_proxy_note": "A declared proxy is not a claim that it is equivalent. It is a claim that a box-only pipeline could compute something in its place, so the comparison can measure how far the two answers diverge rather than asserting a difference.",
+  "canonical_box_evaluator": {
+    "area_range": "all",
+    "category_id_mapping": "CANONICAL_CATEGORY_IDS_USED_DIRECTLY_NO_REMAPPING",
+    "ground_truth": "CANONICAL_COCO_DETECTION_BOXES",
+    "ground_truth_document": "data/processed/canonical/annotations/detection_validation.coco.json",
+    "ground_truth_sha256": "cbafde44b3fba8a477541b6756522abf09099e0f74f197307ee77347a87e84b5",
+    "implementation": "pycocotools.cocoeval.COCOeval",
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "iou_type": "bbox",
+    "max_dets": [
+      1,
+      10,
+      100
+    ],
+    "prediction_cap_versus_metric_cap": "Each model may propose up to 300 candidates while COCOeval scores at its conventional cap of 100. Two different numbers, both recorded.",
+    "why_not_native": "The two models run through different framework validation paths, so their native box metrics are not guaranteed to be computed identically. One external evaluator applied to both removes that doubt. The canonical boxes are the phase 5D ones, derived from segmentation polygons, never the provider's stored boxes."
+  },
+  "comparison_axes": {
+    "A_recognition": "Does the segmenter retain comparable object localisation, measured as canonical box AP against the same ground truth by the same evaluator?",
+    "B_spatial_information": "Which spatial quantities do predicted masks make available, and which of them a bounding box can already approximate?",
+    "C_computational_cost": "What latency and memory does the mask branch add, measured under one symmetric benchmark on one machine?",
+    "D_operational_reasoning": "Where do mask-based and box-based person-PPE spatial associations agree, and where do they disagree?"
+  },
+  "comparison_input_imgsz": 768,
+  "detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "checkpoint_size_bytes": 5502289,
+    "executed_in_this_phase": false,
+    "experiment": "D2",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "manifest": "reports/final_detector_manifest.json",
+    "manifest_sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "model": "YOLO11n",
+    "outputs": [
+      "class",
+      "confidence",
+      "bounding_box"
+    ],
+    "resolved_path": "artifacts/frozen/detection/D2_best.pt",
+    "role": "FINAL_OBJECT_DETECTOR"
+  },
+  "detector_touched": false,
+  "historical_artifact_digests": {
+    "configs/segmentation_baseline.yaml": "c43f9dde3e512c00a6738b2210cc45538439e6940d076322ea0620c12e3e3867",
+    "configs/segmentation_canonical_evaluation.yaml": "7f560d751a55c36d72b1ef59b18eb72e4682b931095261298a160224917b8b44",
+    "configs/segmentation_comparison.yaml": "b7f5d174d6bedb40106521adaf950b74353b7d08c38fdf930281513e60b4de45",
+    "configs/segmentation_mask_iou_evaluation.yaml": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+    "reports/detection_experiment_results.json": "ade35948f9c962a2679b18660d0aac6ab9273e9b34f69eba0d541aff9bf5f79e",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "reports/final_segmenter_manifest.json": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+    "reports/segmentation_S0_canonical_evaluation.json": "333d670bdabdd9940a31cbf47097d45f5bb30797f73cdba510172ed399094143",
+    "reports/segmentation_S0_mask_iou.json": "867fe4441a7097974ead9d2df788379c9f72a612b2a7a5852a23fa3c18a049ba",
+    "reports/segmentation_S0_result_manifest.json": "c3378ce47cecd53c4d7b1df433581d201a554d9667b78e4ab4aafa2deb4a31aa",
+    "reports/segmentation_S1_canonical_evaluation.json": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1",
+    "reports/segmentation_S1_mask_iou.json": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d",
+    "reports/segmentation_S1_result_manifest.json": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723",
+    "reports/segmentation_comparison_policy.json": "6603bdbe7b2ceafdab969dc535db3890d334e632e1a999ccbc286077b54c257b",
+    "reports/segmentation_experiment_comparison.csv": "91253716f2f3d052b110ccc85b1c7abdbfca8f99765aa09add99c3248daedb12",
+    "reports/segmentation_experiment_results.json": "f550cd0695ed920732ebf8996e25227db891789ff479c0e5c916274d4a60ec3a",
+    "reports/segmentation_selection_report.md": "0ed20d71b8db348821b3a4538fcc71096fb9571e5ff2eec05c98a36c9cbef068",
+    "reports/split_manifest.json": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+    "reports/task_dataset_manifest.json": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc"
+  },
+  "historical_artifacts_unchanged": true,
+  "holdout_accessed": false,
+  "images_read": 0,
+  "interpretation": {
+    "BENEFIT": "additional measurable spatial support that masks make available",
+    "COST": "latency, memory and computational overhead",
+    "OPERATIONAL_VALUE": "how far mask measurement and bounding-box proxies diverge for person-PPE spatial association",
+    "RECOGNITION_TRADEOFF": "the difference in canonical box localisation",
+    "single_aggregate_score": false,
+    "weighted_cost_benefit_index": false
+  },
+  "latency_measurements_taken": 0,
+  "latency_protocol": {
+    "abort_on_deviation": true,
+    "batch": 1,
+    "benchmark_image_count": 20,
+    "benchmark_membership_artifact": "reports/detector_segmenter_latency_membership.csv",
+    "benchmark_membership_sha256": "45059c2cdda1285b4fa6dbfdcfbeac6fedcad551e551e6810b1369af90f7f162",
+    "benchmark_selection_note": "Ranked by the SHA-256 of the image identifier and truncated to the first 20. Chosen without opening a single image, so the subset cannot have been picked for being easy, crowded or visually interesting.",
+    "benchmark_selection_rule": "STABLE_SHA256_RANK_OF_IMAGE_ID",
+    "benchmark_set_sha256": "172f02cd56dbef893243475dca469ce673f9143dba97c933f9f074f3d5fbc2c0",
+    "derived_quantities": {
+      "absolute_latency_delta_ms": "S1 minus D2, at an identical measurement boundary",
+      "images_per_second_from_mean": "batch 1, derived from the mean, never from the fastest iteration",
+      "relative_latency_cost": "(S1 / D2) - 1",
+      "throughput_ratio": "S1 images per second divided by D2 images per second"
+    },
+    "excluded_from_timed_region": [
+      "model loading",
+      "image decode from disk where it can be hoisted identically for both models",
+      "visualisation",
+      "writing anything to disk"
+    ],
+    "execution_order": {
+      "design": "Pass one, for each benchmark image in the frozen order: time the detector, then time the segmenter. Pass two, same images and order: time the segmenter, then the detector. Both passes contribute to the reported distribution, so any residual thermal or ordering drift falls on both models equally instead of on whichever ran second.",
+      "interleaved": true,
+      "randomized": false,
+      "symmetric": true
+    },
+    "fairness_invariants": [
+      "same machine",
+      "same GPU",
+      "same driver and CUDA runtime",
+      "same Python environment",
+      "same process where practical",
+      "same source image bytes",
+      "same input resolution",
+      "same batch size",
+      "same precision",
+      "same warmup count",
+      "same benchmark images in the same order",
+      "same timed iteration count",
+      "same synchronization strategy",
+      "same timing primitive"
+    ],
+    "imgsz": 768,
+    "label": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+    "limitations": [
+      "A laptop GPU throttles. The result describes this machine under whatever power and thermal state it was in, and is labelled accordingly.",
+      "Batch 1 measures latency, not throughput under load. No batched or concurrent scenario is covered.",
+      "Neither model is exported, quantised or otherwise optimised for deployment. These are PyTorch checkpoints as trained."
+    ],
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "statistics": [
+      "mean",
+      "median",
+      "std",
+      "p50",
+      "p90",
+      "p95",
+      "p99",
+      "min",
+      "max"
+    ],
+    "synchronization": {
+      "after_timed_region": true,
+      "before_timed_region": true,
+      "cuda_synchronize": true,
+      "note": "CUDA work is asynchronous. Without an explicit synchronize on both edges a wall-clock reading measures how long it took to queue the work, not to run it, and the faster-to-queue model would appear faster.",
+      "same_primitive_for_both_models": true
+    },
+    "timed_iterations_per_image": 30,
+    "timing_boundaries": {
+      "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+        "includes": [
+          "input preprocessing",
+          "forward pass",
+          "NMS and postprocessing",
+          "mask reconstruction to expose final instance masks"
+        ],
+        "note": "What a caller actually waits for. Mask reconstruction is inside this boundary for the segmenter, because excluding it would hide precisely the cost this comparison exists to quantify.",
+        "segmenter_mask_reconstruction_included": true
+      },
+      "MODEL_INFERENCE_LATENCY_MS": {
+        "excludes": [
+          "image decode",
+          "preprocessing",
+          "postprocessing",
+          "mask reconstruction"
+        ],
+        "includes": [
+          "forward pass on an already-prepared input tensor"
+        ],
+        "note": "The model core, as consistently as the framework allows for both."
+      }
+    },
+    "timing_primitive": "time.perf_counter",
+    "warmup_iterations": 20
+  },
+  "limitations": [
+    "Validation only. The holdout has never been evaluated and takes no part in this comparison.",
+    "The two models do not solve the same output task. The comparison describes what is gained and what it costs; it does not rank them.",
+    "One run of each model was ever trained. Run-to-run variance is UNKNOWN for both, so a small recognition delta is not evidence of an ordering.",
+    "The spatial quantities are derived from predictions, not from ground truth. They describe what the model asserts, not what is true in the scene.",
+    "There is no canonical person-PPE association ground truth, so the association analysis is descriptive and reports no accuracy.",
+    "The latency benchmark is valid for this machine, this runtime and this protocol. It is not a universal statement about either architecture."
+  ],
+  "memory_measurements_taken": 0,
+  "memory_protocol": {
+    "batch": 1,
+    "imgsz": 768,
+    "measured": [
+      "peak_memory_allocated",
+      "peak_memory_reserved"
+    ],
+    "note": "Peak stats are reset after warmup so the figure describes inference, not the allocator's warmup high-water mark. Training-time memory is a different quantity and is never substituted.",
+    "reset_peak_stats_after_warmup": true,
+    "training_memory_reused": false
+  },
+  "model_complexity": {
+    "fields": [
+      "parameters",
+      "gflops"
+    ],
+    "note": "Read from the committed experiment manifests where they already carry authoritative values. Nothing is retrained to obtain them.",
+    "source": "FROZEN_EXPERIMENT_ARTIFACTS_PREFERRED_OVER_RECOMPUTATION",
+    "status": "DESCRIPTIVE_COMPLEXITY_ONLY"
+  },
+  "models_are_not_solving_the_same_task": "The detector emits a class, a confidence and a box. The segmenter emits those plus an instance mask. The comparison asks what the mask adds and what it costs; it does not rank the two, and no aggregate score is defined.",
+  "models_executed_in_this_phase": 0,
+  "models_trained_in_this_phase": 0,
+  "next_phase": "PHASE_10B_CONTROLLED_VALIDATION_RECOGNITION_AND_SPATIAL_COMPARISON",
+  "operational_inference": {
+    "augment": false,
+    "conf": 0.25,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "purpose": "A working point for the spatial and association analysis, where a model has to commit to a set of instances rather than emit a score curve.",
+    "tta": false
+  },
+  "phase": "10A",
+  "population": {
+    "annotations": 304,
+    "class_map_sha256": "596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753",
+    "document": "data/processed/canonical/annotations/detection_validation.coco.json",
+    "document_sha256": "cbafde44b3fba8a477541b6756522abf09099e0f74f197307ee77347a87e84b5",
+    "identical_images_for_both_models": true,
+    "identical_order_for_both_models": true,
+    "images": 65,
+    "membership_artifact": "reports/detector_segmenter_comparison_membership.csv",
+    "membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152",
+    "resplit": false,
+    "split": "validation",
+    "split_assignment_sha256": "a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc"
+  },
+  "predictions_produced": 0,
+  "protocol": "DETECTOR_VERSUS_SEGMENTER_CONTROLLED_COMPARISON",
+  "protocol_config": "configs/detector_segmenter_comparison.yaml",
+  "protocol_config_sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "reporting": {
+    "aggregate_benefit_score": false,
+    "box_metrics": [
+      "CANONICAL_BOX_MAP50_95",
+      "CANONICAL_BOX_MAP50"
+    ],
+    "note": "Deltas are reported for description, not to select. Neither frozen model changes as a result of this comparison, and no retraining follows from it.",
+    "per_class_box_ap": true,
+    "report_deltas": true,
+    "winner_declared": false
+  },
+  "schema_version": 1,
+  "scientific_question": "What additional spatial and operational information does the frozen instance segmentation model provide beyond the frozen bounding-box detector, and what computational cost does that additional information introduce?",
+  "segmenter": {
+    "batch_trained_at": 8,
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "checkpoint_size_bytes": 6041685,
+    "executed_in_this_phase": false,
+    "experiment": "S1",
+    "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "manifest": "reports/final_segmenter_manifest.json",
+    "manifest_sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "outputs": [
+      "class",
+      "confidence",
+      "bounding_box",
+      "instance_mask"
+    ],
+    "overlap_mask": false,
+    "resolved_path": "artifacts/frozen/segmentation/S1_best.pt",
+    "role": "FINAL_INSTANCE_SEGMENTER"
+  },
+  "segmenter_touched": false,
+  "spatial_feature_status": "MASK_ENABLED_SPATIAL_MEASUREMENTS. They describe predicted geometry. They are not ground truth, not compliance labels, and not accuracy metrics.",
+  "spatial_features": {
+    "INSTANCE_AREA_PIXELS": "Count of foreground pixels in the predicted instance mask, on the original image canvas.",
+    "MASK_CENTROID": "Centroid of the mask's foreground pixels, in original image coordinates.",
+    "MASK_TO_BOX_FILL_RATIO": "Mask area divided by the area of the model's own predicted box. How much of the box the object actually occupies.",
+    "PERSON_PPE_MASK_CONTAINMENT": "Intersection divided by the PPE mask's own area: how much of the PPE lies inside the person.",
+    "PERSON_PPE_MASK_INTERSECTION": "Count of pixels shared between a PPE instance mask and a person instance mask.",
+    "SHAPE_EXTENT": "Foreground support relative to the tight bounding rectangle of the mask itself, describing how far the shape departs from filling a rectangle.",
+    "VISIBLE_PPE_COVERAGE_PROXY": "An overlap-derived operational proxy for how much visible PPE support a person instance has. A proxy, named as one, and not a compliance measure."
+  },
+  "spatial_value_metrics": [
+    "mask_versus_box_overlap_magnitude",
+    "mask_versus_box_containment_magnitude",
+    "absolute_distance_between_box_center_and_mask_centroid",
+    "mask_fill_ratio_distribution",
+    "cases_where_box_overlap_exists_but_mask_overlap_is_negligible",
+    "cases_where_boxes_overlap_strongly_while_masks_separate_the_instances",
+    "cases_where_mask_association_and_box_proxy_association_disagree"
+  ],
+  "status": "FROZEN_NOT_EXECUTED",
+  "test": {
+    "reason": "Phase 10A froze a comparison protocol. It ran no model, produced no prediction, measured no latency and read no image pixel. The holdout was not read, materialised, adapted, counted, predicted on or inspected; no holdout identifier, image, prediction or statistic exists in any artifact this phase wrote.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "threshold_policy": "Neither threshold is tuned, for either model. 0.001 belongs to the AP protocol and 0.25 to the operational protocol; they are never mixed, averaged or swapped, and neither is selected by looking at a result.",
+  "thresholds_tuned": 0
+}

@@ -41,6 +41,7 @@ undocumented one-off shell invocation.
 | `freeze_segmentation_comparison.py` | 8E | Freeze the canonical COCOeval protocol, evaluate S0 under it exactly once, freeze S1 as a one-variable `overlap_mask` change, and size its batch. Trains nothing. |
 | `train_segmentation_comparison.py` | 8F | Run S1 exactly once under the frozen phase 8E protocol, validate it natively once, evaluate it under the canonical evaluator once, and run the phase 8C direct mask-IoU diagnostic once. Reads S0, never re-runs it, and selects no final segmenter. |
 | `freeze_final_segmenter.py` | 8G | Apply the frozen phase 8E policy to the committed S0 and S1 results, record the human-reviewed selection, and freeze the selected checkpoint's identity. Trains nothing, evaluates nothing and runs no inference. |
+| `freeze_detector_segmenter_comparison.py` | 10A | Freeze the detector-versus-segmenter comparison protocol and its deterministic benchmark membership. Executes no model, produces no prediction and measures no latency. |
 
 ## Rules
 
@@ -558,6 +559,27 @@ number of bytes, differing only in what they were trained to predict, so a
 digest check is the only thing that separates them.
 
 `--verify-only` derives the comparison and writes nothing.
+
+`freeze_detector_segmenter_comparison.py` (phase 10A) freezes what the later
+comparison will measure. It **executes no model** - a test asserts the script
+imports neither torch nor ultralytics and contains no timing call - and writes
+no result.
+
+**Both models are verified by digest and left alone.** Their freeze accessors
+resolve the checkpoints, confirm the bytes, and confirm the two share the
+comparison input size so resolution cannot become a confound.
+
+**The benchmark subset is chosen before any timing exists and without opening
+an image.** Validation ids are ranked by their own SHA-256 and truncated to 20.
+The ordering is fingerprinted too, because the order is part of the protocol:
+both models must see the same images in the same sequence.
+
+**Membership is read from the canonical document, not restated.** The 65
+validation images and their fingerprint come from the phase 5D COCO file the
+later comparison will score against, and the script aborts if the declared
+fingerprint disagrees with the file.
+
+`--verify-only` runs every precondition and writes nothing.
 
 ## Planned scripts
 

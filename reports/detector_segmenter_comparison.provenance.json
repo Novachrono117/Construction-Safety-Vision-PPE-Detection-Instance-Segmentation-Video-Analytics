@@ -1,0 +1,80 @@
+{
+  "config": {
+    "detector_segmenter_comparison": "configs/detector_segmenter_comparison.yaml",
+    "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d"
+  },
+  "created_at": "2026-09-10T22:09:37+00:00",
+  "details": {
+    "ap_confidence": 0.001,
+    "benchmark_membership_sha256": "45059c2cdda1285b4fa6dbfdcfbeac6fedcad551e551e6810b1369af90f7f162",
+    "classification": "DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN",
+    "comparison_input_imgsz": 768,
+    "detector_checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "detector_experiment": "D2",
+    "detector_touched": false,
+    "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "historical_artifacts_unchanged": true,
+    "holdout_accessed": false,
+    "latency_measurements_taken": 0,
+    "membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152",
+    "models_executed_in_this_phase": 0,
+    "operational_confidence": 0.25,
+    "phase": "10A",
+    "population_images": 65,
+    "population_split": "validation",
+    "predictions_produced": 0,
+    "segmenter_checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "segmenter_experiment": "S1",
+    "segmenter_touched": false,
+    "status": "FROZEN_NOT_EXECUTED",
+    "thresholds_tuned": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "29bffdceecbde2d39864ef66a2d63bafe79b1699",
+  "inputs": [
+    {
+      "path": "configs/detector_segmenter_comparison.yaml",
+      "sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "size_bytes": 17494
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    }
+  ],
+  "name": "detector_segmenter_comparison_protocol",
+  "outputs": [
+    {
+      "path": "reports/detector_segmenter_comparison_protocol.json",
+      "sha256": "cdef5fb260b87374cc506a314de1127ccad22d91914a5f9550697b40f48eb40e",
+      "size_bytes": 20060
+    },
+    {
+      "path": "reports/detector_segmenter_comparison_protocol.md",
+      "sha256": "6725cf3ec76ccb595365c8ecdff326b99536b6e3911958419ebecd94b1ef8248",
+      "size_bytes": 14975
+    },
+    {
+      "path": "reports/detector_segmenter_comparison_membership.csv",
+      "sha256": "b50d437f28de310bb10d74f1d8a565e7ba3d31287b07d9266890d2d32a6657fe",
+      "size_bytes": 6346
+    },
+    {
+      "path": "reports/detector_segmenter_latency_membership.csv",
+      "sha256": "7c3c6c52ab08564b2d2d0fe34ca13deb0d8814d22817e983aa290be49bde5ad3",
+      "size_bytes": 2047
+    }
+  ],
+  "phase": 10,
+  "schema_version": 1
+}

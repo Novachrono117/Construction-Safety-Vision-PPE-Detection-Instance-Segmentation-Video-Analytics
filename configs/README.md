@@ -17,6 +17,7 @@ outcome lives here, never in notebook cells or ad-hoc command-line flags.
 | `segmentation_mask_iou_evaluation.yaml` | Phase 8C direct instance-mask IoU diagnostic: ground truth, operating point, matching rule (see below). |
 | `segmentation_canonical_evaluation.yaml` | Phase 8E common COCOeval protocol: the one yardstick every segmentation experiment is scored by (see below). |
 | `segmentation_comparison.yaml` | Phase 8E S0-vs-S1 policy: primary metric, margin, the one-variable contract (see below). |
+| `detector_segmenter_comparison.yaml` | Phase 10A detector-versus-segmenter comparison protocol: the two frozen models, two inference protocols, the spatial features and their box proxies, the association rule, and the latency benchmark (see below). |
 
 ## Rules
 
@@ -177,3 +178,36 @@ Parsing is strict in ways that matter:
 The one-variable contract is additionally verified at run time against S0's own
 frozen protocol rather than a restatement of it, and a variable that is declared
 but never applied is refused just as firmly as an undeclared one.
+
+
+## `detector_segmenter_comparison.yaml`
+
+Frozen in phase 10A, **before** any comparison ran and **after** both models
+were frozen, so nothing in it could have been chosen to flatter either. Parsed
+by `construction_safety_vision.detector_segmenter_comparison`.
+
+The question it encodes is not "which model is better". The detector emits a
+class, a confidence and a box; the segmenter emits those plus an instance mask.
+They do not produce the same output, so the protocol asks what the mask adds
+and what it costs, and refuses to collapse that into one number.
+
+What the parser refuses:
+
+- **swapping the two confidences.** AP needs the low-scoring tail (0.001);
+  operational analysis needs a working point (0.25). Each belongs to one
+  protocol and a value from one may not be reported under the other.
+- **deriving the segmenter's boxes from its masks.** The comparison uses each
+  model's actual predicted boxes; re-deriving them would measure a
+  post-processing choice this project invented.
+- **a spatial feature with no declared box proxy.** Every mask quantity is
+  paired with what a box-only pipeline could compute instead, or explicitly
+  marked `NO_BOX_ONLY_EQUIVALENT`. That pairing is the answer to the question.
+- **an accuracy framing for the association analysis.** There is no canonical
+  compliance ground truth in this project, so there is nothing to be accurate
+  against.
+- **a benchmark that is not symmetric.** Interleaved execution in both
+  directions, one precision for both models, a fixed warmup and iteration
+  count, and CUDA synchronisation on both edges of every timed region.
+- **hiding mask reconstruction.** It must sit inside the segmenter's end-to-end
+  timing boundary, because that is the cost being measured.
+- **an aggregate benefit score**, a declared winner, or any result at all.

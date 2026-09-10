@@ -1,0 +1,450 @@
+# Detector-versus-segmenter controlled comparison protocol.
+#
+# Loaded by `construction_safety_vision.detector_segmenter_comparison`. Parsing
+# is strict: an unknown key raises, the two confidence thresholds may not be
+# swapped, deriving the segmenter's boxes from its masks raises, an unpaired
+# spatial feature raises, an aggregate benefit score raises, and any reference
+# to the protected split raises.
+#
+# TIMING: this protocol is frozen in phase 10A, BEFORE any comparison run. Both
+# models were frozen first - the detector in phase 7D, the segmenter in phase 8G
+# - so nothing here could have been chosen to flatter either of them, and no
+# comparison number existed when it was written.
+#
+# WHAT THIS IS NOT. It is not a contest. D2 emits a class, a confidence and a
+# box; S1 emits those plus an instance mask. They do not produce the same output,
+# so a single ranking would be meaningless. The question is what the mask adds
+# and what it costs.
+
+schema_version: 1
+
+protocol: DETECTOR_VERSUS_SEGMENTER_CONTROLLED_COMPARISON
+
+status: FROZEN_NOT_EXECUTED
+
+scientific_question: >-
+  What additional spatial and operational information does the frozen instance
+  segmentation model provide beyond the frozen bounding-box detector, and what
+  computational cost does that additional information introduce?
+
+comparison_axes:
+  A_recognition: >-
+    Does the segmenter retain comparable object localisation, measured as
+    canonical box AP against the same ground truth by the same evaluator?
+  B_spatial_information: >-
+    Which spatial quantities do predicted masks make available, and which of
+    them a bounding box can already approximate?
+  C_computational_cost: >-
+    What latency and memory does the mask branch add, measured under one
+    symmetric benchmark on one machine?
+  D_operational_reasoning: >-
+    Where do mask-based and box-based person-PPE spatial associations agree,
+    and where do they disagree?
+
+# --- the two frozen models -----------------------------------------------------
+#
+# Both are read by digest through their freeze accessors. Neither is retrained,
+# revalidated or re-thresholded by this comparison.
+
+detector:
+  experiment: D2
+  role: FINAL_OBJECT_DETECTOR
+  model: YOLO11n
+  imgsz: 768
+  checkpoint_sha256: 0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206
+  manifest: reports/final_detector_manifest.json
+  outputs:
+    - class
+    - confidence
+    - bounding_box
+
+segmenter:
+  experiment: S1
+  role: FINAL_INSTANCE_SEGMENTER
+  model: YOLO11n-seg
+  imgsz: 768
+  checkpoint_sha256: 29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20
+  manifest: reports/final_segmenter_manifest.json
+  outputs:
+    - class
+    - confidence
+    - bounding_box
+    - instance_mask
+
+# Held constant, because the two frozen models happen to share it. Comparing D2
+# at 768 against S1 at any other size would make the result a resolution study.
+comparison_input_imgsz: 768
+
+# --- the population -------------------------------------------------------------
+
+population:
+  split: validation
+  images: 65
+  annotations: 304
+  identical_images_for_both_models: true
+  identical_order_for_both_models: true
+  source: data/processed/canonical/annotations/detection_validation.coco.json
+  source_sha256: cbafde44b3fba8a477541b6756522abf09099e0f74f197307ee77347a87e84b5
+  membership_sha256: 54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152
+  membership_artifact: reports/detector_segmenter_comparison_membership.csv
+  split_assignment_sha256: a230869ff4cb45f53654d67357a27f2a0def6d8ba79f9fa4880f0fdda2f046cc
+  class_map_sha256: 596dab5b5756e3d4253924f84bf46d37a87d80b6ec830da781a08a93cd823753
+  resplit: false
+  note: >-
+    The frozen phase 5C.2 split, unchanged. Both models read the same source
+    image bytes in the same order; the runner aborts if either membership or
+    order differs.
+
+# --- inference, twice, for two different purposes --------------------------------
+#
+# These two blocks are never mixed. A number produced at one confidence may not
+# be reported under the other protocol's name.
+
+ap_inference:
+  purpose: >-
+    Average precision integrates precision over recall and needs the low-scoring
+    tail, so this is deliberately not an operating point.
+  imgsz: 768
+  conf: 0.001
+  iou: 0.70
+  max_det: 300
+  augment: false
+  tta: false
+  precision: FP32
+  # `half` is deprecated in the installed ultralytics 8.4.138 in favour of
+  # `quantize`, and leaving `quantize` unset delegates the choice to the
+  # runtime. Pinned explicitly so the comparison cannot become a precision
+  # comparison.
+  precision_argument: quantize
+  precision_value: 32
+
+operational_inference:
+  purpose: >-
+    A working point for the spatial and association analysis, where a model has
+    to commit to a set of instances rather than emit a score curve.
+  imgsz: 768
+  conf: 0.25
+  iou: 0.70
+  max_det: 300
+  augment: false
+  tta: false
+  precision: FP32
+  precision_argument: quantize
+  precision_value: 32
+
+threshold_policy: >-
+  Neither threshold is tuned, for either model. 0.001 belongs to the AP protocol
+  and 0.25 to the operational protocol; they are never mixed, averaged or
+  swapped, and neither is selected by looking at a result.
+
+# --- axis A: recognition ----------------------------------------------------------
+
+canonical_box_evaluator:
+  implementation: pycocotools.cocoeval.COCOeval
+  iou_type: bbox
+  iou_thresholds: [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+  max_dets: [1, 10, 100]
+  area_range: all
+  ground_truth: CANONICAL_COCO_DETECTION_BOXES
+  ground_truth_document: data/processed/canonical/annotations/detection_validation.coco.json
+  ground_truth_sha256: cbafde44b3fba8a477541b6756522abf09099e0f74f197307ee77347a87e84b5
+  category_id_mapping: CANONICAL_CATEGORY_IDS_USED_DIRECTLY_NO_REMAPPING
+  why_not_native: >-
+    The two models run through different framework validation paths, so their
+    native box metrics are not guaranteed to be computed identically. One
+    external evaluator applied to both removes that doubt. The canonical boxes
+    are the phase 5D ones, derived from segmentation polygons, never the
+    provider's stored boxes.
+  prediction_cap_versus_metric_cap: >-
+    Each model may propose up to 300 candidates while COCOeval scores at its
+    conventional cap of 100. Two different numbers, both recorded.
+
+box_comparability:
+  detector_boxes: THE_DETECTORS_OWN_PREDICTED_BOXES
+  segmenter_boxes: THE_SEGMENTERS_OWN_PREDICTED_BOXES
+  segmenter_boxes_derived_from_masks: false
+  reason: >-
+    S1 predicts boxes directly, and those are what a user of the model would
+    get. Re-deriving them from its masks after inference would improve their
+    geometric consistency with the mask branch and would then be measuring a
+    post-processing choice this project invented, not the model.
+  ground_truth: COMMON_CANONICAL_BOX_GROUND_TRUTH
+
+# --- axis B: what a mask makes available ---------------------------------------------
+#
+# These are spatial quantities derived from predicted masks. They are NOT
+# safety-compliance truth labels, and the project holds no compliance ground
+# truth to score them against.
+
+spatial_features:
+  INSTANCE_AREA_PIXELS: >-
+    Count of foreground pixels in the predicted instance mask, on the original
+    image canvas.
+  MASK_TO_BOX_FILL_RATIO: >-
+    Mask area divided by the area of the model's own predicted box. How much of
+    the box the object actually occupies.
+  MASK_CENTROID: >-
+    Centroid of the mask's foreground pixels, in original image coordinates.
+  SHAPE_EXTENT: >-
+    Foreground support relative to the tight bounding rectangle of the mask
+    itself, describing how far the shape departs from filling a rectangle.
+  PERSON_PPE_MASK_INTERSECTION: >-
+    Count of pixels shared between a PPE instance mask and a person instance
+    mask.
+  PERSON_PPE_MASK_CONTAINMENT: >-
+    Intersection divided by the PPE mask's own area: how much of the PPE lies
+    inside the person.
+  VISIBLE_PPE_COVERAGE_PROXY: >-
+    An overlap-derived operational proxy for how much visible PPE support a
+    person instance has. A proxy, named as one, and not a compliance measure.
+
+spatial_feature_status: >-
+  MASK_ENABLED_SPATIAL_MEASUREMENTS. They describe predicted geometry. They are
+  not ground truth, not compliance labels, and not accuracy metrics.
+
+# --- axis B, continued: what a box could already do -------------------------------------
+#
+# Every mask quantity is paired with its box-only proxy, or declared to have
+# none. That pairing is the answer to "what does segmentation add": a quantity
+# with a good box proxy adds little, and one with no box equivalent is the gain.
+
+box_proxies:
+  INSTANCE_AREA_PIXELS: BOX_AREA_PIXELS
+  MASK_TO_BOX_FILL_RATIO: NO_BOX_ONLY_EQUIVALENT
+  MASK_CENTROID: BOX_CENTER
+  SHAPE_EXTENT: NO_BOX_ONLY_EQUIVALENT
+  PERSON_PPE_MASK_INTERSECTION: BOX_INTERSECTION_AREA
+  PERSON_PPE_MASK_CONTAINMENT: BOX_INTERSECTION_OVER_PPE_BOX_AREA
+  VISIBLE_PPE_COVERAGE_PROXY: BOX_OVERLAP_DERIVED_COVERAGE
+
+box_proxy_note: >-
+  A declared proxy is not a claim that it is equivalent. It is a claim that a
+  box-only pipeline could compute something in its place, so the comparison can
+  measure how far the two answers diverge rather than asserting a difference.
+
+# --- axis D: person-PPE association ------------------------------------------------------
+
+association:
+  label: SPATIAL_ASSOCIATION_ANALYSIS
+  relationships:
+    - helmet_to_person
+    - vest_to_person
+  threshold_source: operational_inference
+  mask_rule: >-
+    A PPE instance is associated with the person instance whose mask it overlaps
+    most, subject to a containment floor declared before any result exists.
+  box_rule: >-
+    The same rule computed on the models' predicted boxes: intersection over the
+    PPE box's own area, associating with the highest-scoring person box.
+  containment_floor: 0.50
+  tie_breaking: HIGHEST_OVERLAP_THEN_LOWEST_PERSON_INSTANCE_INDEX
+  deterministic: true
+  appearance_embeddings: false
+  tracking: false
+  learned_association: false
+  classes_collapsed: false
+  disagreement_categories:
+    - BOX_AND_MASK_AGREE
+    - BOX_ONLY_ASSOCIATION
+    - MASK_ONLY_ASSOCIATION
+    - NEITHER_ASSOCIATION
+  semantics: >-
+    The five frozen classes stay distinct. `helmet_on_head` and `vest_on_body`
+    already encode a provider-level worn state, so this analysis does not invent
+    a compliance label on top of them and does not report accuracy: there is no
+    canonical compliance ground truth in this project to be accurate against.
+  status: DESCRIPTIVE_OPERATIONAL_ANALYSIS_NOT_AN_ACCURACY_METRIC
+
+spatial_value_metrics:
+  - mask_versus_box_overlap_magnitude
+  - mask_versus_box_containment_magnitude
+  - absolute_distance_between_box_center_and_mask_centroid
+  - mask_fill_ratio_distribution
+  - cases_where_box_overlap_exists_but_mask_overlap_is_negligible
+  - cases_where_boxes_overlap_strongly_while_masks_separate_the_instances
+  - cases_where_mask_association_and_box_proxy_association_disagree
+
+# --- axis C: cost -------------------------------------------------------------------------
+
+latency_protocol:
+  label: CONTROLLED_LOCAL_HARDWARE_BENCHMARK
+  batch: 1
+  imgsz: 768
+  precision: FP32
+  precision_argument: quantize
+  precision_value: 32
+  warmup_iterations: 20
+  timed_iterations_per_image: 30
+  benchmark_image_count: 20
+  benchmark_selection_rule: STABLE_SHA256_RANK_OF_IMAGE_ID
+  benchmark_membership_sha256: 45059c2cdda1285b4fa6dbfdcfbeac6fedcad551e551e6810b1369af90f7f162
+  benchmark_membership_artifact: reports/detector_segmenter_latency_membership.csv
+  benchmark_selection_note: >-
+    Ranked by the SHA-256 of the image identifier and truncated to the first 20.
+    Chosen without opening a single image, so the subset cannot have been picked
+    for being easy, crowded or visually interesting.
+
+  execution_order:
+    interleaved: true
+    symmetric: true
+    randomized: false
+    design: >-
+      Pass one, for each benchmark image in the frozen order: time the detector,
+      then time the segmenter. Pass two, same images and order: time the
+      segmenter, then the detector. Both passes contribute to the reported
+      distribution, so any residual thermal or ordering drift falls on both
+      models equally instead of on whichever ran second.
+
+  synchronization:
+    cuda_synchronize: true
+    before_timed_region: true
+    after_timed_region: true
+    same_primitive_for_both_models: true
+    note: >-
+      CUDA work is asynchronous. Without an explicit synchronize on both edges a
+      wall-clock reading measures how long it took to queue the work, not to run
+      it, and the faster-to-queue model would appear faster.
+
+  timing_primitive: time.perf_counter
+
+  timing_boundaries:
+    MODEL_INFERENCE_LATENCY_MS:
+      includes:
+        - forward pass on an already-prepared input tensor
+      excludes:
+        - image decode
+        - preprocessing
+        - postprocessing
+        - mask reconstruction
+      note: The model core, as consistently as the framework allows for both.
+    END_TO_END_MODEL_OUTPUT_LATENCY_MS:
+      includes:
+        - input preprocessing
+        - forward pass
+        - NMS and postprocessing
+        - mask reconstruction to expose final instance masks
+      segmenter_mask_reconstruction_included: true
+      note: >-
+        What a caller actually waits for. Mask reconstruction is inside this
+        boundary for the segmenter, because excluding it would hide precisely
+        the cost this comparison exists to quantify.
+
+  excluded_from_timed_region:
+    - model loading
+    - image decode from disk where it can be hoisted identically for both models
+    - visualisation
+    - writing anything to disk
+
+  statistics:
+    - mean
+    - median
+    - std
+    - p50
+    - p90
+    - p95
+    - p99
+    - min
+    - max
+
+  derived_quantities:
+    images_per_second_from_mean: batch 1, derived from the mean, never from the fastest iteration
+    absolute_latency_delta_ms: S1 minus D2, at an identical measurement boundary
+    relative_latency_cost: (S1 / D2) - 1
+    throughput_ratio: S1 images per second divided by D2 images per second
+
+  fairness_invariants:
+    - same machine
+    - same GPU
+    - same driver and CUDA runtime
+    - same Python environment
+    - same process where practical
+    - same source image bytes
+    - same input resolution
+    - same batch size
+    - same precision
+    - same warmup count
+    - same benchmark images in the same order
+    - same timed iteration count
+    - same synchronization strategy
+    - same timing primitive
+  abort_on_deviation: true
+
+  limitations:
+    - >-
+      A laptop GPU throttles. The result describes this machine under whatever
+      power and thermal state it was in, and is labelled accordingly.
+    - >-
+      Batch 1 measures latency, not throughput under load. No batched or
+      concurrent scenario is covered.
+    - >-
+      Neither model is exported, quantised or otherwise optimised for
+      deployment. These are PyTorch checkpoints as trained.
+
+memory_protocol:
+  batch: 1
+  imgsz: 768
+  reset_peak_stats_after_warmup: true
+  measured:
+    - peak_memory_allocated
+    - peak_memory_reserved
+  training_memory_reused: false
+  note: >-
+    Peak stats are reset after warmup so the figure describes inference, not the
+    allocator's warmup high-water mark. Training-time memory is a different
+    quantity and is never substituted.
+
+model_complexity:
+  source: FROZEN_EXPERIMENT_ARTIFACTS_PREFERRED_OVER_RECOMPUTATION
+  fields:
+    - parameters
+    - gflops
+  status: DESCRIPTIVE_COMPLEXITY_ONLY
+  note: >-
+    Read from the committed experiment manifests where they already carry
+    authoritative values. Nothing is retrained to obtain them.
+
+# --- reporting -------------------------------------------------------------------------------
+
+reporting:
+  box_metrics:
+    - CANONICAL_BOX_MAP50_95
+    - CANONICAL_BOX_MAP50
+  per_class_box_ap: true
+  report_deltas: true
+  aggregate_benefit_score: false
+  winner_declared: false
+  note: >-
+    Deltas are reported for description, not to select. Neither frozen model
+    changes as a result of this comparison, and no retraining follows from it.
+
+interpretation:
+  BENEFIT: additional measurable spatial support that masks make available
+  COST: latency, memory and computational overhead
+  RECOGNITION_TRADEOFF: the difference in canonical box localisation
+  OPERATIONAL_VALUE: >-
+    how far mask measurement and bounding-box proxies diverge for person-PPE
+    spatial association
+  single_aggregate_score: false
+  weighted_cost_benefit_index: false
+
+limitations:
+  - >-
+    Validation only. The holdout has never been evaluated and takes no part in
+    this comparison.
+  - >-
+    The two models do not solve the same output task. The comparison describes
+    what is gained and what it costs; it does not rank them.
+  - >-
+    One run of each model was ever trained. Run-to-run variance is UNKNOWN for
+    both, so a small recognition delta is not evidence of an ordering.
+  - >-
+    The spatial quantities are derived from predictions, not from ground truth.
+    They describe what the model asserts, not what is true in the scene.
+  - >-
+    There is no canonical person-PPE association ground truth, so the
+    association analysis is descriptive and reports no accuracy.
+  - >-
+    The latency benchmark is valid for this machine, this runtime and this
+    protocol. It is not a universal statement about either architecture.
+
+test_policy: PROTECTED_NOT_ACCESSED
