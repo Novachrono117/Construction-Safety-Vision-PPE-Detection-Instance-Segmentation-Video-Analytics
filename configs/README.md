@@ -211,3 +211,44 @@ What the parser refuses:
 - **hiding mask reconstruction.** It must sit inside the segmenter's end-to-end
   timing boundary, because that is the cost being measured.
 - **an aggregate benefit score**, a declared winner, or any result at all.
+
+## `final_holdout_evaluation.yaml`
+
+The one-shot final holdout evaluation protocol, frozen in phase 11A **before
+the holdout is read for the first and only time**. Loaded by
+`construction_safety_vision.final_holdout_evaluation`.
+
+It declares, in advance, what phase 11B will measure on the `test` split: both
+frozen checkpoints by digest, the AP inference settings for each model, the two
+canonical COCO evaluators, the phase 8C direct-IoU diagnostic reused unchanged,
+the confusion-matrix semantics, the object-level TP/FP/FN rule, the
+deterministic qualitative-selection ranking, the prediction and result
+fingerprint design, the one-shot ledger, and the named failure states.
+
+It contains **no test identifier, no test annotation, no test prediction and no
+test metric**, and it activates neither authorisation gate.
+
+What the parser and validator refuse:
+
+- **a checkpoint that is not the frozen one.** Both models resolve by SHA-256
+  through their existing freeze accessors; `last.pt`, D0, D1, S0 and a
+  retrained copy under the same experiment name are all rejected.
+- **a changed confidence, NMS IoU, `max_det`, image size or precision**, and
+  any enabled TTA or augmentation. The AP protocols run at conf 0.001 and the
+  direct-IoU diagnostic keeps its own operational 0.25; the two may never be
+  mixed, and neither may be swept on the holdout.
+- **a swapped evaluator or a changed IoU sweep.** One external `COCOeval`
+  judges both models' boxes, so their native framework numbers never enter the
+  comparison.
+- **a new direct-IoU rule.** The phase 8C protocol is reused by fingerprint;
+  inventing a matching rule now would let it be chosen with the result in view.
+- **a non-deterministic qualitative selection.** The ranking, the quota, the
+  tie-breaking chain and the duplicate policy are all fixed, and the
+  tie-breaking chain ends in an identifier so the order is total.
+- **a confusion-matrix threshold chosen after the fact.** The frozen values are
+  the framework's own defaults, read from the installed source, and are the
+  ones that produced every committed validation matrix.
+- **a script that could unlock the environment.** The runner may read
+  `CSVISION_ALLOW_TEST_SPLIT` and refuse; it may never write it.
+- **a composite score, a declared winner, a repeated latency benchmark, a new
+  spatial metric on the holdout, or any result at all.**

@@ -191,7 +191,13 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 10D complete - **phase 10 is closed**. The split is frozen, the
+- **Phase:** 11A complete - the **final holdout evaluation protocol is FROZEN
+  and NOT EXECUTED** (`FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint
+  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`). **The
+  next phase of work is 11B, the single one-shot holdout evaluation. It has not
+  started, it cannot start until a person deliberately sets both authorisation
+  gates, and it must not be started unprompted.** Phase 10 is closed. The split
+  is frozen, the
   holdout is locked, **both models are FROZEN** (detector D2, YOLO11n at imgsz
   768; segmenter S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`), the
   comparison protocol is frozen, the **recognition and spatial comparison has
@@ -201,8 +207,7 @@ uv run pytest
   operational synthesis is written**
   (`DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`). Training is CLOSED and
   the validation comparison is COMPLETE. **The final test is STILL LOCKED and
-  PENDING. The next phase of work is 11A, freezing the final holdout evaluation
-  protocol. It has not started; do not start it unprompted.**
+  PENDING; no test metric exists for any model and none may be estimated.**
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -1242,6 +1247,143 @@ uv run pytest
   7D, 8G, 10A, 10B and 10C artifact is byte-identical before and after, verified
   by digest at entry and exit; the runner refuses to finish if any of them
   moved.
+- **The FINAL HOLDOUT EVALUATION PROTOCOL IS FROZEN AND NOT EXECUTED (phase
+  11A).** `configs/final_holdout_evaluation.yaml`, fingerprint
+  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`, recorded
+  in `reports/final_holdout_evaluation_protocol.json`. It predeclares the whole
+  of phase 11B and executed none of it: `models_executed: 0`,
+  `test_predictions_produced: 0`, `test_metrics_computed: 0`,
+  `test_images_read: 0`, `test_identifiers_recorded: 0`,
+  `results_present: false`. **No test metric exists for any model. Never quote
+  one, never estimate one from validation, and never write a sentence implying
+  the holdout has been seen.**
+- **Reach for the protocol through
+  `construction_safety_vision.final_holdout_evaluation`.** Parsing is strict and
+  `validate_protocol` is adversarial: it refuses a wrong checkpoint digest, a
+  changed conf / NMS IoU / `max_det` / imgsz / precision, enabled TTA, a swapped
+  evaluator, a changed direct-IoU fingerprint, changed confusion-matrix
+  settings, a non-deterministic qualitative rule, a composite score, a declared
+  winner, an automatic environment unlock, a present test metric, and any status
+  other than `FROZEN_NOT_EXECUTED`.
+- **Phase 11A read AGGREGATE COUNTS ONLY, from count fields.** The holdout's
+  **65 images / 305 annotations** come from the split manifest's
+  `actual_image_counts`, `actual_annotation_counts`, `actual_group_counts` and
+  `actual_negative_image_counts` blocks. **The `test` membership sections were
+  never opened**, and a test loads every frozen test id and asserts none appears
+  in any phase 11A artifact. Keep it that way: quoting a holdout image id
+  anywhere is a leak even if no pixel was read.
+- **The dual gate is PRESERVED, never re-implemented.**
+  `authorize_final_holdout_access` delegates to the existing
+  `splits.assert_split_allowed`, so this repository has one guard rather than
+  two that can drift. Both `allow_test=True` **and**
+  `CSVISION_ALLOW_TEST_SPLIT=1` are required; either alone is refused.
+- **Two restrictions sit on top of the gate, and both matter.** Access is
+  granted only to `scripts/evaluate_final_holdout.py` for the purpose
+  `FINAL_ONE_SHOT_HOLDOUT_EVALUATION`, so a development script holding both
+  opt-ins is **still refused**. And **no code may satisfy its own
+  precondition**: the runner reads the environment gate and may never write it
+  (`runner_may_write_environment: false`). A test asserts no phase 11A file
+  assigns to `os.environ`. Never add a helper that sets the variable.
+- **ONE READ, and the prohibitions begin when phase 11B BEGINS**, not when it
+  finishes - seeing a partial result is still seeing a result. From that moment:
+  no model selection, no architecture change, no threshold or hyperparameter
+  tuning, no retraining, no test-motivated dataset cleaning, no post-test
+  experiment aimed at improving a reported number, no re-run for a different
+  number, and no reporting the better of two runs.
+- **Two confidences, still never mixed.** The canonical AP protocols run at
+  **0.001** (average precision integrates over the score curve and needs the
+  low-scoring tail - it is deliberately *not* an operating point); the phase 8C
+  direct-IoU diagnostic keeps its own operational **0.25**. A figure produced at
+  one may never be reported under the other's name, and neither may be swept on
+  the holdout.
+- **One external evaluator judges both models' boxes** - `COCOeval` at
+  `iouType='bbox'` over the canonical test boxes - because D2 and S1 run through
+  different framework validation paths. **S1's boxes are S1's own**, never
+  re-derived from its masks. Masks go through `iouType='segm'`. IoU
+  0.50:0.05:0.95, `maxDets` [1, 10, 100], all five classes, no collapsing.
+- **The direct-IoU diagnostic is phase 8C's, reused BY FINGERPRINT and
+  unchanged** (`b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80`).
+  It stays `SECONDARY_CANONICAL_DIAGNOSTIC`, never the primary segmenter metric
+  and never an AP. **No new direct-IoU rule may be invented for the holdout** -
+  inventing a matching rule now would let it be chosen with the result in view.
+- **The confusion-matrix protocol is NEW in 11A, and its values were READ FROM
+  THE INSTALLED SOURCE rather than assumed.** No canonical protocol existed
+  before, so one is frozen from what was already in force during validation:
+  `DetectionValidator.confusion_matrix_conf` resolves to **0.25**, and
+  `ConfusionMatrix.process_batch` is called without `iou_thres`, so its
+  signature default **0.45** applies. Matching is **class-agnostic IoU with the
+  class pair then recorded**; the matrix is `(nc+1, nc+1)` = 6x6 with **rows
+  predicted, columns ground truth**; an off-diagonal matched pair counts as
+  **both an FP and an FN**, which is the framework's own behaviour and is not
+  modified. These are the exact values behind every committed validation matrix
+  here, so freezing them changed nothing. A test pins them against the installed
+  framework, not against a copied constant.
+- **Object-level TP/FP/FN is frozen SEPARATELY from the confusion matrix**, and
+  the two must not be conflated: class-aware, IoU 0.50, one-to-one per image per
+  class, at the operational 0.25. The qualitative work needs per-instance
+  outcomes, not a matrix cell. The segmentation failure taxonomy
+  (`DETECTION_MISS`, `CLASSIFICATION_MISMATCH`, `LOCALIZATION_FAILURE`,
+  `MASK_QUALITY_FAILURE`) is evaluated **in that order, first match wins**, and
+  explicitly does **not** partition every instance - the remainder is
+  `WELL_HANDLED_INSTANCE`.
+- **The qualitative gallery is chosen BY RULE, and the rule is frozen.** Six
+  categories x **3** examples, each ranked by a declared quantity in a declared
+  direction, tie-breaking `rank value -> canonical_annotation_id ->
+  canonical_prediction_index -> source_image_id`, which ends in an identifier so
+  the order is total on any machine. One instance appears in at most one
+  category; an underfilled category publishes what it has and records the
+  shortfall (`topping_up_from_another_category_permitted: false`).
+  `images_inspected_to_design_this_rule: 0`. **Human interpretation happens only
+  AFTER the ranking is generated** - the ranking decides what is looked at, a
+  person then explains what it shows. Never browse the holdout and then choose.
+- **A WRITE failure is not a PREDICTION failure, and they have separate
+  policies.** Predictions are persisted and fingerprinted **before any metric is
+  computed**, so `EVALUATION_ARTIFACT_WRITE_FAILURE_AFTER_VALID_PREDICTIONS`
+  rebuilds metrics and reports from the persisted predictions, while
+  `PREDICTION_EXECUTION_FAILED_BEFORE_RESULTS` preserves evidence, stops and
+  requires human review. **Eight failure states are named and NONE authorises
+  re-running inference** (`RERUN_INFERENCE_ON` is empty on purpose, asserted by
+  test). Never automatically restart, and never present a second run as the
+  original one-shot.
+- **The one-shot ledger is an append-only 13-state machine.** Illegal
+  transitions raise, terminal states are terminal, and **the attempt counter
+  cannot be reset**: a second attempt requires a number **and** a written human
+  justification or it does not construct. A rebuild re-enters at
+  `PREDICTIONS_PERSISTED` and never returns to a prediction state.
+- **Explicitly excluded from phase 11B**: re-benchmarking latency or memory
+  (phase 10C measured those, and cost does not depend on which split the images
+  came from), any new spatial metric, any repeat of the phase 10B exploratory
+  spatial and association study, any significance test in the
+  validation-versus-test comparison, and any winner, composite score or weighted
+  ranking in the final comparison.
+- **Validation-versus-test comparison is permitted but bounded.** Only
+  already-existing metrics, their test counterparts and the absolute difference,
+  labelled `DESCRIPTIVE_GENERALIZATION_COMPARISON`. **No significance test is
+  predeclared and none may be added afterwards.** Never retune on the gap, never
+  create a post-test model, never retrospectively select the better
+  configuration, and never explain the gap as though an experiment had tested
+  the explanation.
+- **The support rule is REUSED, not reinvented.** The phase 7A rule (>= 5
+  positive images **and** >= 20 instances) applies unchanged. It may be applied
+  to the holdout's own support only **after** the evaluation, and its thresholds
+  may never be re-parameterised in response to what the holdout turns out to
+  contain.
+- **No result artifact exists and none may be created with invented values.**
+  `reports/final_test_detector.json`, `final_test_segmenter.json`,
+  `final_test_direct_iou.json`, `final_test_evaluation.md` and
+  `final_test_evaluation.provenance.json` are **schemas declared in the
+  protocol**, not files; a test asserts none of them exists, and
+  `placeholder_values_permitted: false`.
+- **The phase 11B runner exists but cannot run.** `scripts/evaluate_final_holdout.py`
+  has `EXECUTION_AUTHORISED = False`, and its authorisation preflight fires
+  *before* the phase guard, so a stray invocation refuses on the dual gate
+  rather than on a missing implementation. Its fifteen steps are frozen, and
+  **prediction persistence precedes metric computation** - the ordering that
+  makes a report rebuild possible at all. `--plan` prints the order and exits.
+- **Phase 11A changed no frozen number and no historical artifact.** Both model
+  freezes, the phase 10A protocol, the 10B/10C results, the 10D synthesis, the
+  split manifest and the canonical fingerprints are byte-identical before and
+  after, verified by digest at entry and exit.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

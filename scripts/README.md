@@ -612,7 +612,42 @@ image can move an unweighted mean without that meaning anything.
 `--verify-only` checks preconditions and writes nothing; `--preflight-only`
 runs the precision probe and stops.
 
+
+## `freeze_final_holdout_evaluation.py` (phase 11A)
+
+Freezes the one-shot final holdout evaluation protocol and **executes none of
+it**. No model is loaded, no holdout data is read, and a test asserts the file
+imports neither torch nor ultralytics and reaches no split accessor.
+
+**Aggregate population facts only.** The holdout's 65 images and 305
+annotations were frozen in phase 5C.2, long before any model existed, and are
+read from the split manifest's **aggregate count fields**. The membership
+sections that carry per-image identifiers are never opened, so no holdout
+identifier enters the phase.
+
+**It refuses to run with the gate open.** A protocol-only phase has no business
+executing while `CSVISION_ALLOW_TEST_SPLIT` is set, so the script stops if it
+finds it. Nothing here can set it; only a person can.
+
+Every historical artifact - both model freezes, the phase 10A protocol, the
+10B/10C results, the 10D synthesis, the split manifest and the canonical
+fingerprints - is digested at entry and verified byte-identical at exit.
+
+`--verify-only` derives and validates the protocol without writing.
+
+## `evaluate_final_holdout.py` (phase 11B - structure only)
+
+The final evaluation runner. Its **execution order is frozen by phase 11A** so
+it cannot drift; in particular, predictions are persisted and fingerprinted
+before any metric is computed, which is what lets an artifact-write failure be
+recovered by rebuilding rather than by running the models a second time.
+
+**It does not execute.** `EXECUTION_AUTHORISED` is false, and the
+authorisation preflight runs first regardless, so a stray invocation refuses on
+the dual gate rather than on a missing implementation. `--plan` prints the
+frozen step order and exits.
+
 ## Planned scripts
 
-Evaluation, error analysis and video inference scripts are added by their
-respective roadmap phases. None are stubbed in advance.
+Error analysis and video inference scripts are added by their respective
+roadmap phases. None are stubbed in advance.

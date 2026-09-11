@@ -1,0 +1,35 @@
+{
+  "config": {
+    "protocol_config": "configs/final_holdout_evaluation.yaml",
+    "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef"
+  },
+  "created_at": "2026-09-11T12:59:20+00:00",
+  "details": {
+    "classification": "FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN",
+    "detector": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "executes_in_phase": "11B",
+    "historical_artifacts_unchanged": true,
+    "holdout": "PROTECTED_NOT_ACCESSED",
+    "holdout_unlocked": false,
+    "models_executed": 0,
+    "phase": "11A",
+    "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef",
+    "segmenter": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "status": "FROZEN_NOT_EXECUTED",
+    "test_identifiers_recorded": 0,
+    "test_images_read": 0,
+    "test_metrics_computed": 0,
+    "test_predictions_produced": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "8e3988113fea69b62f533ba25625f7416fe4f263",
+  "inputs": [],
+  "name": "final_holdout_evaluation_protocol",
+  "outputs": [],
+  "phase": 11,
+  "schema_version": 1
+}

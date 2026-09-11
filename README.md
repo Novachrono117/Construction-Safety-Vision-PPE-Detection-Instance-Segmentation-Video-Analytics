@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol for both recognition and spatial information (phase 10B) and for latency and inference memory (phase 10C), and synthesised into one scientific answer (phase 10D). The modelling and validation-comparison block is closed; the holdout has never been evaluated.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol for both recognition and spatial information (phase 10B) and for latency and inference memory (phase 10C), and synthesised into one scientific answer (phase 10D). **Phase 11A has now frozen the one-shot final holdout evaluation protocol without reading a byte of it.** Training is closed, the validation comparison is complete, and the final test is **still locked and pending**.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -162,6 +162,8 @@ Two design decisions define this architecture:
 | Inference memory | **Measured (phase 10C).** `INFERENCE_MEMORY`, never training memory. Peak reserved: D2 **0.125 GiB**, S1 **0.296875 GiB** (ratio 2.375). Peak allocated: D2 **0.073403 GiB**, S1 **0.231621 GiB** (ratio 3.155473). Each measured in a dedicated process with the allocator empty beforehand. |
 | Operational synthesis | **Complete (phase 10D), validation only.** The four axes are synthesised without any composite score: recognition broadly similar (aggregate carried by `vest_loose`, supported-class delta -0.008040), a real `REPRESENTATION_GAIN` in mask-only geometry, **no** measured association advantage at the frozen rule, and a measured ~30% end-to-end latency premium plus 2.375x peak reserved memory. The choice is `USE_CASE_CONDITIONAL`; no winner is declared. |
 | Claim register | **Committed (phase 10D).** Seven headline claims, each with its evidence artifact, evidence field, scope and limitation, for reuse by the academic report and pitch. |
+| Final holdout protocol | **Frozen (phase 11A), not executed.** `configs/final_holdout_evaluation.yaml`, fingerprint `a5a328b3...`. Declares both checkpoints by digest, AP inference at conf 0.001, the two canonical `COCOeval` evaluators, the phase 8C direct-IoU diagnostic unchanged, the framework confusion-matrix semantics (conf 0.25, IoU 0.45), object-level TP/FP/FN, a deterministic qualitative ranking, the prediction/result fingerprint design, a 13-state one-shot ledger and 8 named failure states. `models_executed: 0`, `test_identifiers_recorded: 0`. |
+| Final test metrics | **None exist.** The holdout has never been evaluated, inspected, materialised or enumerated. Phase 11B reads it exactly once, after a person sets both authorisation gates. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -1830,9 +1832,104 @@ Evidence: [`reports/detector_segmenter_scientific_synthesis.md`](reports/detecto
 uv run python scripts/synthesize_detector_segmenter.py --verify-only
 ```
 
-The next phase of work is **11A - freezing the final holdout evaluation
-protocol**. It has not started. The `test` split remains locked and has never
-been evaluated, inspected, materialised or plotted.
+## Phase 11A - writing down the final exam before opening it
+
+The holdout is the only data in this project that has never informed a choice.
+The split, both adapters, both architectures, both resolutions, the
+`overlap_mask` treatment, every threshold, every evaluator and every diagnostic
+were all decided on `train` and `validation` alone. That is what makes it worth
+anything - and it is why the protocol for reading it is written **now**, while
+no holdout number exists and none can.
+
+**This phase evaluated nothing.** No model was loaded, no holdout image,
+annotation or identifier was read, neither authorisation gate was activated, and
+the artifacts record those as counts: `models_executed: 0`,
+`test_predictions_produced: 0`, `test_metrics_computed: 0`,
+`test_images_read: 0`, `test_identifiers_recorded: 0`.
+
+**Aggregate facts only, and even those come from count fields.** The holdout's
+**65 images and 305 annotations** were frozen in phase 5C.2, long before any
+model existed. They are read from the split manifest's aggregate count blocks;
+the membership sections that hold per-image identifiers were never opened. A
+test proves it by loading every frozen test id and asserting that none appears
+in any artifact this phase wrote.
+
+**The dual gate is preserved, not re-implemented.** Access still needs
+`allow_test=True` **and** `CSVISION_ALLOW_TEST_SPLIT=1`, and the check delegates
+to the project's single existing guard rather than adding a second one that
+could drift. Two restrictions are added on top: access is granted only to the
+declared final-evaluation runner, so a development script holding both opt-ins
+is still refused; and **no code may satisfy its own precondition** - the runner
+reads the environment gate and can never write it. A test asserts that no file
+in this phase assigns to `os.environ`.
+
+**One read, and the prohibitions start when it starts.** `reads_permitted: 1`.
+From the moment phase 11B begins - not when it finishes, because seeing a
+partial result is still seeing a result - model selection, architecture changes,
+threshold tuning, retraining, test-motivated dataset cleaning, re-running for a
+better number and reporting the better of two runs are all forbidden.
+
+**What will be measured was fixed in advance.** Both models' boxes go through
+**one** external `COCOeval` at `iouType='bbox'`; the segmenter's masks through
+`iouType='segm'`; both at conf **0.001**, because average precision integrates
+over the score curve and needs the low-scoring tail. The phase 8C direct-IoU
+diagnostic is reused **by fingerprint, unchanged**, keeping its own operational
+**0.25** - the two confidences are never mixed, and neither is swept.
+
+**The confusion-matrix semantics were read from the installed source, not
+invented.** No canonical protocol existed before this phase, so one is frozen
+from what was already in force during validation: `DetectionValidator` sets its
+matrix confidence to **0.25** and calls `process_batch` without `iou_thres`, so
+the signature default **0.45** applies; matching is class-agnostic IoU with the
+class pair then recorded; the matrix is 6x6 with rows predicted and columns
+ground truth. Those are the exact values behind every committed validation
+matrix here, so freezing them changes nothing.
+
+**The qualitative gallery is chosen by rule, not by eye.** Six categories, three
+examples each, each ranked by a declared quantity in a declared direction, with
+a tie-breaking chain that ends in an identifier so the order is total on any
+machine. One instance appears in at most one category; an underfilled category
+publishes what it has and records the shortfall rather than being topped up.
+`images_inspected_to_design_this_rule: 0`. Human interpretation happens **after**
+the ranking is generated - the ranking decides what is looked at, a person then
+explains what it shows.
+
+**A write failure is not a prediction failure.** Predictions are persisted and
+fingerprinted *before* any metric is computed, so if only the report fails the
+recovery is to rebuild from the persisted predictions - never to run the models
+again. If inference crashes *before* a complete set exists, the policy is
+preserve, stop, human review; `automatic_restart_permitted: false` and
+`second_run_may_be_presented_as_the_first: false`. Eight failure states are
+named in advance, and **none** of them authorises re-running inference.
+
+**The ledger cannot be quietly reset.** Thirteen states, append-only, illegal
+transitions raise, and there is no way to reset the attempt counter: a second
+attempt requires a number and a written human justification or it does not
+construct.
+
+Also frozen: no latency re-benchmark on test (phase 10C already measured it and
+cost does not depend on which split the images came from), no new spatial metric
+and no repeat of the phase 10B exploratory study, no significance test in the
+validation-versus-test comparison, and no winner, composite score or weighted
+ranking in the final comparison.
+
+Evidence: [`configs/final_holdout_evaluation.yaml`](configs/final_holdout_evaluation.yaml),
+[`reports/final_holdout_evaluation_protocol.md`](reports/final_holdout_evaluation_protocol.md),
+`reports/final_holdout_evaluation_protocol.json`. Protocol fingerprint
+`a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`, deterministic
+across independent parses; the freeze is idempotent.
+
+```bash
+uv run python scripts/freeze_final_holdout_evaluation.py --verify-only
+uv run python scripts/evaluate_final_holdout.py --plan
+```
+
+The next phase of work is **11B - the one-shot final holdout evaluation**. It
+has not started, and it cannot start until a person deliberately sets both
+authorisation gates. **No test performance is claimed anywhere in this
+repository, because none has been measured.**
+
+
 
 
 
