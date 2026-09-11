@@ -33,6 +33,7 @@ import json
 
 import pytest
 
+from conftest import holdout_has_been_evaluated
 from construction_safety_vision.canonical_evaluation import (
     IOU_THRESHOLDS,
     IOU_TYPE,
@@ -909,12 +910,21 @@ def test_no_artifact_mentions_the_holdout(paths: ProjectPaths, name: str) -> Non
 
 def test_no_holdout_artifact_was_materialised(paths: ProjectPaths) -> None:
     """The protected split has no images, labels or annotations on disk."""
+    # No phase has ever built a holdout segmentation adapter, phase 11B
+    # included: it scores against canonical COCO and writes no derived labels.
     forbidden = [
-        paths.data_processed / "canonical" / "images" / "test",
-        paths.data_processed / "canonical" / "annotations" / "segmentation_test.coco.json",
         paths.data_processed / "adapters" / "yolo_segmentation_s1_runtime" / "images" / "test",
         paths.data_processed / "adapters" / "yolo_segmentation_s1_runtime" / "labels" / "test",
     ]
+    # Before phase 11B the holdout has no on-disk presence at all; phase 11B
+    # materialises it under both authorisation gates, as its protocol requires.
+    if not holdout_has_been_evaluated(paths):
+        forbidden.extend(
+            [
+                paths.data_processed / "canonical" / "images" / "test",
+                paths.data_processed / "canonical" / "annotations" / "segmentation_test.coco.json",
+            ]
+        )
 
     assert [path for path in forbidden if path.exists()] == []
 

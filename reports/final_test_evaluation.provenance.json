@@ -1,0 +1,274 @@
+{
+  "config": {
+    "protocol": "configs/final_holdout_evaluation.yaml",
+    "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef"
+  },
+  "created_at": "2026-09-11T13:52:59+00:00",
+  "details": {
+    "association_analysis_repeated": false,
+    "attempt": 1,
+    "attempt_counter_resettable": false,
+    "classification": "TEST_EVALUATION_COMPLETE",
+    "composite_score": false,
+    "figures_committed": [
+      "reports\\figures\\final_test\\d2\\confusion_matrix.png",
+      "reports\\figures\\final_test\\d2\\confusion_matrix_normalized.png",
+      "reports\\figures\\final_test\\s1\\confusion_matrix.png",
+      "reports\\figures\\final_test\\s1\\confusion_matrix_normalized.png"
+    ],
+    "fingerprints": {
+      "detector_test_prediction_sha256": "bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6",
+      "detector_test_result_sha256": "2e0837ca75fbdfc76ff18075788fa622fbf1812b2f2ba441f56965299004dff5",
+      "direct_iou_test_result_sha256": "4a30d7de4b519f65ca272530675cd0b306e3363386b0422d8feb8b45d84bb30c",
+      "qualitative_selection_sha256": "d47df93114b1e5e2e3c44287c7f317cb9873d7eabdb372cb1c31e7c78ac946c0",
+      "segmenter_operational_test_prediction_sha256": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d",
+      "segmenter_test_prediction_sha256": "181d036c3b4e7e039b72061fc3f4e4ee7291a45b5fa7f8ead433e328314ed504",
+      "segmenter_test_result_sha256": "f6b0baa96ae1255b987955d183a6e4f58c2eeffa49beada17a8e91393392bccf"
+    },
+    "holdout": "OBSERVED_ONCE_FINAL",
+    "holdout_reads_performed": 1,
+    "holdout_reads_permitted": 1,
+    "inference_passes": 3,
+    "integrity": {
+      "annotations_materialised": 305,
+      "bbox_agreement_max_delta_px": 0.0,
+      "bbox_agreement_problems": 0,
+      "byte_identical_copies": 65,
+      "criterion": "FILE_UNREADABLE_OR_UNDECODABLE_OR_ANNOTATION_DOCUMENT_MALFORMED",
+      "detection_segmentation_alignment_problems": 0,
+      "expected_annotations": 305,
+      "geometry_round_trip_annotations_checked": 305,
+      "geometry_round_trip_mismatches": 0,
+      "image_copies": 65,
+      "images_materialised": 65,
+      "instances_by_class": {
+        "helmet_loose": 60,
+        "helmet_on_head": 47,
+        "person": 136,
+        "vest_loose": 7,
+        "vest_on_body": 55
+      },
+      "materialised_by": "scripts/materialize_task_datasets.py",
+      "performed_before_model_execution": true,
+      "problems": 0,
+      "silent_removal_permitted": false,
+      "split_specific_branch_used": false,
+      "zero_instance_images": 2
+    },
+    "latency_measurements_taken": 0,
+    "ledger": {
+      "append_only": true,
+      "attempt": 1,
+      "attempt_counter_resettable": false,
+      "history": [
+        {
+          "detail": "ledger opened",
+          "state": "NOT_STARTED"
+        },
+        {
+          "detail": "allow_test=True supplied in code and CSVISION_ALLOW_TEST_SPLIT supplied externally by a person; protocol a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef verified",
+          "state": "AUTHORIZED"
+        },
+        {
+          "detail": "both frozen checkpoints resolved by digest and verified against the protocol",
+          "state": "MODEL_IDENTITY_VERIFIED"
+        },
+        {
+          "detail": "holdout materialised through scripts/materialize_task_datasets.py: 65 images, 305 annotations, 0 integrity problems",
+          "state": "TEST_LOADED"
+        },
+        {
+          "detail": "DETECTOR_AP_PASS at conf 0.001",
+          "state": "DETECTOR_PREDICTION_STARTED"
+        },
+        {
+          "detail": "3605 predictions persisted and fingerprinted as bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6",
+          "state": "DETECTOR_PREDICTION_COMPLETE"
+        },
+        {
+          "detail": "SEGMENTER_AP_PASS and SEGMENTER_OPERATIONAL_PASS_FOR_DIRECT_IOU",
+          "state": "SEGMENTER_PREDICTION_STARTED"
+        },
+        {
+          "detail": "4760 AP predictions (4760 masks) and 261 operational predictions persisted",
+          "state": "SEGMENTER_PREDICTION_COMPLETE"
+        },
+        {
+          "detail": "prediction immutability barrier established; every remaining number derives from the persisted files and no model is invoked again",
+          "state": "PREDICTIONS_PERSISTED"
+        },
+        {
+          "detail": "canonical AP, operating-point counts, direct IoU, confusion matrices and the deterministic qualitative ranking, all from the persisted predictions",
+          "state": "METRICS_COMPUTED"
+        },
+        {
+          "detail": "5 committed artifacts",
+          "state": "ARTIFACTS_WRITTEN"
+        },
+        {
+          "detail": "TEST_EVALUATION_COMPLETE",
+          "state": "COMPLETE"
+        }
+      ],
+      "justification": "FIRST_AND_ONLY_AUTHORISED_ATTEMPT",
+      "state": "COMPLETE"
+    },
+    "ledger_state": "COMPLETE",
+    "memory_measurements_taken": 0,
+    "metrics_derived_from": "PERSISTED_PREDICTIONS_ONLY",
+    "model_invoked_during_metric_computation": false,
+    "model_invoked_during_report_generation": false,
+    "model_selection_follows": false,
+    "models_executed": 2,
+    "models_trained": 0,
+    "new_spatial_metrics": 0,
+    "phase": "11B",
+    "population": {
+      "annotations": 305,
+      "evaluated": "ALL_FROZEN_TEST_IMAGES",
+      "images": 65,
+      "manually_excluded": 0,
+      "membership_sha256": "0052ee3bc1d73e4f7c852c3bb16b4273a0ba5ef7bb62283ff9b95557a1e7c699",
+      "sampled": false
+    },
+    "post_test_policy": {
+      "data_cleaning_for_performance": "CLOSED",
+      "hyperparameter_tuning": "CLOSED",
+      "model_selection": "CLOSED",
+      "state": "FINAL_TEST_OBSERVED",
+      "threshold_tuning": "CLOSED"
+    },
+    "prediction_reruns": 0,
+    "predictions_committed": false,
+    "protocol_gap_resolution": {
+      "applied_identically_to_both_models": true,
+      "gap": "The frozen protocol gives the confusion matrix, the object-level TP/FP/FN counts and the qualitative ranking a confidence of 0.25 without declaring a separate inference block for them.",
+      "label": "PRE_EXECUTION_PROTOCOL_GAP_RESOLUTION",
+      "phase_11a_declared_this_resolution": false,
+      "resolution": "DERIVED_FROM_DECLARED_AP_PASS_FILTERED_AT_FROZEN_OPERATING_CONFIDENCE",
+      "resolved_before_any_holdout_number_existed": true,
+      "why": "It is the framework's own convention - its validator computes the matrix from the validation prediction set and filters at 0.25 internally - it keeps the two models symmetric, and it adds no inference pass beyond the three the protocol declares."
+    },
+    "qualitative_figures_written_git_ignored": {
+      "D2": 12,
+      "S1": 18
+    },
+    "qualitative_publication_note": {
+      "committed_instead": "the selection rule, the ranked values and the fingerprint",
+      "label": "PROTOCOL_COVERAGE_NOTE",
+      "protocol_edited_to_accommodate_this": false,
+      "resolution": "PROHIBITION_WINS_FIGURES_AND_SELECTION_STAY_GIT_IGNORED",
+      "tension": "The frozen protocol lists approved qualitative figures among its committed outputs and separately prohibits committing holdout identifiers, imagery or predictions."
+    },
+    "runtime_artifacts_git_ignored": "artifacts/final_test",
+    "significance_tests": 0,
+    "test_accessed": true,
+    "test_annotations_read": 305,
+    "test_identifiers_committed": 0,
+    "test_imagery_committed": false,
+    "test_images_read": 65,
+    "test_metrics_computed": true,
+    "test_predictions_produced": true,
+    "thresholds_swept": 0,
+    "thresholds_tuned": 0,
+    "winner_declared": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "19a04ffe130d027ee19a55b4d41b0a326cf9beae",
+  "inputs": [
+    {
+      "path": "configs/final_holdout_evaluation.yaml",
+      "sha256": "216189fcb02eccef0183f19fb73a0a8cbfee5b6a80e082555198b05313501b60",
+      "size_bytes": 36254
+    },
+    {
+      "path": "reports/final_holdout_evaluation_protocol.json",
+      "sha256": "5f1de9afcec9efd6d212bcd5c9674156162837bd1fd6d1ad449e16692e24f6af",
+      "size_bytes": 32036
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    },
+    {
+      "path": "reports/split_manifest.json",
+      "sha256": "7d83e8389fd98953309032456956b8f3e4123b51eeb92a935e28282ca3f79334",
+      "size_bytes": 66030
+    },
+    {
+      "path": "reports/task_dataset_manifest.json",
+      "sha256": "786ddc55f1327bd002cd3500544512d83a3b9384f66d811069accf94488434bc",
+      "size_bytes": 5389
+    },
+    {
+      "path": "configs/segmentation_mask_iou_evaluation.yaml",
+      "sha256": "006a1ad790d291c71a313288fa0d8d7fa5cdbd02331e510823b779f430da1871",
+      "size_bytes": 6270
+    },
+    {
+      "path": "configs/task_materialization.yaml",
+      "sha256": "0f8e017480955567c25934f7f8c0ad0e3f3627bbff7ae67c35d5277c04ac5c7e",
+      "size_bytes": 4420
+    }
+  ],
+  "name": "final_holdout_evaluation",
+  "outputs": [
+    {
+      "path": "reports/final_test_detector.json",
+      "sha256": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9",
+      "size_bytes": 11248
+    },
+    {
+      "path": "reports/final_test_segmenter.json",
+      "sha256": "c77ae3ce17cff8c17a8d8de87ccc04b08d276b98c0b3096dfcfc403f2c7c7093",
+      "size_bytes": 15697
+    },
+    {
+      "path": "reports/final_test_direct_iou.json",
+      "sha256": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c",
+      "size_bytes": 4656
+    },
+    {
+      "path": "reports/final_test_evaluation.md",
+      "sha256": "293de1ed53c41fff9a096f68de4b4fa75ba6d13c0d428f2fdfe591b140eb1b86",
+      "size_bytes": 24387
+    },
+    {
+      "path": "reports/final_test_per_class.csv",
+      "sha256": "fea6b748ee6d4fad1355709cd946b8576f4279b825a43b9186fbf343d7371349",
+      "size_bytes": 755
+    },
+    {
+      "path": "reports/figures/final_test/d2/confusion_matrix.png",
+      "sha256": "8d658eef2d7abf68809eb3b2a18cfcaf0fb0e4e895bbcc4b3d7f5697e75b4aeb",
+      "size_bytes": 151384
+    },
+    {
+      "path": "reports/figures/final_test/d2/confusion_matrix_normalized.png",
+      "sha256": "50b4b3df4b4b07d925f340505f1452a8b2f24ca180df80f63ac2b8787e76dd0c",
+      "size_bytes": 167992
+    },
+    {
+      "path": "reports/figures/final_test/s1/confusion_matrix.png",
+      "sha256": "43cfa97059efc726e6915c021460aeb5c6ace4c690dc8fc5fb7e412a2e5ff0ad",
+      "size_bytes": 152424
+    },
+    {
+      "path": "reports/figures/final_test/s1/confusion_matrix_normalized.png",
+      "sha256": "512dac3fe2459058823204cae4cfc24b7407669d58004f38b376baa6bf602911",
+      "size_bytes": 170480
+    }
+  ],
+  "phase": 11,
+  "schema_version": 1
+}

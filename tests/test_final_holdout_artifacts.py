@@ -59,10 +59,24 @@ def test_every_protocol_artifact_exists() -> None:
         assert path.is_file(), path.name
 
 
-def test_no_result_artifact_exists_yet() -> None:
-    """Phase 11A defines schemas; it creates no result file, not even empty."""
-    for name in RESULT_ARTIFACTS:
-        assert not (PATHS.reports / name).exists(), name
+def test_result_artifacts_are_all_present_or_all_absent() -> None:
+    """Phase 11A defines schemas and creates nothing; phase 11B creates them all.
+
+    A partial set would mean an evaluation that half-wrote its results, which
+    the frozen failure policy handles by rebuilding from the persisted
+    predictions rather than by leaving the repository in that state.
+    """
+    present = [name for name in RESULT_ARTIFACTS if (PATHS.reports / name).exists()]
+    assert present in ([], list(RESULT_ARTIFACTS)), present
+
+
+def test_the_phase_11a_protocol_artifacts_still_carry_no_result(
+    manifest: dict[str, Any],
+) -> None:
+    """Whatever phase 11B produced, the protocol document remains a protocol."""
+    assert manifest["results_present"] is False
+    assert manifest["status"] == FROZEN_NOT_EXECUTED
+    assert manifest["test"]["status"] == HOLDOUT_STATUS
 
 
 def test_the_committed_manifest_validates(manifest: dict[str, Any]) -> None:

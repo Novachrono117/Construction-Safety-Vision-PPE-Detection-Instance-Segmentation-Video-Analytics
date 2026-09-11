@@ -15,6 +15,7 @@ import json
 
 import pytest
 
+from conftest import holdout_has_been_evaluated
 from construction_safety_vision.data.canonical import scan_for_sensitive
 from construction_safety_vision.detection_comparison import (
     CASE_A,
@@ -456,12 +457,18 @@ def test_the_policy_declares_the_holdout_locked_for_this_phase(policy):
 
 
 def test_no_holdout_dataset_or_adapter_was_produced(paths):
-    assert not (paths.data_processed / "canonical" / "images" / "test").exists()
+    # Before phase 11B the holdout has no on-disk presence at all. Phase 11B
+    # materialises it, through the phase 5D function and under both
+    # authorisation gates, so from then on these paths legitimately exist.
+    evaluated = holdout_has_been_evaluated(paths)
+    assert evaluated or not (paths.data_processed / "canonical" / "images" / "test").exists()
+    # No phase has ever built a holdout YOLO adapter, phase 11B included: it
+    # scores against canonical COCO and never writes a derived label view.
     adapters = paths.data_processed / "adapters" / "yolo_detection"
     for kind in ("images", "labels"):
         assert not (adapters / kind / "test").exists()
     annotations = paths.data_processed / "canonical" / "annotations"
-    if annotations.is_dir():
+    if annotations.is_dir() and not evaluated:
         assert not list(annotations.glob("*test*"))
 
 

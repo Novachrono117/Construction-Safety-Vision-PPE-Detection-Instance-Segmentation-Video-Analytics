@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 2.0 · Current phase: **11A - final holdout protocol FROZEN, not executed**; next, 11B. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout has never been evaluated. Phase 11A has frozen the one-shot final holdout evaluation protocol without reading any of it; the next phase of work is 11B, the single evaluation itself. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
+Version: 2.0 · Current phase: **11B COMPLETE - the final holdout has been evaluated, once**; next, presentation and application work (12, 13). Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout has never been evaluated. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -25,7 +25,7 @@ change log at the bottom of this file.
 | 8 | Segmentation baseline, experiments and model freeze | complete (8A adapter audited · 8B `S0_PROTOCOL_FROZEN` · 8C `S0_SEGMENTATION_BASELINE_COMPLETE` · 8D error analysis · 8E `S1_PROTOCOL_FROZEN` · 8F `S1_CONTROLLED_EXPERIMENT_COMPLETE`: S1 trained once with `overlap_mask: false` as the only intentional difference, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G `SEGMENTER_FROZEN`: S1 selected by the predeclared canonical policy plus human review, `final_segmenter_sha256` `63ef4196...`**) |
 | 9 | Segmentation experiments and model freeze | **delivered by phases 8E-8G** - the controlled variation (S1), the comparison protocol and the model freeze all happened there. No separate phase 9 work remains; the next phase of actual work is 10, the controlled validation comparison of the two frozen models. |
 | 10 | Controlled validation comparison | complete (10A `DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`, fingerprint `d92a1576...` · 10B `DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`: canonical box comparison and spatial-information analysis on validation, FP32 parity proved at runtime · **10C `DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`**: end-to-end latency +2.756991 ms (+30.11%) and peak reserved inference memory 2.375x, `CONTROLLED_LOCAL_HARDWARE_BENCHMARK` · **10D `DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`**: the four axes synthesised from committed 10B/10C evidence with no composite score, no declared winner and no model executed) - **phase 10 is complete** |
-| 11 | One-shot final test evaluation | in progress (11A `FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint `a5a328b3...` - the complete final evaluation predeclared with **no holdout byte read**, `models_executed: 0`, `test_identifiers_recorded: 0` · **11B the one-shot evaluation - not started**) |
+| 11 | One-shot final test evaluation | complete (11A `FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint `a5a328b3...` - the complete final evaluation predeclared with **no holdout byte read** · **11B `TEST_EVALUATION_COMPLETE`, attempt 1, one read, D2 box 0.427031 / S1 mask 0.410143 / S1 box 0.433764**) |
 | 12 | Error analysis | not started |
 | 13 | Video inference and tracking | not started |
 | 14 | Submission package and reproducibility audit | not started |
@@ -1472,6 +1472,216 @@ measured:
 - **Academic mapping.** C4 - this protocol closes the remaining evaluation
   requirements once phase 11B executes it.
 
+### Phase 11B - the one-shot final holdout evaluation (complete)
+
+- **Classification.** `TEST_EVALUATION_COMPLETE`, attempt **1**, ledger state
+  `COMPLETE`. One read permitted, one read performed. The attempt counter cannot
+  be reset, no prediction was re-run, and no second attempt exists.
+- **Authorisation.** Both gates, both supplied from outside the code:
+  `allow_test=True` in the runner's call and `CSVISION_ALLOW_TEST_SPLIT=1` set by
+  a person immediately beforehand. Nothing in this repository can set that
+  variable, and a test asserts no phase 11B file assigns to the environment.
+- **The holdout was materialised by the phase 5D function with the phase 5D
+  configuration** - the same function that wrote `train` and `validation`, with
+  `split_specific_branch_used: false`. The predeclared technical validation ran
+  before any model did and reported **0 problems**: 65/65 byte-identical image
+  copies, 305 annotations, 0 alignment problems, 0 geometry round-trip
+  mismatches.
+- **Population.** 65 images, 305 annotations. **All evaluated**; none sampled,
+  none manually excluded, none stratified.
+- **Three inference passes, all declared in advance**: each model's AP pass at
+  conf 0.001 and the segmenter's operational pass at conf 0.25 for the direct-IoU
+  diagnostic. `models_executed: 2`, `models_trained: 0`, `thresholds_tuned: 0`,
+  `latency_measurements_taken: 0`, `new_spatial_metrics: 0`. `models_executed`
+  counts **model identities**; the segmenter was invoked **twice**, and the
+  execution-accounting clarification below makes that unambiguous.
+- **Predictions were persisted and fingerprinted before any metric existed**, and
+  every reported number was then derived from those files.
+  `model_invoked_during_metric_computation: false`,
+  `model_invoked_during_report_generation: false`.
+  `detector_test_prediction_sha256` `bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6`;
+  `segmenter_test_prediction_sha256` `181d036c3b4e7e039b72061fc3f4e4ee7291a45b5fa7f8ead433e328314ed504`.
+- **Recognition and localisation**, one external `COCOeval` over one canonical
+  ground truth:
+
+| Metric | D2 | S1 |
+| --- | --- | --- |
+| Canonical box mAP@0.50:0.95 | **0.427031** | **0.433764** |
+| Canonical box mAP@0.50 | 0.565260 | 0.583500 |
+| Canonical mask mAP@0.50:0.95 | n/a | **0.410143** |
+| Canonical mask mAP@0.50 | n/a | 0.579074 |
+| Precision / recall at conf 0.25, IoU 0.50 | 0.787500 / 0.619672 | 0.773946 / 0.662295 (mask) |
+| Descriptive supported macro AP@0.50:0.95 | 0.533789 | 0.541243 box, 0.511717 mask |
+
+- **The box delta decomposes exactly, and three of five classes declined.** S1
+  sits **+0.006733** against D2 on canonical box
+  mAP@0.50:0.95; over the four supported classes the same comparison gives
+  **+0.007454**.
+
+| Class | D2 box AP@0.50:0.95 | S1 box AP@0.50:0.95 | Delta | S1 mask AP@0.50:0.95 |
+| --- | --- | --- | --- | --- |
+| `helmet_loose` | 0.596792 | 0.589534 | -0.007258 | 0.561808 |
+| `helmet_on_head` | 0.610335 | 0.687047 | +0.076712 | 0.664600 |
+| `person` | 0.489896 | 0.476795 | -0.013101 | 0.446269 |
+| `vest_loose` | 0.000000 | 0.003850 | +0.003850 | 0.003850 |
+| `vest_on_body` | 0.438132 | 0.411595 | -0.026537 | 0.374189 |
+
+- **`DESCRIPTIVE_ONLY`.** `winner_declared: false`, `composite_score: false`,
+  `model_selection_follows: false`, `significance_test: false`. The two models do
+  not solve the same output task; this describes localisation and ranks nothing.
+  **Why any class moved is UNKNOWN** - one training run and one evaluation per
+  split, no predeclared significance test, and no experiment here isolates a
+  cause.
+- **Direct instance-mask IoU**, the phase 8C protocol reused **by fingerprint**
+  (`b912039c...`) and unchanged: `matched_mask_iou_mean`
+  **0.834548**, `gt_normalized_mask_iou`
+  **0.585551**, `gt_match_coverage`
+  0.701639, `gt_iou50_coverage`
+  0.662295, `gt_iou75_coverage`
+  0.560656, over 305 canonical
+  instances with 261 predictions,
+  214 matched and 91 unmatched.
+  `SECONDARY_CANONICAL_DIAGNOSTIC`; neither headline is a COCO AP and neither is
+  the primary segmentation metric.
+- **Confusion matrices** for both models under the frozen framework semantics
+  (`ultralytics==8.4.138`, conf 0.25, IoU 0.45, rows predicted, columns ground
+  truth, 6x6 with background). Neither threshold was altered after the results
+  were seen. Figures under `reports/figures/final_test/`.
+- **Object-level TP/FP/FN**, class-aware at IoU 0.50 and conf 0.25: D2
+  189 / 51 /
+  116; S1
+  205 / 56 /
+  100. The frozen four-category
+  taxonomy plus `WELL_HANDLED_INSTANCE` partitions all 305 instances for both
+  models.
+- **The rare class, reported exactly as observed.** `vest_loose` holds 2 holdout
+  images and 7 instances, `DESCRIPTIVE_HIGH_UNCERTAINTY` under the unchanged
+  phase 7A rule. D2 scored AP@0.50:0.95 0.000000 on it and recalled none of its
+  7 instances; S1 scored 0.003850 and matched none of them in the direct
+  diagnostic. **No support threshold was invented or relaxed after seeing this**,
+  and it decides nothing.
+- **Validation versus test is descriptive and bounded.**
+  `DESCRIPTIVE_GENERALIZATION_COMPARISON`: only metrics that already existed,
+  their holdout counterparts and the absolute difference. Every canonical AP is
+  lower on the holdout; the direct `matched_mask_iou_mean` is higher while its
+  coverage is lower. **No significance test is reported**, none was predeclared,
+  and none may be added. Why a gap exists in either direction is UNKNOWN.
+- **The qualitative gallery was chosen by rule, before any holdout image was
+  opened.** Six categories x three examples, ranked by declared quantities in
+  declared directions, ties resolved to an identifier.
+  `images_browsed_before_selection: 0`. No category was topped up, and no example
+  was replaced. Selection fingerprint
+  `d47df93114b1e5e2e3c44287c7f317cb9873d7eabdb372cb1c31e7c78ac946c0`.
+- **Nothing that identifies a holdout image was committed.** The selection
+  manifest, the rendered figures and the persisted predictions stay in the
+  git-ignored run directory; a test loads every frozen holdout id and asserts
+  none appears in any committed artifact.
+- **Three protocol notes are recorded rather than smoothed over.**
+  `PRE_EXECUTION_PROTOCOL_GAP_RESOLUTION` (the confusion matrix, object-level
+  counts and qualitative ranking were given a confidence but no inference block;
+  they derive from the declared AP passes filtered at it, resolved before any
+  holdout number existed, and phase 11A is **not** credited with the
+  resolution); `FROZEN_TAXONOMY_AMBIGUOUS_CASCADE_RESOLVED_BEFORE_EXECUTION`
+  (read literally, `LOCALIZATION_FAILURE` is unreachable and
+  `CLASSIFICATION_MISMATCH` would fire on correct detections; the cascade was
+  resolved into the one reading where all four categories are reachable, with no
+  category added or removed); and `PROTOCOL_COVERAGE_NOTE` (the protocol both
+  permits qualitative figures and forbids committing holdout imagery - the
+  prohibition wins). **The phase 11A protocol document was not edited.**
+- **Explicitly not done.** No training, no model selection, no threshold tuning
+  or sweeping, no latency or memory re-benchmark, no new spatial metric, no
+  repeat of the phase 10B association study, no significance test, no composite
+  or weighted score, no winner, and no second attempt.
+- **Every historical artifact is byte-identical before and after**: both model
+  freezes, the phase 10A protocol, the corrected 10B results, 10C, 10D, the
+  split manifest, the canonical references and every phase 11A artifact - 54
+  files checked.
+- **Outputs.** `reports/final_test_detector.json`,
+  `reports/final_test_segmenter.json`, `reports/final_test_direct_iou.json`,
+  [`final_test_evaluation.md`](final_test_evaluation.md),
+  [`final_test_per_class.csv`](final_test_per_class.csv),
+  `final_test_evaluation.provenance.json`, the confusion-matrix figures under
+  `reports/figures/final_test/`, and the
+  `construction_safety_vision.final_holdout_execution` and
+  `.final_holdout_results` modules. Later, additively:
+  `reports/final_test_execution_accounting.json`,
+  [`final_test_execution_accounting.md`](final_test_execution_accounting.md),
+  `final_test_execution_accounting.provenance.json`, the
+  `.final_holdout_accounting` module and
+  `scripts/clarify_holdout_execution_accounting.py`.
+- **Post-test lock.** `FINAL_TEST_OBSERVED`. `MODEL_SELECTION_CLOSED`,
+  `HYPERPARAMETER_TUNING_CLOSED`, `THRESHOLD_TUNING_CLOSED`,
+  `DATA_CLEANING_FOR_PERFORMANCE_CLOSED`. The results may inform reporting,
+  discussion and limitations; they may not trigger a D3, an S2, retraining,
+  threshold optimisation, class regrouping, data filtering or a new model
+  selection within the reported experiment.
+- **Academic mapping.** C4 - the final generalisation metrics are delivered.
+
+### Phase 11B execution accounting - provenance clarification (additive)
+
+A later clarification of how phase 11B executed. It is **not** a result
+correction: no metric, ranking, prediction byte, result fingerprint, checkpoint
+fingerprint, test population or validation-versus-test delta changed, the holdout
+was not accessed and no model was executed. Recorded in
+[`final_test_execution_accounting.md`](final_test_execution_accounting.md) and
+`reports/final_test_execution_accounting.json`.
+
+- **Authorisation is closed.** `final_test_observed: true`,
+  `environment_test_gate_present: false`,
+  `effective_holdout_access_authorized: false` -
+  `CSVISION_ALLOW_TEST_SPLIT` verified absent at process, user and machine scope.
+  The clarification script refuses to run while it is set and never writes it.
+- **Authoritative accounting.** `holdout_evaluation_attempts` **1**,
+  `unique_models_executed` **2**, `total_model_inference_passes` **3**,
+  `d2_inference_invocations` **1**, `s1_inference_invocations` **2**. The passes
+  are `DETECTOR_AP_PASS` (conf 0.001), `SEGMENTER_AP_PASS` (conf 0.001) and
+  `SEGMENTER_OPERATIONAL_PASS_FOR_DIRECT_IOU` (conf 0.25). The second segmenter
+  pass was a **real `predict()` execution**, verified against the committed
+  source, and is never represented as a derived view.
+- **One-shot semantics.** `ONE_SHOT_FINAL_HOLDOUT_EVALUATION_VALID` - one
+  human-authorised attempt over the complete frozen population, every pass inside
+  it, `adaptive_prediction_rerun_count` 0,
+  `post_metric_model_invocation_count` 0,
+  `prediction_regeneration_after_immutability_barrier` false. The reading
+  `ONE_SHOT_MODEL_PREDICTION_EXECUTION_VALID` is explicitly **rejected**, because
+  it would imply one invocation per model. The phase's state remains
+  `TEST_EVALUATION_COMPLETE`.
+- **Frozen protocol satisfied; a later instruction not.** Phase 11A declares
+  three inference blocks - `detector_inference`, `segmenter_inference` and
+  `direct_iou.inference` reusing the phase 8C operational 0.25 - so
+  `FROZEN_PROTOCOL_SATISFIED: true`. A later, informal phase 11B execution
+  instruction expected the operational predictions to be reused:
+  `LATER_EXECUTION_INSTRUCTION_SINGLE_S1_INVOCATION_SATISFIED: false`. Both are
+  published; the mismatch did not follow from observing a holdout outcome, and
+  the phase 11A document was not edited.
+- **Second-pass consequence audit.**
+  `SECOND_S1_PASS_EQUIVALENCE_TO_AP_FILTER: VERIFIED`,
+  `reported_metric_dependency_on_second_execution:
+  NONE_BEYOND_IDENTICAL_REPRODUCTION`. 4760 S1 AP predictions, 261 at score
+  >= 0.25, 261 operational predictions, 65/65 images, **0 count and 0 content
+  divergences** over class, score, box and mask RLE. Aggregate counts carry
+  `COMMITTED_ARTIFACT_FIELD`; the per-instance comparison carries
+  `OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED`, and was not re-derived
+  here. The pass was redundant in hindsight, not retrospectively something other
+  than an execution.
+- **Chronology, at its real strength.**
+  `RUNTIME_FILESYSTEM_EVIDENCE: CONSISTENT_WITH_RESOLVED_BEFORE_HOLDOUT_ACCESS`;
+  `VCS_PRE_EXECUTION_CHECKPOINT: ABSENT`, because code and results were committed
+  together; strongest unambiguous claim
+  **`RESOLVED_BEFORE_OUTCOME_METRICS_WERE_OBSERVED`**. An mtime is not treated as
+  cryptographic provenance.
+- **Post-observation metadata access, disclosed.** After `FINAL_TEST_OBSERVED`
+  the audit listed the test image directory and read filesystem mtimes:
+  `post_observation_test_metadata_inspection: true`, with
+  `post_observation_test_content_access`, `post_observation_model_execution` and
+  `post_observation_prediction_generation` all false. Zero filesystem contact is
+  **not** claimed, and it played no part in selection, tuning or any metric.
+- **What the clarification did.** Models executed 0, inference passes 0, holdout
+  reads 0, test images read 0, test annotations read 0, test identifiers
+  enumerated 0, predictions regenerated 0, metrics recomputed 0. All ten
+  protected phase 11A and 11B artifacts verified byte-identical; the build is
+  idempotent and a test rebuilds both artifacts from committed evidence.
+
 ## Phase 12 - Error analysis
 
 - **Objective.** Explain where and how the models fail, qualitatively and
@@ -1649,3 +1859,4 @@ counts in the artifacts.
 | 2026-09-10 | Phase 10C ran the controlled detector-versus-segmenter latency and inference-memory benchmark under the protocol phase 10A froze. **No model was trained, no average precision was recomputed, no spatial or association analysis was rerun, no threshold was tuned and the holdout was never read** - the artifacts record those as counts. `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`: batch 1 at imgsz 768 in FP32 (`quantize: 32`), the frozen 20-image validation subset (ordered fingerprint `45059c2c...`, verified three independent ways and never reselected, no image opened to choose it), 20 warmup iterations discarded and 30 timed repetitions per block, in the frozen symmetric interleaved order - pass A times the detector then the segmenter on each image, pass B reverses them over the same images in the same order, so residual thermal or ordering drift falls on both models rather than on whichever ran second. 80 blocks, **4800 timed readings**, execution-plan fingerprint `9734f8f0...` **derived** from the frozen membership rather than written out, raw timing fingerprint `fce637ee...`. **Two boundaries, never merged**: `MODEL_INFERENCE_LATENCY_MS` D2 **6.055740 ms** against S1 **7.777487 ms**, delta **+1.721747 ms** (**+28.43%**), throughput ratio 0.778624; `END_TO_END_MODEL_OUTPUT_LATENCY_MS` D2 **9.157766 ms** against S1 **11.914757 ms**, delta **+2.756991 ms** (**+30.11%**), throughput ratio 0.768607. `images_per_second_from_mean` is `1000 / mean` at batch 1, never the reciprocal of the fastest repetition, and is a latency reciprocal rather than batched throughput. **The segmenter's mask reconstruction is inside its end-to-end timer, and that is a fact read from the installed source**: with `retina_masks` enabled, `SegmentationPredictor.construct_result` calls `ops.process_mask_native` inside `postprocess`, combining prototypes with per-instance coefficients and upsampling onto the original canvas; the run verifies for every benchmark image with an instance that the masks came back on the original canvas and aborts otherwise, because excluding that work would hide precisely the cost this comparison exists to quantify. Both models are timed through structurally the same framework calls (`preprocess`, `inference`, `postprocess`), differing only in which `postprocess` override runs, and every timed region is bracketed by an explicit `torch.cuda.synchronize()` on both edges with `time.perf_counter()` - the same primitives for both - because CUDA work is asynchronous and an unsynchronised reading measures dispatch rather than execution. The difference is labelled `ADDITIONAL_SEGMENTATION_PIPELINE_COST` and **not** `PURE_MASK_RECONSTRUCTION_CAUSAL_COST` (`pure_mask_reconstruction_cost_isolated: false`): YOLO11n and YOLO11n-seg differ in the mask branch of the network as well as in postprocessing, and nothing here isolates the two. **The observed distribution is wide, and reporting the mean alone would have misled**: mean-to-median 1.330727 (D2) and 1.428556 (S1) at the model-inference boundary, with block means spanning 4.318367-9.981530 ms and 5.118167-11.413863 ms and the spread separating **between** blocks rather than within them. That is recorded as `POST_HOC_HARDWARE_BEHAVIOR_DIAGNOSTIC` / `POST_HOC_DIAGNOSTIC_ONLY`, computed from all 4800 observations, replacing no frozen statistic and deciding nothing. **`causal_attribution: UNKNOWN`**: the shape is *consistent with* mobile-GPU DVFS and power-state behaviour, but that stays `UNTESTED_HYPOTHESIS` because `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY` - no clock, P-state, utilisation, temperature or power reading accompanied the timed regions, so no observation can be mapped to a device state and no alternative explanation was excluded. Both models show the same *kind* of skew and the exact figures are published per model, but `proportionality_across_models_demonstrated: false`. **Nothing in the protocol was adapted after the timings were seen**, which is exactly when a frozen protocol earns its keep: all fourteen `protocol_stability_after_observation` fields are false - subset, warmup 20, repetitions 30, symmetric order, FP32, batch, imgsz and both timing boundaries unchanged, no observation removed, no outlier rejection introduced, no timing normalised or rescaled, no power, clock or fan setting touched, and **the benchmark was not re-run**. Later prose corrections went through `--rebuild-results`, which re-derives the artifacts from the persisted 4800 observations, executes no model, takes no timing, and refuses to write unless every frozen statistic and delta recomputes identically - it did, and both result fingerprints came back unchanged. **`INFERENCE_MEMORY`, never training memory** (`training_memory_reused: false`): peak allocated D2 78815744 B (0.073403 GiB) against S1 248700928 B (0.231621 GiB), ratio **3.155473**; peak reserved D2 134217728 B (0.125 GiB) against S1 318767104 B (0.296875 GiB), ratio **2.375**. Peak statistics are reset with `torch.cuda.reset_peak_memory_stats()` **after** the frozen warmup, so the figure describes inference and not the allocator's warmup high-water mark, and each model is measured in a **dedicated process** - peak CUDA statistics are device-global, and a diagnostic run before any memory figure existed showed that releasing a model in-process still leaves a 33554432-byte cuBLAS workspace allocated that the next model measured would have been charged for; `pre_load_allocated_bytes` is 0 for both, recorded as the evidence that the isolation held rather than asserted. **Effective FP32 parity was proved at runtime**, byte-identical between the two: backend FP16 flag `false`, parameter dtypes `['torch.float32']`, input tensor `torch.float32`, autocast during forward `false`, no quantization config, `quantize` resolved to 32; a difference would have stopped the phase as `PRECISION_PROTOCOL_MISMATCH`. **One gap in the frozen protocol is recorded rather than papered over**: `latency_protocol` declares batch, resolution, precision, warmup, repetitions, membership and order but **no confidence threshold**, so the benchmark ran at the operational **0.25** - the only frozen operating point, the protocol itself declaring the AP block's 0.001 deliberately not one - and says so in every artifact; latency at 0.001 was not measured and is not claimed. `STATIC_MODEL_COMPLEXITY` is read from the committed manifests, not recomputed: D2 2624080 parameters / 6.673 GFLOPs, S1 2843583 / 9.8 (fused 2835543 / 9.6), with `measured_at_benchmark_input_size: false` because both came from framework paths defaulting to a **640** reference input - they describe the architectures at a different size than the benchmark ran at and explain none of the timings. Host transfer of the outputs is outside both boundaries for **both** models, since the frozen boundary lists it in neither its includes nor its excludes: symmetric, but the segmenter's outputs are far larger, so a pipeline needing masks in host memory would pay more than these figures show, and no third boundary was invented to cover it. Result fingerprints latency `27c1705f...` and memory `7f452c8a...`; the rebuild is idempotent. Every phase 7D, 8G, 10A and 10B artifact is byte-identical before and after. `CSVISION_ALLOW_TEST_SPLIT` unset at process, user and machine scope; no holdout identifier, image, prediction, timing or statistic exists in any artifact. No operational recommendation is offered and no hardware-independent latency is claimed. Phase 10D not started. |
 | 2026-09-11 | Phase 10D synthesised the committed phase 10B and 10C evidence into one scientific answer. **No model was trained or executed, no average precision was recomputed, no spatial or association analysis was rerun, no latency benchmark was rerun, no threshold was changed and the holdout was never read** - all recorded as counts, and a test asserts the runner and the module import neither torch nor ultralytics and contain no split-access call path. Every number is read from a committed artifact by field; each source is recorded by file digest **and** by its own semantic fingerprint. **Four axes, never one score**: `aggregate_benefit_score`, `cost_benefit_index`, `weighted_score`, `winner_declared` and `axes_combined` are all false and the validator refuses any of them at any depth in the payload, because one figure would hide precisely the trade-off this phase exists to expose. **Recognition**: S1 retains broadly similar localisation while adding masks; the +0.020292 all-class delta is **not** robust evidence of a better localiser, since `vest_loose` contributes +0.026724 of it and the four supported classes give **-0.008040** (`POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY`, descriptive, not a significance test). Both readings are published, both improvements and regressions are listed, and why any class moved is UNKNOWN. **Representation gain**: `MASK_TO_BOX_FILL_RATIO` median **0.664433** and `SHAPE_EXTENT` median **0.672173**, both frozen `NO_BOX_ONLY_EQUIVALENT` before measurement - a gain in what is computable, explicitly **not** a 33.6% background-error rate, because the ratio compares predicted mask support with predicted box area and no ground truth enters it. **Proxy refinement, not box error**: area 144563 px measured against a 237206 px box proxy, intersection 26828 against 47281 px, centroid displacement median 16.0 px / P95 126.9 px / max 262.8 px; like statistics only, `PROXY_REFINEMENT` rather than `BOX_ERROR`, and the mask centroid is never called the true object centre. **Association**: at the frozen 0.50 floor, geometry-isolating, 103 agree / 3 box-only / **0 mask-only** / 66 neither plus 1 taxonomy exception over 173 - masks found no association the box rule missed, scoped to this threshold and population; the pipeline-level reading carries `attributable_to_geometry_alone: false`, the non-exhaustive taxonomy is preserved verbatim and no fifth category was added. **No compliance accuracy is claimed and the validator refuses one**, because the project holds no compliance ground truth. **Cost**: end-to-end **+2.756991 ms (+30.11%)** and model-inference +1.721747 ms (+28.43%), the two boundaries never merged, median and P95 reported beside every mean because the distribution is wide, the headline delta still based on the frozen mean, throughput `MEAN_DERIVED_BATCH1_THROUGHPUT` and never application video FPS; peak reserved memory ratio **2.375** and peak allocated **3.155473**, with the relative overhead called substantial **and** the absolute footprint called low on the measured ~8 GiB GPU (`memory_heavy_in_absolute_terms: false`), `INFERENCE_MEMORY` never compared with training memory. **Two disclosures travel with the cost figures**: `causal_attribution: UNKNOWN` with the DVFS reading left `UNTESTED_HYPOTHESIS` under `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY` and `dvfs_asserted_as_cause: false`; and `phase_10a_froze_latency_confidence: false` - phase 10A declared no confidence in its latency block, 10C resolved it to the operational 0.25 before any timing existed and applied it equally to both models, classified `PRE_BENCHMARK_PROTOCOL_GAP_RESOLUTION`, scoped `OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25`, benchmark not invalidated, no claim at conf 0.001. Static complexity stays `measured_at_benchmark_input_size: false` and `explains_the_latency: false`. The recommendation is `USE_CASE_CONDITIONAL`, both models remain the frozen finals for their own tasks, and no drop-in replacement or architectural identity is claimed. A **claim register** of seven claims records each with its evidence artifact, evidence field, scope and limitation, so the report and pitch cannot reuse a claim without its caveat. Assignment coverage is mapped with pending items marked separately (phase 11 holdout metrics, phase 12 FP/FN gallery, phase 13 video). The synthesis, report and trade-off table re-derive byte for byte from the committed evidence and a test enforces it. Every historical artifact is byte-identical before and after. `CSVISION_ALLOW_TEST_SPLIT` unset; no holdout identifier, image, prediction or statistic exists in any artifact. Phase 11A not started. |
 | 2026-09-11 | Phase 11A froze the one-shot final holdout evaluation protocol. **No model was loaded or executed, no holdout image, annotation or identifier was read, neither authorisation gate was activated and no result artifact was created** - the manifest records those as counts, all zero, and tests assert that no phase 11A file imports torch or ultralytics, reaches a split accessor, or assigns to `os.environ`. Protocol fingerprint `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`, recomputed identically from an independent parse; the freeze is idempotent. **Aggregate population facts only, and even those from count fields**: the holdout's 65 images and 305 annotations were frozen in phase 5C.2 before any model existed, read from the split manifest's `actual_*_counts` blocks, with the membership sections never opened - a test loads every frozen test id and asserts none appears in any artifact this phase wrote. **The dual gate is preserved, not re-implemented**: `allow_test=True` **and** `CSVISION_ALLOW_TEST_SPLIT=1`, delegated to the project's single existing guard, with tests proving each opt-in alone is refused and both together authorise - against a **synthetic environment mapping**, so the suite can never unlock anything. Two restrictions are added on top: access is granted only to the declared final-evaluation runner, so a development script holding both opt-ins is still refused; and **no code may satisfy its own precondition** - the runner reads the environment gate and can never write it. **One read, with the prohibitions starting when it starts**: `reads_permitted: 1`, and from the moment phase 11B begins - not when it finishes, because a partial result is still a result - model selection, architecture change, threshold or hyperparameter tuning, retraining, test-motivated dataset cleaning, re-running for a different number and reporting the better of two runs are all forbidden. **Metrics fixed in advance**: both models' boxes through **one** external `COCOeval` at `iouType='bbox'`, the segmenter's masks at `segm`, IoU 0.50:0.05:0.95, maxDets [1, 10, 100], at conf **0.001** - deliberately not an operating point, because AP needs the low-scoring tail; the segmenter's boxes are its **own**, never re-derived from its masks; all five classes, no collapsing. The **phase 8C direct-IoU diagnostic is reused by fingerprint, unchanged** (`b912039c...`), keeping its own operational **0.25** as `SECONDARY_CANONICAL_DIAGNOSTIC` - the two confidences are never mixed, and inventing a new matching rule now would let it be chosen with the result in view. **The confusion-matrix semantics were read from the installed source, not assumed**: no canonical protocol existed, so one is frozen from what was already in force during validation - `DetectionValidator.confusion_matrix_conf` resolves to **0.25**, `process_batch` is called without `iou_thres` so its signature default **0.45** applies, matching is class-agnostic IoU with the class pair then recorded, and the matrix is `(nc+1, nc+1)` with rows predicted and columns ground truth, an off-diagonal matched pair counting as both an FP and an FN. Those are the exact values behind every committed validation matrix here, so freezing them changes nothing; a test pins them against the installed framework rather than a copied constant. Object-level TP/FP/FN is frozen separately, class-aware at IoU 0.50 at the operational 0.25, with a four-category segmentation failure taxonomy evaluated in order, first match wins, explicitly **not** claiming to partition every instance. **The qualitative gallery is chosen by rule, not by eye**: six categories x three examples, each ranked by a declared quantity in a declared direction, tie-breaking ending in an identifier so the order is total on any machine, one instance in at most one category, an underfilled category publishing what it has rather than being topped up, `images_inspected_to_design_this_rule: 0`, and human interpretation only **after** the ranking exists - tests prove the selection is stable under input order and that ties resolve identically. **A write failure is not a prediction failure**: predictions are persisted and fingerprinted **before** any metric is computed, so an artifact-write failure rebuilds from them while a mid-inference crash preserves evidence, stops and requires human review; eight failure states are named and a test asserts **none** authorises re-running inference. The **one-shot ledger** is an append-only 13-state machine whose attempt counter cannot be reset - a second attempt needs a number and a written justification or it does not construct. Deliberately excluded from 11B: any latency re-benchmark, any new spatial metric, any repeat of the 10B exploratory study, any significance test, and any winner, composite score or weighted ranking. The phase 11B runner's structure is frozen but `EXECUTION_AUTHORISED` is false and its preflight fires first, so a stray invocation refuses on the gates. **No result artifact exists** and `placeholder_values_permitted: false`. Every historical artifact - both freezes, the 10A protocol, the 10B/10C results, the 10D synthesis, the split manifest and the canonical fingerprints - is byte-identical before and after. `CSVISION_ALLOW_TEST_SPLIT` unset at process, user and machine scope. No test performance is claimed anywhere, because none has been measured. Phase 11B not started. |
+| 2026-09-11 | **Phase 11B evaluated the final holdout, once.** `TEST_EVALUATION_COMPLETE`, attempt 1, ledger `COMPLETE`; one read permitted and one read performed, the attempt counter not resettable, no prediction re-run and no second attempt. Both authorisation gates were supplied from outside the code - `allow_test=True` in the runner's call and `CSVISION_ALLOW_TEST_SPLIT=1` set by a person beforehand - and a test asserts no phase 11B file assigns to the environment. The holdout was materialised by the **phase 5D function with the phase 5D configuration**, `split_specific_branch_used: false`, and its predeclared technical validation ran before any model did and reported **0 problems** (65/65 byte-identical copies, 305 annotations, 0 alignment problems, 0 geometry round-trip mismatches). **All 65 images and 305 annotations were evaluated**; none sampled, excluded or stratified. Three declared inference passes ran - each model's AP pass at conf 0.001 and the segmenter's operational pass at conf 0.25 - and **predictions were persisted and fingerprinted before any metric existed**, so every reported number derives from those files with no model invoked during metric computation or report generation. **D2 canonical box mAP@0.50:0.95 0.427031** (mAP@0.50 0.565260, precision 0.787500 / recall 0.619672 at the frozen conf 0.25 and IoU 0.50); **S1 canonical mask mAP@0.50:0.95 0.410143** (mAP@0.50 0.579074, mask precision 0.773946 / recall 0.662295); **S1 canonical box mAP@0.50:0.95 0.433764**, delta versus D2 +0.006733. **The delta decomposes exactly and three of five classes declined** - `helmet_on_head` +0.076712 alone contributes more than the whole figure, and over the four supported classes the comparison gives +0.007454; `DESCRIPTIVE_ONLY`, no winner, no composite, no significance test, and why any class moved is UNKNOWN. The **phase 8C direct-IoU diagnostic was reused by fingerprint, unchanged**: `matched_mask_iou_mean` 0.834548, `gt_normalized_mask_iou` 0.585551, coverage 0.701639, 214 matched and 91 unmatched over 305 instances - `SECONDARY_CANONICAL_DIAGNOSTIC`, neither headline a COCO AP. Confusion matrices for both models under the frozen framework semantics (conf 0.25, IoU 0.45, rows predicted, 6x6 with background), neither threshold altered after the results were seen. Object-level TP/FP/FN at IoU 0.50 and conf 0.25: D2 189/51/116, S1 205/56/100, the frozen taxonomy plus `WELL_HANDLED_INSTANCE` partitioning all 305 instances. **`vest_loose` is reported exactly as observed**: 2 holdout images, 7 instances, `DESCRIPTIVE_HIGH_UNCERTAINTY`, D2 AP 0.000000 with 0 of 7 recalled and S1 0.003850 with 0 matched - no support threshold invented or relaxed after seeing it, and it decides nothing. Validation versus test is `DESCRIPTIVE_GENERALIZATION_COMPARISON` over pre-existing metrics only: every canonical AP is lower on the holdout while the direct `matched_mask_iou_mean` is higher and its coverage lower; no significance test is reported and why a gap exists in either direction is UNKNOWN. The **qualitative gallery was chosen by rule before any holdout image was opened** - six categories x three examples, `images_browsed_before_selection: 0`, no topping up and no example replaced. **Nothing identifying a holdout image was committed**: the selection, the figures and the predictions stay git-ignored, and a test loads every frozen holdout id and asserts none appears in any committed artifact. **Three protocol notes are disclosed rather than smoothed over** - `PRE_EXECUTION_PROTOCOL_GAP_RESOLUTION` (a frozen confidence with no frozen inference block, resolved before any holdout number existed and explicitly not credited to phase 11A), `FROZEN_TAXONOMY_AMBIGUOUS_CASCADE_RESOLVED_BEFORE_EXECUTION` (read literally the cascade leaves `LOCALIZATION_FAILURE` unreachable; no category was added or removed) and `PROTOCOL_COVERAGE_NOTE` (the protocol both permits qualitative figures and forbids committing holdout imagery - the prohibition wins). The phase 11A protocol document was not edited and all 54 historical artifacts are byte-identical before and after. `FINAL_TEST_OBSERVED`: model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. |

@@ -27,6 +27,7 @@ from decimal import Decimal
 
 import pytest
 
+from conftest import holdout_has_been_evaluated
 from construction_safety_vision.data.canonical import scan_for_sensitive
 from construction_safety_vision.detection_comparison import (
     CASE_B,
@@ -612,10 +613,14 @@ def test_the_freeze_records_the_holdout_as_protected(manifest):
 
 
 def test_no_holdout_material_exists(paths):
+    # Before phase 11B the holdout has no on-disk presence at all. Phase 11B
+    # materialises it, through the phase 5D function and under both
+    # authorisation gates, so from then on these paths legitimately exist.
+    evaluated = holdout_has_been_evaluated(paths)
     canonical = paths.data_processed / "canonical"
-    assert not (canonical / "images" / "test").exists()
-    assert not (canonical / "annotations" / "detection_test.coco.json").exists()
-    assert not (canonical / "annotations" / "segmentation_test.coco.json").exists()
+    assert evaluated or not (canonical / "images" / "test").exists()
+    assert evaluated or not (canonical / "annotations" / "detection_test.coco.json").exists()
+    assert evaluated or not (canonical / "annotations" / "segmentation_test.coco.json").exists()
     adapter = paths.data_processed / "adapters" / "yolo_detection"
     assert not (adapter / "images" / "test").exists()
     assert not (adapter / "labels" / "test").exists()

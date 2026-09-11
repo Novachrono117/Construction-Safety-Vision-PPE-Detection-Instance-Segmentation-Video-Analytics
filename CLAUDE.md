@@ -191,23 +191,24 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 11A complete - the **final holdout evaluation protocol is FROZEN
-  and NOT EXECUTED** (`FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint
-  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`). **The
-  next phase of work is 11B, the single one-shot holdout evaluation. It has not
-  started, it cannot start until a person deliberately sets both authorisation
-  gates, and it must not be started unprompted.** Phase 10 is closed. The split
-  is frozen, the
-  holdout is locked, **both models are FROZEN** (detector D2, YOLO11n at imgsz
-  768; segmenter S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`), the
-  comparison protocol is frozen, the **recognition and spatial comparison has
-  run on validation** (`DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`), the
-  **latency and inference-memory benchmark has run**
-  (`DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`), and the **scientific and
-  operational synthesis is written**
-  (`DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`). Training is CLOSED and
-  the validation comparison is COMPLETE. **The final test is STILL LOCKED and
-  PENDING; no test metric exists for any model and none may be estimated.**
+- **Phase:** 11B complete - **the final holdout has been evaluated, once**
+  (`TEST_EVALUATION_COMPLETE`, attempt 1). Phase 11A froze the protocol
+  (`FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint
+  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`) without
+  reading a byte of the holdout; phase 11B then executed it exactly once. Phase
+  10 is closed. The split is frozen, **both models are FROZEN** (detector D2,
+  YOLO11n at imgsz 768; segmenter S1, YOLO11n-seg at imgsz 768 with
+  `overlap_mask: false`), the validation comparison is COMPLETE
+  (`DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`,
+  `DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`,
+  `DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`), and **the holdout is now
+  OBSERVED and SPENT**. `FINAL_TEST_OBSERVED`: **MODEL_SELECTION_CLOSED,
+  HYPERPARAMETER_TUNING_CLOSED, THRESHOLD_TUNING_CLOSED,
+  DATA_CLEANING_FOR_PERFORMANCE_CLOSED**. The next work is presentation and
+  application (phases 12 and 13), never performance-driven model development.
+  **Never re-run the holdout evaluation, never start a second attempt, and never
+  let a test number motivate a change to a model, a threshold, a class grouping
+  or the dataset.**
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -1240,23 +1241,179 @@ uv run pytest
   result manifest), the canonical mask AP, the direct instance-mask IoU, the
   confusion-matrix and curve figures under `reports/figures/detection/D2/` and
   `reports/figures/segmentation_S1/`, and the detector-versus-segmenter
-  comparison. **Pending: holdout metrics (phase 11), the per-class qualitative
-  FP/FN gallery (phase 12), and the video application (phase 13).** Never mark
-  one delivered without an artifact.
+  comparison. **Holdout metrics are now DELIVERED (phase 11B)**: canonical box
+  AP for both models, canonical mask AP, operating-point precision and recall,
+  the direct instance-mask IoU, both confusion matrices and object-level
+  TP/FP/FN, all on the 65-image holdout, read once. **Still pending: the
+  per-class qualitative FP/FN gallery (phase 12) and the video application
+  (phase 13).** Never mark one delivered without an artifact.
 - **Phase 10D changed no frozen number and no historical artifact.** Every phase
   7D, 8G, 10A, 10B and 10C artifact is byte-identical before and after, verified
   by digest at entry and exit; the runner refuses to finish if any of them
   moved.
-- **The FINAL HOLDOUT EVALUATION PROTOCOL IS FROZEN AND NOT EXECUTED (phase
-  11A).** `configs/final_holdout_evaluation.yaml`, fingerprint
-  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`, recorded
-  in `reports/final_holdout_evaluation_protocol.json`. It predeclares the whole
-  of phase 11B and executed none of it: `models_executed: 0`,
-  `test_predictions_produced: 0`, `test_metrics_computed: 0`,
-  `test_images_read: 0`, `test_identifiers_recorded: 0`,
-  `results_present: false`. **No test metric exists for any model. Never quote
-  one, never estimate one from validation, and never write a sentence implying
-  the holdout has been seen.**
+- **The FINAL HOLDOUT EVALUATION PROTOCOL WAS FROZEN IN 11A AND EXECUTED ONCE IN
+  11B.** `configs/final_holdout_evaluation.yaml`, fingerprint
+  `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`. The
+  protocol manifest itself stays `FROZEN_NOT_EXECUTED` with every count zero -
+  it is a protocol document and was never rewritten - and the results live in
+  their own artifacts. **The holdout has now been seen. It may never be read
+  again.**
+- **Phase 11B results (holdout, one read, and the only test numbers that exist).**
+  65 images / 305 annotations, all evaluated, none sampled or excluded. **D2
+  canonical box mAP@0.50:0.95 `0.427031`**,
+  mAP@0.50 `0.565260`, precision
+  `0.787500` / recall `0.619672` at the frozen conf 0.25
+  and IoU 0.50. **S1 canonical mask mAP@0.50:0.95
+  `0.410143`**, mAP@0.50
+  `0.579074`, mask precision
+  `0.773946` / recall `0.662295`. **S1 canonical box
+  mAP@0.50:0.95 `0.433764`**, mAP@0.50
+  `0.583500`. Descriptive supported macro:
+  D2 `0.533789`, S1 box
+  `0.541243`, S1 mask
+  `0.511717`. Result fingerprints
+  `2e0837ca75fbdfc76ff18075788fa622fbf1812b2f2ba441f56965299004dff5` (detector),
+  `f6b0baa96ae1255b987955d183a6e4f58c2eeffa49beada17a8e91393392bccf` (segmenter),
+  `4a30d7de4b519f65ca272530675cd0b306e3363386b0422d8feb8b45d84bb30c` (direct IoU).
+- **Per-class holdout AP@0.50:0.95.** D2 box: `helmet_loose` 0.596792, `helmet_on_head` 0.610335, `person` 0.489896, `vest_loose` 0.000000, `vest_on_body` 0.438132.
+  S1 box: `helmet_loose` 0.589534, `helmet_on_head` 0.687047, `person` 0.476795, `vest_loose` 0.003850, `vest_on_body` 0.411595. S1 mask:
+  `helmet_loose` 0.561808, `helmet_on_head` 0.664600, `person` 0.446269, `vest_loose` 0.003850, `vest_on_body` 0.374189. Quote the per-class figures with the
+  aggregate, never instead of it and never without it.
+- **The D2-versus-S1 box delta is `+0.006733` and it is
+  NOT an across-the-board improvement.** Three of the five classes declined
+  (`helmet_loose`, `person`, `vest_on_body`); `helmet_on_head` alone moved
+  +0.076712 and contributes +0.015342, more than the whole delta. Over the four
+  supported classes the comparison gives **+0.007454**. It is
+  `DESCRIPTIVE_ONLY`: **no winner is declared, no composite or weighted score
+  exists, no significance test was run and no model selection follows.** Why any
+  class moved is UNKNOWN - one training run and one evaluation per split, and
+  this phase ran no experiment that could isolate a cause.
+- **Direct instance-mask IoU on the holdout (phase 8C protocol, reused by
+  fingerprint `b912039c...`, unchanged):** `matched_mask_iou_mean`
+  **`0.834548`**, `gt_normalized_mask_iou`
+  **`0.585551`**, `gt_match_coverage`
+  `0.701639`, `gt_iou50_coverage`
+  `0.662295`, `gt_iou75_coverage`
+  `0.560656`, over 305 canonical
+  instances with 261 predictions,
+  214 matched and 91 unmatched.
+  **The two headlines are still not interchangeable and neither is an AP.**
+- **Object-level holdout TP/FP/FN** (class-aware, IoU 0.50, conf 0.25): D2
+  189 /
+  51 /
+  116; S1
+  205 /
+  56 /
+  100. The frozen four-category
+  taxonomy plus `WELL_HANDLED_INSTANCE` partitions all 305 instances for both.
+  `MASK_QUALITY_FAILURE` is 0 for D2 because it emits no mask - that zero is a
+  property of the output type, never a performance statement.
+- **`vest_loose` on the holdout: 2 images, 7 instances,
+  `DESCRIPTIVE_HIGH_UNCERTAINTY`.** D2 scored AP@0.50:0.95 **0.000000** on it and
+  recalled none of its 7 instances; S1 scored **0.003850** and matched none in
+  the direct diagnostic. Report those exactly, always with the small-sample
+  caveat. **No support threshold was invented or relaxed after seeing them**, and
+  they decide nothing.
+- **Validation-versus-test is `DESCRIPTIVE_GENERALIZATION_COMPARISON` and
+  bounded.** Only pre-existing metrics, their holdout counterparts and the
+  absolute difference. Every canonical AP is lower on the holdout; the direct
+  `matched_mask_iou_mean` is higher while its coverage is lower. **No
+  significance test was predeclared and none may be added.** Why a gap exists in
+  either direction is UNKNOWN, and no experiment may now be run to explain a
+  reported holdout number.
+- **Three phase 11B protocol notes are recorded, and none of them edited the
+  phase 11A document.** `PRE_EXECUTION_PROTOCOL_GAP_RESOLUTION`: the protocol
+  gave the confusion matrix, the object-level counts and the qualitative ranking
+  a confidence of 0.25 but no inference block, so they derive from the declared
+  AP passes filtered at it - resolved before any holdout number existed, applied
+  identically to both models, and **explicitly not credited to phase 11A**.
+  `FROZEN_TAXONOMY_AMBIGUOUS_CASCADE_RESOLVED_BEFORE_EXECUTION`: read literally,
+  `LOCALIZATION_FAILURE` is unreachable and `CLASSIFICATION_MISMATCH` would fire
+  on correct detections, so the cascade was resolved into the one reading where
+  all four categories are reachable - **no category added, none removed**.
+  `PROTOCOL_COVERAGE_NOTE`: the protocol both permits qualitative figures and
+  forbids committing holdout imagery or identifiers, and **the prohibition
+  wins**.
+- **NOTHING that identifies a holdout image is committed, and it must stay that
+  way.** The persisted predictions, the qualitative selection manifest and the
+  rendered figures live under the git-ignored `artifacts/final_test/`. A test
+  loads every frozen holdout id and asserts none appears in any committed
+  artifact. **Never publish a holdout image id, a holdout image, or a holdout
+  prediction file** - a leak is a leak even when no pixel travels with it.
+- **Every reported holdout number derives from the persisted predictions**, which
+  were written and fingerprinted **before any metric was computed**
+  (`detector_test_prediction_sha256` `bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6`,
+  `segmenter_test_prediction_sha256` `181d036c3b4e7e039b72061fc3f4e4ee7291a45b5fa7f8ead433e328314ed504`).
+  No model was invoked during metric computation or report generation. A report
+  whose prediction fingerprint does not match the ledger's is **not a rebuild; it
+  is a second run**.
+- **THREE inference passes ran, not two, and the segmenter ran TWICE.** Recorded
+  in `reports/final_test_execution_accounting.json` (fingerprint in the artifact,
+  rebuilt by `scripts/clarify_holdout_execution_accounting.py`):
+  `holdout_evaluation_attempts` 1, `unique_models_executed` 2,
+  `total_model_inference_passes` 3, `d2_inference_invocations` 1,
+  **`s1_inference_invocations` 2**. The passes are `DETECTOR_AP_PASS` (conf
+  0.001), `SEGMENTER_AP_PASS` (conf 0.001) and
+  `SEGMENTER_OPERATIONAL_PASS_FOR_DIRECT_IOU` (conf 0.25). The second segmenter
+  pass was a **real `predict()` execution** - `execute()` calls `run_pass()`
+  twice with the S1 checkpoint - and it must **never** be described as a derived
+  view of the AP pass.
+- **"One-shot" means `ONE_SHOT_FINAL_HOLDOUT_EVALUATION_VALID`, not one
+  invocation per model.** One human-authorised attempt, the complete frozen
+  population, every pass inside that attempt, no result-driven rerun, no pass
+  repeated after an outcome was observed, no tuning:
+  `evaluation_attempt_count` 1, `adaptive_prediction_rerun_count` 0,
+  `post_metric_model_invocation_count` 0,
+  `prediction_regeneration_after_immutability_barrier` false. **Never write
+  `ONE_SHOT_MODEL_PREDICTION_EXECUTION_VALID`** - the artifact names it only as
+  the rejected reading, and a test fails if any other file claims it.
+- **`models_executed: 2` in the phase 11B provenance counts MODEL IDENTITIES,
+  not passes.** It is not reinterpreted and the historical artifact was not
+  edited; the unambiguous siblings above are recorded beside it, and its
+  companion `inference_passes: 3` already agreed. Quote the siblings.
+- **The frozen 11A protocol was satisfied; a later informal instruction was
+  not, and both are published.** Phase 11A declares three inference blocks -
+  `detector_inference`, `segmenter_inference` and `direct_iou.inference`, the
+  last reusing the phase 8C operational 0.25 - so
+  `FROZEN_PROTOCOL_SATISFIED: true`. A later phase 11B execution instruction
+  expected S1's operational predictions to be reused instead:
+  `LATER_EXECUTION_INSTRUCTION_SINGLE_S1_INVOCATION_SATISFIED: false`. The
+  mismatch did **not** follow from observing a holdout outcome. Never hide
+  either fact.
+- **The second S1 pass changed no reported number, and the evidence for that is
+  not uniformly strong.** `SECOND_S1_PASS_EQUIVALENCE_TO_AP_FILTER: VERIFIED`,
+  `reported_metric_dependency_on_second_execution:
+  NONE_BEYOND_IDENTICAL_REPRODUCTION` - 4760 AP predictions, 261 at score >=
+  0.25, 261 operational predictions, 65/65 images, 0 count and 0 content
+  divergences over class, score, box and mask RLE. The counts a committed field
+  corroborates carry `COMMITTED_ARTIFACT_FIELD`; the per-instance comparison
+  carries `OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED`, because that
+  audit ran in an earlier session and wrote no artifact. Do not promote it, and
+  **do not re-derive it** - that would mean opening holdout-derived predictions
+  after `FINAL_TEST_OBSERVED`.
+- **The gap-resolution chronology has a ceiling.**
+  `RUNTIME_FILESYSTEM_EVIDENCE: CONSISTENT_WITH_RESOLVED_BEFORE_HOLDOUT_ACCESS`,
+  but code and results were committed together, so
+  `VCS_PRE_EXECUTION_CHECKPOINT: ABSENT` and the strongest unambiguous claim is
+  **`RESOLVED_BEFORE_OUTCOME_METRICS_WERE_OBSERVED`**. Never upgrade an mtime
+  into cryptographic provenance.
+- **A post-observation metadata inspection happened and is disclosed.** After
+  `FINAL_TEST_OBSERVED` the audit listed the test image directory and read
+  filesystem mtimes: `post_observation_test_metadata_inspection: true`,
+  `post_observation_test_content_access: false`,
+  `post_observation_model_execution: false`,
+  `post_observation_prediction_generation: false`. It played no part in model
+  selection, tuning or any reported metric. **Never claim zero filesystem
+  contact with the test directory.**
+- **The clarification changed nothing scientific and executed nothing.** No
+  metric, ranking, prediction byte, result fingerprint, checkpoint fingerprint,
+  test population or validation-versus-test delta moved; all ten protected phase
+  11A and 11B artifacts are verified byte-identical, and the clarification's own
+  counts are zero for models executed, inference passes, holdout reads, test
+  images, test annotations, test identifiers, predictions and recomputed
+  metrics. Correct it by fixing
+  `construction_safety_vision.final_holdout_accounting` and regenerating, never
+  by editing the artifact.
 - **Reach for the protocol through
   `construction_safety_vision.final_holdout_evaluation`.** Parsing is strict and
   `validate_protocol` is adversarial: it refuses a wrong checkpoint digest, a
@@ -1380,10 +1537,11 @@ uv run pytest
   rather than on a missing implementation. Its fifteen steps are frozen, and
   **prediction persistence precedes metric computation** - the ordering that
   makes a report rebuild possible at all. `--plan` prints the order and exits.
-- **Phase 11A changed no frozen number and no historical artifact.** Both model
-  freezes, the phase 10A protocol, the 10B/10C results, the 10D synthesis, the
-  split manifest and the canonical fingerprints are byte-identical before and
-  after, verified by digest at entry and exit.
+- **Neither phase 11A nor phase 11B changed a frozen number or a historical
+  artifact.** Both model freezes, the phase 10A protocol, the 10B/10C results,
+  the 10D synthesis, the split manifest, the canonical fingerprints and every
+  phase 11A artifact are byte-identical before and after - 54 files verified by
+  digest at entry and exit of phase 11B.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

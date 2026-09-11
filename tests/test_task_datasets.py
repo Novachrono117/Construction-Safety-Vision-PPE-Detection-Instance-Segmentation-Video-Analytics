@@ -12,6 +12,7 @@ import json
 
 import pytest
 
+from conftest import holdout_has_been_evaluated
 from construction_safety_vision.data.canonical import scan_for_sensitive
 from construction_safety_vision.data.coco_materialization import (
     DETECTION,
@@ -182,11 +183,15 @@ def test_manifest_records_no_holdout_identifier_or_statistic(paths, manifest):
 
 
 def test_no_holdout_dataset_was_written(paths):
+    # Before phase 11B the holdout has no on-disk presence at all. Phase 11B
+    # materialises it, through the phase 5D function and under both
+    # authorisation gates, so from then on these paths legitimately exist.
+    evaluated = holdout_has_been_evaluated(paths)
     config = load_materialization_config(paths.configs / "task_materialization.yaml")
     root = paths.root / config.output_root
-    assert not (root / "images" / "test").exists()
+    assert evaluated or not (root / "images" / "test").exists()
     for task in (DETECTION, SEGMENTATION):
-        assert not (root / "annotations" / f"{task}_test.coco.json").exists()
+        assert evaluated or not (root / "annotations" / f"{task}_test.coco.json").exists()
 
 
 def test_no_yolo_labels_were_written(paths):

@@ -1,0 +1,133 @@
+{
+  "combined_score": false,
+  "diagnostic": {
+    "global": {
+      "gt_count": 305,
+      "gt_iou50_coverage": 0.662295,
+      "gt_iou75_coverage": 0.560656,
+      "gt_match_coverage": 0.701639,
+      "gt_normalized_mask_iou": 0.585551,
+      "matched_count": 214,
+      "matched_mask_iou_mean": 0.834548,
+      "prediction_count": 261,
+      "unmatched_gt": 91,
+      "unmatched_predictions": 47
+    },
+    "ground_truth_source": "CANONICAL_COCO_INSTANCE_SEGMENTATION",
+    "headlines_are_not_interchangeable": "matched_mask_iou_mean describes mask quality where the model produced an overlapping same-class instance; gt_normalized_mask_iou divides the same IoU sum by every canonical instance, so misses lower it. Neither is a COCO AP.",
+    "images": 65,
+    "is_an_average_precision": false,
+    "is_primary_segmenter_metric": false,
+    "per_class": {
+      "helmet_loose": {
+        "gt_count": 60,
+        "gt_iou50_coverage": 0.716667,
+        "gt_iou75_coverage": 0.65,
+        "gt_match_coverage": 0.766667,
+        "gt_normalized_mask_iou": 0.649068,
+        "matched_count": 46,
+        "matched_mask_iou_mean": 0.846611,
+        "prediction_count": 56,
+        "unmatched_gt": 14,
+        "unmatched_predictions": 10
+      },
+      "helmet_on_head": {
+        "gt_count": 47,
+        "gt_iou50_coverage": 0.851064,
+        "gt_iou75_coverage": 0.702128,
+        "gt_match_coverage": 0.851064,
+        "gt_normalized_mask_iou": 0.735779,
+        "matched_count": 40,
+        "matched_mask_iou_mean": 0.86454,
+        "prediction_count": 47,
+        "unmatched_gt": 7,
+        "unmatched_predictions": 7
+      },
+      "person": {
+        "gt_count": 136,
+        "gt_iou50_coverage": 0.625,
+        "gt_iou75_coverage": 0.551471,
+        "gt_match_coverage": 0.669118,
+        "gt_normalized_mask_iou": 0.560436,
+        "matched_count": 91,
+        "matched_mask_iou_mean": 0.837574,
+        "prediction_count": 111,
+        "unmatched_gt": 45,
+        "unmatched_predictions": 20
+      },
+      "vest_loose": {
+        "gt_count": 7,
+        "gt_iou50_coverage": 0.0,
+        "gt_iou75_coverage": 0.0,
+        "gt_match_coverage": 0.0,
+        "gt_normalized_mask_iou": 0.0,
+        "matched_count": 0,
+        "matched_mask_iou_mean": null,
+        "prediction_count": 0,
+        "unmatched_gt": 7,
+        "unmatched_predictions": 0
+      },
+      "vest_on_body": {
+        "gt_count": 55,
+        "gt_iou50_coverage": 0.618182,
+        "gt_iou75_coverage": 0.436364,
+        "gt_match_coverage": 0.672727,
+        "gt_normalized_mask_iou": 0.524513,
+        "matched_count": 37,
+        "matched_mask_iou_mean": 0.779682,
+        "prediction_count": 47,
+        "unmatched_gt": 18,
+        "unmatched_predictions": 10
+      }
+    },
+    "role": "SECONDARY_CANONICAL_DIAGNOSTIC"
+  },
+  "direct_iou_protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+  "inference": {
+    "agnostic_nms": false,
+    "augment": false,
+    "conf": 0.25,
+    "half": false,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "retina_masks": true
+  },
+  "matching": {
+    "algorithm": "SCIPY_LINEAR_SUM_ASSIGNMENT_MAXIMIZE_MASK_IOU",
+    "deterministic": true,
+    "scope": "PER_IMAGE_PER_CLASS_ONE_TO_ONE",
+    "unmatched_gt_policy": "CONTRIBUTES_ZERO_TO_GT_NORMALIZED_MASK_IOU",
+    "zero_overlap_policy": "ASSIGNED_PAIRS_WITH_ZERO_IOU_ARE_NOT_MATCHES"
+  },
+  "metrics_derived_from": "PERSISTED_PREDICTIONS_ONLY",
+  "model": {
+    "checkpoint_bytes": 6041685,
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "experiment": "S1",
+    "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "frozen_in_phase": "8G",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "modified_in_this_phase": false,
+    "overlap_mask": false,
+    "trained_in_this_phase": false
+  },
+  "new_rule_invented": false,
+  "phase": "11B",
+  "population": {
+    "annotations": 305,
+    "images": 65,
+    "membership_sha256": "0052ee3bc1d73e4f7c852c3bb16b4273a0ba5ef7bb62283ff9b95557a1e7c699"
+  },
+  "prediction_fingerprint": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d",
+  "protocol": "DIRECT_INSTANCE_MASK_IOU_DIAGNOSTIC",
+  "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef",
+  "result_sha256": "4a30d7de4b519f65ca272530675cd0b306e3363386b0422d8feb8b45d84bb30c",
+  "schema_version": 1,
+  "split": "test",
+  "threshold_swept": false,
+  "unchanged_from_phase_8c": true
+}

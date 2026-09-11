@@ -1,0 +1,285 @@
+{
+  "authorization": {
+    "effective_holdout_access_authorized": false,
+    "environment_gate_variable": "CSVISION_ALLOW_TEST_SPLIT",
+    "environment_test_gate_present": false,
+    "final_test_observed": true,
+    "gate_scopes_verified_absent": [
+      "PROCESS",
+      "USER",
+      "MACHINE"
+    ],
+    "gate_written_by_this_clarification": false,
+    "in_code_gate_supplied": false
+  },
+  "chronology": {
+    "RUNTIME_FILESYSTEM_EVIDENCE": "CONSISTENT_WITH_RESOLVED_BEFORE_HOLDOUT_ACCESS",
+    "VCS_PRE_EXECUTION_CHECKPOINT": "ABSENT",
+    "code_and_results_committed_together": true,
+    "gap_resolutions": [
+      "PRE_EXECUTION_PROTOCOL_GAP_RESOLUTION",
+      "FROZEN_TAXONOMY_AMBIGUOUS_CASCADE_RESOLVED_BEFORE_EXECUTION"
+    ],
+    "mtime_treated_as_cryptographic_provenance": false,
+    "runtime_evidence_description": "the implementation module carrying both gap resolutions has a last-modified time earlier than the persisted prediction directories, the one-shot ledger and every committed result of the run",
+    "strongest_unambiguous_scientific_claim": "RESOLVED_BEFORE_OUTCOME_METRICS_WERE_OBSERVED",
+    "vcs_limitation": "the implementation is absent from the parent commit, so no signed pre-execution checkpoint proves the resolutions predated holdout access - only that they predated the observation of any outcome metric"
+  },
+  "clarification_type": "PROVENANCE_METADATA_ONLY",
+  "classification": "PHASE_11B_EXECUTION_ACCOUNTING_CLARIFICATION",
+  "execution_accounting_sha256": "806396c320400e9f76e0110e0663d5c148bb3fd0f391d6231448f391d8105332",
+  "frozen_protocol_context": {
+    "FROZEN_PROTOCOL_SATISFIED": true,
+    "LATER_EXECUTION_INSTRUCTION_SINGLE_S1_INVOCATION_SATISFIED": false,
+    "declared_inference_block_count": 3,
+    "declared_inference_blocks": [
+      "detector_inference",
+      "segmenter_inference",
+      "direct_iou.inference"
+    ],
+    "direct_iou_inference_confidence": 0.25,
+    "direct_iou_protocol_fingerprint": "b912039ca77b36959f74fcdbaed109dbf5e3bd707709556f95a19085c7f34d80",
+    "direct_iou_reuses_phase_8c_operational_path": true,
+    "mismatch_caused_by_observing_holdout_outcomes": false,
+    "mismatch_description": "The frozen phase 11A protocol declares three inference blocks, so three inference passes are consistent with it. A later, informal phase 11B execution instruction expected the segmenter's operational predictions to be reused from the AP pass rather than produced by a second prediction call. The implementation ran the declared block instead. Both facts are recorded; neither is hidden.",
+    "mismatch_disclosed": true,
+    "protocol_artifact": "reports/final_holdout_evaluation_protocol.json",
+    "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef",
+    "protocol_status": "FROZEN_NOT_EXECUTED",
+    "three_passes_consistent_with_frozen_protocol": true
+  },
+  "historical_artifacts_unchanged": {
+    "configs/final_holdout_evaluation.yaml": "216189fcb02eccef0183f19fb73a0a8cbfee5b6a80e082555198b05313501b60",
+    "reports/final_holdout_evaluation.provenance.json": "1a0cb9f0db9c4291483246f91f5ae5a2d486d225cde533ac0fde6521eb6bc8cd",
+    "reports/final_holdout_evaluation_protocol.json": "5f1de9afcec9efd6d212bcd5c9674156162837bd1fd6d1ad449e16692e24f6af",
+    "reports/final_holdout_evaluation_protocol.md": "d9707c86053b13e91c3c07bd756053a270c1215ba8173f01a3d2cd48642cf78d",
+    "reports/final_test_detector.json": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9",
+    "reports/final_test_direct_iou.json": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c",
+    "reports/final_test_evaluation.md": "293de1ed53c41fff9a096f68de4b4fa75ba6d13c0d428f2fdfe591b140eb1b86",
+    "reports/final_test_evaluation.provenance.json": "9bc04a6294be69ac70da0b2bcbaf75df15f1002360b8c6f02d3a67aa33b9f5cb",
+    "reports/final_test_per_class.csv": "fea6b748ee6d4fad1355709cd946b8576f4279b825a43b9186fbf343d7371349",
+    "reports/final_test_segmenter.json": "c77ae3ce17cff8c17a8d8de87ccc04b08d276b98c0b3096dfcfc403f2c7c7093"
+  },
+  "inference_accounting": {
+    "d2_inference_invocations": 1,
+    "historical_field_semantics": {
+      "artifact": "reports/final_test_evaluation.provenance.json",
+      "companion_field": {
+        "agrees_with_this_clarification": true,
+        "field": "details.inference_passes",
+        "means": "TOTAL_MODEL_INFERENCE_PASSES",
+        "recorded_value": 3
+      },
+      "does_not_mean": "NUMBER_OF_MODEL_INFERENCE_PASSES",
+      "field": "details.models_executed",
+      "historical_artifact_edited": false,
+      "means": "NUMBER_OF_DISTINCT_MODEL_IDENTITIES_EXECUTED",
+      "recorded_value": 2,
+      "sibling_fields_added_here": [
+        "unique_models_executed",
+        "total_model_inference_passes",
+        "d2_inference_invocations",
+        "s1_inference_invocations"
+      ],
+      "silently_reinterpreted": false
+    },
+    "holdout_evaluation_attempts": 1,
+    "passes": [
+      {
+        "confidence": 0.001,
+        "derived_view_of_another_pass": false,
+        "model": "D2",
+        "pass": "DETECTOR_AP_PASS",
+        "prediction_fingerprint": "bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6",
+        "purpose": "AP_CURVE",
+        "real_model_prediction_execution": true
+      },
+      {
+        "confidence": 0.001,
+        "derived_view_of_another_pass": false,
+        "model": "S1",
+        "pass": "SEGMENTER_AP_PASS",
+        "prediction_fingerprint": "181d036c3b4e7e039b72061fc3f4e4ee7291a45b5fa7f8ead433e328314ed504",
+        "purpose": "AP_CURVE",
+        "real_model_prediction_execution": true
+      },
+      {
+        "confidence": 0.25,
+        "derived_view_of_another_pass": false,
+        "model": "S1",
+        "pass": "SEGMENTER_OPERATIONAL_PASS_FOR_DIRECT_IOU",
+        "prediction_fingerprint": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d",
+        "purpose": "DIRECT_INSTANCE_MASK_IOU_DIAGNOSTIC",
+        "real_model_prediction_execution": true
+      }
+    ],
+    "s1_inference_invocations": 2,
+    "second_s1_pass_representation": {
+      "described_as_derived_view": false,
+      "evidence": {
+        "evidence_status": "COMMITTED_SOURCE_STRUCTURAL_FACT",
+        "source": "execute() calls run_pass() twice with the S1 checkpoint, and run_pass() calls predict() on every invocation",
+        "value": "src/construction_safety_vision/final_holdout_execution.py"
+      },
+      "was_a_real_model_predict_execution": true
+    },
+    "total_model_inference_passes": 3,
+    "unique_models_executed": 2
+  },
+  "is_a_test_result_correction": false,
+  "one_shot_semantics": {
+    "adaptive_prediction_rerun_count": 0,
+    "evaluation_attempt_count": 1,
+    "frozen_schema_prohibits_this_clarification": false,
+    "label": "ONE_SHOT_FINAL_HOLDOUT_EVALUATION_VALID",
+    "means": [
+      "exactly one human-authorised final holdout evaluation attempt",
+      "the complete frozen test population was used",
+      "all inference passes belonged to that single attempt",
+      "no result-driven rerun occurred",
+      "no prediction pass was repeated after an outcome was observed",
+      "no tuning occurred"
+    ],
+    "phase_11b_classification": "TEST_EVALUATION_COMPLETE",
+    "post_metric_model_invocation_count": 0,
+    "prediction_regeneration_after_immutability_barrier": false,
+    "rejected_because": "it reads as one prediction invocation per model, and that is false - the segmenter was invoked twice, at the two confidences the frozen protocol declares",
+    "rejected_label": "ONE_SHOT_MODEL_PREDICTION_EXECUTION_VALID",
+    "supporting_ledger_state": "COMPLETE",
+    "supporting_metrics_derived_from": "PERSISTED_PREDICTIONS_ONLY",
+    "supporting_prediction_reruns": 0
+  },
+  "phase": "11B",
+  "post_observation_access": {
+    "occurred_after": "FINAL_TEST_OBSERVED",
+    "post_observation_model_execution": false,
+    "post_observation_prediction_generation": false,
+    "post_observation_test_content_access": false,
+    "post_observation_test_metadata_inspection": true,
+    "role_in_model_selection_tuning_or_reported_metrics": "NONE",
+    "what_was_inspected": [
+      "a directory listing of the materialised test image directory",
+      "filesystem last-modified metadata"
+    ],
+    "what_was_not_done": [
+      "no test image was read, decoded or parsed",
+      "no test annotation was read, decoded or parsed",
+      "no model was executed",
+      "no prediction was generated"
+    ],
+    "zero_filesystem_contact_claimed": false
+  },
+  "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef",
+  "results_unchanged": {
+    "any_metric_value_changed": false,
+    "any_ranking_changed": false,
+    "detector": {
+      "canonical_box_map50": 0.56526,
+      "canonical_box_map50_95": 0.427031,
+      "false_negatives": 116,
+      "false_positives": 51,
+      "precision": 0.7875,
+      "prediction_fingerprint": "bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6",
+      "recall": 0.619672,
+      "result_sha256": "2e0837ca75fbdfc76ff18075788fa622fbf1812b2f2ba441f56965299004dff5",
+      "true_positives": 189
+    },
+    "direct_iou": {
+      "gt_match_coverage": 0.701639,
+      "gt_normalized_mask_iou": 0.585551,
+      "matched_mask_iou_mean": 0.834548,
+      "prediction_fingerprint": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d",
+      "result_sha256": "4a30d7de4b519f65ca272530675cd0b306e3363386b0422d8feb8b45d84bb30c"
+    },
+    "segmenter": {
+      "canonical_box_map50_95": 0.433764,
+      "canonical_mask_map50": 0.579074,
+      "canonical_mask_map50_95": 0.410143,
+      "false_negatives": 100,
+      "false_positives": 56,
+      "operational_prediction_fingerprint": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d",
+      "precision": 0.785441,
+      "prediction_fingerprint": "181d036c3b4e7e039b72061fc3f4e4ee7291a45b5fa7f8ead433e328314ed504",
+      "recall": 0.672131,
+      "result_sha256": "f6b0baa96ae1255b987955d183a6e4f58c2eeffa49beada17a8e91393392bccf",
+      "true_positives": 205
+    },
+    "test_population_changed": false,
+    "validation_versus_test_deltas_changed": false
+  },
+  "schema_version": 1,
+  "scientific_results_changed": false,
+  "second_s1_pass_audit": {
+    "SECOND_S1_PASS_EQUIVALENCE_TO_AP_FILTER": "VERIFIED",
+    "compared_fields": [
+      "class",
+      "score",
+      "box",
+      "mask_rle"
+    ],
+    "content_divergences": {
+      "evidence_status": "OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED",
+      "source": "phase 11B post-execution audit, earlier session, no artifact persisted",
+      "value": 0
+    },
+    "corroboration_note": "The committed operational prediction count and the committed image count agree with the audit's aggregates. The per-instance field comparison itself was not persisted and is not re-derived here, because re-deriving it would mean opening holdout-derived prediction files after FINAL_TEST_OBSERVED.",
+    "count_divergences": {
+      "evidence_status": "OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED",
+      "source": "phase 11B post-execution audit, earlier session, no artifact persisted",
+      "value": 0
+    },
+    "images_compared": {
+      "evidence_status": "OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED",
+      "source": "phase 11B post-execution audit, earlier session, no artifact persisted",
+      "value": 65
+    },
+    "images_total": {
+      "evidence_status": "COMMITTED_ARTIFACT_FIELD",
+      "source": "reports/final_test_direct_iou.json:diagnostic.images",
+      "value": 65
+    },
+    "operational_pass_prediction_fingerprint": {
+      "evidence_status": "COMMITTED_ARTIFACT_FIELD",
+      "source": "reports/final_test_segmenter.json:operational_prediction_fingerprint",
+      "value": "cadd4170c604174b6c988e39a2bdfa8eb9e4f97af0b8dbb57239fc5685bf2b6d"
+    },
+    "recomputed_in_this_clarification": false,
+    "reported_metric_dependency_on_second_execution": "NONE_BEYOND_IDENTICAL_REPRODUCTION",
+    "required_in_hindsight": false,
+    "required_in_hindsight_reason": "its output was identical to the deterministic operational subset of the AP pass, which makes the second execution redundant in hindsight - not retrospectively something other than a real execution",
+    "s1_ap_predictions_at_or_above_operational_conf": {
+      "evidence_status": "OPERATOR_DECLARED_PRIOR_SESSION_AUDIT_NOT_PERSISTED",
+      "source": "phase 11B post-execution audit, earlier session, no artifact persisted",
+      "value": 261
+    },
+    "s1_ap_predictions_total": {
+      "evidence_status": "COMMITTED_ARTIFACT_FIELD",
+      "source": "reports/final_test_segmenter.json:canonical_mask.detections_scored",
+      "value": 4760
+    },
+    "s1_operational_pass_predictions": {
+      "evidence_status": "COMMITTED_ARTIFACT_FIELD",
+      "source": "reports/final_test_direct_iou.json:diagnostic.global.prediction_count",
+      "value": 261
+    },
+    "second_pass_rewritten_as_derived_view": false,
+    "second_pass_was_real_inference": true,
+    "supporting_immutability_barrier": false
+  },
+  "this_clarification": {
+    "frozen_historical_protocol_altered": false,
+    "holdout_accessor_invoked": false,
+    "holdout_reads": 0,
+    "metric_values_altered": 0,
+    "metrics_recomputed_from_test_data": 0,
+    "model_inference_passes": 0,
+    "models_executed": 0,
+    "prediction_bytes_altered": 0,
+    "predictions_regenerated": 0,
+    "qualitative_selection_rerun": false,
+    "test_annotations_read": 0,
+    "test_identifiers_enumerated": 0,
+    "test_image_directory_listed": false,
+    "test_images_read": 0
+  }
+}

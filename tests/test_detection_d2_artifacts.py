@@ -14,6 +14,7 @@ from decimal import Decimal
 
 import pytest
 
+from conftest import holdout_has_been_evaluated
 from construction_safety_vision.data.canonical import scan_for_sensitive
 from construction_safety_vision.data.materialization import sha256_bytes
 from construction_safety_vision.detection_comparison import (
@@ -476,12 +477,18 @@ def test_no_holdout_section_exists_outside_the_status_entry(manifest):
 
 
 def test_no_holdout_artifact_was_produced(paths):
-    assert not (paths.data_processed / "canonical" / "images" / "test").exists()
+    # Before phase 11B the holdout has no on-disk presence at all. Phase 11B
+    # materialises it, through the phase 5D function and under both
+    # authorisation gates, so from then on these paths legitimately exist.
+    evaluated = holdout_has_been_evaluated(paths)
+    assert evaluated or not (paths.data_processed / "canonical" / "images" / "test").exists()
+    # No phase has ever built a holdout YOLO adapter, phase 11B included: it
+    # scores against canonical COCO and never writes a derived label view.
     adapters = paths.data_processed / "adapters" / "yolo_detection"
     for kind in ("images", "labels"):
         assert not (adapters / kind / "test").exists()
     annotations = paths.data_processed / "canonical" / "annotations"
-    if annotations.is_dir():
+    if annotations.is_dir() and not evaluated:
         assert not list(annotations.glob("*test*"))
     assert not (paths.root / "artifacts" / "detection" / "D2_test").exists()
 

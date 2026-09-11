@@ -350,9 +350,22 @@ def test_the_declared_guard_policy_matches_the_enforced_one(manifest):
 
 
 def test_the_environment_does_not_unlock_the_holdout_during_the_test_run():
+    """The gate stays unset unless the one-shot evaluation has actually been run.
+
+    Before phase 11B the variable must be absent: a stray unlock left over from
+    development is exactly what this catches. Phase 11B is the one authorised
+    condition under which a person deliberately sets it, and the committed
+    evidence that it happened is the final evaluation's provenance record, so
+    the assertion is relaxed only once that record exists.
+    """
     import os
 
-    assert os.environ.get(HOLDOUT_UNLOCK_ENV_VAR, "") != "1"
+    from construction_safety_vision.paths import ProjectPaths
+
+    executed = (
+        ProjectPaths.from_root().reports / "final_test_evaluation.provenance.json"
+    ).is_file()
+    assert os.environ.get(HOLDOUT_UNLOCK_ENV_VAR, "") != "1" or executed
 
 
 # --- candidate artifacts ----------------------------------------------------

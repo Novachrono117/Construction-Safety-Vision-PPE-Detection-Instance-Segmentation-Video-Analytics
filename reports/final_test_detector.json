@@ -1,0 +1,438 @@
+{
+  "canonical_box": {
+    "CANONICAL_TEST_BOX_MAP50": 0.56526,
+    "CANONICAL_TEST_BOX_MAP50_95": 0.427031,
+    "detections_scored": 3605,
+    "evaluator": {
+      "area_range": "all",
+      "implementation": "pycocotools.cocoeval.COCOeval",
+      "iou_thresholds": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95
+      ],
+      "iou_type": "bbox",
+      "max_dets": [
+        1,
+        10,
+        100
+      ]
+    },
+    "per_class": {
+      "helmet_loose": {
+        "AP@0.50": 0.69254,
+        "AP@0.50:0.95": 0.596792
+      },
+      "helmet_on_head": {
+        "AP@0.50": 0.832987,
+        "AP@0.50:0.95": 0.610335
+      },
+      "person": {
+        "AP@0.50": 0.675138,
+        "AP@0.50:0.95": 0.489896
+      },
+      "vest_loose": {
+        "AP@0.50": 0.0,
+        "AP@0.50:0.95": 0.0
+      },
+      "vest_on_body": {
+        "AP@0.50": 0.625636,
+        "AP@0.50:0.95": 0.438132
+      }
+    }
+  },
+  "canonical_precision_recall": {
+    "false_negatives": 116,
+    "false_positives": 51,
+    "ground_truth": 305,
+    "iou_threshold_for_counting": 0.5,
+    "is_threshold_independent": false,
+    "label": "CANONICAL_TEST_PRECISION_RECALL_AT_FROZEN_OPERATING_POINT",
+    "operating_confidence": 0.25,
+    "per_class": {
+      "helmet_loose": {
+        "false_negatives": 21,
+        "false_positives": 12,
+        "ground_truth": 60,
+        "precision": 0.764706,
+        "recall": 0.65,
+        "true_positives": 39
+      },
+      "helmet_on_head": {
+        "false_negatives": 14,
+        "false_positives": 8,
+        "ground_truth": 47,
+        "precision": 0.804878,
+        "recall": 0.702128,
+        "true_positives": 33
+      },
+      "person": {
+        "false_negatives": 52,
+        "false_positives": 19,
+        "ground_truth": 136,
+        "precision": 0.815534,
+        "recall": 0.617647,
+        "true_positives": 84
+      },
+      "vest_loose": {
+        "false_negatives": 7,
+        "false_positives": 0,
+        "ground_truth": 7,
+        "precision": null,
+        "recall": 0.0,
+        "true_positives": 0
+      },
+      "vest_on_body": {
+        "false_negatives": 22,
+        "false_positives": 12,
+        "ground_truth": 55,
+        "precision": 0.733333,
+        "recall": 0.6,
+        "true_positives": 33
+      }
+    },
+    "precision": 0.7875,
+    "recall": 0.619672,
+    "true_positives": 189,
+    "tuned_on_test": false
+  },
+  "composite_score": false,
+  "confusion_matrix": {
+    "conf": 0.25,
+    "implementation": "ultralytics.utils.metrics.ConfusionMatrix",
+    "implementation_version": "ultralytics==8.4.138",
+    "iou_threshold": 0.45,
+    "labels": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_loose",
+      "vest_on_body",
+      "background"
+    ],
+    "matching": "CLASS_AGNOSTIC_IOU_THEN_CLASS_PAIR_RECORDED",
+    "matrix": [
+      [
+        39,
+        0,
+        0,
+        0,
+        0,
+        12
+      ],
+      [
+        0,
+        33,
+        0,
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        0,
+        82,
+        1,
+        1,
+        19
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        36,
+        8
+      ],
+      [
+        21,
+        14,
+        54,
+        5,
+        18,
+        0
+      ]
+    ],
+    "normalised": [
+      [
+        0.65,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.255319
+      ],
+      [
+        0.0,
+        0.702128,
+        0.0,
+        0.0,
+        0.0,
+        0.170213
+      ],
+      [
+        0.0,
+        0.0,
+        0.602941,
+        0.142857,
+        0.018182,
+        0.404255
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.142857,
+        0.654545,
+        0.170213
+      ],
+      [
+        0.35,
+        0.297872,
+        0.397059,
+        0.714286,
+        0.327273,
+        0.0
+      ]
+    ],
+    "orientation": "ROWS_ARE_PREDICTED_COLUMNS_ARE_GROUND_TRUTH",
+    "task": "detect",
+    "threshold_chosen_after_seeing_test": false
+  },
+  "metrics_derived_from": "PERSISTED_PREDICTIONS_ONLY",
+  "model": {
+    "checkpoint_bytes": 5502289,
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "experiment": "D2",
+    "frozen_in_phase": "7D",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "modified_in_this_phase": false,
+    "trained_in_this_phase": false
+  },
+  "model_invoked_during_metric_computation": false,
+  "model_selection_follows": false,
+  "object_level": {
+    "assignment": "ONE_TO_ONE_PER_IMAGE_PER_CLASS",
+    "assignment_algorithm": "GREEDY_DESCENDING_CONFIDENCE_THEN_HIGHEST_IOU",
+    "class_aware": true,
+    "confidence_threshold": 0.25,
+    "false_negatives": 116,
+    "false_positives": 51,
+    "ground_truth": 305,
+    "iou_threshold": 0.5,
+    "precision": 0.7875,
+    "recall": 0.619672,
+    "taxonomy_cascade_resolution": {
+      "ambiguities": [
+        "CLASSIFICATION_MISMATCH is written as 'a prediction reaches box IoU 0.50 but carries a different class'. Read literally in a first-match-wins cascade it would also fire on a correctly detected instance that happens to be overlapped at 0.50 by some other-class prediction.",
+        "LOCALIZATION_FAILURE is written as 'a same-class prediction exists and overlaps, but its box IoU is below 0.50'. Read literally it is unreachable, because DETECTION_MISS is evaluated first and already claims every instance that no prediction reaches at 0.50."
+      ],
+      "categories_added": 0,
+      "label": "FROZEN_TAXONOMY_AMBIGUOUS_CASCADE_RESOLVED_BEFORE_EXECUTION",
+      "phase_11a_protocol_edited": false,
+      "resolution": [
+        "DETECTION_MISS: no prediction of any class reaches box IoU 0.50.",
+        "CLASSIFICATION_MISMATCH: something reaches 0.50 but no SAME-CLASS prediction does.",
+        "LOCALIZATION_FAILURE: a same-class prediction reaches 0.50, yet this instance secured no one-to-one match because that prediction was awarded elsewhere.",
+        "MASK_QUALITY_FAILURE: matched at box IoU 0.50 or above, mask IoU below 0.50."
+      ],
+      "resolved_before_any_holdout_number_existed": true,
+      "why": "A frozen taxonomy that cannot be applied as written is a defect in the taxonomy, not a licence to change what is measured. The cascade is resolved here in the only reading under which all four frozen categories are reachable and mutually exclusive, the resolution is recorded rather than applied silently, no category was added or removed, and the phase 11A protocol document was not modified."
+    },
+    "taxonomy_census": {
+      "CLASSIFICATION_MISMATCH": 5,
+      "DETECTION_MISS": 108,
+      "LOCALIZATION_FAILURE": 3,
+      "MASK_QUALITY_FAILURE": 0,
+      "WELL_HANDLED_INSTANCE": 189
+    },
+    "taxonomy_partitions_every_instance": false,
+    "true_positives": 189,
+    "unclassified_label": "WELL_HANDLED_INSTANCE"
+  },
+  "phase": "11B",
+  "population": {
+    "annotations": 305,
+    "evaluated": "ALL_FROZEN_TEST_IMAGES",
+    "exclusions_permitted": false,
+    "images": 65,
+    "membership_sha256": "0052ee3bc1d73e4f7c852c3bb16b4273a0ba5ef7bb62283ff9b95557a1e7c699",
+    "sampling_permitted": false
+  },
+  "prediction_fingerprint": "bfcf35762b56a761c152ab14035b0f3c3c3cb2c6faafe65de3fee493403053b6",
+  "protocol": "FINAL_HOLDOUT_ONE_SHOT_EVALUATION",
+  "protocol_fingerprint": "a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef",
+  "qualitative": {
+    "categories": {
+      "HIGHEST_CONFIDENCE_CLASSIFICATION_MISMATCH": {
+        "applicable": true,
+        "available": 5,
+        "selected": [
+          {
+            "rank": 1,
+            "rank_value": 0.958944
+          },
+          {
+            "rank": 2,
+            "rank_value": 0.87116
+          },
+          {
+            "rank": 3,
+            "rank_value": 0.735544
+          }
+        ]
+      },
+      "HIGHEST_CONFIDENCE_FALSE_POSITIVE": {
+        "applicable": true,
+        "available": 51,
+        "selected": [
+          {
+            "rank": 1,
+            "rank_value": 0.955142
+          },
+          {
+            "rank": 2,
+            "rank_value": 0.915201
+          },
+          {
+            "rank": 3,
+            "rank_value": 0.915113
+          }
+        ]
+      },
+      "LARGEST_MISSED_INSTANCE": {
+        "applicable": true,
+        "available": 108,
+        "selected": [
+          {
+            "rank": 1,
+            "rank_value": 849981.0
+          },
+          {
+            "rank": 2,
+            "rank_value": 365560.0
+          },
+          {
+            "rank": 3,
+            "rank_value": 307736.0
+          }
+        ]
+      },
+      "LOWEST_IOU_MATCHED_INSTANCE": {
+        "applicable": true,
+        "available": 189,
+        "selected": [
+          {
+            "rank": 1,
+            "rank_value": 0.523421
+          },
+          {
+            "rank": 2,
+            "rank_value": 0.555228
+          },
+          {
+            "rank": 3,
+            "rank_value": 0.582777
+          }
+        ]
+      },
+      "SEGMENTATION_OVER_COVERAGE": {
+        "applicable": false,
+        "selected": []
+      },
+      "SEGMENTATION_UNDER_COVERAGE": {
+        "applicable": false,
+        "selected": []
+      }
+    },
+    "examples_per_category": 3,
+    "images_browsed_before_selection": 0,
+    "images_inspected_to_design_this_rule": 0,
+    "manual_cherry_picking_permitted": false,
+    "policy": "DETERMINISTIC_RANKING_FROZEN_BEFORE_ANY_TEST_ACCESS",
+    "shortfalls": {},
+    "topping_up_from_another_category_permitted": false
+  },
+  "result_sha256": "2e0837ca75fbdfc76ff18075788fa622fbf1812b2f2ba441f56965299004dff5",
+  "schema_version": 1,
+  "split": "test",
+  "split_status": "OBSERVED_ONCE_FINAL",
+  "support_on_holdout": {
+    "helmet_loose": {
+      "images": 11,
+      "instances": 60,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "helmet_on_head": {
+      "images": 27,
+      "instances": 47,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "person": {
+      "images": 55,
+      "instances": 136,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    },
+    "vest_loose": {
+      "images": 2,
+      "instances": 7,
+      "status": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "supported": false
+    },
+    "vest_on_body": {
+      "images": 31,
+      "instances": 55,
+      "status": "COMPARISON_SUPPORTED",
+      "supported": true
+    }
+  },
+  "supported_macro": {
+    "admitted_classes": [
+      "helmet_loose",
+      "helmet_on_head",
+      "person",
+      "vest_on_body"
+    ],
+    "contributing_values": [
+      0.596792,
+      0.610335,
+      0.489896,
+      0.438132
+    ],
+    "names_no_class": true,
+    "role_on_test": "DESCRIPTIVE_CAVEAT_ONLY_NEVER_A_SELECTION_RULE",
+    "rule": "COMPARISON_SUPPORTED requires >= 5 positive images AND >= 20 instances",
+    "rule_origin": "PREEXISTING_PHASE_7A_SUPPORT_RULE_REUSED_UNCHANGED",
+    "value": 0.533789
+  },
+  "threshold_tuned_on_test": false,
+  "winner_declared": false
+}

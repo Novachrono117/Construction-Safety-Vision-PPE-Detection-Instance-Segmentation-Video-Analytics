@@ -207,7 +207,19 @@ def test_no_automatic_environment_mutation_anywhere() -> None:
 
 
 def test_the_holdout_is_locked_in_this_process() -> None:
-    assert holdout_is_locked() is True
+    """Locked, unless the one-shot evaluation has been executed.
+
+    Phase 11B is the one authorised condition under which a person deliberately
+    sets the gate, and its provenance record is the committed evidence that it
+    happened. Before that record exists the gate must be absent, which is what
+    catches an unlock left set by accident during development.
+    """
+    from construction_safety_vision.paths import ProjectPaths
+
+    executed = (
+        ProjectPaths.from_root().reports / "final_test_evaluation.provenance.json"
+    ).is_file()
+    assert holdout_is_locked() is True or executed
 
 
 # --- inference settings --------------------------------------------------------------------
@@ -675,9 +687,11 @@ def test_the_runner_is_not_authorised_to_execute() -> None:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    assert module.EXECUTION_AUTHORISED is False
-    # The preflight fires before the phase guard, so a stray call refuses on the
-    # gates rather than on a missing implementation.
+    # Phase 11B flipped this in its own change, after explicit human
+    # authorisation. What must never change is the order: the preflight fires
+    # before anything that could reach the holdout, so a call without both gates
+    # refuses on the gates rather than on the phase.
+    assert module.EXECUTION_AUTHORISED is True
     with pytest.raises(HoldoutViolationError):
         module.run(allow_test=False)
 
