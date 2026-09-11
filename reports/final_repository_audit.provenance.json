@@ -1,0 +1,79 @@
+{
+  "config": {
+    "phase": "12A"
+  },
+  "created_at": "2026-09-11T16:56:45+00:00",
+  "details": {
+    "audit_only": true,
+    "classification": "FINAL_REPOSITORY_AUDIT_COMPLETE",
+    "contains_new_scientific_results": false,
+    "environment_test_gate_present": false,
+    "holdout_accessed": false,
+    "metrics_recomputed": 0,
+    "model_inference_passes": 0,
+    "models_executed": 0,
+    "phase": "12A",
+    "pre_existing_artifacts_unchanged": true,
+    "readiness": {
+      "engineering": "ENGINEERING_REVIEW_READY_WITH_GAPS",
+      "first_time_user": "NOT_READY_FOR_A_NEWCOMER",
+      "professor": "PROFESSOR_READY_WITH_GAPS",
+      "recruiter": "NOT_RECRUITER_READY"
+    },
+    "readme_rewritten": false,
+    "report_generated": false,
+    "repository_audit_sha256": "00c293d4d288173b333557513bdea5b3d32ef331e412d56e979821620ef33ebb",
+    "scientific_results_modified": false,
+    "summary": {
+      "compliance": {
+        "COMPLETE": 12,
+        "MISSING": 5,
+        "NOT_APPLICABLE": 1,
+        "PARTIAL": 3
+      },
+      "gaps": {
+        "P0": 7,
+        "P1": 7,
+        "P2": 5,
+        "P3": 3
+      },
+      "mandatory_gaps_open": 7,
+      "stale_probes_present": 8,
+      "total_tracked_files": 416
+    },
+    "test_accessed": false,
+    "video_started": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "197a88ec4cf8bf3c02d0e6ae57c3b94a8f4804cb",
+  "inputs": [],
+  "name": "final_repository_audit",
+  "outputs": [
+    {
+      "path": "reports/final_repository_audit.json",
+      "sha256": "92b784585b7b2bfe27f493d561dde25dee4e337a391e6a05b614320dc6f29ccb",
+      "size_bytes": 83895
+    },
+    {
+      "path": "reports/final_repository_audit.md",
+      "sha256": "c1d9cc1ea466000eeaffbe61baba02ee715ee1fe087d92b9bba0e6f2653c37f9",
+      "size_bytes": 32837
+    },
+    {
+      "path": "reports/final_delivery_gap_register.csv",
+      "sha256": "3dce7226e7e25b72b434750ea9d00ae54e89df4f3e262d34b26e382e33980ca5",
+      "size_bytes": 9231
+    },
+    {
+      "path": "reports/assignment_compliance_matrix.csv",
+      "sha256": "be2e29d31e9240e82239c855a49ca7e8a68fef5ad2432c14e101f956ef518c83",
+      "size_bytes": 4243
+    }
+  ],
+  "phase": 12,
+  "schema_version": 1
+}

@@ -1,0 +1,22 @@
+requirement_id,requirement,criterion,state,evidence_artifact,evidence_location,remaining_action
+R01,Dataset of at least 300 annotated images,C1,COMPLETE,reports/canonical_annotation_manifest.json,"436 source images, 2031 annotations; 433 modelling images",none
+R02,Public-source citation and license,C1,COMPLETE,reports/dataset_provenance.md,"Roboflow Universe v4, CC BY 4.0, archive SHA-256 recorded",none
+R03,Train / validation / test split,C1,COMPLETE,reports/split_manifest.json,"303 / 65 / 65 images over 422 indivisible units, frozen",none
+R04,Object detection fine-tuning,C2,COMPLETE,reports/final_detector_manifest.json,"D0/D1/D2 manifests; D2 frozen, YOLO11n at imgsz 768",none
+R05,Instance segmentation in the same domain and splits,C3,COMPLETE,reports/final_segmenter_manifest.json,"S0/S1 manifests; S1 frozen, YOLO11n-seg, overlap_mask false",none
+R06,Complete hyperparameter documentation,C2/C3,COMPLETE,configs/,16 committed configs; resolved optimizer captured per run,none
+R07,mAP@0.50,C4,COMPLETE,reports/final_test_detector.json,"canonical box and mask mAP@0.50, validation and holdout",none
+R08,mAP@0.50:0.95,C4,COMPLETE,reports/final_test_segmenter.json,"canonical box and mask mAP@0.50:0.95, validation and holdout",none
+R09,IoU,C4,COMPLETE,reports/final_test_direct_iou.json,"direct instance-mask IoU, phase 8C protocol reused unchanged",none
+R10,Precision,C4,COMPLETE,reports/final_test_detector.json,object_level.precision and canonical_precision_recall,none
+R11,Recall,C4,COMPLETE,reports/final_test_segmenter.json,object_level.recall and canonical_mask_precision_recall,none
+R12,Confusion matrix,C4,COMPLETE,reports/figures/final_test/,"D2 and S1, raw and normalised; semantics frozen in phase 11A",none
+R13,Qualitative false-positive / false-negative analysis per class,C4,PARTIAL,reports/segmentation_S0_error_analysis.md,"a quantitative outcome census and a failure taxonomy exist for S0 on validation and for both models on the holdout, but no committed gallery pairs an image with its prediction, its ground truth and a hypothesis; the phase 8D report embeds zero images and the phase 11B qualitative selection is git-ignored under the holdout-publication policy","build a per-class FP/FN gallery from validation imagery, one documented false positive and one false negative per class; holdout imagery stays unpublished"
+R14,Inference on real video of at least 30 seconds,C5,MISSING,none,"no video script, no video provenance record, no output video and no FPS measurement; the README records 'Video inference | Not implemented.'",acquire a licensed video and build the inference runtime
+R15,Technical report,C6,MISSING,none,reports/technical_report.md does not exist; the material exists but is distributed across 135 flat report documents with no index,assemble a 6-10 page report from committed evidence
+R16,README that describes the repository honestly,C6,PARTIAL,README.md,"2434 lines organised as a phase log, carrying stale claims including 'No model has been trained and no evaluation has been run'",restructure and retire every stale claim
+R17,Reproducible public GitHub repository,C6,PARTIAL,"README.md, pyproject.toml, uv.lock","the repository is public and pushed and the environment is pinned, but no software license file exists and the documented command path stops at phase 5C.1 of eleven completed phases",add a LICENSE and document the phase 5C.2-11 command path
+R18,Executable Colab notebook,C6,MISSING,none,no .ipynb is tracked; notebooks/README.md lists five as planned and states that none exists,"one notebook covering dataset, metrics and a runnable demo"
+R19,5-8 minute video pitch,C7,MISSING,none,"no pitch script, no slide deck and no recording","script from the phase 10D claim register, then record"
+R20,GenAI usage declaration,C6,MISSING,none,"CLAUDE.md governs AI-assisted sessions but is an operating constitution, not a declaration of how generative AI was used in producing the work","declare the tools, the scope of use and the review performed"
+R21,Bonus: tracking or interactive demo,B1,NOT_APPLICABLE,none,optional; the rubric's own failure condition is bonus work started before the mandatory criteria are complete,"optional, only after every mandatory deliverable exists"

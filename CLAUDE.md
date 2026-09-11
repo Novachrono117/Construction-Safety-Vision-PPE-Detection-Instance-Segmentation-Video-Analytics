@@ -191,7 +191,7 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 11B complete - **the final holdout has been evaluated, once**
+- **Phase:** 12A complete - **the final repository audit is done and the experimental/modelling work is CLOSED**. Phase 11B remains complete - **the final holdout has been evaluated, once**
   (`TEST_EVALUATION_COMPLETE`, attempt 1). Phase 11A froze the protocol
   (`FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint
   `a5a328b3a8e49b06fb8fd9e792abcf43ccdd9aac5422729814dac0dbadc1daef`) without
@@ -1542,6 +1542,59 @@ uv run pytest
   the 10D synthesis, the split manifest, the canonical fingerprints and every
   phase 11A artifact are byte-identical before and after - 54 files verified by
   digest at entry and exit of phase 11B.
+- **Phase 12A audited the repository and changed nothing scientific.**
+  `FINAL_REPOSITORY_AUDIT_COMPLETE`, in `reports/final_repository_audit.json`
+  and `.md`, with the gap register in
+  `reports/final_delivery_gap_register.csv` and the requirement mapping in
+  `reports/assignment_compliance_matrix.csv`. It executed no model, read no
+  holdout content, recomputed no metric and verified all 407 pre-existing
+  tracked files byte-identical. Regenerate it with
+  `scripts/audit_delivery_readiness.py`; correct it by fixing
+  `construction_safety_vision.delivery_audit` or `.delivery_audit_findings`,
+  never by editing the artifact.
+- **The audit's measured half re-derives; its judgements do not.** Inventory,
+  deliverable existence, the eight stale-claim probes and the final-number
+  consistency check are computed on every run, so fixing the README makes the
+  next run say so. Persona verdicts, compliance states and gap severities are
+  editorial and live in `declared_findings`. Never move a judgement into
+  `measurements`.
+- **Eight stale-claim probes currently FIRE, and the worst is in the README.**
+  `README.md` still says "No model has been trained and no evaluation has been
+  run" in its Results section, still says "No test metric exists." and "no test
+  number exists" in the status table beside the row reporting the test metrics,
+  and still heads two sections "Planned". `reports/roadmap.md` still quotes the
+  **superseded** pre-correction spatial fingerprint `9877b88d...` as the phase
+  10B result; the authoritative value is `3988bcf6...`. Retire them in phase
+  12B; do not let one survive into the report or the pitch.
+- **Assignment state: 12 COMPLETE, 3 PARTIAL, 5 MISSING.** Missing outright -
+  the video application (C5), the technical report, the Colab notebook, the
+  pitch (C7) and the GenAI declaration. Partial - the per-class qualitative
+  FP/FN gallery, the README, and the reproducibility claim. **Never mark one
+  delivered without an artifact.**
+- **Readiness verdicts: `PROFESSOR_READY_WITH_GAPS`, `NOT_RECRUITER_READY`,
+  `ENGINEERING_REVIEW_READY_WITH_GAPS`.** The recruiter verdict is not about
+  scientific quality; it is that the README hides the work behind a 2434-line
+  phase log whose Results section denies that any model was trained.
+- **"Reproducible" is currently OVERSTATED and must be scoped.** The primitives
+  are real, but the documented command path stops at phase 5C.1, the frozen
+  checkpoints are git-ignored with no documented way to obtain them, and no
+  clean-room reproduction has ever run. Write "reproducible by design, not yet
+  demonstrated from a clean clone" until phase 12F demonstrates it.
+- **"Production-ready", "real-time" and "robust" are `UNSUPPORTED` and may not
+  be claimed.** No deployment, no serving path, no video runtime, no
+  throughput-under-load figure, batch-1 latency on one laptop GPU, one run per
+  configuration and no significance test anywhere. The recommended positioning
+  is "Construction Safety Vision - PPE Detection & Instance Segmentation with a
+  Locked Holdout"; "production-oriented" was assessed and **rejected** for now.
+- **The bounded findings must travel intact into the report and the pitch.** No
+  robust universal localisation winner; masks give a real representation gain
+  but showed **no** substantial association advantage at the frozen rule; the
+  ~30% end-to-end latency premium is a `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`;
+  the holdout evaluation was one attempt comprising **three** frozen-protocol
+  inference passes; `vest_loose` support remains weak.
+- **Tracking stays optional and must never block the mandatory video.** The
+  rubric's own failure condition for the bonus is starting it before C1-C7 are
+  complete, and it shares the video pipeline.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

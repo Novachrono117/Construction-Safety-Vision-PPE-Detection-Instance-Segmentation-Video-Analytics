@@ -25,7 +25,7 @@ change log at the bottom of this file.
 | 8 | Segmentation baseline, experiments and model freeze | complete (8A adapter audited · 8B `S0_PROTOCOL_FROZEN` · 8C `S0_SEGMENTATION_BASELINE_COMPLETE` · 8D error analysis · 8E `S1_PROTOCOL_FROZEN` · 8F `S1_CONTROLLED_EXPERIMENT_COMPLETE`: S1 trained once with `overlap_mask: false` as the only intentional difference, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G `SEGMENTER_FROZEN`: S1 selected by the predeclared canonical policy plus human review, `final_segmenter_sha256` `63ef4196...`**) |
 | 9 | Segmentation experiments and model freeze | **delivered by phases 8E-8G** - the controlled variation (S1), the comparison protocol and the model freeze all happened there. No separate phase 9 work remains; the next phase of actual work is 10, the controlled validation comparison of the two frozen models. |
 | 10 | Controlled validation comparison | complete (10A `DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`, fingerprint `d92a1576...` · 10B `DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`: canonical box comparison and spatial-information analysis on validation, FP32 parity proved at runtime · **10C `DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`**: end-to-end latency +2.756991 ms (+30.11%) and peak reserved inference memory 2.375x, `CONTROLLED_LOCAL_HARDWARE_BENCHMARK` · **10D `DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`**: the four axes synthesised from committed 10B/10C evidence with no composite score, no declared winner and no model executed) - **phase 10 is complete** |
-| 11 | One-shot final test evaluation | complete (11A `FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint `a5a328b3...` - the complete final evaluation predeclared with **no holdout byte read** · **11B `TEST_EVALUATION_COMPLETE`, attempt 1, one read, D2 box 0.427031 / S1 mask 0.410143 / S1 box 0.433764**) |
+| 11 | One-shot final test evaluation | complete (11A `FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint `a5a328b3...` - the complete final evaluation predeclared with **no holdout byte read** · **11B `TEST_EVALUATION_COMPLETE`, attempt 1, one read, D2 box 0.427031 / S1 mask 0.410143 / S1 box 0.433764**) | **Experimental/modelling work is CLOSED.**
 | 12 | Error analysis | not started |
 | 13 | Video inference and tracking | not started |
 | 14 | Submission package and reproducibility audit | not started |
@@ -1681,6 +1681,53 @@ was not accessed and no model was executed. Recorded in
   enumerated 0, predictions regenerated 0, metrics recomputed 0. All ten
   protected phase 11A and 11B artifacts verified byte-identical; the build is
   idempotent and a test rebuilds both artifacts from committed evidence.
+
+## Phase 12A - final repository, academic and portfolio audit (complete)
+
+- **Classification.** `FINAL_REPOSITORY_AUDIT_COMPLETE`. Audit only: no model was
+  executed, no holdout content read, no metric recomputed and no scientific
+  artifact modified. All 407 pre-existing tracked files were verified
+  byte-identical before and after.
+- **Scientific state confirmed frozen.** `FINAL_TEST_OBSERVED`; one holdout read
+  of one permitted; one evaluation attempt over two models in three inference
+  passes; model selection, hyperparameter tuning, threshold tuning and
+  performance-motivated data cleaning all `CLOSED`; `CSVISION_ALLOW_TEST_SPLIT`
+  absent at process, user and machine scope.
+- **Measured, not declared.** The inventory, the deliverable existence checks,
+  the eight stale-claim probes and the final-number consistency checks all
+  re-derive from the repository on every run, so the audit cannot itself go
+  stale. The persona verdicts, compliance states and gap severities are
+  editorial and are recorded in a separate block that says so.
+- **Assignment compliance: 12 COMPLETE, 3 PARTIAL, 5 MISSING, 1 not applicable.**
+  Missing outright: the video application, the technical report, the Colab
+  notebook, the pitch and the GenAI declaration. Partial: the per-class
+  qualitative FP/FN gallery, the README and the reproducibility claim.
+- **Readiness.** Professor `PROFESSOR_READY_WITH_GAPS` - C1 to C4 are
+  substantially satisfied, C5 and C7 are absent and C6 is partial. Recruiter
+  `NOT_RECRUITER_READY` - the README's Results section still reads "No model has
+  been trained and no evaluation has been run". Engineering
+  `ENGINEERING_REVIEW_READY_WITH_GAPS` - strong traceability, but the documented
+  command path stops at phase 5C.1 and the frozen checkpoints cannot be obtained
+  from a clean clone.
+- **22 gaps registered**: 7 P0, 7 P1, 5 P2, 3 P3, each with evidence, a
+  recommended fix, an effort estimate and its dependency.
+- **Bounded findings preserved, not softened.** No robust universal localisation
+  winner; masks give a real representation gain but showed no substantial
+  association advantage at the frozen rule; the ~30% end-to-end latency premium
+  is a `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`; the one-shot holdout evaluation was
+  one attempt comprising three frozen-protocol inference passes; `vest_loose`
+  support remains weak. "Production-ready", "real-time" and "robust" are all
+  assessed `UNSUPPORTED` and may not be claimed.
+- **Outputs.** [`final_repository_audit.md`](final_repository_audit.md),
+  `reports/final_repository_audit.json`,
+  [`final_delivery_gap_register.csv`](final_delivery_gap_register.csv),
+  [`assignment_compliance_matrix.csv`](assignment_compliance_matrix.csv),
+  `final_repository_audit.provenance.json`, and the
+  `construction_safety_vision.delivery_audit` and `.delivery_audit_findings`
+  modules.
+- **Not done here, deliberately.** No README rewrite, no report generation, no
+  visual assets, no notebook, no video. Phase 12A decides what must change; the
+  later phases change it.
 
 ## Phase 12 - Error analysis
 
