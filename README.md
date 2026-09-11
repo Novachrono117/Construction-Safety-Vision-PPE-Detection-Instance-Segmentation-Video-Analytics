@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol (phase 10B). The latency benchmark is pending and the holdout has never been evaluated.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol for both recognition and spatial information (phase 10B) and for latency and inference memory (phase 10C). The operational synthesis is pending and the holdout has never been evaluated.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -157,7 +157,10 @@ Two design decisions define this architecture:
 | Spatial information gain | Median mask-to-box fill ratio **0.664** and shape extent **0.672** - neither has a box-only equivalent. Box proxies overstate: area 237206 px against 144563 px measured; intersection 47281 px against 26828 px. Centroid displacement median **16.0 px**, P95 **126.9 px**. |
 | Person-PPE association | At the frozen 0.50 containment floor, holding the model constant: **172 of 173 relationships classified** by the frozen taxonomy (coverage 0.994220), with 103 agreements and **0 mask-only** associations - the box proxy is close. Descriptive only; there is no association ground truth. |
 | Association taxonomy | `FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA`. Both rules associating to **different** people is recorded as a coverage exception (`BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON`), never as a fifth category; 1 geometry-isolating and 17 pipeline-level. The phase 10A protocol was not modified. |
-| Latency / memory comparison | **Not measured.** `LATENCY_PENDING`, phase 10C. |
+| Latency comparison | **Measured (phase 10C), this machine only.** `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`, batch 1 at imgsz 768 in FP32 over the frozen 20-image validation subset, 4800 timed readings. Model inference: D2 **6.055740 ms**, S1 **7.777487 ms** (+1.721747 ms, +28.43%). End-to-end including mask reconstruction: D2 **9.157766 ms**, S1 **11.914757 ms** (+2.756991 ms, +30.11%). `ADDITIONAL_SEGMENTATION_PIPELINE_COST`, never pure mask-reconstruction cost. |
+| Latency caveat | **The distribution is wide and the mean alone misleads.** Mean/median 1.331 (D2) and 1.429 (S1) at the model-inference boundary; block means span 4.32-9.98 ms (D2) and 5.12-11.41 ms (S1). Mobile-GPU DVFS/power-state behaviour contributes; `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`, so the cause is **UNKNOWN**. Nothing was filtered, normalised or re-run. |
+| Inference memory | **Measured (phase 10C).** `INFERENCE_MEMORY`, never training memory. Peak reserved: D2 **0.125 GiB**, S1 **0.296875 GiB** (ratio 2.375). Peak allocated: D2 **0.073403 GiB**, S1 **0.231621 GiB** (ratio 3.155473). Each measured in a dedicated process with the allocator empty beforehand. |
+| Operational synthesis | Not started. Phase 10D. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -1596,6 +1599,138 @@ definition is qualitative, and nothing here rests on it.
 
 ```bash
 uv run python scripts/compare_detector_segmenter.py --preflight-only
+```
+
+
+## Phase 10C - what the masks cost
+
+Phase 10B answered what the segmenter adds. This phase answers what it costs,
+under the benchmark phase 10A froze before anything was timed. It trained
+nothing, recomputed no average precision, reran no spatial or association
+analysis, tuned no threshold and never touched the holdout.
+
+**The measurement.** `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`: batch 1 at imgsz
+768 in FP32, over the frozen 20-image validation subset, 20 warmup iterations
+discarded and 30 timed repetitions per block, in a symmetric interleaved order -
+pass A times the detector then the segmenter on each image, pass B reverses
+them over the same images in the same order. 80 timed blocks, **4800 timed
+readings**, every one bracketed by an explicit `torch.cuda.synchronize()` on
+both edges with the same primitive for both models. Raw timing fingerprint
+`fce637ee...`, execution-plan fingerprint `9734f8f0...`.
+
+**Two boundaries, never merged.**
+
+| Boundary | D2 mean | S1 mean | Absolute | Relative | Throughput ratio |
+| --- | --- | --- | --- | --- | --- |
+| `MODEL_INFERENCE_LATENCY_MS` | 6.055740 ms | 7.777487 ms | **+1.721747 ms** | **+28.43%** | 0.778624 |
+| `END_TO_END_MODEL_OUTPUT_LATENCY_MS` | 9.157766 ms | 11.914757 ms | **+2.756991 ms** | **+30.11%** | 0.768607 |
+
+The narrow boundary is `BasePredictor.inference` on a tensor prepared outside
+the timer. The wide one is `preprocess` plus `inference` plus `postprocess` -
+and **the segmenter's mask reconstruction is inside it**, which is a fact read
+from the installed source rather than an assumption: with `retina_masks`
+enabled, `SegmentationPredictor.construct_result` calls
+`ops.process_mask_native`, which combines the prototypes with the per-instance
+coefficients and upsamples onto the original image canvas, all inside
+`postprocess`. The run verifies for every benchmark image with an instance that
+the returned masks are on the original canvas, and aborts otherwise. Excluding
+that work would hide exactly the cost this comparison exists to quantify.
+
+`images_per_second_from_mean` is `1000 / mean`, at batch 1, never the
+reciprocal of the fastest repetition. It is a latency reciprocal, not batched
+throughput under load.
+
+**The label is `ADDITIONAL_SEGMENTATION_PIPELINE_COST`, not pure
+mask-reconstruction cost.** YOLO11n and YOLO11n-seg differ in the mask branch
+of the network as well as in postprocessing, and nothing here isolates the two.
+`pure_mask_reconstruction_cost_isolated: false`.
+
+**The distribution is wide, and the mean alone would mislead.** At the
+model-inference boundary D2 has median 4.550700 ms against mean 6.055740 ms and
+P90 9.959820 ms; S1 has median 5.444300 ms against mean 7.777487 ms and P90
+11.439560 ms. A mean a third above its own median with a P90 near the maximum
+is not a tail of stragglers. The committed per-block table shows the spread
+separating **between** blocks rather than within them: a block's thirty
+repetitions cluster, while block means span 4.318367-9.981530 ms for D2 and
+5.118167-11.413863 ms for S1, and which level a block sits at does not follow
+the image, the model or the pass.
+
+This is recorded as `POST_HOC_HARDWARE_BEHAVIOR_DIAGNOSTIC` /
+`POST_HOC_DIAGNOSTIC_ONLY` - written after the run, computed from all 4800
+observations, replacing no frozen statistic and deciding nothing.
+**`causal_attribution: UNKNOWN`.** The shape is *consistent with* mobile-GPU
+DVFS and power-state behaviour, but that stays an `UNTESTED_HYPOTHESIS`:
+`NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`, so no clock, P-state,
+utilisation, temperature or power reading accompanied the timed regions and no
+observation can be mapped to a device state. Both models show the same *kind*
+of skew, and that is all that is claimed -
+`proportionality_across_models_demonstrated: false`.
+
+**Nothing in the protocol was adapted after the timings were seen**, which is
+when a frozen protocol earns its keep. The subset, the 20 warmup iterations,
+the 30 repetitions, the symmetric order, FP32, batch 1, imgsz 768 and both
+boundaries are all unchanged; no observation was removed, no outlier rule was
+introduced, no timing was normalised or rescaled, no power, clock or fan
+setting was touched, and **the benchmark was not re-run**. Later prose
+corrections went through `--rebuild-results`, which re-derives the artifacts
+from the persisted 4800 observations, executes no model, takes no timing, and
+refuses to write unless every frozen statistic and delta recomputes identically.
+
+**Inference memory**, `INFERENCE_MEMORY` and never training memory:
+
+| | D2 | S1 | Ratio |
+| --- | --- | --- | --- |
+| Peak allocated | 78815744 B (0.073403 GiB) | 248700928 B (0.231621 GiB) | 3.155473 |
+| Peak reserved | 134217728 B (0.125 GiB) | 318767104 B (0.296875 GiB) | 2.375 |
+
+Peak statistics are reset with `torch.cuda.reset_peak_memory_stats()` **after**
+the frozen warmup, so the figure describes inference rather than the
+allocator's warmup high-water mark. Each model is measured in a **dedicated
+process**: peak CUDA statistics are device-global, and a diagnostic run before
+any memory figure existed showed that releasing a model in-process still leaves
+a 33554432-byte cuBLAS workspace allocated, which the next model measured would
+have been charged for. `pre_load_allocated_bytes` is 0 for both, recorded as
+the evidence that the isolation held rather than asserted.
+
+**FP32 parity was proved at runtime, not assumed.** Both models: backend FP16
+flag `false`, parameter dtypes `['torch.float32']`, input tensor
+`torch.float32`, autocast during forward `false`, no quantization config,
+`quantize` resolved to 32 - byte-identical between the two. A difference would
+have stopped the phase as `PRECISION_PROTOCOL_MISMATCH`.
+
+**One gap in the frozen protocol is recorded rather than papered over.**
+`latency_protocol` declares batch, resolution, precision, warmup, repetitions,
+membership and order, but **no confidence threshold**. The operational block is
+the only frozen operating point - the protocol itself states that the AP
+block's 0.001 is deliberately not one - so the benchmark runs at the
+operational **0.25** and says so in every artifact. Latency at 0.001 was not
+measured and is not claimed; it would differ, because a lower threshold pushes
+more candidates through NMS and more masks through reconstruction.
+
+**Static complexity is read, not recomputed**: D2 2624080 parameters / 6.673
+GFLOPs, S1 2843583 / 9.8 (fused 2835543 / 9.6), taken from the committed
+experiment manifests. `measured_at_benchmark_input_size: false` - both figures
+come from framework paths that default to a **640** reference input, so they
+describe the architectures at a different input size than the latency figures
+do, and they must not be read as an explanation of the timings.
+
+Limits worth stating plainly: a laptop GPU throttles; batch 1 measures latency,
+not throughput under load; neither model is exported or quantised for
+deployment; host transfer of the outputs is outside both boundaries for both
+models, so a pipeline needing masks in host memory would pay more than these
+figures show. **No claim of hardware-independent latency is made or
+supported**, and no operational recommendation follows - that is phase 10D,
+which has not started.
+
+Evidence: [`reports/detector_segmenter_latency_comparison.json`](reports/detector_segmenter_latency_comparison.json),
+[`reports/detector_segmenter_memory_comparison.json`](reports/detector_segmenter_memory_comparison.json),
+[`reports/detector_segmenter_latency_blocks.csv`](reports/detector_segmenter_latency_blocks.csv),
+[`reports/detector_segmenter_latency_report.md`](reports/detector_segmenter_latency_report.md).
+Result fingerprints: latency `27c1705f...`, memory `7f452c8a...`.
+
+```bash
+uv run python scripts/benchmark_detector_segmenter.py --verify-only
+uv run python scripts/benchmark_detector_segmenter.py --preflight-only
 ```
 
 

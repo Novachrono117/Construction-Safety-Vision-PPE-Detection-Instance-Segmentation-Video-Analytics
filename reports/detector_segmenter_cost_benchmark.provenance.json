@@ -1,0 +1,90 @@
+{
+  "config": {
+    "detector_segmenter_comparison": "configs/detector_segmenter_comparison.yaml",
+    "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d"
+  },
+  "created_at": "2026-09-11T00:13:04+00:00",
+  "details": {
+    "ap_metrics_recomputed": false,
+    "benchmark_membership_sha256": "45059c2cdda1285b4fa6dbfdcfbeac6fedcad551e551e6810b1369af90f7f162",
+    "benchmark_rerun": false,
+    "benchmark_status": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+    "classification": "DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE",
+    "detector_checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "execution_plan_sha256": "9734f8f057860a0970cce50fe6395f30d90413c3d8f7fedac9072351db54c3cb",
+    "frozen_statistics_unchanged": true,
+    "holdout_accessed": false,
+    "latency_result_sha256": "27c1705f15887690f575b91e17e892df8e0226f93b16a35e2b799b505fdc8813",
+    "memory_result_sha256": "7f452c8a7be93b8dbdec9f89d316629522c092918dbc53420bb18e9d95132ed6",
+    "models_executed_in_this_rebuild": 0,
+    "models_trained": 0,
+    "observations_discarded": 0,
+    "phase": "10C",
+    "rebuilt_from_persisted_timings": true,
+    "segmenter_checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "spatial_analysis_rerun": false,
+    "statistical_definitions_changed": false,
+    "thresholds_tuned": 0,
+    "timed_observations": 4800,
+    "timing_dataset_sha256": "fce637ee2550ef814de8840d5e0a0eb6f09a46839ed0a8f0a5dbaa821c2f968c",
+    "timings_taken_in_this_rebuild": 0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "d62b3664e131884033ec6c0a852834a17a3e45b0",
+  "inputs": [
+    {
+      "path": "configs/detector_segmenter_comparison.yaml",
+      "sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "size_bytes": 17494
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    },
+    {
+      "path": "reports/detector_segmenter_comparison_protocol.json",
+      "sha256": "cdef5fb260b87374cc506a314de1127ccad22d91914a5f9550697b40f48eb40e",
+      "size_bytes": 20060
+    },
+    {
+      "path": "reports/detector_segmenter_latency_membership.csv",
+      "sha256": "7c3c6c52ab08564b2d2d0fe34ca13deb0d8814d22817e983aa290be49bde5ad3",
+      "size_bytes": 2047
+    }
+  ],
+  "name": "detector_segmenter_cost_benchmark",
+  "outputs": [
+    {
+      "path": "reports/detector_segmenter_latency_comparison.json",
+      "sha256": "e7b98d37e6f9018e4cdbd112bfa59b9589050c6ae7452c4d5ef69dea5ee0fc02",
+      "size_bytes": 25901
+    },
+    {
+      "path": "reports/detector_segmenter_memory_comparison.json",
+      "sha256": "e3a4e487860181ebb8deaaf638625f3159071860b0b0faabeb55ea4757b7f418",
+      "size_bytes": 6491
+    },
+    {
+      "path": "reports/detector_segmenter_latency_blocks.csv",
+      "sha256": "01228989c43b8229dc2fc2fd80e9bd6465035f2bdd4e83a60162606c9ae50d29",
+      "size_bytes": 20309
+    },
+    {
+      "path": "reports/detector_segmenter_latency_report.md",
+      "sha256": "1bf4c4e82eb655cfdacf818b4cd3f3b233da31428965861b308a9411f4313589",
+      "size_bytes": 30953
+    }
+  ],
+  "phase": 10,
+  "schema_version": 1
+}

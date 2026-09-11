@@ -1,0 +1,140 @@
+{
+  "benchmark_status": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+  "conditions": {
+    "batch": 1,
+    "conf": 0.25,
+    "confidence_source": "operational_inference",
+    "images_measured": 20,
+    "imgsz": 768,
+    "isolation_diagnostic": "An in-process measurement was rejected before any memory figure was published: after releasing one model with del, gc.collect() and torch.cuda.empty_cache(), torch.cuda.memory_allocated() still reported 33554432 bytes of cuBLAS workspace, which the next model measured would have been charged for. The decision follows from that structural fact, not from any model's memory being preferable.",
+    "isolation_method": "SINGLE_MODEL_RESIDENCY_IN_A_DEDICATED_PROCESS",
+    "models_resident_during_measurement": 1,
+    "peak_stats_reset_after_warmup": true,
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "reset_call": "torch.cuda.reset_peak_memory_stats",
+    "warmup_iterations": 20
+  },
+  "delta": {
+    "measurement": "INFERENCE_MEMORY",
+    "peak_memory_allocated_delta_bytes": 169885184,
+    "peak_memory_allocated_delta_gib": 0.158218,
+    "peak_memory_allocated_ratio": 3.155473,
+    "peak_memory_reserved_delta_bytes": 184549376,
+    "peak_memory_reserved_delta_gib": 0.171875,
+    "peak_memory_reserved_ratio": 2.375
+  },
+  "detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "experiment": "D2",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "modified_in_this_phase": false,
+    "trained_in_this_phase": false
+  },
+  "holdout_accessed": false,
+  "limitations": [
+    "Peak CUDA statistics are device-global, so each model is measured in a process that has loaded no other model. pre_load_allocated_bytes records that the allocator was empty when the model was constructed.",
+    "The figures include the framework's own allocations and the CUDA context's workspaces as the allocator reports them; they are not a parameter-memory calculation.",
+    "Batch 1 at imgsz 768 only. A larger batch or resolution is a different measurement and was not taken."
+  ],
+  "measured_fields_carried_forward": [
+    "baseline_allocated_bytes",
+    "baseline_reserved_bytes",
+    "peak_memory_allocated_bytes",
+    "peak_memory_allocated_gib",
+    "peak_memory_reserved_bytes",
+    "peak_memory_reserved_gib",
+    "pre_load_allocated_bytes",
+    "pre_load_reserved_bytes"
+  ],
+  "measurement": "INFERENCE_MEMORY",
+  "memory": {
+    "D2": {
+      "baseline_allocated_bytes": 44005888,
+      "baseline_reserved_bytes": 92274688,
+      "images_measured": 20,
+      "measurement": "INFERENCE_MEMORY",
+      "other_model_resident": false,
+      "peak_memory_allocated_bytes": 78815744,
+      "peak_memory_allocated_gib": 0.073403,
+      "peak_memory_reserved_bytes": 134217728,
+      "peak_memory_reserved_gib": 0.125,
+      "peak_stats_reset_after_warmup": true,
+      "pre_load_allocated_bytes": 0,
+      "pre_load_reserved_bytes": 0
+    },
+    "S1": {
+      "baseline_allocated_bytes": 46727680,
+      "baseline_reserved_bytes": 106954752,
+      "images_measured": 20,
+      "measurement": "INFERENCE_MEMORY",
+      "other_model_resident": false,
+      "peak_memory_allocated_bytes": 248700928,
+      "peak_memory_allocated_gib": 0.231621,
+      "peak_memory_reserved_bytes": 318767104,
+      "peak_memory_reserved_gib": 0.296875,
+      "peak_stats_reset_after_warmup": true,
+      "pre_load_allocated_bytes": 0,
+      "pre_load_reserved_bytes": 0
+    }
+  },
+  "memory_result_sha256": "7f452c8a7be93b8dbdec9f89d316629522c092918dbc53420bb18e9d95132ed6",
+  "models_trained_in_this_phase": 0,
+  "phase": "10C",
+  "protocol": "DETECTOR_VERSUS_SEGMENTER_CONTROLLED_COMPARISON",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "remeasured_in_this_rebuild": false,
+  "runtime": {
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "driver_version": "610.88",
+    "gpu": {
+      "compute_capability": "12.0",
+      "cuda_available": true,
+      "multi_processor_count": 36,
+      "name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "total_memory_bytes": 8546484224
+    },
+    "per_observation_power_state_telemetry": "NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY",
+    "platform": "Windows",
+    "platform_release": "11",
+    "power": {
+      "battery_status_raw": 2,
+      "interpretation": "Win32_Battery.BatteryStatus 2 documents that the system has access to AC power, so the battery is not discharging.",
+      "source": "AC_POWER"
+    },
+    "power_settings_changed_by_this_phase": false,
+    "python": "3.12.13",
+    "telemetry_note": "No GPU clock, P-state, utilisation, temperature or power reading was sampled during or between the timed regions. Sampling one inside a timed region would have added its own cost to the measurement; sampling one outside could not be mapped to an individual observation. The consequence is recorded rather than worked around: no latency observation can be attributed to a device state.",
+    "telemetry_synchronous_with_timed_blocks": false,
+    "thermal_correction_applied": false,
+    "torch": "2.11.0+cu128",
+    "torch_cuda": "12.8",
+    "ultralytics": "8.4.138"
+  },
+  "schema_version": 1,
+  "segmenter": {
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "experiment": "S1",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "modified_in_this_phase": false,
+    "overlap_mask": false,
+    "trained_in_this_phase": false
+  },
+  "status": "DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE",
+  "test": {
+    "images_read": 0,
+    "reason": "Phase 10C timed both frozen models on the frozen 20-image validation benchmark subset only. The holdout was not read, materialised, adapted, counted, predicted on, timed or inspected; no holdout identifier, image, prediction, timing or statistic exists in any artifact this phase wrote.",
+    "statistics": 0,
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "training_memory": "NOT_MEASURED_TRAINING_MEMORY_IS_A_DIFFERENT_QUANTITY",
+  "training_memory_note": "S0's and S1's training peaks and the smoke tests' figures are a different quantity measured under a different protocol, and are never compared with these.",
+  "training_memory_reused": false
+}

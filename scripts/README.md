@@ -43,6 +43,7 @@ undocumented one-off shell invocation.
 | `freeze_final_segmenter.py` | 8G | Apply the frozen phase 8E policy to the committed S0 and S1 results, record the human-reviewed selection, and freeze the selected checkpoint's identity. Trains nothing, evaluates nothing and runs no inference. |
 | `freeze_detector_segmenter_comparison.py` | 10A | Freeze the detector-versus-segmenter comparison protocol and its deterministic benchmark membership. Executes no model, produces no prediction and measures no latency. |
 | `compare_detector_segmenter.py` | 10B | Run controlled validation inference with both frozen models under the frozen protocols, score their boxes with one canonical evaluator, and compute the frozen spatial quantities and box proxies. Trains nothing, modifies neither model and measures no latency. |
+| `benchmark_detector_segmenter.py` | 10C | Time both frozen models at the two frozen boundaries over the frozen 20-image validation subset, and measure each one's inference memory in a dedicated process. Trains nothing, recomputes no average precision, reruns no spatial analysis and tunes no threshold. `--verify-only` checks preconditions, `--preflight-only` proves FP32 parity and stops, `--rebuild-results` re-derives the artifacts from the persisted timings without re-timing, and `--rebuild-report` re-renders the prose from the committed results. |
 
 ## Rules
 

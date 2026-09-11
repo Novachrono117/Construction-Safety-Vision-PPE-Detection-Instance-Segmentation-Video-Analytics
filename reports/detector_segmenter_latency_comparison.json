@@ -1,0 +1,636 @@
+{
+  "ap_metrics_recomputed": false,
+  "association_analysis_rerun": false,
+  "benchmark": {
+    "benchmark_image_count": 20,
+    "benchmark_membership_artifact": "reports/detector_segmenter_latency_membership.csv",
+    "benchmark_membership_sha256": "45059c2cdda1285b4fa6dbfdcfbeac6fedcad551e551e6810b1369af90f7f162",
+    "benchmark_selection_rule": "STABLE_SHA256_RANK_OF_IMAGE_ID",
+    "execution_blocks": 80,
+    "execution_passes": [
+      "PASS_A_DETECTOR_FIRST",
+      "PASS_B_SEGMENTER_FIRST"
+    ],
+    "execution_plan_sha256": "9734f8f057860a0970cce50fe6395f30d90413c3d8f7fedac9072351db54c3cb",
+    "finished_at": "2026-09-10T23:52:36+00:00",
+    "identical_images_for_both_models": true,
+    "identical_input_tensor_shapes": true,
+    "identical_order_for_both_models": true,
+    "images_inspected_to_select": 0,
+    "images_reselected": false,
+    "input_tensor_shapes": {
+      "3LUOWEww9aCx2Cx4B38y": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "7VMQ21x6vDuAvoY6Ku2F": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "9uyGbpRuvoK6FWsiIhGx": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "CDbWzCeakwV73xXd2qlq": [
+        1,
+        3,
+        768,
+        512
+      ],
+      "EdR5Rau43iqKaPKbjsHM": [
+        1,
+        3,
+        768,
+        576
+      ],
+      "HvvG43BEgtvO5Az8qBX5": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "L51HLb9pTcXWg0hlY2eI": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "NSxOF60pUyiloAjZa1zY": [
+        1,
+        3,
+        544,
+        768
+      ],
+      "ahfMFVQYlwiC5qDCiYTe": [
+        1,
+        3,
+        544,
+        768
+      ],
+      "d1LRdQbKYoIKVWX76Mj1": [
+        1,
+        3,
+        768,
+        480
+      ],
+      "eK6ftnVVMa7WC57HMKWj": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "feq9UuxoWtVRBPUnMr4G": [
+        1,
+        3,
+        544,
+        768
+      ],
+      "hsfBHYazMXnS3WJlQzR7": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "nXwfWz2We6dOnsyzeEno": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "o0SiQwUZ5uRlCXASCtiR": [
+        1,
+        3,
+        768,
+        512
+      ],
+      "pMftFzW2M3bmHHBJOTG2": [
+        1,
+        3,
+        448,
+        768
+      ],
+      "qm0fl8ee3HpSLSCrrqDG": [
+        1,
+        3,
+        768,
+        576
+      ],
+      "sCBw5cHMoREKazVjQfkj": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "u4uGaDsy2tThEpOEs5TM": [
+        1,
+        3,
+        512,
+        768
+      ],
+      "yE5PdkrjifxbV7QoD5xc": [
+        1,
+        3,
+        512,
+        768
+      ]
+    },
+    "interleaved": true,
+    "order_changed_after_observing_timings": false,
+    "randomized": false,
+    "split": "validation",
+    "started_at": "2026-09-10T23:51:36+00:00",
+    "symmetric": true,
+    "validation_images": 65,
+    "validation_membership_sha256": "54e4ae8afd711314b472649b1564286d0a6d3d8f13e32c035d31402cbfa5f152"
+  },
+  "benchmark_status": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+  "boundaries_combined": false,
+  "combined_latency_score": false,
+  "conditions": {
+    "augment": false,
+    "batch": 1,
+    "conf": 0.25,
+    "confidence_decision": "The frozen latency_protocol declares batch, resolution, precision, warmup, repetitions, membership and execution order, but no confidence threshold. The operational block is the only frozen operating point - the protocol itself states that the AP block's 0.001 is deliberately not one, because average precision needs the low-scoring tail - so the benchmark runs at the operational 0.25. Recorded as a gap in the frozen protocol and settled before any timing existed; latency at 0.001 was not measured and is not claimed, and it would differ, because a lower threshold pushes more candidates through NMS and, for the segmenter, more masks through reconstruction.",
+    "confidence_source": "operational_inference",
+    "cuda_synchronize_after_timed_region": true,
+    "cuda_synchronize_before_timed_region": true,
+    "decode_reader": "ultralytics.utils.patches.imread",
+    "decode_shared_between_models": true,
+    "disk_decode_excluded_from_timing": true,
+    "imgsz": 768,
+    "iou": 0.7,
+    "mask_output_decision": "retina_masks is enabled for the segmenter, so masks are reconstructed on the original image canvas by ops.process_mask_native inside postprocess. That is the project's usable segmentation output everywhere else, and the alternative would time masks at the letterboxed model resolution. It is ignored by the detector, which predicts no mask.",
+    "max_det": 300,
+    "model_load_excluded_from_timing": true,
+    "onnx": false,
+    "percentile_convention": "NUMPY_PERCENTILE_LINEAR_INTERPOLATION",
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "predictions_saved_during_timing": false,
+    "recompiled_for_one_model_only": false,
+    "repetitions_changed_after_observing_variance": false,
+    "resolved_arguments": {
+      "D2": {
+        "augment": false,
+        "batch": 1,
+        "conf": 0.25,
+        "device": "cuda:0",
+        "imgsz": 768,
+        "iou": 0.7,
+        "max_det": 300,
+        "postprocess_owner": "DetectionPredictor.postprocess",
+        "predictor": "DetectionPredictor",
+        "quantize": 32,
+        "retina_masks": false,
+        "warmup_done_before_timing": true
+      },
+      "S1": {
+        "augment": false,
+        "batch": 1,
+        "conf": 0.25,
+        "device": "cuda:0",
+        "imgsz": 768,
+        "iou": 0.7,
+        "max_det": 300,
+        "postprocess_owner": "SegmentationPredictor.postprocess",
+        "predictor": "SegmentationPredictor",
+        "quantize": 32,
+        "retina_masks": true,
+        "warmup_done_before_timing": true
+      }
+    },
+    "same_primitive_for_both_models": true,
+    "std_convention": "SAMPLE_STANDARD_DEVIATION_DDOF_1",
+    "synchronization_primitive": "torch.cuda.synchronize",
+    "tensorrt": false,
+    "timed_iterations_per_image": 30,
+    "timing_primitive": "time.perf_counter",
+    "torch_compile": false,
+    "tta": false,
+    "visualization": false,
+    "warmup_count_changed_after_observing_timings": false,
+    "warmup_iterations": 20,
+    "warmup_outputs_discarded": true,
+    "warmup_path": "FULL_END_TO_END_PATH_INCLUDING_MASK_RECONSTRUCTION",
+    "warmup_schedule": "PER_MODEL_PER_IMAGE_PER_TIMED_BLOCK"
+  },
+  "deltas": {
+    "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+      "absolute_latency_delta_ms": 2.756991,
+      "combined_latency_score": false,
+      "derived_from": "mean",
+      "detector_images_per_second_from_mean": 109.196937,
+      "detector_mean_latency_ms": 9.157766,
+      "relative_latency_cost": 0.301055,
+      "segmenter_images_per_second_from_mean": 83.929534,
+      "segmenter_mean_latency_ms": 11.914757,
+      "throughput_ratio": 0.768607
+    },
+    "MODEL_INFERENCE_LATENCY_MS": {
+      "absolute_latency_delta_ms": 1.721747,
+      "combined_latency_score": false,
+      "derived_from": "mean",
+      "detector_images_per_second_from_mean": 165.132585,
+      "detector_mean_latency_ms": 6.05574,
+      "relative_latency_cost": 0.284317,
+      "segmenter_images_per_second_from_mean": 128.576235,
+      "segmenter_mean_latency_ms": 7.777487,
+      "throughput_ratio": 0.778624
+    }
+  },
+  "detector": {
+    "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+    "experiment": "D2",
+    "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+    "imgsz": 768,
+    "model": "YOLO11n",
+    "modified_in_this_phase": false,
+    "trained_in_this_phase": false
+  },
+  "holdout_accessed": false,
+  "latency": {
+    "D2": {
+      "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+        "count": 1200,
+        "max": 16.3404,
+        "mean": 9.157766,
+        "median": 7.30475,
+        "min": 6.0559,
+        "p50": 7.30475,
+        "p90": 13.87224,
+        "p95": 14.145295,
+        "p99": 14.500324,
+        "std": 3.002305
+      },
+      "MODEL_INFERENCE_LATENCY_MS": {
+        "count": 1200,
+        "max": 11.1425,
+        "mean": 6.05574,
+        "median": 4.5507,
+        "min": 4.1543,
+        "p50": 4.5507,
+        "p90": 9.95982,
+        "p95": 10.12162,
+        "p99": 10.514269,
+        "std": 2.412568
+      },
+      "throughput": {
+        "END_TO_END_MODEL_OUTPUT_LATENCY_MS": 109.196937,
+        "MODEL_INFERENCE_LATENCY_MS": 165.132585
+      }
+    },
+    "S1": {
+      "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+        "count": 1200,
+        "max": 29.4292,
+        "mean": 11.914757,
+        "median": 9.96245,
+        "min": 7.7405,
+        "p50": 9.96245,
+        "p90": 16.60673,
+        "p95": 17.240505,
+        "p99": 24.721743,
+        "std": 4.003441
+      },
+      "MODEL_INFERENCE_LATENCY_MS": {
+        "count": 1200,
+        "max": 12.2581,
+        "mean": 7.777487,
+        "median": 5.4443,
+        "min": 4.9609,
+        "p50": 5.4443,
+        "p90": 11.43956,
+        "p95": 11.59655,
+        "p99": 11.911593,
+        "std": 2.91804
+      },
+      "throughput": {
+        "END_TO_END_MODEL_OUTPUT_LATENCY_MS": 83.929534,
+        "MODEL_INFERENCE_LATENCY_MS": 128.576235
+      }
+    }
+  },
+  "latency_result_sha256": "27c1705f15887690f575b91e17e892df8e0226f93b16a35e2b799b505fdc8813",
+  "limitations": [
+    "A laptop GPU throttles. These figures describe this machine under whatever power and thermal state it was in, and are labelled CONTROLLED_LOCAL_HARDWARE_BENCHMARK rather than presented as a property of either architecture.",
+    "Mobile-GPU DVFS and power-state behaviour contributes to the observed latency distribution: block means span a wide range and the mean sits well above the median for both models at both boundaries. No GPU clock, P-state, utilisation or power telemetry accompanied the timed regions (NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY), so no observation can be mapped to a device state and the cause of any feature of the distribution is UNKNOWN. Nothing was normalised, filtered or re-run in response.",
+    "Batch 1 measures latency, not throughput under load. No batched or concurrent scenario is covered, and images_per_second is derived from the mean of a batch-1 latency rather than measured as a sustained rate.",
+    "Neither model is exported, quantised or otherwise optimised for deployment. These are the PyTorch checkpoints as trained.",
+    "One run of each model was ever trained, and each was timed once under this protocol. The distribution describes repetition-to-repetition variation on this machine, not run-to-run variance of training or of the benchmark itself.",
+    "Copying the outputs to host memory is outside both boundaries, for both models alike, because the frozen boundary lists neither includes nor excludes it. The segmenter's outputs are far larger, so a pipeline that needs them in host memory would pay more than these figures show.",
+    "The frozen latency protocol declares no confidence threshold. The benchmark uses the operational 0.25 and says so; a lower threshold would push more candidates through NMS and more masks through reconstruction, and that was not measured.",
+    "The committed parameter and GFLOPs figures are static complexity at the framework's default 640 reference input, not at the benchmark's 768."
+  ],
+  "mask_iou_diagnostic_rerun": false,
+  "model_complexity": {
+    "D2": {
+      "gflops": 6.673,
+      "layers": 319,
+      "parameters": 2624080,
+      "source_artifact": "reports/detection_D2_manifest.json",
+      "source_method": "ULTRALYTICS_TORCH_UTILS"
+    },
+    "S1": {
+      "fused_gflops": 9.6,
+      "fused_layers": 114,
+      "fused_parameters": 2835543,
+      "gflops": 9.8,
+      "layers": 204,
+      "parameters": 2843583,
+      "source_artifact": "reports/segmentation_S1_result_manifest.json",
+      "source_method": "FRAMEWORK_MODEL_SUMMARY_LINE"
+    },
+    "comparable_basis": "UNFUSED_PARAMETER_COUNTS",
+    "comparable_basis_note": "The detector's committed count is unfused, so it is paired with the segmenter's unfused count. The segmenter's fused figures are reported alongside rather than substituted.",
+    "gflops_delta_at_reference_input": 3.127,
+    "label": "STATIC_MODEL_COMPLEXITY",
+    "measured_at_benchmark_input_size": false,
+    "parameter_delta": 219503,
+    "recomputed_in_this_phase": false,
+    "reference_input_note": "ultralytics.utils.torch_utils.get_flops and model_info both default to imgsz=640, and both committed figures came from those paths. The benchmark runs at 768, so these are not the FLOPs of the timed configuration.",
+    "reference_input_size": "FRAMEWORK_DEFAULT_640_NOT_THE_BENCHMARK_768",
+    "source": "FROZEN_EXPERIMENT_ARTIFACTS"
+  },
+  "models_modified_in_this_phase": 0,
+  "models_trained_in_this_phase": 0,
+  "output_evidence": {
+    "D2": {
+      "boundary_ends_at": "CLASS_CONFIDENCE_BOX_AVAILABLE",
+      "instances_total": 106,
+      "masks_available": false
+    },
+    "S1": {
+      "boundary_ends_at": "CLASS_CONFIDENCE_BOX_AND_INSTANCE_MASK_AVAILABLE",
+      "images_with_masks": 20,
+      "instances_total": 130,
+      "masks_on_original_canvas": true
+    }
+  },
+  "phase": "10C",
+  "post_hoc_distribution_diagnostic": {
+    "causal_attribution": "UNKNOWN",
+    "changes_any_frozen_number": false,
+    "computed_from": "ALL_VALID_OBSERVATIONS",
+    "evidence": {
+      "D2": {
+        "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+          "block_mean_max": 13.88759,
+          "block_mean_min": 6.33297,
+          "max": 16.3404,
+          "mean": 9.157766,
+          "mean_to_median_ratio": 1.253673,
+          "median": 7.30475,
+          "min": 6.0559,
+          "min_over_max": 0.370609,
+          "p90": 13.87224,
+          "per_pass_block_mean_of_means": {
+            "PASS_A_DETECTOR_FIRST": 9.252903,
+            "PASS_B_SEGMENTER_FIRST": 9.062628
+          },
+          "timed_blocks": 40
+        },
+        "MODEL_INFERENCE_LATENCY_MS": {
+          "block_mean_max": 9.98153,
+          "block_mean_min": 4.318367,
+          "max": 11.1425,
+          "mean": 6.05574,
+          "mean_to_median_ratio": 1.330727,
+          "median": 4.5507,
+          "min": 4.1543,
+          "min_over_max": 0.372834,
+          "p90": 9.95982,
+          "per_pass_block_mean_of_means": {
+            "PASS_A_DETECTOR_FIRST": 5.699809,
+            "PASS_B_SEGMENTER_FIRST": 6.411671
+          },
+          "timed_blocks": 40
+        }
+      },
+      "S1": {
+        "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+          "block_mean_max": 22.381947,
+          "block_mean_min": 8.092287,
+          "max": 29.4292,
+          "mean": 11.914757,
+          "mean_to_median_ratio": 1.195967,
+          "median": 9.96245,
+          "min": 7.7405,
+          "min_over_max": 0.263021,
+          "p90": 16.60673,
+          "per_pass_block_mean_of_means": {
+            "PASS_A_DETECTOR_FIRST": 11.910657,
+            "PASS_B_SEGMENTER_FIRST": 11.918857
+          },
+          "timed_blocks": 40
+        },
+        "MODEL_INFERENCE_LATENCY_MS": {
+          "block_mean_max": 11.413863,
+          "block_mean_min": 5.118167,
+          "max": 12.2581,
+          "mean": 7.777487,
+          "mean_to_median_ratio": 1.428556,
+          "median": 5.4443,
+          "min": 4.9609,
+          "min_over_max": 0.404704,
+          "p90": 11.43956,
+          "per_pass_block_mean_of_means": {
+            "PASS_A_DETECTOR_FIRST": 8.012124,
+            "PASS_B_SEGMENTER_FIRST": 7.542849
+          },
+          "timed_blocks": 40
+        }
+      }
+    },
+    "hypothesis": "The shape is consistent with mobile-GPU DVFS and power-state behaviour on this laptop: a block's thirty repetitions cluster tightly, while different blocks sit at different levels independently of the image, the model and the pass. That is a hypothesis about a class of mechanism, not a measurement of one. No clock, P-state, utilisation, temperature or power reading was taken during the timed regions, so nothing here maps an observation to a device state, and no alternative explanation was excluded.",
+    "hypothesis_status": "UNTESTED_HYPOTHESIS",
+    "is_a_frozen_phase_10a_metric": false,
+    "is_a_selection_rule": false,
+    "is_a_significance_test": false,
+    "label": "POST_HOC_HARDWARE_BEHAVIOR_DIAGNOSTIC",
+    "mode_split_threshold_declared_by_protocol": false,
+    "observations_discarded": 0,
+    "observations_normalized_or_rescaled": false,
+    "observations_used": 4800,
+    "outlier_rejection_applied": false,
+    "per_mode_statistics_computed": false,
+    "per_observation_power_state_telemetry": "NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY",
+    "proportionality_across_models_demonstrated": false,
+    "proportionality_note": "Each model shows a mean above its own median and a P90 near its own maximum, and each model's figures are reported separately rather than as a ratio between the two. That two distributions share a shape is a description, not a demonstration that any mechanism scales them proportionally, and no such claim is made.",
+    "reading": "Quote the mean together with the median, P90 and the range. The per-block figures show that the spread separates between blocks rather than within them: a block's thirty repetitions cluster, while block means span the range given. Which level a block sits at does not follow the image, the model or the pass.",
+    "replaces_frozen_statistics": false,
+    "status": "POST_HOC_DIAGNOSTIC_ONLY",
+    "telemetry_note": "No GPU clock, P-state, utilisation, temperature or power reading was sampled during or between the timed regions. Sampling one inside a timed region would have added its own cost to the measurement; sampling one outside could not be mapped to an individual observation. The consequence is recorded rather than worked around: no latency observation can be attributed to a device state.",
+    "telemetry_synchronous_with_timed_blocks": false
+  },
+  "precision_preflight": {
+    "evidence": {
+      "D2": {
+        "autocast_enabled_during_forward": false,
+        "backend_fp16_flag": false,
+        "device_type": "cuda",
+        "float_buffer_dtypes": [],
+        "input_dtype": "torch.float32",
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "quantization_config_present": false,
+        "resolved_precision_argument": "quantize",
+        "resolved_precision_value": 32
+      },
+      "S1": {
+        "autocast_enabled_during_forward": false,
+        "backend_fp16_flag": false,
+        "device_type": "cuda",
+        "float_buffer_dtypes": [],
+        "input_dtype": "torch.float32",
+        "parameter_dtypes": [
+          "torch.float32"
+        ],
+        "quantization_config_present": false,
+        "resolved_precision_argument": "quantize",
+        "resolved_precision_value": 32
+      }
+    },
+    "frozen_intent": "FP32",
+    "identical_across_models": true,
+    "note": "Phase 10B's runner carries its own equivalent probe. It was not refactored to call this one, because phase 10B is a reported experiment and its script is left byte-identical; a test pins the two to the same evidence schema instead.",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "probe_method": "One prediction per model with a forward pre-hook on the network, capturing the dtype of the tensor that actually reached it and the autocast state at that moment. Configuration values were not trusted.",
+    "status": "EFFECTIVE_PRECISION_PARITY_VERIFIED"
+  },
+  "protocol": "DETECTOR_VERSUS_SEGMENTER_CONTROLLED_COMPARISON",
+  "protocol_adapted_after_results": false,
+  "protocol_config": "configs/detector_segmenter_comparison.yaml",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "protocol_stability_after_observation": {
+    "batch_changed": false,
+    "benchmark_rerun": false,
+    "benchmark_subset_changed": false,
+    "execution_order_changed": false,
+    "imgsz_changed": false,
+    "note": "The distribution turned out to be untidy, which is exactly when a frozen protocol earns its keep. The benchmark subset, the 20 warmup iterations, the 30 timed repetitions, the symmetric interleaved order, FP32, batch 1, imgsz 768 and both timing boundaries are all as frozen in phase 10A. No observation was removed, no outlier rule was introduced, no timing was normalised or rescaled, no power, clock or fan setting was touched, and the benchmark was not re-run to obtain a tidier result.",
+    "observations_normalized_or_rescaled": false,
+    "observations_removed": false,
+    "outlier_rejection_introduced": false,
+    "power_clock_or_fan_setting_changed": false,
+    "precision_changed": false,
+    "statistical_definitions_changed": false,
+    "timed_repetitions_changed": false,
+    "timing_boundaries_changed": false,
+    "warmup_iterations_changed": false
+  },
+  "pure_mask_reconstruction_cost_isolated": false,
+  "raw_timings": {
+    "block_summary_artifact": "reports/detector_segmenter_latency_blocks.csv",
+    "expected_observations": 4800,
+    "holdout_identifiers_stored": false,
+    "observations": 4800,
+    "observations_per_model_per_boundary": 1200,
+    "row_level_artifact": "artifacts/benchmark/latency_observations.csv",
+    "row_level_artifact_committed": false,
+    "schema": [
+      "model",
+      "benchmark_rank",
+      "source_image_id",
+      "execution_pass",
+      "execution_position",
+      "repetition",
+      "timing_type",
+      "latency_ms"
+    ],
+    "timing_dataset_sha256": "fce637ee2550ef814de8840d5e0a0eb6f09a46839ed0a8f0a5dbaa821c2f968c"
+  },
+  "runtime": {
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "driver_version": "610.88",
+    "gpu": {
+      "compute_capability": "12.0",
+      "cuda_available": true,
+      "multi_processor_count": 36,
+      "name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "total_memory_bytes": 8546484224
+    },
+    "per_observation_power_state_telemetry": "NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY",
+    "platform": "Windows",
+    "platform_release": "11",
+    "power": {
+      "battery_status_raw": 2,
+      "interpretation": "Win32_Battery.BatteryStatus 2 documents that the system has access to AC power, so the battery is not discharging.",
+      "source": "AC_POWER"
+    },
+    "power_settings_changed_by_this_phase": false,
+    "python": "3.12.13",
+    "telemetry_note": "No GPU clock, P-state, utilisation, temperature or power reading was sampled during or between the timed regions. Sampling one inside a timed region would have added its own cost to the measurement; sampling one outside could not be mapped to an individual observation. The consequence is recorded rather than worked around: no latency observation can be attributed to a device state.",
+    "telemetry_synchronous_with_timed_blocks": false,
+    "thermal_correction_applied": false,
+    "torch": "2.11.0+cu128",
+    "torch_cuda": "12.8",
+    "ultralytics": "8.4.138"
+  },
+  "schema_version": 1,
+  "segmentation_cost_label": "ADDITIONAL_SEGMENTATION_PIPELINE_COST",
+  "segmentation_cost_note": "YOLO11n and YOLO11n-seg differ in the mask branch of the network as well as in postprocessing, and this benchmark isolates neither from the other. The measured difference is the cost of the whole segmentation pipeline relative to the whole detection pipeline.",
+  "segmenter": {
+    "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+    "experiment": "S1",
+    "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+    "imgsz": 768,
+    "mask_ratio": 4,
+    "model": "YOLO11n-seg",
+    "modified_in_this_phase": false,
+    "overlap_mask": false,
+    "trained_in_this_phase": false
+  },
+  "spatial_analysis_rerun": false,
+  "status": "DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE",
+  "test": {
+    "images_read": 0,
+    "predictions": 0,
+    "reason": "Phase 10C timed both frozen models on the frozen 20-image validation benchmark subset only. The holdout was not read, materialised, adapted, counted, predicted on, timed or inspected; no holdout identifier, image, prediction, timing or statistic exists in any artifact this phase wrote.",
+    "statistics": 0,
+    "status": "PROTECTED_NOT_ACCESSED",
+    "timings": 0
+  },
+  "thresholds_tuned": 0,
+  "timing_boundaries": {
+    "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+      "definition": "What a caller waits for: input preprocessing, the forward pass, NMS and postprocessing, and for the segmenter the mask reconstruction that exposes final instance masks on the original canvas.",
+      "detector_boundary_ends_at": "CLASS_CONFIDENCE_BOX_AVAILABLE",
+      "disk_io_included": false,
+      "framework_calls": [
+        "BasePredictor.preprocess",
+        "BasePredictor.inference",
+        "DetectionPredictor.postprocess / SegmentationPredictor.postprocess"
+      ],
+      "host_transfer": "DEVICE_TO_HOST_TRANSFER_OUTSIDE_BOTH_BOUNDARIES",
+      "mask_reconstruction_call": "ultralytics.utils.ops.process_mask_native",
+      "mask_reconstruction_site": "SegmentationPredictor.construct_result",
+      "model_load_included": false,
+      "outputs_materialized_before_end_timestamp": true,
+      "postprocessing_included": true,
+      "preprocessing_included": true,
+      "segmenter_boundary_ends_at": "CLASS_CONFIDENCE_BOX_AND_INSTANCE_MASK_AVAILABLE",
+      "segmenter_mask_reconstruction_included": true
+    },
+    "MODEL_INFERENCE_LATENCY_MS": {
+      "definition": "The forward pass on an already-prepared input tensor. The tensor is built outside the timer and reused across the block's repetitions, so the measurement is the model core.",
+      "disk_io_included": false,
+      "framework_call": "BasePredictor.inference",
+      "mask_reconstruction_included": false,
+      "model_load_included": false,
+      "postprocessing_included": false,
+      "preprocessing_included": false,
+      "same_call_for_both_models": true
+    }
+  },
+  "winner_declared": false
+}
