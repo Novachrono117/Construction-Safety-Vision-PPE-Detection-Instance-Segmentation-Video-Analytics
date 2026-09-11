@@ -1,0 +1,93 @@
+{
+  "config": {
+    "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d"
+  },
+  "created_at": "2026-09-11T12:09:35+00:00",
+  "details": {
+    "claims_registered": 7,
+    "classification": "DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE",
+    "execution": {
+      "AP_recomputed": false,
+      "association_analysis_rerun": false,
+      "confidence_intervals_computed": 0,
+      "images_read": 0,
+      "latency_measurements_taken": 0,
+      "memory_measurements_taken": 0,
+      "models_executed": 0,
+      "models_modified": 0,
+      "models_trained": 0,
+      "new_metrics_introduced": 0,
+      "post_hoc_bins_created": false,
+      "predictions_produced": 0,
+      "significance_tests_run": 0,
+      "spatial_analysis_rerun": false,
+      "subgroup_searches_performed": 0,
+      "test_accessed": false,
+      "thresholds_tuned": 0
+    },
+    "historical_artifacts_unchanged": true,
+    "holdout": "PROTECTED_NOT_ACCESSED",
+    "next_phase": "PHASE_11A_FINAL_HOLDOUT_EVALUATION_PROTOCOL_FREEZE",
+    "phase": "10D",
+    "source_artifacts": {
+      "box_comparison": {
+        "file_sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704",
+        "path": "reports/detector_segmenter_box_comparison.json",
+        "recorded_fingerprint": "68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27",
+        "recorded_fingerprint_field": "box_comparison_sha256"
+      },
+      "comparison_protocol": {
+        "file_sha256": "cdef5fb260b87374cc506a314de1127ccad22d91914a5f9550697b40f48eb40e",
+        "path": "reports/detector_segmenter_comparison_protocol.json",
+        "recorded_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+        "recorded_fingerprint_field": "protocol_fingerprint"
+      },
+      "final_detector": {
+        "file_sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+        "path": "reports/final_detector_manifest.json",
+        "recorded_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+        "recorded_fingerprint_field": "final_detector_sha256"
+      },
+      "final_segmenter": {
+        "file_sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+        "path": "reports/final_segmenter_manifest.json",
+        "recorded_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+        "recorded_fingerprint_field": "final_segmenter_sha256"
+      },
+      "latency_benchmark": {
+        "file_sha256": "e7b98d37e6f9018e4cdbd112bfa59b9589050c6ae7452c4d5ef69dea5ee0fc02",
+        "path": "reports/detector_segmenter_latency_comparison.json",
+        "recorded_fingerprint": "27c1705f15887690f575b91e17e892df8e0226f93b16a35e2b799b505fdc8813",
+        "recorded_fingerprint_field": "latency_result_sha256"
+      },
+      "memory_benchmark": {
+        "file_sha256": "e3a4e487860181ebb8deaaf638625f3159071860b0b0faabeb55ea4757b7f418",
+        "path": "reports/detector_segmenter_memory_comparison.json",
+        "recorded_fingerprint": "7f452c8a7be93b8dbdec9f89d316629522c092918dbc53420bb18e9d95132ed6",
+        "recorded_fingerprint_field": "memory_result_sha256"
+      },
+      "spatial_comparison": {
+        "file_sha256": "49420d585b58e1a1ca0d5992c4b046f0b1260cf18bc566d6f397ef73b5598f69",
+        "path": "reports/detector_segmenter_spatial_comparison.json",
+        "recorded_fingerprint": "3988bcf688633c63bc0c422ba515246119b94a1c6b8b508c09ff215bda74e383",
+        "recorded_fingerprint_field": "spatial_comparison_sha256"
+      },
+      "taxonomy_correction": {
+        "file_sha256": "0a01051ca1adc8bffca674d325a1f0b10bf9e3e5ae6cba531641d2737693d72e",
+        "path": "reports/association_taxonomy_correction.provenance.json"
+      }
+    },
+    "synthesis_sha256": "7ddd369f8a0b1c2a65041660cdf9d6434cbeac5004fe52ffbd7171b2818ac150"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.13"
+  },
+  "git_commit": "f875ceeb40ec040075134a9711622602826113b8",
+  "inputs": [],
+  "name": "detector_segmenter_scientific_synthesis",
+  "outputs": [],
+  "phase": 10,
+  "schema_version": 1
+}

@@ -1,0 +1,1010 @@
+{
+  "aggregate_benefit_score": false,
+  "analysis": "DETECTOR_SEGMENTER_SCIENTIFIC_AND_OPERATIONAL_SYNTHESIS",
+  "assignment_coverage": {
+    "all_delivered_metrics_are_validation_only": true,
+    "delivered": {
+      "confusion_matrix_and_metric_figures": {
+        "artifact": "reports/figures/detection/D2/, reports/figures/segmentation_S1/",
+        "field": "confusion_matrix.png, confusion_matrix_normalized.png, PR/P/R/F1 curves",
+        "split": "validation"
+      },
+      "detection_mAP50": {
+        "artifact": "reports/detection_D2_manifest.json",
+        "field": "validation_metrics.mAP@0.50",
+        "split": "validation"
+      },
+      "detection_mAP50_95": {
+        "artifact": "reports/detection_D2_manifest.json",
+        "field": "validation_metrics.mAP@0.50:0.95",
+        "split": "validation"
+      },
+      "detection_precision": {
+        "artifact": "reports/detection_D2_manifest.json",
+        "field": "validation_metrics.precision",
+        "split": "validation"
+      },
+      "detection_recall": {
+        "artifact": "reports/detection_D2_manifest.json",
+        "field": "validation_metrics.recall",
+        "split": "validation"
+      },
+      "detector_versus_segmenter_comparison": {
+        "artifact": "reports/detector_segmenter_box_comparison.json, reports/detector_segmenter_spatial_comparison.json, reports/detector_segmenter_latency_comparison.json, reports/detector_segmenter_memory_comparison.json",
+        "field": "phases 10B and 10C, synthesised by phase 10D",
+        "split": "validation"
+      },
+      "segmentation_canonical_mask_AP": {
+        "artifact": "reports/segmentation_S1_canonical_evaluation.json",
+        "field": "canonical, supported_macro",
+        "split": "validation"
+      },
+      "segmentation_direct_instance_mask_IoU": {
+        "artifact": "reports/segmentation_S1_mask_iou.json",
+        "field": "global.matched_mask_iou_mean, global.gt_normalized_mask_iou",
+        "split": "validation"
+      },
+      "segmentation_mask_mAP50": {
+        "artifact": "reports/segmentation_S1_result_manifest.json",
+        "field": "native_metrics.mask.mAP@0.50",
+        "split": "validation"
+      },
+      "segmentation_mask_mAP50_95": {
+        "artifact": "reports/segmentation_S1_result_manifest.json",
+        "field": "native_metrics.mask.mAP@0.50:0.95",
+        "split": "validation"
+      },
+      "segmentation_mask_precision": {
+        "artifact": "reports/segmentation_S1_result_manifest.json",
+        "field": "native_metrics.mask.precision",
+        "split": "validation"
+      },
+      "segmentation_mask_recall": {
+        "artifact": "reports/segmentation_S1_result_manifest.json",
+        "field": "native_metrics.mask.recall",
+        "split": "validation"
+      }
+    },
+    "delivered_order": [
+      "detection_mAP50",
+      "detection_mAP50_95",
+      "detection_precision",
+      "detection_recall",
+      "segmentation_mask_mAP50",
+      "segmentation_mask_mAP50_95",
+      "segmentation_mask_precision",
+      "segmentation_mask_recall",
+      "segmentation_canonical_mask_AP",
+      "segmentation_direct_instance_mask_IoU",
+      "confusion_matrix_and_metric_figures",
+      "detector_versus_segmenter_comparison"
+    ],
+    "frozen_detector": "D2",
+    "frozen_segmenter": "S1",
+    "label": "COMMITTED_EVIDENCE",
+    "pending": {
+      "holdout_metrics_for_both_tasks": {
+        "note": "The holdout has never been evaluated. No figure exists for it for any model, and none may be estimated from validation.",
+        "phase": "11 - one-shot final test evaluation",
+        "status": "PENDING"
+      },
+      "qualitative_fp_fn_analysis_per_class": {
+        "note": "Phase 8D produced a per-instance segmentation error analysis for S0 and inspected six instances. The assignment's per-class documented false positive and false negative gallery, for both tasks, has not been produced.",
+        "phase": "12 - error analysis",
+        "status": "PENDING"
+      },
+      "video_application": {
+        "note": "No video has been acquired, run or measured.",
+        "phase": "13 - video inference and tracking",
+        "status": "PENDING"
+      }
+    },
+    "pending_order": [
+      "qualitative_fp_fn_analysis_per_class",
+      "holdout_metrics_for_both_tasks",
+      "video_application"
+    ]
+  },
+  "association": {
+    "analysis": "SPATIAL_ASSOCIATION_ANALYSIS",
+    "axis": "OPERATIONAL_ASSOCIATION_VALUE",
+    "compliance_accuracy_claimed": false,
+    "containment_floor": 0.5,
+    "frozen_categories": [
+      "BOX_AND_MASK_AGREE",
+      "BOX_ONLY_ASSOCIATION",
+      "MASK_ONLY_ASSOCIATION",
+      "NEITHER_ASSOCIATION"
+    ],
+    "geometry_isolating": {
+      "box_source": "SEGMENTER_OWN_BOXES_GEOMETRY_ISOLATING",
+      "classified_relationships": 172,
+      "frozen_category_counts": {
+        "BOX_AND_MASK_AGREE": 103,
+        "BOX_ONLY_ASSOCIATION": 3,
+        "MASK_ONLY_ASSOCIATION": 0,
+        "NEITHER_ASSOCIATION": 66
+      },
+      "isolates_geometry": true,
+      "percentage_denominator": "classified_relationships",
+      "taxonomy_coverage": 0.99422,
+      "taxonomy_exceptions": 1,
+      "total_relationships": 173
+    },
+    "label": "COMMITTED_EVIDENCE",
+    "mask_only_associations": 0,
+    "pipeline_level": {
+      "attributable_to_geometry_alone": false,
+      "box_source": "DETECTOR_BOXES_PIPELINE_LEVEL",
+      "classified_relationships": 156,
+      "confound_note": "The geometry-isolating reading holds the model and its instances fixed and varies only the shape representation, so its exceptions are attributable to mask-versus-box geometry. The pipeline-level reading compares the frozen detector's outputs with the frozen segmenter's, so its exceptions reflect BOTH representational geometry AND the fact that different models produced different instances. The pipeline-level exceptions must not be attributed solely to geometry.",
+      "frozen_category_counts": {
+        "BOX_AND_MASK_AGREE": 81,
+        "BOX_ONLY_ASSOCIATION": 7,
+        "MASK_ONLY_ASSOCIATION": 6,
+        "NEITHER_ASSOCIATION": 62
+      },
+      "isolates_geometry": false,
+      "taxonomy_coverage": 0.901734,
+      "taxonomy_exceptions": 17,
+      "total_relationships": 173
+    },
+    "synthesis": "At the frozen 0.50 containment rule and on this validation population, instance masks did NOT demonstrate a substantial advantage in discovering additional person-PPE associations. The geometry-isolating analysis - which holds the model and its instances fixed and varies only the shape representation - found zero MASK_ONLY_ASSOCIATION cases. The finding is specific to this threshold and this population and does not generalise beyond them.",
+    "taxonomy_limitation": {
+      "exception_status": "UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY",
+      "exception_type": "BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON",
+      "fifth_peer_category_added": false,
+      "frozen_categories_unchanged": true,
+      "label": "OPERATIONAL_LIMITATION",
+      "not_an_error": "A different-person outcome is an ASSOCIATION_RULE_DISAGREEMENT, not an association error. The project holds no person-PPE association ground truth, so neither rule's answer can be called wrong.",
+      "note": "Phase 10A froze four categories on the implicit assumption that a rule either associates or it does not. Two rules can both associate and pick different people, and none of the four is true of that. It is recorded as an exception to the taxonomy's coverage - counted on its own, excluded from the classified denominator - rather than as a fifth peer category, because adding a category after seeing data is what a frozen taxonomy exists to prevent. The phase 10A protocol is historical and was not modified. This is a protocol-design limitation found during execution; it invalidates no canonical metric, no continuous spatial metric, no raw association decision and no model prediction.",
+      "phase_10a_protocol_modified": false,
+      "reading": "ASSOCIATION_RULE_DISAGREEMENT",
+      "status": "FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA"
+    },
+    "visible_ppe_coverage_proxy": {
+      "box_proxy": "BOX_OVERLAP_DERIVED_COVERAGE",
+      "is_not_a_compliance_measure": true,
+      "label": "INTERPRETIVE_OPERATIONAL_PROXY",
+      "primary_scientific_conclusion": false,
+      "reading": "Masks permit a more spatially specific coverage-like proxy than rectangular boxes. Nothing further follows from it: the project holds no canonical compliance ground truth, so no compliance, violation or correct-wearing accuracy is claimed or claimable, and no conclusion here rests on this proxy.",
+      "semantics": "INTERPRETIVE_OPERATIONAL_PROXY"
+    }
+  },
+  "axes": [
+    "RECOGNITION_LOCALIZATION",
+    "SPATIAL_REPRESENTATION_GAIN",
+    "OPERATIONAL_ASSOCIATION_VALUE",
+    "COMPUTATIONAL_COST"
+  ],
+  "axes_combined": false,
+  "central_scientific_answer": {
+    "answer": "Instance segmentation did not demonstrate a robust localisation advantage over the dedicated detector on adequately supported classes - over those four classes the canonical box comparison gives -0.008040 - nor did it uncover substantial new person-PPE associations at the frozen containment rule of 0.5, where the geometry-isolating analysis found zero mask-only associations. Its demonstrated value was instead richer spatial representation: masks encode foreground support, non-rectangular shape and spatial measurements that bounding boxes cannot directly represent - the median predicted mask occupied 0.664433 of its own bounding rectangle - while reducing the systematic inflation of box-based area and intersection proxies. On the controlled local RTX 5070 Laptop FP32 benchmark, at the operational confidence of 0.25, exposing that additional mask output cost +2.756991 ms of mean end-to-end model-output latency (+0.301055 relative, approximately 30 per cent) and higher inference memory use.",
+    "label": "SCIENTIFIC_SYNTHESIS",
+    "scope": {
+      "generalises_beyond_frozen_association_rule": false,
+      "generalises_to_other_hardware": false,
+      "generalises_to_test": false,
+      "holdout": "PROTECTED_NOT_ACCESSED",
+      "note": "Every figure is a validation figure produced by a single execution of each frozen model under a frozen protocol on one machine. Nothing here is a statement about held-out performance, about either architecture in general, or about association behaviour at any other containment floor.",
+      "significance_tested": false,
+      "split": "validation"
+    }
+  },
+  "claim_register": [
+    {
+      "claim_id": "LOCALIZATION_SIMILARITY",
+      "claim_scope": "VALIDATION_SPLIT_ONE_EXECUTION_PER_MODEL_CANONICAL_COCOEVAL_BBOX",
+      "claim_text": "S1 retains broadly similar box-localisation performance to D2 while additionally producing masks: canonical box mAP@0.50:0.95 0.48539 against 0.505682, delta +0.020292 over all five classes and -0.008040 over the four adequately supported ones.",
+      "evidence_artifact": "reports/detector_segmenter_box_comparison.json",
+      "evidence_field": "metrics.CANONICAL_BOX_MAP50_95, supported_class_sensitivity.delta",
+      "limitation": "The positive all-class delta is dominated by vest_loose, which has one validation image and is frozen DESCRIPTIVE_HIGH_UNCERTAINTY. The support sensitivity is POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY: descriptive, not a selection rule and not a significance test. Some classes improved and some regressed; why any of them moved is UNKNOWN. Neither model is claimed to be the better localiser."
+    },
+    {
+      "claim_id": "MASK_REPRESENTATION_GAIN",
+      "claim_scope": "VALIDATION_SPLIT_SEGMENTER_PREDICTIONS_AT_OPERATIONAL_CONF_0_25_PREDICTED_MASK_AGAINST_PREDICTED_BOX",
+      "claim_text": "Masks make quantities computable that a rectangle cannot express: MASK_TO_BOX_FILL_RATIO median 0.664433 and SHAPE_EXTENT median 0.672173, both frozen NO_BOX_ONLY_EQUIVALENT.",
+      "evidence_artifact": "reports/detector_segmenter_spatial_comparison.json",
+      "evidence_field": "spatial_features.MASK_TO_BOX_FILL_RATIO.statistics, spatial_features.SHAPE_EXTENT.statistics, box_proxies.*.proxy",
+      "limitation": "A gain in what is measurable, not a demonstration of better predictive accuracy. The ratio compares predicted mask support with predicted box area and involves no ground truth, so it is not a background-error rate."
+    },
+    {
+      "claim_id": "BOX_PROXY_INFLATION",
+      "claim_scope": "VALIDATION_SPLIT_SAME_STATISTIC_COMPARED_WITH_SAME_STATISTIC_SEGMENTER_OWN_PREDICTIONS",
+      "claim_text": "Where a box proxy exists it was systematically inflated relative to the mask measurement: instance area mean 144562.997024 px against a box proxy of 237205.836504 px, and person-PPE intersection mean 26828.34384 px against 47280.877637 px.",
+      "evidence_artifact": "reports/detector_segmenter_spatial_comparison.json",
+      "evidence_field": "box_proxies.*.statistics.{mask_measurement,box_proxy}",
+      "limitation": "PROXY_REFINEMENT, not BOX_ERROR. No ground-truth geometry entered this comparison, so neither representation is shown to be right or wrong against it. Only like summary statistics are compared with like."
+    },
+    {
+      "claim_id": "NO_MAJOR_MASK_ONLY_ASSOCIATION_GAIN_AT_FROZEN_RULE",
+      "claim_scope": "VALIDATION_SPLIT_GEOMETRY_ISOLATING_READING_AT_CONTAINMENT_FLOOR_0_50",
+      "claim_text": "Holding the model and its instances fixed at the frozen 0.5 containment floor, masks changed almost no person-PPE association decision: 103 agree, 3 box-only, 0 mask-only, 66 neither, over 173 relationships.",
+      "evidence_artifact": "reports/detector_segmenter_spatial_comparison.json",
+      "evidence_field": "association.geometry_isolating.frozen_category_counts",
+      "limitation": "Specific to this threshold and this population; it does not generalise to another containment floor or another dataset. The frozen four-category taxonomy proved non-exhaustive - one relationship had both rules associate to different people and is recorded UNCLASSIFIED_BY_FROZEN_FOUR_CATEGORY_TAXONOMY, excluded from the classified denominator and never added as a fifth category. The pipeline-level reading disagrees far more but varies the model as well as the geometry and must not be attributed to geometry alone. A different-person outcome is a rule disagreement, not an error: the project holds no person-PPE association ground truth."
+    },
+    {
+      "claim_id": "END_TO_END_LATENCY_COST",
+      "claim_scope": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK_RTX_5070_LAPTOP_FP32_BATCH_1_IMGSZ_768_OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25",
+      "claim_text": "Exposing usable mask output cost +2.756991 ms of mean end-to-end model-output latency (+0.301055 relative): 9.157766 ms against 11.914757 ms, with medians 7.30475 and 9.96245 ms and P95 14.145295 and 17.240505 ms.",
+      "evidence_artifact": "reports/detector_segmenter_latency_comparison.json",
+      "evidence_field": "latency.*.END_TO_END_MODEL_OUTPUT_LATENCY_MS, deltas.END_TO_END_MODEL_OUTPUT_LATENCY_MS",
+      "limitation": "ADDITIONAL_SEGMENTATION_PIPELINE_COST, not a pure mask-reconstruction cost: the two networks differ in the mask branch as well as in postprocessing and neither is isolated. Valid for this machine, driver and runtime only, never as a property of either architecture. The distribution is wide and multimodal, its cause is UNKNOWN because NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY, and no observation was discarded or normalised. Phase 10A froze no confidence for the latency block; 10C resolved it to the operational 0.25 before any timing existed. Latency at conf 0.001 was not measured and is not claimed."
+    },
+    {
+      "claim_id": "INFERENCE_MEMORY_OVERHEAD",
+      "claim_scope": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK_INFERENCE_MEMORY_BATCH_1_IMGSZ_768_FP32",
+      "claim_text": "Peak inference memory was substantially higher in relative terms and low in absolute terms: peak allocated 0.073403 GiB against 0.231621 GiB (ratio 3.155473), peak reserved 0.125 GiB against 0.296875 GiB (ratio 2.375).",
+      "evidence_artifact": "reports/detector_segmenter_memory_comparison.json",
+      "evidence_field": "memory.*.peak_memory_{allocated,reserved}_gib, delta.*_ratio",
+      "limitation": "INFERENCE_MEMORY only; it may never be compared with any training-memory figure, which is a different quantity under a different protocol. Each model was measured in a dedicated process because peak CUDA statistics are device-global. Batch 1 at imgsz 768 only. The segmenter is not memory-heavy in absolute terms on the measured device."
+    },
+    {
+      "claim_id": "USE_CASE_CONDITIONAL_SELECTION",
+      "claim_scope": "SYNTHESIS_OVER_THE_FOUR_AXES_NO_AGGREGATE_SCORE",
+      "claim_text": "The evidence supports a use-case-conditional choice rather than a ranking: the detector where class, confidence and box localisation suffice at lower cost, the segmenter where foreground support, non-rectangular geometry, mask area, fill or extent, mask centroid or spatially specific overlap is required.",
+      "evidence_artifact": "reports/detector_segmenter_box_comparison.json, reports/detector_segmenter_spatial_comparison.json, reports/detector_segmenter_latency_comparison.json, reports/detector_segmenter_memory_comparison.json",
+      "evidence_field": "supported_class_sensitivity.delta, spatial_features.MASK_TO_BOX_FILL_RATIO, association.geometry_isolating.frozen_category_counts, deltas.END_TO_END_MODEL_OUTPUT_LATENCY_MS, delta.peak_memory_reserved_ratio",
+      "limitation": "No weighted score, cost-benefit index or overall winner is computed, and none may be: the four axes are not commensurable. Both models remain the project's frozen final models for their respective tasks and neither is a drop-in replacement for the other. Validation evidence only."
+    }
+  ],
+  "claim_register_fields": [
+    "claim_id",
+    "claim_text",
+    "evidence_artifact",
+    "evidence_field",
+    "claim_scope",
+    "limitation"
+  ],
+  "cost": {
+    "axis": "COMPUTATIONAL_COST",
+    "latency": {
+      "axis": "COMPUTATIONAL_COST",
+      "boundaries": {
+        "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+          "D2": {
+            "count": 1200,
+            "max": 16.3404,
+            "mean": 9.157766,
+            "median": 7.30475,
+            "min": 6.0559,
+            "p50": 7.30475,
+            "p90": 13.87224,
+            "p95": 14.145295,
+            "p99": 14.500324,
+            "std": 3.002305
+          },
+          "S1": {
+            "count": 1200,
+            "max": 29.4292,
+            "mean": 11.914757,
+            "median": 9.96245,
+            "min": 7.7405,
+            "p50": 9.96245,
+            "p90": 16.60673,
+            "p95": 17.240505,
+            "p99": 24.721743,
+            "std": 4.003441
+          },
+          "absolute_latency_delta_ms": 2.756991,
+          "boundary": "END_TO_END_MODEL_OUTPUT_LATENCY_MS",
+          "definition": "What a caller waits for: input preprocessing, the forward pass, NMS and postprocessing, and for the segmenter the mask reconstruction that exposes final instance masks on the original canvas.",
+          "derived_from": "mean",
+          "relative_latency_cost": 0.301055,
+          "throughput": {
+            "D2": 109.196937,
+            "S1": 83.929534,
+            "definition": "1000 / mean latency in ms, at batch 1",
+            "from_fastest_iteration": false,
+            "is_application_video_fps": false,
+            "is_batched_throughput": false,
+            "label": "MEAN_DERIVED_BATCH1_THROUGHPUT",
+            "throughput_ratio": 0.768607
+          }
+        },
+        "MODEL_INFERENCE_LATENCY_MS": {
+          "D2": {
+            "count": 1200,
+            "max": 11.1425,
+            "mean": 6.05574,
+            "median": 4.5507,
+            "min": 4.1543,
+            "p50": 4.5507,
+            "p90": 9.95982,
+            "p95": 10.12162,
+            "p99": 10.514269,
+            "std": 2.412568
+          },
+          "S1": {
+            "count": 1200,
+            "max": 12.2581,
+            "mean": 7.777487,
+            "median": 5.4443,
+            "min": 4.9609,
+            "p50": 5.4443,
+            "p90": 11.43956,
+            "p95": 11.59655,
+            "p99": 11.911593,
+            "std": 2.91804
+          },
+          "absolute_latency_delta_ms": 1.721747,
+          "boundary": "MODEL_INFERENCE_LATENCY_MS",
+          "definition": "The forward pass on an already-prepared input tensor. The tensor is built outside the timer and reused across the block's repetitions, so the measurement is the model core.",
+          "derived_from": "mean",
+          "relative_latency_cost": 0.284317,
+          "throughput": {
+            "D2": 165.132585,
+            "S1": 128.576235,
+            "definition": "1000 / mean latency in ms, at batch 1",
+            "from_fastest_iteration": false,
+            "is_application_video_fps": false,
+            "is_batched_throughput": false,
+            "label": "MEAN_DERIVED_BATCH1_THROUGHPUT",
+            "throughput_ratio": 0.778624
+          }
+        }
+      },
+      "boundaries_combined": false,
+      "conditions": {
+        "batch": 1,
+        "benchmark_images": 20,
+        "conf": 0.25,
+        "execution_blocks": 80,
+        "imgsz": 768,
+        "interleaved": true,
+        "observations": 4800,
+        "precision": "FP32",
+        "symmetric": true,
+        "timed_iterations_per_image": 30,
+        "warmup_iterations": 20
+      },
+      "confidence_protocol_gap": {
+        "ap_confidence_is_not_an_operating_point": 0.001,
+        "applied_equally_to_both_models": true,
+        "benchmark_invalidated": false,
+        "confidence_source": "operational_inference",
+        "label": "PRE_BENCHMARK_PROTOCOL_GAP_RESOLUTION",
+        "latency_measured_at_ap_confidence": false,
+        "note": "The frozen latency_protocol declares batch, resolution, precision, warmup, repetitions, membership and execution order, but no confidence threshold. The operational block is the only frozen operating point - the protocol itself states that the AP block's 0.001 is deliberately not one, because average precision needs the low-scoring tail - so the benchmark runs at the operational 0.25. Recorded as a gap in the frozen protocol and settled before any timing existed; latency at 0.001 was not measured and is not claimed, and it would differ, because a lower threshold pushes more candidates through NMS and, for the segmenter, more masks through reconstruction.",
+        "phase_10a_froze_latency_confidence": false,
+        "reading": "Phase 10A's latency subsection declared batch, resolution, precision, warmup, repetitions, membership and execution order, but no confidence threshold. Phase 10C resolved that gap before any timing existed, to the project's already frozen operational 0.25, and applied it equally to both models. It was not explicitly frozen by phase 10A, and saying otherwise would be false; the resolution does not invalidate the benchmark, and no latency claim is made at conf 0.001.",
+        "resolved_before_any_timing_existed": true,
+        "resolved_to": 0.25
+      },
+      "cost_label": "ADDITIONAL_SEGMENTATION_PIPELINE_COST",
+      "cost_label_note": "YOLO11n and YOLO11n-seg differ in the mask branch of the network as well as in postprocessing, and this benchmark isolates neither from the other. The measured difference is the cost of the whole segmentation pipeline relative to the whole detection pipeline.",
+      "distribution": {
+        "block_mean_range": {
+          "D2": {
+            "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+              "max": 13.88759,
+              "min": 6.33297
+            },
+            "MODEL_INFERENCE_LATENCY_MS": {
+              "max": 9.98153,
+              "min": 4.318367
+            }
+          },
+          "S1": {
+            "END_TO_END_MODEL_OUTPUT_LATENCY_MS": {
+              "max": 22.381947,
+              "min": 8.092287
+            },
+            "MODEL_INFERENCE_LATENCY_MS": {
+              "max": 11.413863,
+              "min": 5.118167
+            }
+          }
+        },
+        "headline_statistic": "mean",
+        "headline_statistic_note": "The frozen deltas are computed from the mean. The mean is reported together with the median, P95 and the range, because the distribution is wide and the mean alone would mislead.",
+        "label": "POST_HOC_HARDWARE_BEHAVIOR_DIAGNOSTIC",
+        "mean_to_median_ratio": {
+          "D2": {
+            "END_TO_END_MODEL_OUTPUT_LATENCY_MS": 1.253673,
+            "MODEL_INFERENCE_LATENCY_MS": 1.330727
+          },
+          "S1": {
+            "END_TO_END_MODEL_OUTPUT_LATENCY_MS": 1.195967,
+            "MODEL_INFERENCE_LATENCY_MS": 1.428556
+          }
+        },
+        "observations_discarded": 0,
+        "observations_normalized_or_rescaled": false,
+        "observations_used": 4800,
+        "outlier_rejection_applied": false,
+        "reading": "Quote the mean together with the median, P90 and the range. The per-block figures show that the spread separates between blocks rather than within them: a block's thirty repetitions cluster, while block means span the range given. Which level a block sits at does not follow the image, the model or the pass.",
+        "status": "POST_HOC_DIAGNOSTIC_ONLY"
+      },
+      "dvfs": {
+        "causal_attribution": "UNKNOWN",
+        "dvfs_asserted_as_cause": false,
+        "hypothesis": "The shape is consistent with mobile-GPU DVFS and power-state behaviour on this laptop: a block's thirty repetitions cluster tightly, while different blocks sit at different levels independently of the image, the model and the pass. That is a hypothesis about a class of mechanism, not a measurement of one. No clock, P-state, utilisation, temperature or power reading was taken during the timed regions, so nothing here maps an observation to a device state, and no alternative explanation was excluded.",
+        "hypothesis_status": "UNTESTED_HYPOTHESIS",
+        "label": "LIMITATION",
+        "per_observation_power_state_telemetry": "NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY",
+        "proportionality_across_models_demonstrated": false,
+        "reading": "The observed multimodality is consistent with mobile-GPU DVFS and power-state behaviour, and that remains an untested hypothesis. No clock, P-state, utilisation, temperature or power reading accompanied the timed regions, so no observation maps to a device state and no alternative was excluded. The controlled symmetric order mitigates order bias; it does not prove the source of the multimodality, and no proportional effect across the two models is claimed.",
+        "telemetry_synchronous_with_timed_blocks": false
+      },
+      "hardware_independent_claim": false,
+      "label": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+      "primary_operational_boundary": "END_TO_END_MODEL_OUTPUT_LATENCY_MS",
+      "primary_operational_boundary_reason": "It ends where a caller has usable outputs, and for the segmenter that includes the mask reconstruction this comparison exists to price.",
+      "pure_mask_reconstruction_cost_isolated": false,
+      "runtime": {
+        "driver_version": "610.88",
+        "gpu": "NVIDIA GeForce RTX 5070 Laptop GPU",
+        "power_settings_changed_by_this_phase": false,
+        "power_source": "AC_POWER",
+        "thermal_correction_applied": false,
+        "torch": "2.11.0+cu128",
+        "ultralytics": "8.4.138"
+      },
+      "scope": "OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25",
+      "status": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK"
+    },
+    "memory": {
+      "absolute_footprint_low_on_measured_device": true,
+      "comparable_with_training_memory": false,
+      "device": "NVIDIA GeForce RTX 5070 Laptop GPU",
+      "device_total_memory_bytes": 8546484224,
+      "isolation_method": "SINGLE_MODEL_RESIDENCY_IN_A_DEDICATED_PROCESS",
+      "label": "CONTROLLED_LOCAL_HARDWARE_BENCHMARK",
+      "measurement": "INFERENCE_MEMORY",
+      "memory_heavy_in_absolute_terms": false,
+      "peak_allocated": {
+        "D2": {
+          "bytes": 78815744,
+          "gib": 0.073403
+        },
+        "S1": {
+          "bytes": 248700928,
+          "gib": 0.231621
+        },
+        "delta_gib": 0.158218,
+        "ratio": 3.155473
+      },
+      "peak_reserved": {
+        "D2": {
+          "bytes": 134217728,
+          "gib": 0.125
+        },
+        "S1": {
+          "bytes": 318767104,
+          "gib": 0.296875
+        },
+        "delta_gib": 0.171875,
+        "ratio": 2.375
+      },
+      "peak_stats_reset_after_warmup": true,
+      "reading": "The relative inference-memory overhead is substantial - the segmenter's peak allocated figure is over three times the detector's and its peak reserved figure is 2.375 times. The absolute footprint nevertheless remains low on the measured device: both models peak well under a third of a GiB reserved on an approximately 8 GiB GPU. Neither statement stands without the other, and S1 is not memory-heavy in absolute terms.",
+      "relative_overhead_substantial": true,
+      "training_memory": "NOT_MEASURED_TRAINING_MEMORY_IS_A_DIFFERENT_QUANTITY"
+    },
+    "static_complexity": {
+      "D2": {
+        "gflops_at_reference_input": 6.673,
+        "parameters": 2624080,
+        "source_artifact": "reports/detection_D2_manifest.json"
+      },
+      "S1": {
+        "fused_gflops_at_reference_input": 9.6,
+        "fused_parameters": 2835543,
+        "gflops_at_reference_input": 9.8,
+        "parameters": 2843583,
+        "source_artifact": "reports/segmentation_S1_result_manifest.json"
+      },
+      "comparable_basis": "UNFUSED_PARAMETER_COUNTS",
+      "derived_at_benchmark_input_size": false,
+      "explains_the_latency": false,
+      "gflops_delta_at_reference_input": 3.127,
+      "label": "STATIC_MODEL_COMPLEXITY",
+      "measured_at_benchmark_input_size": false,
+      "parameter_delta": 219503,
+      "reading": "These are static architectural figures at the framework's default 640 reference input, not measured FLOPs of the timed configuration. The benchmark ran independently at imgsz 768, no 768 figure was derived, and none of these numbers explains the measured latency.",
+      "recomputed_in_this_phase": false,
+      "reference_input_size": "FRAMEWORK_DEFAULT_640_NOT_THE_BENCHMARK_768",
+      "source": "FROZEN_EXPERIMENT_ARTIFACTS"
+    }
+  },
+  "cost_benefit_index": false,
+  "execution": {
+    "AP_recomputed": false,
+    "association_analysis_rerun": false,
+    "confidence_intervals_computed": 0,
+    "images_read": 0,
+    "latency_measurements_taken": 0,
+    "memory_measurements_taken": 0,
+    "models_executed": 0,
+    "models_modified": 0,
+    "models_trained": 0,
+    "new_metrics_introduced": 0,
+    "post_hoc_bins_created": false,
+    "predictions_produced": 0,
+    "significance_tests_run": 0,
+    "spatial_analysis_rerun": false,
+    "subgroup_searches_performed": 0,
+    "test_accessed": false,
+    "thresholds_tuned": 0
+  },
+  "historical_artifacts_unchanged": true,
+  "holdout_policy": {
+    "final_test_claims": false,
+    "label": "HOLDOUT_POLICY",
+    "note": "Phase 10D read committed development and validation result artifacts only. No holdout identifier, image, annotation, adapter, prediction, metric or statistic was read, derived or written, and no final-test claim is made.",
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "label": "SCIENTIFIC_SYNTHESIS",
+  "limitations": [
+    "LIMITATION: every figure is validation-only and says nothing about the holdout, which has never been evaluated.",
+    "LIMITATION: each frozen model was trained once and measured once under each protocol. Run-to-run variance is UNKNOWN and no margin here is a significance test.",
+    "LIMITATION: the positive all-class localisation delta is carried by a class with one validation image; the support sensitivity that shows this is descriptive and decides nothing.",
+    "LIMITATION: the association result holds at the frozen 0.50 containment floor on this population only, and the frozen four-category taxonomy proved non-exhaustive for the observed data.",
+    "LIMITATION: the latency and memory figures are a CONTROLLED_LOCAL_HARDWARE_BENCHMARK on one laptop GPU at batch 1 in FP32 at conf 0.25, not a property of either architecture.",
+    "LIMITATION: the latency distribution is wide and multimodal and its cause is UNKNOWN; the DVFS reading is an untested hypothesis because NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY.",
+    "LIMITATION: the committed parameter and GFLOPs figures are static complexity at the framework's 640 reference input, not the benchmark's 768.",
+    "LIMITATION: no compliance, violation or correct-wearing accuracy is claimed or claimable - the project holds no compliance ground truth."
+  ],
+  "models": {
+    "D2": {
+      "checkpoint_sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+      "experiment": "D2",
+      "identity_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+      "imgsz": 768,
+      "model": "YOLO11n",
+      "modified_in_this_phase": false,
+      "trained_in_this_phase": false
+    },
+    "S1": {
+      "checkpoint_sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+      "experiment": "S1",
+      "final_segmenter_sha256": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+      "identity_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+      "imgsz": 768,
+      "mask_ratio": 4,
+      "model": "YOLO11n-seg",
+      "modified_in_this_phase": false,
+      "overlap_mask": false,
+      "trained_in_this_phase": false
+    },
+    "architectural_identity_claimed": false,
+    "drop_in_replacement": false,
+    "note": "D2 emits class, confidence and a box; S1 emits those and an instance mask. They are the project's frozen models for two different output tasks, not two candidates for one. Neither is a drop-in replacement for the other, and their architectures are related but not identical.",
+    "same_output_task": false
+  },
+  "next_phase": "PHASE_11A_FINAL_HOLDOUT_EVALUATION_PROTOCOL_FREEZE",
+  "phase": "10D",
+  "protocol_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+  "recognition": {
+    "all_class": {
+      "CANONICAL_BOX_MAP50": {
+        "D2": 0.641107,
+        "S1": 0.692955,
+        "delta": 0.051848
+      },
+      "CANONICAL_BOX_MAP50_95": {
+        "D2": 0.48539,
+        "S1": 0.505682,
+        "delta": 0.020292
+      }
+    },
+    "axis": "RECOGNITION_LOCALIZATION",
+    "conf": 0.001,
+    "declined_classes": [
+      "helmet_loose",
+      "vest_on_body"
+    ],
+    "delta_excluding_rare_class": -0.00804,
+    "evaluator": "pycocotools.cocoeval.COCOeval",
+    "ground_truth": "CANONICAL_COCO_DETECTION_BOXES",
+    "improved_classes": [
+      "helmet_on_head",
+      "person",
+      "vest_loose"
+    ],
+    "iou_type": "bbox",
+    "label": "COMMITTED_EVIDENCE",
+    "not_comparable_to_native_metrics": "These are canonical-evaluator figures. They are NOT the native framework box metrics either model reported in its own experiment phase, and the two must never be differenced: different evaluator implementation, different ground-truth document and a different confidence. Only the D2-versus-S1 delta computed here, by one evaluator over one ground truth, is a comparison.",
+    "per_class": {
+      "helmet_loose": {
+        "D2_AP@0.50:0.95": 0.767262,
+        "S1_AP@0.50:0.95": 0.748577,
+        "delta_AP@0.50:0.95": -0.018685,
+        "status": "COMPARISON_REPORTED"
+      },
+      "helmet_on_head": {
+        "D2_AP@0.50:0.95": 0.628022,
+        "S1_AP@0.50:0.95": 0.629018,
+        "delta_AP@0.50:0.95": 0.000996,
+        "status": "COMPARISON_REPORTED"
+      },
+      "person": {
+        "D2_AP@0.50:0.95": 0.485281,
+        "S1_AP@0.50:0.95": 0.517231,
+        "delta_AP@0.50:0.95": 0.03195,
+        "status": "COMPARISON_REPORTED"
+      },
+      "vest_loose": {
+        "D2_AP@0.50:0.95": 0.068034,
+        "S1_AP@0.50:0.95": 0.201654,
+        "delta_AP@0.50:0.95": 0.13362,
+        "status": "DESCRIPTIVE_HIGH_UNCERTAINTY"
+      },
+      "vest_on_body": {
+        "D2_AP@0.50:0.95": 0.47835,
+        "S1_AP@0.50:0.95": 0.431929,
+        "delta_AP@0.50:0.95": -0.046421,
+        "status": "COMPARISON_REPORTED"
+      }
+    },
+    "per_class_contributions": {
+      "helmet_loose": -0.003737,
+      "helmet_on_head": 0.000199,
+      "person": 0.00639,
+      "vest_loose": 0.026724,
+      "vest_on_body": -0.009284
+    },
+    "population": {
+      "annotations": 304,
+      "images": 65,
+      "split": "validation"
+    },
+    "rare_class": {
+      "contribution": 0.026724,
+      "contribution_exceeds_total": true,
+      "delta": 0.13362,
+      "name": "vest_loose",
+      "status": "DESCRIPTIVE_HIGH_UNCERTAINTY",
+      "validation_support": "vest_loose holds one validation source image and eight instances under the frozen split. Its AP and its delta are reported in full and carry high sampling uncertainty; neither selects or ranks anything."
+    },
+    "reading": "S1 retains broadly similar localisation performance to D2 while additionally producing masks. The positive all-class delta is not robust evidence that S1 is the superior object localiser, because it is dominated by the highly uncertain vest_loose class; over the adequately supported classes the same comparison runs slightly the other way. Neither direction is a significance test, some classes improved and some regressed, and why any of them moved is UNKNOWN.",
+    "significance_test_performed": false,
+    "superiority_claimed_for_either_model": false,
+    "supported_class_sensitivity": {
+      "D2_supported_macro": 0.589729,
+      "S1_supported_macro": 0.581689,
+      "admitted_classes": [
+        "helmet_loose",
+        "helmet_on_head",
+        "person",
+        "vest_on_body"
+      ],
+      "changes_any_frozen_number": false,
+      "delta": -0.00804,
+      "excluded_classes": [
+        "vest_loose"
+      ],
+      "is_a_frozen_phase_10a_metric": false,
+      "is_a_selection_rule": false,
+      "is_a_significance_test": false,
+      "label": "POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY",
+      "support_rule_origin": "PREEXISTING_PHASE_7A_SUPPORT_RULE_REUSED_UNCHANGED",
+      "why": "The all-class canonical figure is an unweighted mean over five classes, so a class with one validation image can move it more than the aggregate itself. This shows the same comparison over the classes the project's pre-existing support rule already admits. It is descriptive and selects nothing."
+    },
+    "synthesis": "S1 retains broadly similar localisation capability to D2 while additionally producing masks. The positive all-class delta of +0.020292 is driven by vest_loose, which is already frozen as DESCRIPTIVE_HIGH_UNCERTAINTY, and should not be read as robust evidence that S1 is the superior object localiser: over the adequately supported classes the same comparison gives -0.008040. Neither reading selects a model, and neither frozen model changes.",
+    "why_any_class_moved": "UNKNOWN"
+  },
+  "remaining_work": [
+    {
+      "item": "FINAL_ONE_SHOT_HOLDOUT_EVALUATION",
+      "note": "The test split has never been evaluated, inspected or materialised. It is read exactly once, after both models are frozen, which they now are. The immediate next phase is 11A, freezing the holdout evaluation protocol.",
+      "phase": "11",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "ERROR_ANALYSIS",
+      "note": "A per-class documented false-positive and false-negative analysis for both tasks. Phase 8D's S0 per-instance analysis is related evidence, not this deliverable.",
+      "phase": "12",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "REAL_VIDEO_INFERENCE_AT_LEAST_30_SECONDS",
+      "note": "Includes measured FPS on named hardware and temporal failure modes.",
+      "phase": "13",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "TRACKING_BONUS",
+      "note": "Bonus only, and only after the mandatory deliverables are complete.",
+      "phase": "13",
+      "status": "OPTIONAL_NOT_STARTED"
+    },
+    {
+      "item": "EXECUTABLE_COLAB_NOTEBOOK",
+      "note": "No notebook exists yet; notebooks/ holds only a README.",
+      "phase": "14",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "ACADEMIC_REPORT_AND_PDF",
+      "note": "This synthesis and its claim register are inputs to it.",
+      "phase": "14",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "PITCH_SCRIPT_AND_RECORDING",
+      "note": "Every spoken number must match a committed artifact.",
+      "phase": "14",
+      "status": "NOT_STARTED"
+    },
+    {
+      "item": "REPRODUCIBILITY_AUDIT_FROM_A_CLEAN_CLONE",
+      "note": "Walks the rubric contract item by item against real artifacts.",
+      "phase": "14",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "research_question": "What additional spatial and operational information does instance segmentation provide beyond bounding boxes, and what is its performance and latency cost?",
+  "schema_version": 1,
+  "source_artifacts": {
+    "box_comparison": {
+      "file_sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704",
+      "path": "reports/detector_segmenter_box_comparison.json",
+      "recorded_fingerprint": "68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27",
+      "recorded_fingerprint_field": "box_comparison_sha256"
+    },
+    "comparison_protocol": {
+      "file_sha256": "cdef5fb260b87374cc506a314de1127ccad22d91914a5f9550697b40f48eb40e",
+      "path": "reports/detector_segmenter_comparison_protocol.json",
+      "recorded_fingerprint": "d92a157637baf52f9a7248bf24257d5a177e8496b7727ffb5afc874ab96d1c4d",
+      "recorded_fingerprint_field": "protocol_fingerprint"
+    },
+    "final_detector": {
+      "file_sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "path": "reports/final_detector_manifest.json",
+      "recorded_fingerprint": "84d30d64a1e7ebfc4e4763643ef3a3b5c8a5ce3cedc74bbefdb8031d48235a6e",
+      "recorded_fingerprint_field": "final_detector_sha256"
+    },
+    "final_segmenter": {
+      "file_sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "path": "reports/final_segmenter_manifest.json",
+      "recorded_fingerprint": "63ef41961ba3fedfef46658754940fb6ce075cdd93087b926d7c6620402579a7",
+      "recorded_fingerprint_field": "final_segmenter_sha256"
+    },
+    "latency_benchmark": {
+      "file_sha256": "e7b98d37e6f9018e4cdbd112bfa59b9589050c6ae7452c4d5ef69dea5ee0fc02",
+      "path": "reports/detector_segmenter_latency_comparison.json",
+      "recorded_fingerprint": "27c1705f15887690f575b91e17e892df8e0226f93b16a35e2b799b505fdc8813",
+      "recorded_fingerprint_field": "latency_result_sha256"
+    },
+    "memory_benchmark": {
+      "file_sha256": "e3a4e487860181ebb8deaaf638625f3159071860b0b0faabeb55ea4757b7f418",
+      "path": "reports/detector_segmenter_memory_comparison.json",
+      "recorded_fingerprint": "7f452c8a7be93b8dbdec9f89d316629522c092918dbc53420bb18e9d95132ed6",
+      "recorded_fingerprint_field": "memory_result_sha256"
+    },
+    "spatial_comparison": {
+      "file_sha256": "49420d585b58e1a1ca0d5992c4b046f0b1260cf18bc566d6f397ef73b5598f69",
+      "path": "reports/detector_segmenter_spatial_comparison.json",
+      "recorded_fingerprint": "3988bcf688633c63bc0c422ba515246119b94a1c6b8b508c09ff215bda74e383",
+      "recorded_fingerprint_field": "spatial_comparison_sha256"
+    },
+    "taxonomy_correction": {
+      "file_sha256": "0a01051ca1adc8bffca674d325a1f0b10bf9e3e5ae6cba531641d2737693d72e",
+      "path": "reports/association_taxonomy_correction.provenance.json"
+    }
+  },
+  "spatial_representation": {
+    "MASK_TO_BOX_FILL_RATIO": {
+      "count": 336,
+      "max": 0.964112,
+      "mean": 0.649956,
+      "median": 0.664433,
+      "min": 0.093441,
+      "p25": 0.555943,
+      "p75": 0.775478,
+      "p90": 0.828113,
+      "p95": 0.851913,
+      "std": 0.159737
+    },
+    "SHAPE_EXTENT": {
+      "count": 336,
+      "max": 0.99179,
+      "mean": 0.661156,
+      "median": 0.672173,
+      "min": 0.101474,
+      "p25": 0.570469,
+      "p75": 0.78614,
+      "p90": 0.830013,
+      "p95": 0.869896,
+      "std": 0.157453
+    },
+    "axis": "SPATIAL_REPRESENTATION_GAIN",
+    "background_error_rate_claimed": false,
+    "centroid": {
+      "box_proxy": "BOX_CENTER",
+      "convention_note": "The mask centroid averages pixel indices while the box is in continuous coordinates, so a mask perfectly filling its box reports about 0.71 px rather than 0. The offset is constant and far below the displacements described.",
+      "displacement_pixels": {
+        "count": 336,
+        "max": 262.773275,
+        "mean": 33.600488,
+        "median": 16.048565,
+        "min": 0.092067,
+        "p25": 5.685858,
+        "p75": 40.308741,
+        "p90": 88.469912,
+        "p95": 126.933417,
+        "std": 44.302987
+      },
+      "reading": "A box centre and a foreground centroid can differ materially for irregular, partially visible or spatially imbalanced shapes, and the mask makes the second computable. The mask centroid is a different geometric quantity, not the true centre of the object.",
+      "statistic": "DISPLACEMENT_FROM_THE_MODELS_OWN_BOX_CENTRE_IN_PIXELS",
+      "true_center_claimed": false
+    },
+    "conf": 0.25,
+    "fill_ratio_reading": "The median predicted instance mask occupied about two-thirds of its bounding rectangle, illustrating information that the rectangular representation does not encode. It is a comparison of predicted mask support against predicted box area, not a measurement of background against ground truth, so it is not a background error rate.",
+    "geometry_disagreement": {
+      "box_overlap_without_mask_overlap": 11,
+      "box_overlap_without_mask_overlap_fraction": 0.031519,
+      "candidate_pairs_examined": 349,
+      "note": "Pairs where the two boxes overlap but the two masks share no pixel at all. Reported as a count and a fraction rather than binned, because phase 10A declared no threshold for 'strong' or 'minimal' overlap."
+    },
+    "instances_measured": 336,
+    "label": "REPRESENTATION_GAIN",
+    "mask_only_label": "NO_BOX_ONLY_EQUIVALENT",
+    "mask_only_quantities": [
+      "MASK_TO_BOX_FILL_RATIO",
+      "SHAPE_EXTENT"
+    ],
+    "mask_only_reason": "A bounding box has no way to express how much of itself is object, or how far the object departs from a rectangle. These two quantities are frozen NO_BOX_ONLY_EQUIVALENT: they are computable from a mask and not from a box, which is a gain in what can be measured, not a demonstration of better predictive accuracy.",
+    "masks_excluded": 0,
+    "masks_reconstructed": 336,
+    "new_metrics_introduced": 0,
+    "post_hoc_bins_created": false,
+    "proxy_refinement": {
+      "accuracy_claim": false,
+      "box_error_claimed": false,
+      "comparison_basis": "Each pair below is the same summary statistic of the same population under the two representations - mask measurement against box proxy, mean against mean and median against median. Unlike statistics are never compared.",
+      "definition": "Quantities a box can already approximate, where the mask changes the value: area, centroid, intersection, containment and the coverage proxy.",
+      "direction": "BOX_PROXY_SYSTEMATICALLY_INFLATED_RELATIVE_TO_MASK_MEASUREMENT",
+      "features": {
+        "INSTANCE_AREA_PIXELS": {
+          "box_proxy": "BOX_AREA_PIXELS",
+          "box_proxy_statistics": {
+            "count": 336,
+            "max": 3555669.822824,
+            "mean": 237205.836504,
+            "median": 81334.30387,
+            "min": 379.628829,
+            "p25": 20930.378859,
+            "p75": 247020.034232,
+            "p90": 599975.85509,
+            "p95": 865102.1419,
+            "std": 468575.173397
+          },
+          "mask_measurement": {
+            "count": 336,
+            "max": 2712388.0,
+            "mean": 144562.997024,
+            "median": 52788.0,
+            "min": 294.0,
+            "p25": 12526.75,
+            "p75": 148527.75,
+            "p90": 368353.5,
+            "p95": 524271.0,
+            "std": 300965.615254
+          }
+        },
+        "PERSON_PPE_MASK_CONTAINMENT": {
+          "box_proxy": "BOX_INTERSECTION_OVER_PPE_BOX_AREA",
+          "box_proxy_statistics": {
+            "count": 349,
+            "max": 1.0,
+            "mean": 0.338868,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 0.990489,
+            "p90": 1.0,
+            "p95": 1.0,
+            "std": 0.454443
+          },
+          "mask_measurement": {
+            "count": 349,
+            "max": 1.0,
+            "mean": 0.310145,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 0.96897,
+            "p90": 0.999068,
+            "p95": 1.0,
+            "std": 0.451641
+          }
+        },
+        "PERSON_PPE_MASK_INTERSECTION": {
+          "box_proxy": "BOX_INTERSECTION_AREA",
+          "box_proxy_statistics": {
+            "count": 349,
+            "max": 1905485.851149,
+            "mean": 47280.877637,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 24013.505752,
+            "p90": 146176.517535,
+            "p95": 292394.988042,
+            "std": 144095.357177
+          },
+          "mask_measurement": {
+            "count": 349,
+            "max": 1151858.0,
+            "mean": 26828.34384,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 7919.0,
+            "p90": 75573.2,
+            "p95": 178009.2,
+            "std": 87621.724531
+          }
+        },
+        "VISIBLE_PPE_COVERAGE_PROXY": {
+          "box_proxy": "BOX_OVERLAP_DERIVED_COVERAGE",
+          "box_proxy_statistics": {
+            "count": 163,
+            "max": 1.022104,
+            "mean": 0.181968,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 0.326291,
+            "p90": 0.666186,
+            "p95": 0.75796,
+            "std": 0.276635
+          },
+          "mask_measurement": {
+            "count": 163,
+            "max": 0.998108,
+            "mean": 0.176234,
+            "median": 0.0,
+            "min": 0.0,
+            "p25": 0.0,
+            "p75": 0.368709,
+            "p90": 0.573063,
+            "p95": 0.793024,
+            "std": 0.26977
+          }
+        }
+      },
+      "label": "PROXY_REFINEMENT",
+      "reading": "Box-based geometric proxies were systematically inflated relative to the mask-based measurements in this validation analysis. That is a refinement of a proxy, not an error rate: no ground-truth geometry entered this comparison, so neither representation is shown to be right or wrong against it."
+    }
+  },
+  "status": "DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE",
+  "synthesis_sha256": "7ddd369f8a0b1c2a65041660cdf9d6434cbeac5004fe52ffbd7171b2818ac150",
+  "test": {
+    "images_read": 0,
+    "predictions": 0,
+    "reason": "Phase 10D executed no model and opened no image. Its inputs are committed phase 10B and 10C artifacts, both of which record the holdout as untouched.",
+    "statistics": 0,
+    "status": "PROTECTED_NOT_ACCESSED"
+  },
+  "use_case_conditional": {
+    "both_remain_frozen_final_models": true,
+    "cost_benefit_index": false,
+    "detector_preferred_when": [
+      "object presence",
+      "the object class",
+      "a confidence score",
+      "bounding-box localisation",
+      "lower inference cost in latency and memory"
+    ],
+    "label": "USE_CASE_CONDITIONAL",
+    "reading": "The choice is use-case conditional rather than a ranking. Both remain the project's frozen final models for their respective tasks, and this synthesis changes neither.",
+    "segmenter_preferred_when": [
+      "foreground support inside the box",
+      "non-rectangular geometry",
+      "mask area",
+      "mask-to-box fill ratio or shape extent",
+      "a mask centroid",
+      "more spatially specific overlap and containment measurements"
+    ],
+    "universally_superior_model": null,
+    "weighted_score": false,
+    "winner_declared": false
+  },
+  "weighted_score": false,
+  "winner_declared": false
+}

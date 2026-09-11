@@ -191,15 +191,18 @@ uv run pytest
 
 ## Current state (keep this accurate)
 
-- **Phase:** 10C complete - the split is frozen, the holdout is locked,
-  **both models are FROZEN** (detector D2, YOLO11n at imgsz 768; segmenter S1,
-  YOLO11n-seg at imgsz 768 with `overlap_mask: false`), the comparison protocol
-  is frozen, the **recognition and spatial comparison has run on validation**
-  (`DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`), and the **latency and
-  inference-memory benchmark has run**
-  (`DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`). The modelling block is closed.
-  **The next phase of work is 10D, the operational and scientific synthesis. It
-  has not started; do not start it unprompted.**
+- **Phase:** 10D complete - **phase 10 is closed**. The split is frozen, the
+  holdout is locked, **both models are FROZEN** (detector D2, YOLO11n at imgsz
+  768; segmenter S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`), the
+  comparison protocol is frozen, the **recognition and spatial comparison has
+  run on validation** (`DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`), the
+  **latency and inference-memory benchmark has run**
+  (`DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`), and the **scientific and
+  operational synthesis is written**
+  (`DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`). Training is CLOSED and
+  the validation comparison is COMPLETE. **The final test is STILL LOCKED and
+  PENDING. The next phase of work is 11A, freezing the final holdout evaluation
+  protocol. It has not started; do not start it unprompted.**
 - **Dataset:** acquired. Roboflow Universe `agis-workspace-8gs52/
   construction-ppe-compliance-detection` v4, COCO instance segmentation, CC BY
   4.0. Archive SHA-256
@@ -923,8 +926,12 @@ uv run pytest
   quoted.** Canonical box mAP@0.50:0.95: **D2 0.485390, S1 0.505682, delta
   +0.020292**; mAP@0.50: D2 0.641107, S1 0.692955, delta +0.051848. Result
   fingerprints: box `68c9826a314be2ea24e4f89b3798acc5bdead6739d82b50a33f1d0984eaf1b27`,
-  spatial `9877b88d386ba8b1a33ddf15e17bc141f729e63e8091d3fd3a973d83ece3e6a3`.
-  **All validation-only.**
+  spatial `3988bcf688633c63bc0c422ba515246119b94a1c6b8b508c09ff215bda74e383`.
+  **All validation-only.** The spatial fingerprint is the post-correction value
+  recorded in `association_taxonomy_correction.provenance.json`; the
+  pre-correction `9877b88d...` is superseded and must not be quoted, because the
+  taxonomy correction rewrote the association section the digest covers. The box
+  digest was unaffected and is unchanged.
 - **A descriptive support sensitivity is recorded, and it is not a metric.**
   `POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY`, applying the project's
   **pre-existing** support rule: D2 **0.589729**, S1 **0.581689**, delta
@@ -1122,8 +1129,119 @@ uv run pytest
 - **Phase 10C trained nothing, recomputed no AP, reran no spatial or association
   analysis and tuned no threshold**, all recorded as counts. It changed no frozen
   model, no frozen protocol and no phase 10B number, and every phase 7D, 8G, 10A
-  and 10B artifact is byte-identical. No operational recommendation follows -
-  that is phase 10D, which has not started.
+  and 10B artifact is byte-identical. No operational recommendation follows from
+  10C itself - that is phase 10D, below.
+- **Phase 10D synthesised the committed evidence and EXECUTED NOTHING.** It
+  trained no model, ran no inference, recomputed no AP, reran neither the
+  spatial analysis nor the benchmark, tuned no threshold, created no bin, ran no
+  significance test, computed no confidence interval and read no holdout data -
+  the artifact records every one as a count. Its numbers are read from committed
+  artifacts by field, never transcribed from prose. Synthesis fingerprint
+  `7ddd369f8a0b1c2a65041660cdf9d6434cbeac5004fe52ffbd7171b2818ac150`, in
+  `reports/detector_segmenter_scientific_synthesis.json`.
+- **FOUR AXES, NEVER ONE SCORE**, and this is enforced rather than urged.
+  `RECOGNITION_LOCALIZATION`, `SPATIAL_REPRESENTATION_GAIN`,
+  `OPERATIONAL_ASSOCIATION_VALUE` and `COMPUTATIONAL_COST` stay separately
+  interpretable. `aggregate_benefit_score`, `cost_benefit_index`,
+  `weighted_score`, `winner_declared` and `axes_combined` are all false, and
+  `validate_synthesis` walks the whole payload and refuses any of them at any
+  depth. Never add a weighted score, a cost-benefit index, an overall benefit
+  number or a single winner metric.
+- **`REPRESENTATION_GAIN` and `PROXY_REFINEMENT` are DIFFERENT CLAIMS and must
+  not be merged.** The first covers `MASK_TO_BOX_FILL_RATIO` and `SHAPE_EXTENT`,
+  frozen `NO_BOX_ONLY_EQUIVALENT` before measurement: a rectangle cannot express
+  them at all, so they are a gain in what is *computable*. The second covers
+  area, intersection, containment, coverage and centroid, which a box can
+  approximate and the mask re-values. **Neither is an accuracy claim** - no
+  ground-truth geometry entered either comparison.
+- **The fill ratio is NOT a background-error rate**, and writing "33.6%
+  background error" would be the error. It compares *predicted mask support*
+  with *predicted box area*. The sanctioned wording is that the median predicted
+  instance mask occupied about two-thirds of its bounding rectangle
+  (**0.664433**), illustrating information the rectangular representation does
+  not encode.
+- **Write `PROXY_REFINEMENT`, never `BOX_ERROR`.** The box proxy is
+  systematically inflated relative to the mask measurement, and only like
+  statistics are compared with like - mean against mean, over the same
+  instances. `MASK_CENTROID` is reported in its own block rather than tabulated
+  with the other proxies, because its recorded statistic is a *displacement*
+  between the two representations, not a pair of like measurements. The mask
+  centroid is never "the true object centre".
+- **The recognition synthesis names no better localiser.** The sanctioned
+  statement is that S1 retains broadly similar localisation performance to D2
+  while adding mask output, and that the positive all-class delta is not robust
+  evidence of superiority because it is dominated by `vest_loose`. Never write
+  "S1 detects objects better than D2", never write "D2 definitively detects
+  objects better than S1", and always carry both the +0.020292 and the
+  -0.008040 together with the fact that some classes improved and some
+  regressed.
+- **The association finding is bounded by its rule.** At the frozen 0.50
+  containment floor, geometry-isolating: 103 / 3 / **0 mask-only** / 66 plus one
+  taxonomy exception over 173. The sanctioned statement is that masks did NOT
+  demonstrate a substantial advantage in discovering additional person-PPE
+  associations *at this rule and on this population*. Do not generalise it, and
+  never attribute the pipeline-level disagreements to geometry alone.
+- **`PRE_BENCHMARK_PROTOCOL_GAP_RESOLUTION` is the honest classification of the
+  latency confidence, and the wrong version is a factual claim about history.**
+  Phase 10A's latency block froze **no** confidence threshold. Phase 10C
+  resolved it to the operational **0.25** before any timing existed and applied
+  it equally to both models. **Never write that phase 10A explicitly froze the
+  latency confidence** - `phase_10a_froze_latency_confidence` is false and the
+  validator refuses true. The gap does not invalidate the benchmark; it scopes
+  it `OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25`, and no latency is claimed at
+  conf 0.001.
+- **The DVFS reading stays a hypothesis in the synthesis too.**
+  `causal_attribution: UNKNOWN`, `hypothesis_status: UNTESTED_HYPOTHESIS`,
+  `dvfs_asserted_as_cause: false`,
+  `proportionality_across_models_demonstrated: false`, under
+  `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`. The symmetric
+  interleaved order mitigates order bias; it does not prove the source of the
+  multimodality. Never write that DVFS caused the distribution.
+- **Report the mean with the median, P95 and range, always.** End-to-end D2
+  9.157766 / median 7.30475 / P95 14.145295 ms against S1 11.914757 / 9.96245 /
+  17.240505 ms. The headline delta stays based on the frozen **mean**; the other
+  statistics accompany it rather than replacing it. Throughput is
+  `MEAN_DERIVED_BATCH1_THROUGHPUT` - never the reciprocal of the fastest
+  repetition, never batched throughput, and never presented as application or
+  video FPS.
+- **Both halves of the memory statement travel together.** The relative overhead
+  is substantial (allocated ratio 3.155473, reserved 2.375) **and** the absolute
+  footprint is low on the measured ~8 GiB GPU;
+  `memory_heavy_in_absolute_terms: false`. Never state one without the other,
+  and never describe S1 as memory-heavy in absolute terms.
+- **The recommendation is `USE_CASE_CONDITIONAL`, not a ranking.** D2 where
+  presence, class, confidence and box localisation suffice at lower cost; S1
+  where foreground support, non-rectangular geometry, mask area, fill or extent,
+  a mask centroid or spatially specific overlap is needed. Both remain the
+  project's frozen final models for their respective tasks;
+  `universally_superior_model` is null, and no drop-in replacement or
+  architectural identity is claimed.
+- **A CLAIM REGISTER exists and is the interface to the report and the pitch.**
+  Seven claims - `LOCALIZATION_SIMILARITY`, `MASK_REPRESENTATION_GAIN`,
+  `BOX_PROXY_INFLATION`, `NO_MAJOR_MASK_ONLY_ASSOCIATION_GAIN_AT_FROZEN_RULE`,
+  `END_TO_END_LATENCY_COST`, `INFERENCE_MEMORY_OVERHEAD`,
+  `USE_CASE_CONDITIONAL_SELECTION` - each carrying `claim_text`,
+  `evidence_artifact`, `evidence_field`, `claim_scope` and `limitation`. When
+  writing the academic report or the pitch, quote a claim **with** its scope and
+  limitation; the validator refuses an entry missing any field.
+- **The synthesis artifacts re-derive, and a hand edit fails a test.** Running
+  `scripts/synthesize_detector_segmenter.py` twice reproduces the JSON, the
+  Markdown and the CSV byte for byte, and a test rebuilds all three from the
+  committed evidence and compares. Correct the synthesis by fixing the builder
+  and regenerating, never by editing an artifact.
+- **Assignment coverage is mapped, and pending items are marked pending.**
+  Delivered, validation only: detection mAP50 / mAP50:95 / precision / recall
+  (D2 manifest), segmentation mask mAP50 / mAP50:95 / precision / recall (S1
+  result manifest), the canonical mask AP, the direct instance-mask IoU, the
+  confusion-matrix and curve figures under `reports/figures/detection/D2/` and
+  `reports/figures/segmentation_S1/`, and the detector-versus-segmenter
+  comparison. **Pending: holdout metrics (phase 11), the per-class qualitative
+  FP/FN gallery (phase 12), and the video application (phase 13).** Never mark
+  one delivered without an artifact.
+- **Phase 10D changed no frozen number and no historical artifact.** Every phase
+  7D, 8G, 10A, 10B and 10C artifact is byte-identical before and after, verified
+  by digest at entry and exit; the runner refuses to finish if any of them
+  moved.
 - **The ML stack is pinned for a hardware reason.** torch 2.11.0+cu128 from the
   CUDA 12.8 index, because the GPU is Blackwell (`sm_120`) and older builds see
   the device but have no kernels for it. If CUDA ever reports unavailable, that

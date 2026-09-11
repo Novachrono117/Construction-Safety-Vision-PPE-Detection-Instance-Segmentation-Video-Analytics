@@ -1,6 +1,6 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol for both recognition and spatial information (phase 10B) and for latency and inference memory (phase 10C). The operational synthesis is pending and the holdout has never been evaluated.** The
+> **Status: both models frozen - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1) - and compared on validation under a frozen protocol for both recognition and spatial information (phase 10B) and for latency and inference memory (phase 10C), and synthesised into one scientific answer (phase 10D). The modelling and validation-comparison block is closed; the holdout has never been evaluated.** The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -160,7 +160,8 @@ Two design decisions define this architecture:
 | Latency comparison | **Measured (phase 10C), this machine only.** `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`, batch 1 at imgsz 768 in FP32 over the frozen 20-image validation subset, 4800 timed readings. Model inference: D2 **6.055740 ms**, S1 **7.777487 ms** (+1.721747 ms, +28.43%). End-to-end including mask reconstruction: D2 **9.157766 ms**, S1 **11.914757 ms** (+2.756991 ms, +30.11%). `ADDITIONAL_SEGMENTATION_PIPELINE_COST`, never pure mask-reconstruction cost. |
 | Latency caveat | **The distribution is wide and the mean alone misleads.** Mean/median 1.331 (D2) and 1.429 (S1) at the model-inference boundary; block means span 4.32-9.98 ms (D2) and 5.12-11.41 ms (S1). Mobile-GPU DVFS/power-state behaviour contributes; `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`, so the cause is **UNKNOWN**. Nothing was filtered, normalised or re-run. |
 | Inference memory | **Measured (phase 10C).** `INFERENCE_MEMORY`, never training memory. Peak reserved: D2 **0.125 GiB**, S1 **0.296875 GiB** (ratio 2.375). Peak allocated: D2 **0.073403 GiB**, S1 **0.231621 GiB** (ratio 3.155473). Each measured in a dedicated process with the allocator empty beforehand. |
-| Operational synthesis | Not started. Phase 10D. |
+| Operational synthesis | **Complete (phase 10D), validation only.** The four axes are synthesised without any composite score: recognition broadly similar (aggregate carried by `vest_loose`, supported-class delta -0.008040), a real `REPRESENTATION_GAIN` in mask-only geometry, **no** measured association advantage at the frozen rule, and a measured ~30% end-to-end latency premium plus 2.375x peak reserved memory. The choice is `USE_CASE_CONDITIONAL`; no winner is declared. |
+| Claim register | **Committed (phase 10D).** Seven headline claims, each with its evidence artifact, evidence field, scope and limitation, for reuse by the academic report and pitch. |
 | Video inference | Not implemented. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
@@ -1719,8 +1720,8 @@ not throughput under load; neither model is exported or quantised for
 deployment; host transfer of the outputs is outside both boundaries for both
 models, so a pipeline needing masks in host memory would pay more than these
 figures show. **No claim of hardware-independent latency is made or
-supported**, and no operational recommendation follows - that is phase 10D,
-which has not started.
+supported**, and no operational recommendation follows here - that is phase
+10D, below.
 
 Evidence: [`reports/detector_segmenter_latency_comparison.json`](reports/detector_segmenter_latency_comparison.json),
 [`reports/detector_segmenter_memory_comparison.json`](reports/detector_segmenter_memory_comparison.json),
@@ -1732,6 +1733,107 @@ Result fingerprints: latency `27c1705f...`, memory `7f452c8a...`.
 uv run python scripts/benchmark_detector_segmenter.py --verify-only
 uv run python scripts/benchmark_detector_segmenter.py --preflight-only
 ```
+
+## Phase 10D - the answer, and what it is not
+
+Phases 10B and 10C measured. This phase answers. It **executed no model**: it
+trained nothing, ran no inference, recomputed no average precision, reran
+neither the spatial analysis nor the benchmark, tuned no threshold and read no
+holdout data - all recorded as counts in the artifacts. Every number it
+publishes is copied from a committed artifact by field, and the runner is
+asserted by test to import neither torch nor ultralytics and to contain no
+split-access call.
+
+**Four axes, never one score.** Recognition, spatial representation,
+operational association and computational cost stay separately interpretable.
+There is no weighted score, no overall benefit score, no cost-benefit index and
+no declared winner anywhere in this phase, and the validator refuses each of
+them. A single figure would hide exactly the trade-off the phase exists to
+expose.
+
+**Recognition: broadly similar, and the aggregate must not be quoted alone.**
+Canonical box mAP@0.50:0.95 D2 0.485390 against S1 0.505682, delta +0.020292 -
+but `vest_loose`, one validation image and frozen
+`DESCRIPTIVE_HIGH_UNCERTAINTY`, contributes +0.026724, more than the whole
+delta. Over the four adequately supported classes the same comparison gives
+**-0.008040**. Both readings are published; neither is a significance test, and
+it is stated neither that S1 detects better than D2 nor that D2 definitively
+detects better than S1. Some classes improved and some regressed
+(`vest_on_body` -0.046421, `helmet_loose` -0.018685); why any of them moved is
+UNKNOWN.
+
+**Where the masks earn their place is representation.** `REPRESENTATION_GAIN`:
+the median predicted mask occupied **0.664433** of its own bounding rectangle
+and shape extent's median is **0.672173** - both frozen `NO_BOX_ONLY_EQUIVALENT`
+*before* anything was measured, because deciding afterwards which quantities a
+box could approximate would have been circular. A rectangle cannot encode
+non-rectangular foreground support at all. That is a gain in what is
+computable, **not** a demonstration of better predictive accuracy, and **not** a
+33.6 per cent background-error rate: the ratio compares predicted mask support
+with predicted box area, and no ground truth enters it.
+
+**Where a box proxy exists, it is refined rather than corrected.**
+`PROXY_REFINEMENT`: instance area mean 144563 px measured against a box proxy of
+237206 px; person-PPE intersection 26828 px against 47281 px; centroid
+displacement from the box centre median 16.0 px, P95 126.9 px, max 262.8 px.
+The box proxy is systematically inflated - but no ground-truth geometry entered
+the comparison, so this is never written as `BOX_ERROR`, and the mask centroid
+is never called the true object centre.
+
+**Association: the honest answer is no measured advantage.** At the frozen 0.50
+containment floor, holding the model and its instances fixed, 103 agree, 3
+box-only, **0 mask-only**, 66 neither, plus 1 taxonomy exception over 173
+relationships. Masks found no association the box rule missed. The result is
+specific to this threshold and this population. The pipeline-level reading
+disagrees far more but varies the model as well as the geometry, and is not
+attributed to geometry alone. `VISIBLE_PPE_COVERAGE_PROXY` stays
+`INTERPRETIVE_OPERATIONAL_PROXY` and decides nothing: **no compliance,
+violation or correct-wearing accuracy is claimed, because the project holds no
+compliance ground truth to measure one against**.
+
+**Cost: about 30 per cent, on this laptop, at this confidence.** End-to-end
+model-output latency D2 9.157766 ms against S1 11.914757 ms, delta
+**+2.756991 ms (+30.11%)**, medians 7.30 and 9.96 ms, P95 14.15 and 17.24 ms.
+Peak reserved inference memory 0.125 GiB against 0.296875 GiB, ratio 2.375.
+**Both halves of the memory statement are published together**: the relative
+overhead is substantial and the absolute footprint is low on an ~8 GiB GPU, so
+S1 is not memory-heavy in absolute terms.
+
+**Two disclosures travel with the cost figures.** The latency distribution is
+wide and multimodal; the shape is *consistent with* mobile-GPU DVFS, and that
+stays `UNTESTED_HYPOTHESIS` with `causal_attribution: UNKNOWN`, because
+`NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY` - it is **not** written
+that DVFS caused it. And phase 10A's latency subsection froze **no confidence
+threshold**, so it would be false to say conf 0.25 was explicitly frozen there.
+Phase 10C resolved that gap to the project's already frozen operational 0.25
+before any timing existed and applied it equally to both models; the synthesis
+records it as `PRE_BENCHMARK_PROTOCOL_GAP_RESOLUTION`, scopes the result
+`OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25`, and claims no latency at conf 0.001.
+
+**The recommendation is conditional, not a ranking.** `USE_CASE_CONDITIONAL`:
+the detector where object presence, class, confidence and box localisation
+suffice at lower cost; the segmenter where foreground support, non-rectangular
+geometry, mask area, fill or extent, a mask centroid or spatially specific
+overlap is required. Both remain the project's frozen final models for their
+respective tasks, and neither is a drop-in replacement for the other.
+
+A **claim register** accompanies the synthesis: seven headline claims, each
+with the artifact and field that support it, the scope it holds within and the
+limitation that travels with it, so the academic report and the pitch cannot
+repeat a claim without its caveat.
+
+Evidence: [`reports/detector_segmenter_scientific_synthesis.md`](reports/detector_segmenter_scientific_synthesis.md),
+[`reports/detector_segmenter_scientific_synthesis.json`](reports/detector_segmenter_scientific_synthesis.json),
+[`reports/detector_segmenter_tradeoff.csv`](reports/detector_segmenter_tradeoff.csv).
+
+```bash
+uv run python scripts/synthesize_detector_segmenter.py --verify-only
+```
+
+The next phase of work is **11A - freezing the final holdout evaluation
+protocol**. It has not started. The `test` split remains locked and has never
+been evaluated, inspected, materialised or plotted.
+
 
 
 ## Academic requirements

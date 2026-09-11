@@ -1,0 +1,16 @@
+dimension,unit,D2,S1,comparison,reading
+"Recognition / localisation (canonical box mAP@0.50:0.95, all classes)",AP,0.48539,0.505682,+0.020292,"Carried entirely by vest_loose, one validation image, DESCRIPTIVE_HIGH_UNCERTAINTY. Not evidence of superior localisation."
+"Recognition / localisation (supported-class macro, descriptive sensitivity)",AP,0.589729,0.581689,-0.008040,"POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY: descriptive, not a selection rule and not a significance test. Broadly similar localisation, slightly below D2."
+"Spatial geometry (MASK_TO_BOX_FILL_RATIO, median)",ratio,NO_BOX_ONLY_EQUIVALENT,0.664433,REPRESENTATION_GAIN,A box cannot express how much of itself is object. The median predicted mask occupied about two-thirds of its bounding rectangle.
+"Spatial geometry (SHAPE_EXTENT, median)",ratio,NO_BOX_ONLY_EQUIVALENT,0.672173,REPRESENTATION_GAIN,Instances do not fill even their own tight rectangle.
+"Spatial geometry (instance area, mean px)",px,237205.836504,144562.997024,PROXY_REFINEMENT,"The box proxy is systematically inflated relative to the mask measurement. No ground truth entered this comparison, so it is not an error rate."
+"Spatial geometry (person-PPE intersection, mean px)",px,47280.877637,26828.34384,PROXY_REFINEMENT,Same direction: the rectangular proxy overstates the shared area.
+"Spatial geometry (mask centroid displacement from box centre, median)",px,BOX_CENTER (reference),16.048565,"P95 126.933417, max 262.773275",Box centre and foreground centroid differ materially for irregular shapes. The mask centroid is not the true object centre.
+"Person-PPE association (geometry-isolating, containment floor 0.50)",relationships,3 box-only,0 mask-only,"103 agree, 66 neither, 1 taxonomy exception, 173 total",Masks found no association the box rule missed. Specific to this threshold and population. No compliance accuracy is claimed.
+Mean MODEL_INFERENCE_LATENCY_MS,ms,6.05574,7.777487,+1.721747 ms (+0.284317 relative),Forward pass only. Medians 4.5507 and 5.4443 ms; the distribution is wide.
+Mean END_TO_END_MODEL_OUTPUT_LATENCY_MS,ms,9.157766,11.914757,+2.756991 ms (+0.301055 relative),The primary operational cost statement. ADDITIONAL_SEGMENTATION_PIPELINE_COST; mask reconstruction is inside S1's timer. OPERATIONAL_OUTPUT_LATENCY_AT_CONF_0_25.
+MEAN_DERIVED_BATCH1_THROUGHPUT at the end-to-end boundary,images/s,109.196937,83.929534,ratio 0.768607,"1000 / mean at batch 1. Not batched throughput, not application video FPS, and never the reciprocal of the fastest repetition."
+Peak allocated inference memory,GiB,0.073403,0.231621,ratio 3.155473,"Substantial relative overhead, low absolute footprint on the measured ~8 GiB GPU. INFERENCE_MEMORY only, never training memory."
+Peak reserved inference memory,GiB,0.125,0.296875,ratio 2.375,Each model measured in a dedicated process; peak stats reset after warmup.
+Static parameters,parameters,2624080,2843583,+219503,"STATIC_MODEL_COMPLEXITY, unfused on both sides. Not recomputed here."
+Static reference GFLOPs,GFLOPs at the framework's 640 reference input,6.673,9.8,+3.127000,"NOT measured at the benchmark's imgsz 768, no 768 value was derived, and these figures explain none of the latency."
