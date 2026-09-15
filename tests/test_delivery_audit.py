@@ -17,6 +17,7 @@ import ast
 import csv
 import json
 import os
+import subprocess
 
 import pytest
 
@@ -61,9 +62,30 @@ def rebuilt(paths: ProjectPaths) -> dict:
 # --- the audit re-derives ----------------------------------------------------------------
 
 
-def test_the_audit_rebuilds_byte_identically(committed: dict, rebuilt: dict) -> None:
-    assert rebuilt == committed
-    assert rebuilt["repository_audit_sha256"] == committed["repository_audit_sha256"]
+def test_the_live_measurement_is_deterministic_and_preserves_judgements(
+    paths: ProjectPaths, committed: dict, rebuilt: dict
+) -> None:
+    """12A is a historical snapshot; the current tree can have resolved its gaps."""
+    assert rebuilt == audit.build(paths, env=dict(os.environ))
+    assert rebuilt["declared_findings"] == committed["declared_findings"]
+    assert rebuilt["this_audit"] == committed["this_audit"]
+
+
+def test_the_phase_12a_snapshot_is_byte_identical_to_the_approved_commit(paths: ProjectPaths):
+    baseline = "d8605645eea009fe68c6c561b56c31feae937522"
+    for relative in audit.AUDIT_OUTPUT_ARTIFACTS:
+        original = subprocess.run(
+            ["git", "show", f"{baseline}:{relative}"],
+            cwd=paths.root,
+            check=True,
+            capture_output=True,
+            timeout=60,
+        ).stdout
+        # Compare canonical Git text independently of checkout newline conversion.
+        assert (paths.root / relative).read_text(encoding="utf-8") == original.decode("utf-8")
+    historical_files = audit._tracked_at_commit(paths.root, baseline)
+    payload = json.loads((paths.reports / audit.AUDIT_JSON).read_text(encoding="utf-8"))
+    assert payload["measurements"]["inventory"] == audit.inventory(historical_files)
 
 
 def test_the_rendered_report_rebuilds_byte_identically(
@@ -100,15 +122,15 @@ def test_the_committed_audit_validates_and_classifies_complete(committed: dict) 
 # --- the measured half is measured -------------------------------------------------------
 
 
-def test_the_inventory_matches_the_git_index(paths: ProjectPaths, committed: dict) -> None:
+def test_the_inventory_matches_the_git_index(paths: ProjectPaths, rebuilt: dict) -> None:
     tracked = audit.tracked_files(paths.root)
-    assert committed["measurements"]["inventory"] == audit.inventory(tracked)
-    assert committed["measurements"]["inventory"]["total_tracked_files"] == len(tracked)
+    assert rebuilt["measurements"]["inventory"] == audit.inventory(tracked)
+    assert rebuilt["measurements"]["inventory"]["total_tracked_files"] == len(tracked)
 
 
-def test_the_inventory_delta_reconciles_against_git(paths: ProjectPaths, committed: dict) -> None:
+def test_the_inventory_delta_reconciles_against_git(paths: ProjectPaths, rebuilt: dict) -> None:
     """Parent + added - deleted must equal the head count, all four read from git."""
-    delta = committed["measurements"]["inventory_delta"]
+    delta = rebuilt["measurements"]["inventory_delta"]
     baseline = audit._tracked_at_commit(paths.root, audit.PHASE_12A_BASELINE_COMMIT)
     current = audit.tracked_files(paths.root)
 
@@ -121,19 +143,17 @@ def test_the_inventory_delta_reconciles_against_git(paths: ProjectPaths, committ
     )
     assert (
         delta["tracked_files_at_phase_12a_head"]
-        == (committed["measurements"]["inventory"]["total_tracked_files"])
+        == (rebuilt["measurements"]["inventory"]["total_tracked_files"])
     )
 
 
-def test_the_created_file_count_equals_the_files_listed(
-    paths: ProjectPaths, committed: dict
-) -> None:
+def test_the_created_file_count_equals_the_files_listed(paths: ProjectPaths, rebuilt: dict) -> None:
     """A declared count of created files must equal git's, and equal the list's length.
 
     This is the inconsistency the block exists to prevent: a report that says it
     created eight files while enumerating nine.
     """
-    delta = committed["measurements"]["inventory_delta"]
+    delta = rebuilt["measurements"]["inventory_delta"]
     baseline = set(audit._tracked_at_commit(paths.root, audit.PHASE_12A_BASELINE_COMMIT))
     added = sorted(set(audit.tracked_files(paths.root)) - baseline)
 
@@ -173,19 +193,19 @@ def test_a_broken_reconciliation_is_refused(committed: dict) -> None:
     assert any("baseline" in problem for problem in audit.validate(payload))
 
 
-def test_deliverable_probes_reflect_the_index(paths: ProjectPaths, committed: dict) -> None:
+def test_deliverable_probes_reflect_the_index(paths: ProjectPaths, rebuilt: dict) -> None:
     """A probe must report presence from the index, not from a stored opinion."""
     tracked = set(audit.tracked_files(paths.root))
-    probes = committed["measurements"]["deliverables"]["probes"]
+    probes = rebuilt["measurements"]["deliverables"]["probes"]
     for name, entry in probes.items():
         expected = next((path for path in entry["candidates_checked"] if path in tracked), None)
         assert entry["exists"] is (expected is not None), name
         assert entry["path"] == expected, name
 
 
-def test_stale_probes_reflect_the_documentation(paths: ProjectPaths, committed: dict) -> None:
+def test_stale_probes_reflect_the_documentation(paths: ProjectPaths, rebuilt: dict) -> None:
     """Retiring a stale string must make the next audit report it retired."""
-    for probe in committed["measurements"]["stale_claims"]["probes"]:
+    for probe in rebuilt["measurements"]["stale_claims"]["probes"]:
         path = paths.root / probe["file"]
         text = path.read_text(encoding="utf-8") if path.is_file() else ""
         assert probe["occurrences"] == text.count(probe["needle"]), probe["probe_id"]
@@ -214,9 +234,9 @@ def test_headline_values_come_from_the_committed_results(
         assert value == check["value"], label
 
 
-def test_headline_documentation_presence_is_measured(paths: ProjectPaths, committed: dict) -> None:
+def test_headline_documentation_presence_is_measured(paths: ProjectPaths, rebuilt: dict) -> None:
     readme = (paths.root / "README.md").read_text(encoding="utf-8")
-    for label, check in committed["measurements"]["result_consistency"]["headlines"].items():
+    for label, check in rebuilt["measurements"]["result_consistency"]["headlines"].items():
         assert check["present_in_readme"] is (check["rendered"] in readme), label
 
 

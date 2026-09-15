@@ -1,0 +1,33 @@
+{
+  "checkpoints": [
+    {
+      "architecture": "YOLO11n",
+      "bytes": 5502289,
+      "distribution_status": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
+      "download_locator": null,
+      "experiment_sha256": "8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685",
+      "freeze_manifest": "reports/final_detector_manifest.json",
+      "imgsz": 768,
+      "license_notice": "delivery/LICENSING.md",
+      "logical_name": "D2",
+      "sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+      "status": "FROZEN",
+      "training_provenance": "reports/detection_D2.provenance.json"
+    },
+    {
+      "architecture": "YOLO11n-seg",
+      "bytes": 6041685,
+      "distribution_status": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
+      "download_locator": null,
+      "experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+      "freeze_manifest": "reports/final_segmenter_manifest.json",
+      "imgsz": 768,
+      "license_notice": "delivery/LICENSING.md",
+      "logical_name": "S1",
+      "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+      "status": "FROZEN",
+      "training_provenance": "reports/segmentation_S1.provenance.json"
+    }
+  ],
+  "schema_version": 1
+}

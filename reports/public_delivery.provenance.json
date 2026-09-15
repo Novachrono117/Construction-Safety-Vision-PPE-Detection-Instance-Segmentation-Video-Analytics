@@ -1,0 +1,229 @@
+{
+  "config": {
+    "checkpoint_schema": 1,
+    "gap_resolution_policy": {
+      "GAP-001": [
+        "RESOLVED",
+        [
+          "README.md"
+        ],
+        "none"
+      ],
+      "GAP-006": [
+        "RESOLVED",
+        [
+          "delivery/AI_USAGE.md",
+          "README.md"
+        ],
+        "none"
+      ],
+      "GAP-008": [
+        "OPEN",
+        [
+          "delivery/checkpoints.json",
+          "delivery/LICENSING.md",
+          "scripts/verify_checkpoint.py"
+        ],
+        "Complete license review and authorized publication, then implement documented retrieval."
+      ],
+      "GAP-009": [
+        "PARTIALLY_RESOLVED",
+        [
+          "delivery/REPRODUCTION.md"
+        ],
+        "Verify the isolated validation-only command path after source and checkpoint retrieval."
+      ],
+      "GAP-011": [
+        "RESOLVED",
+        [
+          "LICENSE",
+          "delivery/LICENSING.md"
+        ],
+        "none"
+      ],
+      "GAP-012": [
+        "PARTIALLY_RESOLVED",
+        [
+          "README.md",
+          "delivery/README.md"
+        ],
+        "Complete the recruiter README after demo and visual assets exist; retain history."
+      ],
+      "GAP-013": [
+        "RESOLVED",
+        [
+          "README.md",
+          ".env.example",
+          "reports/roadmap.md"
+        ],
+        "none"
+      ],
+      "GAP-016": [
+        "RESOLVED",
+        [
+          "reports/README.md"
+        ],
+        "none"
+      ],
+      "GAP-018": [
+        "RESOLVED",
+        [
+          "README.md",
+          "delivery/REPRODUCTION.md"
+        ],
+        "none"
+      ],
+      "GAP-019": [
+        "PARTIALLY_RESOLVED",
+        [
+          "delivery/REPRODUCTION.md"
+        ],
+        "Historical D0 regex retained and classified LOW; convergence remains a separate cleanup."
+      ],
+      "GAP-020": [
+        "OPEN",
+        [
+          "delivery/PUBLICATION.md"
+        ],
+        "After visual assets exist, authorize and configure GitHub description/topics/preview."
+      ],
+      "GAP-021": [
+        "DEFERRED_OPTIONAL",
+        [
+          "reports/rubric_contract.md"
+        ],
+        "Optional bonus only after every mandatory deliverable is complete."
+      ],
+      "GAP-022": [
+        "RESOLVED",
+        [
+          "README.md",
+          "reports/README.md",
+          "delivery/REPRODUCTION.md"
+        ],
+        "none"
+      ]
+    },
+    "phase": "12B",
+    "project_repository_license": "AGPL-3.0"
+  },
+  "created_at": "2026-09-15T14:15:52+00:00",
+  "details": {
+    "baseline_commit": "d8605645eea009fe68c6c561b56c31feae937522",
+    "code_identity": "Source-file hashes below identify the delivery implementation.",
+    "git_commit_semantics": "Stable pre-12B baseline; delivery code uses source hashes.",
+    "holdout_accessed": false,
+    "metrics_recomputed": 0,
+    "models_executed": 0,
+    "phase_12a_snapshot_modified": false,
+    "scientific_results_modified": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.14"
+  },
+  "git_commit": "d8605645eea009fe68c6c561b56c31feae937522",
+  "inputs": [
+    {
+      "path": "LICENSE",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "size_bytes": 34523
+    },
+    {
+      "path": "delivery/LICENSING.md",
+      "sha256": "d53581172584908e443a775a211f0e63a4939f72d29877808e47bd4ef5ae1473",
+      "size_bytes": 8034
+    },
+    {
+      "path": "README.md",
+      "sha256": "9111e861f627cf215e2ae681757e60ef898ed6d71a2e4a3ba4c42a7efeb05655",
+      "size_bytes": 150104
+    },
+    {
+      "path": "delivery/README.md",
+      "sha256": "6b03f5b113ee36c8bac7a0afa44da61ba3bd14c5a2edfdb91e23910854692cd7",
+      "size_bytes": 2391
+    },
+    {
+      "path": "delivery/PUBLICATION.md",
+      "sha256": "38c589156bc2f4e75b1ba712baa91ed6671a8c5e46dfb6d9169f53615ffb87c2",
+      "size_bytes": 1519
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    },
+    {
+      "path": "reports/final_delivery_gap_register.csv",
+      "sha256": "3dce7226e7e25b72b434750ea9d00ae54e89df4f3e262d34b26e382e33980ca5",
+      "size_bytes": 9231
+    },
+    {
+      "path": "reports/final_repository_audit.json",
+      "sha256": "3ff0d6feaafe80f008853adbc087d6bfaa65478d525fda6d5e031870cbb6658d",
+      "size_bytes": 85797
+    },
+    {
+      "path": "reports/assignment_compliance_matrix.csv",
+      "sha256": "be2e29d31e9240e82239c855a49ca7e8a68fef5ad2432c14e101f956ef518c83",
+      "size_bytes": 4243
+    },
+    {
+      "path": "reports/detector_segmenter_spatial_comparison.json",
+      "sha256": "49420d585b58e1a1ca0d5992c4b046f0b1260cf18bc566d6f397ef73b5598f69",
+      "size_bytes": 28140
+    },
+    {
+      "path": "reports/final_test_evaluation.provenance.json",
+      "sha256": "9bc04a6294be69ac70da0b2bcbaf75df15f1002360b8c6f02d3a67aa33b9f5cb",
+      "size_bytes": 10985
+    },
+    {
+      "path": "reports/final_test_execution_accounting.json",
+      "sha256": "6f2e2164e00214290cc27de171032de0d8ebe87aaf6daf17c2bb311000bb334b",
+      "size_bytes": 13593
+    },
+    {
+      "path": "src/construction_safety_vision/checkpoint_delivery.py",
+      "sha256": "4394e10c10bc4503fef1de55d5b13e1952cf56962fcac8e304f7db84b36c4aa1",
+      "size_bytes": 5662
+    },
+    {
+      "path": "src/construction_safety_vision/delivery_status.py",
+      "sha256": "f04a2ba458bcc981164ce56a444862f0cb1d3ae24ddaa17e4f59e0ccc2a91d24",
+      "size_bytes": 16680
+    },
+    {
+      "path": "scripts/validate_public_delivery.py",
+      "sha256": "214fd4ccac9c407e9cbc35bf666d4e5df965014dccde71b2990f03395d2a5484",
+      "size_bytes": 1535
+    },
+    {
+      "path": "scripts/verify_checkpoint.py",
+      "sha256": "f7b64e713d718ef6ae31fb70df6e16524cfd13ce7fd8418dc964b3ccad941653",
+      "size_bytes": 1436
+    }
+  ],
+  "name": "public_truth_and_delivery_scaffolding",
+  "outputs": [
+    {
+      "path": "delivery/checkpoints.json",
+      "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1",
+      "size_bytes": 1295
+    },
+    {
+      "path": "reports/delivery_gap_resolution_status.json",
+      "sha256": "1651beb1c1f2fcdbba0118b31a04564b1a0d74cac75c094c089bb309b8f9d4d6",
+      "size_bytes": 11853
+    }
+  ],
+  "phase": 12,
+  "schema_version": 1
+}

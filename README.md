@@ -1,6 +1,33 @@
 # Construction Safety Vision - PPE Detection, Instance Segmentation & Video Analytics
 
-> **Status: the final holdout has been evaluated, once. Phase 11A froze the one-shot protocol without reading a byte of the holdout; **phase 11B then executed it exactly once** on the two frozen models - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1). On the 65-image / 305-annotation holdout: D2 canonical box mAP@0.50:0.95 **0.427031**, S1 canonical mask mAP@0.50:0.95 **0.410143**, S1 canonical box mAP@0.50:0.95 **0.433764**. `FINAL_TEST_OBSERVED`: model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are now **CLOSED**.** Phase 12A then audited the repository for academic and portfolio delivery readiness without executing anything - see [`reports/final_repository_audit.md`](reports/final_repository_audit.md) and the [gap register](reports/final_delivery_gap_register.csv). **Its findings supersede the stale statements still present further down this document, including the Results section.** The
+## Current delivery baseline
+
+| Field | Current state |
+| --- | --- |
+| Project / task | Construction Safety Vision / PPE object detection + instance segmentation |
+| Final detector | **D2 / YOLO11n / imgsz 768 / FROZEN** |
+| Final segmenter | **S1 / YOLO11n-seg / imgsz 768 / FROZEN** (`overlap_mask: false`) |
+| Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
+| Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
+| Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
+| Delivery | Phase 12B truth/scaffolding complete; final README, gallery, video, report, Colab and pitch pending |
+
+[Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
+[Final test report](reports/final_test_evaluation.md) ·
+[Final repository audit](reports/final_repository_audit.md) ·
+[Delivery and current results](delivery/README.md) · [Reports index](reports/README.md)
+
+The holdout is spent and locked. Frozen membership is deliberately committed
+for auditability; Phase 11 result/report artifacts omit test IDs, and bulk test
+imagery and predictions are not committed. No repeat evaluation is permitted.
+
+## Research chronology (historical)
+
+The phase narrative below records the development sequence. Earlier phase-local
+statements about pending work describe that point in time; current delivery
+status and outstanding actions are in the [live tracker](reports/delivery_gap_resolution_status.json).
+
+> **Status: the final holdout has been evaluated, once. Phase 11A froze the one-shot protocol without reading a byte of the holdout; **phase 11B then executed it exactly once** on the two frozen models - detector YOLO11n @ 768 (D2), segmenter YOLO11n-seg @ 768 with `overlap_mask: false` (S1). On the 65-image / 305-annotation holdout: D2 canonical box mAP@0.50:0.95 **0.427031**, S1 canonical mask mAP@0.50:0.95 **0.410143**, S1 canonical box mAP@0.50:0.95 **0.433764**. `FINAL_TEST_OBSERVED`: model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are now **CLOSED**.** Phase 12A then audited the repository for academic and portfolio delivery readiness without executing anything - see [`reports/final_repository_audit.md`](reports/final_repository_audit.md) and the [gap register](reports/final_delivery_gap_register.csv). The Phase 12A snapshot is immutable; Phase 12B corrections are recorded in the live delivery tracker. The
 > dataset is acquired, hashed, structurally verified, audited automatically (4A)
 > and reviewed visually by people (4B). The canonical annotation snapshot is
 > resolved (5A), the modelling population and its indivisible split units are
@@ -17,9 +44,9 @@
 > 768 - as the final detector**; the selection is based entirely on the
 > validation-only Phase 7 protocol and trained, evaluated and benchmarked
 > nothing. The provider's
-> split was **rejected for the final protocol** and is not reused. The `test` split is a **locked holdout**: it has never been
-> evaluated, inspected, materialised or adapted, and **every number below is a
-> validation number**. Phase 8A measured how much canonical instance-mask geometry
+> split was **rejected for the final protocol** and is not reused. The `test` split remained protected during development and was evaluated
+> under the frozen Phase 11 protocol; it is now observed, spent and locked.
+> Validation and final-test results are labelled separately below. Phase 8A measured how much canonical instance-mask geometry
 > survives the YOLO segmentation label format, and **phase 8B selected YOLO11n-seg,
 > approved the audited label bytes and froze the S0 protocol**. Phase 8C then ran
 > **S0 exactly once**: mask mAP@0.50:0.95 **0.407942** on validation, plus a
@@ -48,10 +75,10 @@
 > median predicted box is not the object, and the box proxy for area and
 > overlap is systematically inflated.
 
-A reproducible computer-vision system for detecting and segmenting people and
-personal protective equipment (PPE) in construction scenes, with a controlled
-quantitative evaluation, an explicit error analysis, and inference on real
-video footage.
+A computer-vision research project for detecting and segmenting people and
+personal protective equipment (PPE) in construction scenes, with completed
+controlled evaluation and recorded error analyses. Video inference remains
+pending. Reproducible by design, not yet demonstrated from a clean clone.
 
 Built as a graduate assignment in Computer Vision and Pattern Recognition, and
 as a public technical portfolio project.
@@ -73,20 +100,20 @@ present in the scene.**
 That distinction is what makes the problem interesting rather than routine. A
 helmet lying on a bench and a helmet on a worker's head are visually similar
 objects with opposite safety meanings, so a system that only detects "helmet" is
-useless for compliance. The planned class set therefore separates worn from
+useless for compliance. The class set separates worn from
 loose equipment.
 
-Secondary difficulties expected in this domain, to be confirmed empirically
-during the dataset audit: small objects at distance, heavy occlusion in crowded
-scenes, strong outdoor lighting variation, and class imbalance between people
-and equipment.
+The completed dataset audit documents object sizes, crowded scenes, lighting
+variation and class imbalance. These observations and their limitations are
+recorded in the [EDA report](reports/eda_report.md); explanations of individual
+model errors remain hypotheses unless supported by an experiment.
 
-## Planned architecture
+## Architecture and pending application
 
 ```text
-canonical source: instance segmentation annotations (polygons)
+canonical source: instance masks (polygons, RLE, documented synthetic geometry)
         |
-        |  boxes derived mathematically from polygons
+        |  boxes derived mathematically from segmentation geometry
         v
 one frozen split (train / val / test) shared by both tasks
         |
@@ -100,15 +127,15 @@ one frozen split (train / val / test) shared by both tasks
                                      precision, recall, confusion matrix)
                                                                    |
                                                                    v
-                                    error analysis  +  video inference
+                              error analysis + pending video application
 ```
 
 Two design decisions define this architecture:
 
 1. **Instance segmentation is the single source of truth.** Bounding boxes are
-   computed from the polygons rather than annotated separately, so the detector
-   and the segmenter describe exactly the same objects. Any difference in their
-   results is attributable to the models, not to differing labels.
+   computed from canonical segmentation geometry. Both tasks describe the same
+   objects; the model-specific segmentation adapter has quantified approximation,
+   so label representation remains part of the documented comparison limitations.
 2. **One split, frozen once.** Both tasks use identical image IDs per split, and
    the `test` split is a locked holdout, read exactly once after both models are
    frozen. Selection and tuning use validation data only.
@@ -126,15 +153,15 @@ Two design decisions define this architecture:
 | Semantic duplicate groups | Done (phase 5B.1). All 11 near-duplicate candidates dispositioned; 11 groups, 422 split units. |
 | Split candidates | Done (phase 5C.1). Six provisional candidates generated and compared. |
 | Splits | **Frozen (phase 5C.2). `candidate_001` selected by human review; 303 / 65 / 65 images over 422 indivisible groups. Provider split not reused.** |
-| Holdout | **Frozen and locked.** Never evaluated, inspected or materialised. Access needs two independent opt-ins. |
+| Holdout | **Observed, spent and locked.** Evaluated under the frozen Phase 11 protocol: one attempt, one read, three inference passes over two models. No further access is permitted. |
 | Task datasets | Done (phase 5D). COCO detection + instance segmentation for `train` and `validation`: 368 images, 1726 annotations, byte-identical images, geometry round-trip verified. |
 | Model-specific adapter | Done for detection (phase 6A). Lossless YOLO detection adapter, 1726/1726 boxes round-trip within 1e-4 px. Segmentation: the phase 8A adapter is **approved for controlled training** (phase 8B, `APPROVED_FOR_CONTROLLED_TRAINING`) by digest, and stays `MODEL_SPECIFIC_DERIVED_REPRESENTATION` - canonical ground truth is still COCO. |
 | GPU runtime | Done (phase 6A). torch 2.11.0+cu128 on an RTX 5070 Laptop (sm_120), verified by executing real kernels. |
 | D0 baseline protocol | Frozen (phase 6A). YOLO11n, imgsz 640, seed 42, metric hierarchy and checkpoint rule declared before training. |
 | Detection model | **D0 trained (phase 6B).** YOLO11n, 100 epochs, one run, checkpoint selected by the predeclared rule. |
 | Detection experiments | **All three complete.** D0 0.570142 · D1 (capacity, YOLO11s) 0.560017 `BELOW_D0` · D2 (resolution, imgsz 768) 0.594018 `IMPROVES_D0_BEYOND_MARGIN`, on `supported_macro_map50_95`. |
-| Phase 7 winner | **Frozen (phase 7D): D2 - YOLO11n @ imgsz 768.** `CASE_B_VALIDATION_PERFORMANCE_LEADER`, derived mechanically by the frozen logic and accepted by human review. Selection is **validation-only**; no test number exists. |
-| Final detector artifact | `reports/final_detector_manifest.json` · `final_detector_sha256` `84d30d64...`. The checkpoint itself is **not committed** (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain or retrain the weights. |
+| Phase 7 winner | **Frozen (phase 7D): D2 - YOLO11n @ imgsz 768.** `CASE_B_VALIDATION_PERFORMANCE_LEADER`, derived mechanically by the frozen logic and accepted by human review. Selection is **validation-only**; this selection predates the final holdout evaluation. |
+| Final detector artifact | `reports/final_detector_manifest.json` · `final_detector_sha256` `84d30d64...`. The checkpoint itself is **not committed** (`LOCAL_IGNORED_FROZEN_ARTIFACT`). Retrieval requires license review and publication; retraining is not a replacement for the frozen bytes. See [distribution policy](delivery/LICENSING.md). |
 | Segmentation architecture | **Selected (phase 8B): YOLO11n-seg** (`FINAL_SELECTED_FOR_S0`), by human review of the phase 8A audit. Mask R-CNN recorded as `NOT_SELECTED_FALLBACK`, never benchmarked. |
 | S0 protocol | **Frozen (phase 8B).** imgsz 768, batch 8, 100 epochs, seed 42, mask metric hierarchy and checkpoint rule declared before training. Runtime proven by a one-epoch `NON_EXPERIMENTAL` smoke test. |
 | Segmentation model | **S0 trained (phase 8C).** YOLO11n-seg, 100/100 epochs, one run, checkpoint chosen by the frozen native rule (epoch 59). |
@@ -146,11 +173,11 @@ Two design decisions define this architecture:
 | S0-vs-S1 comparison | **Computed (phase 8F).** Canonical supported macro: S0 0.484643 -> S1 **0.559463**, delta **+0.074820**, `S1_IMPROVES_S0_BEYOND_MARGIN` at the frozen 0.005 margin. Direct GT-normalised mask IoU 0.556977 -> **0.635356**; `CROSS_METRIC_DIRECTION_CONSISTENT`. |
 | S1 per-class movement | `person` **+0.317316** (88.6% of the total gain), `helmet_on_head` +0.028340, `vest_on_body` +0.012659, `helmet_loose` **-0.059035** (a supported class regressed). `vest_loose` +0.035845 stays `DESCRIPTIVE_HIGH_UNCERTAINTY` and decides nothing. |
 | S1 native metrics | Reported, **demoted**: mask mAP@0.50:0.95 0.458206, box 0.518779. `NOT_CROSS_TARGET_COMPARABLE_FOR_S0_S1_SELECTION` - `overlap_mask` reshapes the native validation target, so S0's and S1's native AP are never differenced. |
-| Final segmenter | **Frozen (phase 8G): S1 - YOLO11n-seg @ imgsz 768, `overlap_mask: false`.** `SEGMENTER_FROZEN`, `PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW`. Selection is **validation-only**; no test number exists. |
+| Final segmenter | **Frozen (phase 8G): S1 - YOLO11n-seg @ imgsz 768, `overlap_mask: false`.** `SEGMENTER_FROZEN`, `PREDECLARED_CANONICAL_POLICY_PLUS_HUMAN_REVIEW`. Selection is **validation-only**; this selection predates the final holdout evaluation. |
 | Final segmenter artifact | `reports/final_segmenter_manifest.json` · `final_segmenter_sha256` `63ef4196...`. Checkpoint `29337d67...` (`LOCAL_IGNORED_FROZEN_ARTIFACT`), so a fresh clone must obtain the weights rather than retrain. S0's checkpoint and any `last.pt` are rejected **by digest**. |
 | Segmenter trade-off | Published, not buried: `person` +0.317316 carries most of the gain, `helmet_loose` **regressed** -0.059035. Selection does not require every class to improve. Why any class moved is UNKNOWN. |
 | Segmentation format fidelity | Measured (phase 8A). All 1726 development instances round-trip through the YOLO label format at median mask IoU 0.9846, mean 0.9731, P05 0.9182. Instance cardinality preserved 1726/1726. |
-| Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. No test metric exists. |
+| Metrics | **Validation only.** all-class mAP@0.50:0.95 / supported macro - D0 0.4644 / 0.5701, D1 0.4711 / 0.5600, D2 0.4904 / 0.5940. Final-test metrics are reported separately under Results. |
 | Detector-vs-segmenter protocol | **Frozen (phase 10A)**, fingerprint `d92a1576...`. Validation only, both models at imgsz 768, AP at conf 0.001 and operational analysis at conf 0.25, FP32 for both. |
 | Recognition comparison | **Computed (phase 10B), validation only.** Canonical box mAP@0.50:0.95: D2 **0.485390**, S1 **0.505682**, delta **+0.020292**. One external `COCOeval` over one ground truth; each model's own predicted boxes. |
 | Recognition caveat | **The aggregate gain is carried entirely by `vest_loose`** (+0.026724 of the +0.020292). Over the four adequately supported classes the delta is **-0.008040** (`POST_HOC_DESCRIPTIVE_SUPPORT_SENSITIVITY`, descriptive only). `vest_on_body` -0.046421 and `helmet_loose` -0.018685 both declined. |
@@ -158,7 +185,7 @@ Two design decisions define this architecture:
 | Person-PPE association | At the frozen 0.50 containment floor, holding the model constant: **172 of 173 relationships classified** by the frozen taxonomy (coverage 0.994220), with 103 agreements and **0 mask-only** associations - the box proxy is close. Descriptive only; there is no association ground truth. |
 | Association taxonomy | `FROZEN_TAXONOMY_NON_EXHAUSTIVE_FOR_OBSERVED_DATA`. Both rules associating to **different** people is recorded as a coverage exception (`BOTH_RULES_ASSOCIATE_DIFFERENT_PERSON`), never as a fifth category; 1 geometry-isolating and 17 pipeline-level. The phase 10A protocol was not modified. |
 | Latency comparison | **Measured (phase 10C), this machine only.** `CONTROLLED_LOCAL_HARDWARE_BENCHMARK`, batch 1 at imgsz 768 in FP32 over the frozen 20-image validation subset, 4800 timed readings. Model inference: D2 **6.055740 ms**, S1 **7.777487 ms** (+1.721747 ms, +28.43%). End-to-end including mask reconstruction: D2 **9.157766 ms**, S1 **11.914757 ms** (+2.756991 ms, +30.11%). `ADDITIONAL_SEGMENTATION_PIPELINE_COST`, never pure mask-reconstruction cost. |
-| Latency caveat | **The distribution is wide and the mean alone misleads.** Mean/median 1.331 (D2) and 1.429 (S1) at the model-inference boundary; block means span 4.32-9.98 ms (D2) and 5.12-11.41 ms (S1). Mobile-GPU DVFS/power-state behaviour contributes; `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`, so the cause is **UNKNOWN**. Nothing was filtered, normalised or re-run. |
+| Latency caveat | **The distribution is wide and the mean alone misleads.** Mean/median 1.331 (D2) and 1.429 (S1) at the model-inference boundary; block means span 4.32-9.98 ms (D2) and 5.12-11.41 ms (S1). Mobile-GPU DVFS/power-state behaviour is an **UNTESTED_HYPOTHESIS**; `NO_SYNCHRONIZED_PER_OBSERVATION_POWER_STATE_TELEMETRY`, so the cause is **UNKNOWN**. Nothing was filtered, normalised or re-run. |
 | Inference memory | **Measured (phase 10C).** `INFERENCE_MEMORY`, never training memory. Peak reserved: D2 **0.125 GiB**, S1 **0.296875 GiB** (ratio 2.375). Peak allocated: D2 **0.073403 GiB**, S1 **0.231621 GiB** (ratio 3.155473). Each measured in a dedicated process with the allocator empty beforehand. |
 | Operational synthesis | **Complete (phase 10D), validation only.** The four axes are synthesised without any composite score: recognition broadly similar (aggregate carried by `vest_loose`, supported-class delta -0.008040), a real `REPRESENTATION_GAIN` in mask-only geometry, **no** measured association advantage at the frozen rule, and a measured ~30% end-to-end latency premium plus 2.375x peak reserved memory. The choice is `USE_CASE_CONDITIONAL`; no winner is declared. |
 | Claim register | **Committed (phase 10D).** Seven headline claims, each with its evidence artifact, evidence field, scope and limitation, for reuse by the academic report and pitch. |
@@ -933,7 +960,7 @@ small-object mechanism**: Phase 7C's class-level diagnostic gave a rank
 correlation of -0.20, so the beyond-margin gain must never be read as confirming
 that hypothesis. `vest_loose` is reported in full but played no part in the
 rationale. D1 versus D2 is a difference, not a ranking. And **nothing at all
-about test performance** - the holdout has never been evaluated.
+about test performance** - the holdout was still unobserved at this freeze; Phase 11 later evaluated it.
 
 No further detection experiment is authorised - not another resolution, another
 capacity, a combination of the two, or any tuning prompted by these results.
@@ -1838,8 +1865,8 @@ The holdout is the only data in this project that has never informed a choice.
 The split, both adapters, both architectures, both resolutions, the
 `overlap_mask` treatment, every threshold, every evaluator and every diagnostic
 were all decided on `train` and `validation` alone. That is what makes it worth
-anything - and it is why the protocol for reading it is written **now**, while
-no holdout number exists and none can.
+anything. Phase 11A wrote the protocol before any holdout outcome existed;
+Phase 11B subsequently executed it once. The following is the Phase 11A record.
 
 **This phase evaluated nothing.** No model was loaded, no holdout image,
 annotation or identifier was read, neither authorisation gate was activated, and
@@ -2034,8 +2061,10 @@ afterwards**, and why a gap exists in either direction is UNKNOWN.
   categories are reachable and mutually exclusive. No category was added or
   removed, and the phase 11A protocol document was not edited.
 - **`PROTOCOL_COVERAGE_NOTE`.** The frozen protocol lists qualitative figures
-  among its committed outputs *and* prohibits committing holdout identifiers,
-  imagery or predictions. Where those clauses meet, the prohibition wins: the
+  among its committed outputs *and* excludes test IDs from Phase 11 result/report
+  artifacts and prohibits publishing holdout imagery or bulk predictions.
+  Frozen membership is separately committed for protocol auditability.
+  Where the publication clauses meet, the prohibition wins: the
   selection rule, its ranked values and its fingerprint are committed, while the
   selected instances and the rendered figures stay in the git-ignored run
   directory.
@@ -2142,7 +2171,7 @@ definition of done in [`reports/rubric_contract.md`](reports/rubric_contract.md)
 - A 5-8 minute video pitch
 - Bonus (up to +0.5): ByteTrack tracking or an interactive demo
 
-## Planned methodology
+## Methodology and delivery plan
 
 Work proceeds through 14 gated phases (see
 [`reports/roadmap.md`](reports/roadmap.md)). In outline:
@@ -2331,8 +2360,10 @@ Work proceeds through 14 gated phases (see
 
 ## Reproducibility goals
 
-The target is that a third party, starting from a clean clone, can reproduce
-every reported number without contacting the author.
+Reproducible by design, not yet demonstrated from a clean clone. A future
+validation-only clean-room run must first resolve source and checkpoint retrieval
+and isolate its outputs. The final holdout is excluded. The items below include
+pending goals, not claims of delivered notebooks or a completed clean-room audit.
 
 - Environment pinned by `pyproject.toml` + `uv.lock`, with a single documented
   setup command.
@@ -2347,7 +2378,20 @@ every reported number without contacting the author.
 
 ## Setup
 
-Requires [uv](https://docs.astral.sh/uv/) and Python 3.11+.
+Validated with [uv](https://docs.astral.sh/uv/) and **Python 3.12** (runtime
+3.12.14). The metadata's `>=3.11` is a historical resolver floor, not verified
+3.11 support; `.python-version` selects 3.12. Dependency semantics are unchanged.
+
+Scientific training/inference was validated on an NVIDIA RTX 5070 Laptop GPU,
+PyTorch 2.11.0+cu128 and CUDA 12.8. Blackwell required CUDA >=12.8-compatible
+kernels in this project. Metadata tooling and synthetic unit tests need no GPU
+execution; GPU-free installation and CPU model inference are not demonstrated.
+There is no demo yet, so demo hardware support is pending.
+
+Use the [public quickstart and research reproduction scaffold](delivery/REPRODUCTION.md).
+**DEMO PENDING PHASE 13A.** The commands below are historical research commands,
+not a current quickstart; stages that write frozen evidence must not be rerun
+in this closed repository. Final holdout evaluation is excluded from reproduction.
 
 ```bash
 git clone https://github.com/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics.git
@@ -2416,12 +2460,44 @@ uv run pytest
 
 ## Results
 
-Not available. No model has been trained and no evaluation has been run. This
-section will be filled by phases 10-12, from committed metrics files.
+Training and the validation comparison are complete. Final detector **D2** and
+final segmenter **S1** are frozen. The final holdout was observed under the frozen
+Phase 11 process; model/hyperparameter/threshold selection is closed.
+
+| Final-test result | mAP@0.50:0.95 | Evidence |
+| --- | --- | --- |
+| D2 canonical box | 0.427031 | [Detector artifact](reports/final_test_detector.json) |
+| S1 canonical mask | 0.410143 | [Segmenter artifact](reports/final_test_segmenter.json) |
+| S1 canonical box | 0.433764 | [Segmenter artifact](reports/final_test_segmenter.json) |
+
+These task-specific measures are not a combined score or a universal model
+ranking. See [final test report and limitations](reports/final_test_evaluation.md)
+and [execution accounting](reports/final_test_execution_accounting.md).
+Validation results are in the current-status table above and the
+[canonical validation comparison](reports/detector_segmenter_validation_comparison.md).
+The [scientific synthesis](reports/detector_segmenter_scientific_synthesis.md)
+and [latency report](reports/detector_segmenter_latency_report.md) state the
+bounded conclusions. No production or real-time-video capability is claimed.
 
 ## License and attribution
 
-The **software** license of this repository is not yet chosen.
+The project source and repository are licensed under [GNU AGPL-3.0](LICENSE),
+following Ultralytics' published open-source licensing path. Vinicius Gomes
+retains copyright over original contributions. Dataset images and annotations
+remain **CC BY 4.0**; third-party dependencies retain their respective licenses.
+Ultralytics YOLO and the trained/fine-tuned D2/S1 models remain subject to
+Ultralytics AGPL-3.0 terms and applicable Ultralytics terms; see the
+[licensing and distribution policy](delivery/LICENSING.md). Checkpoints are
+not currently publicly retrievable: review is required, and the generated
+[checkpoint manifest](delivery/checkpoints.json) contains identities without
+invented download locators.
+
+### Generative AI use
+
+Claude Code and OpenAI Codex assisted project development, including code/review,
+debugging, protocol planning, documentation and tests. The author reviewed
+experimental decisions and suggestions were verified; metrics come from executed
+project artifacts. See the [academic GenAI disclosure](delivery/AI_USAGE.md).
 
 The **dataset** is a separate matter and is licensed **CC BY 4.0** by AGIs
 Workspace. It is not redistributed here; `scripts/download_dataset.py` obtains it

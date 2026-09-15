@@ -14,6 +14,11 @@ matters most: a holdout materialised by accident during development.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+import pytest
+
 from construction_safety_vision.paths import ProjectPaths
 
 FINAL_EVALUATION_PROVENANCE = "final_test_evaluation.provenance.json"
@@ -31,3 +36,56 @@ def holdout_has_been_evaluated(paths: ProjectPaths | None = None) -> bool:
     """
     resolved = paths if paths is not None else ProjectPaths.from_root()
     return (resolved.reports / FINAL_EVALUATION_PROVENANCE).is_file()
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--metadata-only",
+        action="store_true",
+        default=False,
+        help="Exclude real-checkpoint integration checks and block local experiment/data reads.",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    if not config.getoption("--metadata-only"):
+        return
+    local_artifact_checks = {
+        "test_checkpoint_hashes_match_the_files_on_disk",
+        "test_the_weights_on_disk_still_match_the_manifest",
+        "test_the_frozen_copy_carries_the_selected_digest",
+        "test_the_frozen_checkpoint_resolves_and_verifies",
+        "test_the_accessor_rejects_the_reference_checkpoint",
+        "test_the_accessor_rejects_last_pt",
+        "test_the_frozen_copy_lives_outside_the_run_directory",
+        "test_the_revalidation_corroboration_is_true_on_disk",
+    }
+    for item in items:
+        if item.name in local_artifact_checks and item.path.name.endswith("_artifacts.py"):
+            item.add_marker(
+                pytest.mark.skip(reason="metadata-only: real experiment file read excluded")
+            )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def metadata_only_io_boundary(request):
+    """Fail before an unexpected read of real experiment/data files in delivery checks."""
+    if not request.config.getoption("--metadata-only"):
+        yield
+        return
+    root = Path(__file__).resolve().parents[1]
+    protected = [root / "artifacts", root / "reports/figures/final_test"]
+    protected += [root / "data" / name for name in ("raw", "interim", "processed", "external")]
+    active = True
+
+    def audit_open(event, args):
+        if active and event == "open" and isinstance(args[0], (str, bytes)):
+            candidate = Path(args[0].decode() if isinstance(args[0], bytes) else args[0]).resolve()
+            if any(candidate.is_relative_to(directory) for directory in protected):
+                raise RuntimeError(
+                    "metadata-only: unexpected local experiment/data file access blocked"
+                )
+
+    sys.addaudithook(audit_open)
+    yield
+    active = False

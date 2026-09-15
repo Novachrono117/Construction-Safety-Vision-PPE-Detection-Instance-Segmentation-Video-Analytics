@@ -1,0 +1,354 @@
+{
+  "additional_truth_corrections": [
+    "Current holdout status row now records the completed evaluation and access lock.",
+    "Removed retraining as a substitute for frozen detector checkpoint retrieval.",
+    "Scoped DVFS explanation as UNTESTED_HYPOTHESIS, consistent with the synthesis.",
+    "Marked the architecture's video application as pending and dataset audit as complete."
+  ],
+  "agents_file": {
+    "classification": "PROJECT_REPOSITORY_INSTRUCTION",
+    "decision": "Leave untracked and unchanged; no ignore rule added",
+    "future_tracking": "Potentially appropriate after explicit human review",
+    "purpose": "Durable project protocol instructions for Codex",
+    "source": "UNKNOWN; text matches CLAUDE.md except title and tool name"
+  },
+  "baseline_commit": "d8605645eea009fe68c6c561b56c31feae937522",
+  "classification": "PUBLIC_TRUTH_AND_DELIVERY_SCAFFOLD_COMPLETE",
+  "classification_basis": "Run validate_public_delivery.py and the documented quality gates.",
+  "delivery_state": {
+    "academic_report": "NOT_GENERATED",
+    "checkpoint_distribution": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
+    "colab": "NOT_GENERATED",
+    "fp_fn_gallery": "NOT_STARTED",
+    "pitch": "NOT_GENERATED",
+    "publication_metadata": "RECOMMENDATIONS_ONLY",
+    "readme_final_professionalization": "PENDING",
+    "video": "NOT_STARTED"
+  },
+  "gap_counts": {
+    "DEFERRED_OPTIONAL": 1,
+    "OPEN": 11,
+    "PARTIALLY_RESOLVED": 3,
+    "RESOLVED": 7
+  },
+  "gaps": [
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "README.md"
+      ],
+      "gap_id": "GAP-001",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-002",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Acquire a licensed construction video of at least 30 s, record its provenance, build the inference runtime, measure FPS on named hardware and describe at least three temporal failure modes with timestamps.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-003",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Assemble a 6-10 page report from committed artifacts, quoting the phase 10D claim register entries with their scope and limitation.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-004",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "One notebook: clone, install, load the frozen checkpoints by digest, reproduce the committed validation metrics, and run a visual demo. It must not train and must never touch the holdout.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-005",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Render the gallery from validation imagery for both frozen models, five classes, one FP and one FN each, with hypotheses labelled as hypotheses.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "delivery/AI_USAGE.md",
+        "README.md"
+      ],
+      "gap_id": "GAP-006",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-007",
+      "original_severity": "P0",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Script from the claim register so every spoken number matches a committed artifact, then record with the real pipeline output as the demo.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "delivery/checkpoints.json",
+        "delivery/LICENSING.md",
+        "scripts/verify_checkpoint.py"
+      ],
+      "gap_id": "GAP-008",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Complete license review and authorized publication, then implement documented retrieval.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "PARTIALLY_RESOLVED",
+      "evidence": [
+        "delivery/REPRODUCTION.md"
+      ],
+      "gap_id": "GAP-009",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Verify the isolated validation-only command path after source and checkpoint retrieval.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-010",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "A single predict command taking an image path and writing an annotated output, plus one committed sample image licensed for redistribution.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "LICENSE",
+        "delivery/LICENSING.md"
+      ],
+      "gap_id": "GAP-011",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "PARTIALLY_RESOLVED",
+      "evidence": [
+        "README.md",
+        "delivery/README.md"
+      ],
+      "gap_id": "GAP-012",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Complete the recruiter README after demo and visual assets exist; retain history.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "README.md",
+        ".env.example",
+        "reports/roadmap.md"
+      ],
+      "gap_id": "GAP-013",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-014",
+      "original_severity": "P1",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Run the clean-room plan recorded in this audit and publish the result, including what could not be reproduced and why.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-015",
+      "original_severity": "P2",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Produce DIA-01 and DIA-03 from validation imagery.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "reports/README.md"
+      ],
+      "gap_id": "GAP-016",
+      "original_severity": "P2",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "reports/final_delivery_gap_register.csv"
+      ],
+      "gap_id": "GAP-017",
+      "original_severity": "P2",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "One GitHub Actions workflow running the three gates on push.",
+      "resolution_phase": null
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "README.md",
+        "delivery/REPRODUCTION.md"
+      ],
+      "gap_id": "GAP-018",
+      "original_severity": "P2",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "PARTIALLY_RESOLVED",
+      "evidence": [
+        "delivery/REPRODUCTION.md"
+      ],
+      "gap_id": "GAP-019",
+      "original_severity": "P2",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Historical D0 regex retained and classified LOW; convergence remains a separate cleanup.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "OPEN",
+      "evidence": [
+        "delivery/PUBLICATION.md"
+      ],
+      "gap_id": "GAP-020",
+      "original_severity": "P3",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "After visual assets exist, authorize and configure GitHub description/topics/preview.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "DEFERRED_OPTIONAL",
+      "evidence": [
+        "reports/rubric_contract.md"
+      ],
+      "gap_id": "GAP-021",
+      "original_severity": "P3",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "Optional bonus only after every mandatory deliverable is complete.",
+      "resolution_phase": "12B"
+    },
+    {
+      "current_status": "RESOLVED",
+      "evidence": [
+        "README.md",
+        "reports/README.md",
+        "delivery/REPRODUCTION.md"
+      ],
+      "gap_id": "GAP-022",
+      "original_severity": "P3",
+      "phase_12a_status": "OPEN",
+      "remaining_action": "none",
+      "resolution_phase": "12B"
+    }
+  ],
+  "other_requirements": "Unchanged from the immutable Phase 12A assignment matrix.",
+  "phase": "12B",
+  "phase_12a_snapshot": "reports/final_repository_audit.json",
+  "repository_license": {
+    "canonical_text_bytes": 34523,
+    "canonical_text_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "canonical_text_source": "https://www.gnu.org/licenses/agpl-3.0.txt",
+    "dataset_license": "CC-BY-4.0; dataset images/annotations are not relicensed",
+    "decision_basis": "Repository compliance/documentation based on Ultralytics terms",
+    "evidence": "delivery/LICENSING.md",
+    "original_copyright_holder": "Vinicius Gomes; ownership retained",
+    "project_repository_license": "AGPL-3.0",
+    "vendor_source": "https://www.ultralytics.com/license"
+  },
+  "requirement_updates": [
+    {
+      "current_state": "COMPLETE",
+      "evidence": "delivery/AI_USAGE.md",
+      "phase_12a_state": "MISSING",
+      "remaining_action": "none",
+      "requirement_id": "R20"
+    },
+    {
+      "current_state": "PARTIAL",
+      "evidence": "README.md",
+      "phase_12a_state": "PARTIAL",
+      "remaining_action": "Final delivery/recruiter restructuring.",
+      "requirement_id": "R16"
+    },
+    {
+      "current_state": "PARTIAL",
+      "evidence": "delivery/REPRODUCTION.md",
+      "phase_12a_state": "PARTIAL",
+      "remaining_action": "Checkpoint retrieval, isolated commands and clean-room run.",
+      "requirement_id": "R17"
+    }
+  ],
+  "schema_version": 1,
+  "scientific_boundary": {
+    "accounting_scope": "Phase 12B actions; existing unit assertions use recorded values.",
+    "final_test": "OBSERVED",
+    "holdout": "LOCKED",
+    "holdout_content_accessed": false,
+    "metrics_recomputed": 0,
+    "models_executed": 0,
+    "scientific_results_changed": false,
+    "selection_and_tuning": "CLOSED",
+    "training": "CLOSED"
+  },
+  "stale_probe_ids_after": [],
+  "stale_probe_ids_before": [
+    "STALE-01",
+    "STALE-02",
+    "STALE-03",
+    "STALE-04",
+    "STALE-05",
+    "STALE-06",
+    "STALE-07",
+    "STALE-08"
+  ],
+  "test_scope": {
+    "mode": "metadata-only: PYTEST_ADDOPTS=--metadata-only; uv run pytest",
+    "quality_gate_results": "Reported from executed commands in the Phase 12B handoff",
+    "real_model_files": "Not read; local-artifact integration checks excluded",
+    "synthetic_checkpoint_verifier": "SHA-256 and byte-size rejection tests"
+  }
+}
