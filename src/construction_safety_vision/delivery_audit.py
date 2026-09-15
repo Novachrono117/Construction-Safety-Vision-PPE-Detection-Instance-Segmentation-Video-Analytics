@@ -39,6 +39,13 @@ reaches a fixed point and stays there, which is what
 ``test_the_inventory_matches_the_git_index`` pins. Excluding its own outputs
 from the count was the alternative and was rejected: an inventory that quietly
 omits five tracked files is a worse artifact than one that needs re-running.
+
+A self-counting total invites a wrong reconciliation, so :func:`inventory_delta`
+publishes the arithmetic instead of leaving it to be guessed. It names the
+commit the phase started from, measures the tracked-file count there and here,
+and keeps two quantities apart that are easy to confuse: the five artifacts this
+phase writes, and the nine files it adds to the index. The validator refuses a
+payload whose counts do not close.
 """
 
 from __future__ import annotations
@@ -70,6 +77,29 @@ AUDIT_MARKDOWN = "final_repository_audit.md"
 GAP_CSV = "final_delivery_gap_register.csv"
 COMPLIANCE_CSV = "assignment_compliance_matrix.csv"
 AUDIT_PROVENANCE = "final_repository_audit.provenance.json"
+
+AUDIT_OUTPUT_ARTIFACTS: tuple[str, ...] = (
+    f"reports/{COMPLIANCE_CSV}",
+    f"reports/{GAP_CSV}",
+    f"reports/{AUDIT_JSON}",
+    f"reports/{AUDIT_MARKDOWN}",
+    f"reports/{AUDIT_PROVENANCE}",
+)
+"""The five artifacts this phase writes.
+
+They are five of the nine files phase 12A adds to the index, never all of them:
+the phase also adds the runner, two source modules and a test. Keeping the two
+quantities apart is the point of :func:`inventory_delta`.
+"""
+
+PHASE_12A_BASELINE_COMMIT = "f1c78f25b8052638cf84cf37fc119b2af0635fbd"
+"""The commit phase 12A started from, declared rather than derived.
+
+``HEAD^`` answers correctly only while ``HEAD`` is the phase 12A commit itself,
+so it would silently report a different baseline once a later phase lands on
+top. Naming the commit fixes the baseline to a historical fact, and an
+unreachable one is an error rather than a fallback.
+"""
 
 AREAS: tuple[str, ...] = (
     "src",
@@ -208,6 +238,127 @@ def inventory(files: Sequence[str]) -> dict[str, Any]:
             "csv": sum(1 for name in reports if name.endswith(".csv")),
             "provenance_records": sum(1 for name in reports if name.endswith(".provenance.json")),
         },
+        "counts_are_measured": True,
+    }
+
+
+def _tracked_at_commit(root: Path, commit: str) -> tuple[str, ...]:
+    """List the files a commit tracks, as repository-relative POSIX paths.
+
+    Args:
+        root: Repository root.
+        commit: Commit-ish to read the tree of.
+
+    Returns:
+        The tracked paths at that commit, sorted.
+
+    Raises:
+        AuditError: If the commit cannot be read.
+    """
+    try:
+        completed = subprocess.run(
+            ["git", "ls-tree", "-r", "--name-only", commit],
+            cwd=str(root),
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        msg = f"cannot read the tree of {commit}: {exc}"
+        raise AuditError(msg) from None
+    return tuple(sorted(line for line in completed.stdout.splitlines() if line))
+
+
+def _differs_from_commit(root: Path, commit: str) -> frozenset[str]:
+    """Name the tracked files whose current content differs from a commit's.
+
+    Args:
+        root: Repository root.
+        commit: Commit-ish to compare against.
+
+    Returns:
+        Repository-relative paths that differ.
+
+    Raises:
+        AuditError: If git cannot compute the difference.
+    """
+    try:
+        completed = subprocess.run(
+            ["git", "diff", "--name-only", commit, "--"],
+            cwd=str(root),
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        msg = f"cannot diff against {commit}: {exc}"
+        raise AuditError(msg) from None
+    return frozenset(line for line in completed.stdout.splitlines() if line)
+
+
+def inventory_delta(root: Path, files: Sequence[str]) -> dict[str, Any]:
+    """Reconcile the tracked-file count against the commit this phase started from.
+
+    The audit counts its own outputs, so the total alone invites a wrong
+    reconciliation: the five artifacts this phase writes are not the number of
+    files it adds. This block measures both quantities and keeps them named
+    apart, so the arithmetic can be checked rather than assumed.
+
+    Added and deleted sets are a difference of path sets, so a rename would
+    appear as one addition plus one deletion. Nothing is renamed while the
+    deleted set is empty, which the payload records.
+
+    Args:
+        root: Repository root.
+        files: The currently tracked paths.
+
+    Returns:
+        The reconciliation, with every count measured from git.
+
+    Raises:
+        AuditError: If the arithmetic does not close.
+    """
+    baseline = _tracked_at_commit(root, PHASE_12A_BASELINE_COMMIT)
+    current = tuple(files)
+    added = sorted(set(current) - set(baseline))
+    deleted = sorted(set(baseline) - set(current))
+    shared = set(baseline) & set(current)
+    modified = sorted(_differs_from_commit(root, PHASE_12A_BASELINE_COMMIT) & shared)
+
+    outputs = sorted(name for name in added if name in AUDIT_OUTPUT_ARTIFACTS)
+    support = sorted(name for name in added if name not in AUDIT_OUTPUT_ARTIFACTS)
+
+    reconciled = len(baseline) + len(added) - len(deleted)
+    if reconciled != len(current):
+        msg = (
+            f"the inventory does not reconcile: {len(baseline)} + {len(added)} - "
+            f"{len(deleted)} is {reconciled}, not {len(current)}"
+        )
+        raise AuditError(msg)
+
+    return {
+        "baseline_commit": PHASE_12A_BASELINE_COMMIT,
+        "baseline_is_declared_not_derived": True,
+        "tracked_files_at_parent": len(baseline),
+        "tracked_files_at_phase_12a_head": len(current),
+        "delta_tracked_files": len(current) - len(baseline),
+        "added": added,
+        "added_count": len(added),
+        "deleted": deleted,
+        "deleted_count": len(deleted),
+        "modified": modified,
+        "modified_count": len(modified),
+        "audit_output_artifacts": outputs,
+        "audit_output_artifacts_added": len(outputs),
+        "implementation_support_files": support,
+        "implementation_support_files_added": len(support),
+        "live_docs_modified": len(modified),
+        "audit_outputs_are_not_the_file_delta": len(outputs) != len(added),
+        "rename_detection": "SET_DIFFERENCE_TREATS_A_RENAME_AS_ONE_ADD_PLUS_ONE_DELETE",
+        "renames_or_copies_possible": bool(deleted),
+        "reconciles": True,
         "counts_are_measured": True,
     }
 
@@ -590,6 +741,7 @@ def build(paths: Any, *, env: Mapping[str, str]) -> dict[str, Any]:
     measured = {
         "deliverables": deliverables(root, files),
         "inventory": inventory(files),
+        "inventory_delta": inventory_delta(root, files),
         "result_consistency": result_consistency(root),
         "scientific_lock": scientific_lock(root, env),
         "stale_claims": stale_claims(root),
@@ -770,6 +922,40 @@ def validate(payload: Mapping[str, Any]) -> list[str]:
     if positioning.get("production_oriented_assessed") is not True:
         problems.append("the production-oriented wording must be explicitly assessed")
 
+    measurements = payload.get("measurements", {})
+    delta = measurements.get("inventory_delta", {})
+    if not delta:
+        problems.append("the inventory must reconcile against the phase baseline")
+    else:
+        parent = delta.get("tracked_files_at_parent")
+        head = delta.get("tracked_files_at_phase_12a_head")
+        added = delta.get("added_count")
+        deleted = delta.get("deleted_count")
+        if None in (parent, head, added, deleted):
+            problems.append("the inventory delta must carry all four counts")
+        elif parent + added - deleted != head:
+            problems.append(
+                f"the inventory delta must reconcile: {parent} + {added} - {deleted} is not {head}"
+            )
+        if added != len(delta.get("added", [])):
+            problems.append("the declared added-file count must equal the files listed")
+        if deleted != len(delta.get("deleted", [])):
+            problems.append("the declared deleted-file count must equal the files listed")
+        if delta.get("modified_count") != len(delta.get("modified", [])):
+            problems.append("the declared modified-file count must equal the files listed")
+        outputs = delta.get("audit_output_artifacts_added")
+        support = delta.get("implementation_support_files_added")
+        if None in (outputs, support) or outputs + support != added:
+            problems.append(
+                "every added file must be either an audit output or implementation support"
+            )
+        if outputs != len(delta.get("audit_output_artifacts", [])):
+            problems.append("the audit-output count must equal the artifacts listed")
+        if delta.get("live_docs_modified") != delta.get("modified_count"):
+            problems.append("live_docs_modified must equal the measured modified count")
+        if head != measurements.get("inventory", {}).get("total_tracked_files"):
+            problems.append("the delta's head count must equal the inventory total")
+
     for where, key, value in _walk(payload):
         if key in {"holdout_accessed", "scientific_results_modified"} and value not in (
             False,
@@ -831,6 +1017,7 @@ def _render_head(payload: Mapping[str, Any]) -> list[str]:
     measured = payload["measurements"]
     lock = measured["scientific_lock"]
     inv = measured["inventory"]
+    delta = measured["inventory_delta"]
     summary = payload["summary"]
     # Sorted, not insertion-ordered: the payload round-trips through JSON with
     # sorted keys, so an insertion-ordered render would not match its own file.
@@ -891,6 +1078,42 @@ def _render_head(payload: Mapping[str, Any]) -> list[str]:
         f"{inv['reports_breakdown']['split_candidates']} split-candidate tables, including "
         f"{inv['reports_breakdown']['provenance_records']} provenance records. Absent areas: "
         f"{', '.join('`' + name + '/`' for name in inv['absent_areas']) or 'none'}.",
+        "",
+        "### 2.1 Reconciliation against the commit this phase started from",
+        "",
+        f"The audit counts its own outputs. The five artifacts it writes are **not** the "
+        f"number of files the phase adds, so both quantities are measured and named apart. "
+        f"Baseline `{delta['baseline_commit'][:12]}`.",
+        "",
+        *_table(
+            ["Quantity", "Value"],
+            [
+                ["Tracked files at parent", str(delta["tracked_files_at_parent"])],
+                ["Tracked files at phase 12A head", str(delta["tracked_files_at_phase_12a_head"])],
+                ["Delta", f"{delta['delta_tracked_files']:+d}"],
+                ["Files added", str(delta["added_count"])],
+                ["Files deleted", str(delta["deleted_count"])],
+                ["Live documents modified", str(delta["live_docs_modified"])],
+                ["of the additions: audit outputs", str(delta["audit_output_artifacts_added"])],
+                [
+                    "of the additions: implementation support",
+                    str(delta["implementation_support_files_added"]),
+                ],
+            ],
+        ),
+        "",
+        f"{delta['tracked_files_at_parent']} + {delta['added_count']} - "
+        f"{delta['deleted_count']} = {delta['tracked_files_at_phase_12a_head']}. Added and "
+        f"deleted are a difference of path sets, so a rename would appear as one addition "
+        f"plus one deletion; the deleted set is empty, so none occurred.",
+        "",
+        f"Added ({delta['added_count']}):",
+        "",
+        *[f"- `{name}`" for name in delta["added"]],
+        "",
+        f"Modified ({delta['modified_count']}):",
+        "",
+        *[f"- `{name}`" for name in delta["modified"]],
         "",
         f"Summary: {summary['compliance']['COMPLETE']} requirements COMPLETE, "
         f"{summary['compliance']['PARTIAL']} PARTIAL, {summary['compliance']['MISSING']} "

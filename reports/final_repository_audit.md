@@ -41,6 +41,41 @@ This phase executed no model, read no holdout content, recomputed no metric and 
 
 `reports/` breaks down as 140 flat documents, 73 figures and 8 split-candidate tables, including 30 provenance records. Absent areas: `academic/`, `docs/`, `portfolio/`.
 
+### 2.1 Reconciliation against the commit this phase started from
+
+The audit counts its own outputs. The five artifacts it writes are **not** the number of files the phase adds, so both quantities are measured and named apart. Baseline `f1c78f25b805`.
+
+| Quantity | Value |
+| --- | --- |
+| Tracked files at parent | 407 |
+| Tracked files at phase 12A head | 416 |
+| Delta | +9 |
+| Files added | 9 |
+| Files deleted | 0 |
+| Live documents modified | 3 |
+| of the additions: audit outputs | 5 |
+| of the additions: implementation support | 4 |
+
+407 + 9 - 0 = 416. Added and deleted are a difference of path sets, so a rename would appear as one addition plus one deletion; the deleted set is empty, so none occurred.
+
+Added (9):
+
+- `reports/assignment_compliance_matrix.csv`
+- `reports/final_delivery_gap_register.csv`
+- `reports/final_repository_audit.json`
+- `reports/final_repository_audit.md`
+- `reports/final_repository_audit.provenance.json`
+- `scripts/audit_delivery_readiness.py`
+- `src/construction_safety_vision/delivery_audit.py`
+- `src/construction_safety_vision/delivery_audit_findings.py`
+- `tests/test_delivery_audit.py`
+
+Modified (3):
+
+- `CLAUDE.md`
+- `README.md`
+- `reports/roadmap.md`
+
 Summary: 12 requirements COMPLETE, 3 PARTIAL, 5 MISSING; 7 P0 gaps, 7 P1, 5 P2, 3 P3; 8 stale-claim probes currently firing.
 
 ## 3. Assignment compliance
@@ -390,4 +425,4 @@ The current README is 2434 lines shaped as a `PHASE_LOG`. Recommended structure:
 | Report generated | no |
 | Video started | no |
 
-Audit fingerprint `00c293d4d288173b333557513bdea5b3d32ef331e412d56e979821620ef33ebb`.
+Audit fingerprint `619a303e5576eff3f3fa695e3f666b75c987af96287bf4b3536cbd7e0fd1e0f7`.

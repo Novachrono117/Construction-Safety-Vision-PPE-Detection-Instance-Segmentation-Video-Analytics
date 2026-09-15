@@ -106,6 +106,73 @@ def test_the_inventory_matches_the_git_index(paths: ProjectPaths, committed: dic
     assert committed["measurements"]["inventory"]["total_tracked_files"] == len(tracked)
 
 
+def test_the_inventory_delta_reconciles_against_git(paths: ProjectPaths, committed: dict) -> None:
+    """Parent + added - deleted must equal the head count, all four read from git."""
+    delta = committed["measurements"]["inventory_delta"]
+    baseline = audit._tracked_at_commit(paths.root, audit.PHASE_12A_BASELINE_COMMIT)
+    current = audit.tracked_files(paths.root)
+
+    assert delta["tracked_files_at_parent"] == len(baseline)
+    assert delta["tracked_files_at_phase_12a_head"] == len(current)
+    assert delta["delta_tracked_files"] == len(current) - len(baseline)
+    assert (
+        delta["tracked_files_at_parent"] + delta["added_count"] - delta["deleted_count"]
+        == delta["tracked_files_at_phase_12a_head"]
+    )
+    assert (
+        delta["tracked_files_at_phase_12a_head"]
+        == (committed["measurements"]["inventory"]["total_tracked_files"])
+    )
+
+
+def test_the_created_file_count_equals_the_files_listed(
+    paths: ProjectPaths, committed: dict
+) -> None:
+    """A declared count of created files must equal git's, and equal the list's length.
+
+    This is the inconsistency the block exists to prevent: a report that says it
+    created eight files while enumerating nine.
+    """
+    delta = committed["measurements"]["inventory_delta"]
+    baseline = set(audit._tracked_at_commit(paths.root, audit.PHASE_12A_BASELINE_COMMIT))
+    added = sorted(set(audit.tracked_files(paths.root)) - baseline)
+
+    assert delta["added"] == added
+    assert delta["added_count"] == len(added)
+    assert delta["added_count"] == len(delta["added"])
+    assert delta["deleted_count"] == len(delta["deleted"])
+    assert delta["modified_count"] == len(delta["modified"])
+
+
+def test_audit_outputs_are_not_the_tracked_file_delta(committed: dict) -> None:
+    """The five artifacts this phase writes are not the number of files it adds."""
+    delta = committed["measurements"]["inventory_delta"]
+    assert delta["audit_output_artifacts"] == sorted(audit.AUDIT_OUTPUT_ARTIFACTS)
+    assert delta["audit_output_artifacts_added"] == len(audit.AUDIT_OUTPUT_ARTIFACTS)
+    assert delta["implementation_support_files_added"] == len(delta["implementation_support_files"])
+    assert (
+        delta["audit_output_artifacts_added"] + delta["implementation_support_files_added"]
+        == delta["added_count"]
+    )
+    assert delta["audit_outputs_are_not_the_file_delta"] is True
+    assert set(delta["audit_output_artifacts"]).isdisjoint(delta["implementation_support_files"])
+
+
+def test_a_broken_reconciliation_is_refused(committed: dict) -> None:
+    """The validator must reject inventory arithmetic that does not close."""
+    payload = json.loads(json.dumps(committed))
+    payload["measurements"]["inventory_delta"]["added_count"] -= 1
+    assert any("reconcile" in problem for problem in audit.validate(payload))
+
+    payload = json.loads(json.dumps(committed))
+    payload["measurements"]["inventory_delta"]["added"].pop()
+    assert any("files listed" in problem for problem in audit.validate(payload))
+
+    payload = json.loads(json.dumps(committed))
+    del payload["measurements"]["inventory_delta"]
+    assert any("baseline" in problem for problem in audit.validate(payload))
+
+
 def test_deliverable_probes_reflect_the_index(paths: ProjectPaths, committed: dict) -> None:
     """A probe must report presence from the index, not from a stored opinion."""
     tracked = set(audit.tracked_files(paths.root))

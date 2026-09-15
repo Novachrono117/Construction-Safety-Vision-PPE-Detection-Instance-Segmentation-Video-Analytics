@@ -42,6 +42,7 @@ from construction_safety_vision.data.canonical import scan_for_sensitive
 from construction_safety_vision.delivery_audit import (
     AUDIT_JSON,
     AUDIT_MARKDOWN,
+    AUDIT_OUTPUT_ARTIFACTS,
     AUDIT_PROVENANCE,
     CLASSIFICATION_COMPLETE,
     COMPLIANCE_CSV,
@@ -65,16 +66,12 @@ BLOCKED = "BLOCKED"
 NEWLINE = "\n"
 """Artifacts are written with LF endings on every platform."""
 
-OWN_ARTIFACTS: frozenset[str] = frozenset(
-    {
-        f"reports/{AUDIT_JSON}",
-        f"reports/{AUDIT_MARKDOWN}",
-        f"reports/{GAP_CSV}",
-        f"reports/{COMPLIANCE_CSV}",
-        f"reports/{AUDIT_PROVENANCE}",
-    }
-)
-"""The only files this phase may create or change."""
+OWN_ARTIFACTS: frozenset[str] = frozenset(AUDIT_OUTPUT_ARTIFACTS)
+"""The only files this phase may create or change.
+
+Taken from the audit module rather than restated here, so the set the runner
+protects and the set the inventory reconciliation counts cannot drift apart.
+"""
 
 
 def gate_is_open(env: dict[str, str] | None = None) -> bool:
@@ -197,6 +194,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
 
     summary = payload["summary"]
+    delta = payload["measurements"]["inventory_delta"]
     record = ProvenanceRecord.create(
         "final_repository_audit",
         phase=12,
@@ -220,6 +218,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             "video_started": False,
             "pre_existing_artifacts_unchanged": True,
             "summary": summary,
+            "inventory_reconciliation": {
+                "baseline_commit": delta["baseline_commit"],
+                "tracked_files_at_parent": delta["tracked_files_at_parent"],
+                "tracked_files_at_phase_12a_head": delta["tracked_files_at_phase_12a_head"],
+                "files_added": delta["added_count"],
+                "files_deleted": delta["deleted_count"],
+                "live_docs_modified": delta["modified_count"],
+                "audit_output_artifacts_added": delta["audit_output_artifacts_added"],
+                "implementation_support_files_added": delta["implementation_support_files_added"],
+            },
             "readiness": payload["readiness"],
         },
     )
@@ -239,7 +247,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         f"missing; P0 {summary['gaps']['P0']}, P1 {summary['gaps']['P1']}, "
         f"P2 {summary['gaps']['P2']}, P3 {summary['gaps']['P3']}"
     )
-    print(f"unchanged   {len(before)} pre-existing tracked files verified byte-identical")
+    print(
+        f"unchanged   {len(before)} tracked files other than this phase's own "
+        f"{len(OWN_ARTIFACTS)} outputs verified byte-identical"
+    )
+    print(
+        f"inventory   {delta['tracked_files_at_parent']} tracked at "
+        f"{delta['baseline_commit'][:12]} + {delta['added_count']} added - "
+        f"{delta['deleted_count']} deleted = "
+        f"{delta['tracked_files_at_phase_12a_head']}; "
+        f"{delta['audit_output_artifacts_added']} of the additions are this phase's "
+        f"artifacts and {delta['implementation_support_files_added']} are implementation "
+        f"support; {delta['modified_count']} live documents modified"
+    )
     print(f"commit      {git_commit(paths.root)}")
     return 0
 
