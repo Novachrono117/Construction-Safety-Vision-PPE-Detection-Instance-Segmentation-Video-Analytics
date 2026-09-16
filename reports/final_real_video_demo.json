@@ -1,0 +1,495 @@
+{
+  "assignment_video_requirement": "COMPLETE",
+  "audio_not_preserved": true,
+  "classification": "FINAL_REAL_VIDEO_DEMO_COMPLETE",
+  "code_license": "AGPL-3.0",
+  "delivery_tooling_note": "First screenshot extraction failed at OpenCV imwrite on a Unicode Windows directory. Replaced only JPEG file I/O with imencode/Path.write_bytes; extracted the same frozen frame indices from the existing MP4. No inference retry.",
+  "engineering_retry_count": 0,
+  "execution": {
+    "decoded_frames": 2613,
+    "encoded_frames": 2613,
+    "encoder_backend": "FFMPEG",
+    "environment": {
+      "platform": "Windows-11-10.0.26200-SP0",
+      "python_implementation": "CPython",
+      "python_version": "3.12.14"
+    },
+    "fps_overlay": true,
+    "full_source_processed": true,
+    "git_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+    "holdout_accessed": false,
+    "implementation_sha256": {
+      "video_models.py": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed",
+      "video_render.py": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187",
+      "video_runtime.py": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21"
+    },
+    "inference": {
+      "device": {
+        "cuda_build": "12.8",
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+        "requested": "cuda",
+        "torch": "2.11.0+cu128"
+      },
+      "models": {
+        "D2": {
+          "detections": 34828,
+          "effective_batch_sizes": [
+            1
+          ],
+          "effective_dtypes": [
+            "torch.float32"
+          ],
+          "forward_calls_including_framework_warmup": 2614,
+          "frames_completed": 2613,
+          "hook_attached": true,
+          "identity": {
+            "architecture": "YOLO11n",
+            "bytes": 5502289,
+            "distribution_status": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
+            "download_locator": null,
+            "experiment_sha256": "8417f64f3c01c8994291f1fb58837059a9db6a814fd5dbbb955a44dcc1979685",
+            "freeze_manifest": "reports/final_detector_manifest.json",
+            "imgsz": 768,
+            "license_notice": "delivery/LICENSING.md",
+            "local_path": "artifacts/frozen/detection/D2_best.pt",
+            "logical_name": "D2",
+            "sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206",
+            "status": "FROZEN",
+            "training_provenance": "reports/detection_D2.provenance.json"
+          },
+          "predict_invocations": 2613
+        },
+        "S1": {
+          "detections": 35866,
+          "effective_batch_sizes": [
+            1
+          ],
+          "effective_dtypes": [
+            "torch.float32"
+          ],
+          "forward_calls_including_framework_warmup": 2614,
+          "frames_completed": 2613,
+          "hook_attached": true,
+          "identity": {
+            "architecture": "YOLO11n-seg",
+            "bytes": 6041685,
+            "distribution_status": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
+            "download_locator": null,
+            "experiment_sha256": "d14b98fbea6402691245037a296a7da4c040299535c2743d994b65a58acaa402",
+            "freeze_manifest": "reports/final_segmenter_manifest.json",
+            "imgsz": 768,
+            "license_notice": "delivery/LICENSING.md",
+            "local_path": "artifacts/frozen/segmentation/S1_best.pt",
+            "logical_name": "S1",
+            "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20",
+            "status": "FROZEN",
+            "training_provenance": "reports/segmentation_S1.provenance.json"
+          },
+          "predict_invocations": 2613
+        }
+      },
+      "settings": {
+        "augment": false,
+        "batch": 1,
+        "conf": 0.25,
+        "imgsz": 768,
+        "iou": 0.7,
+        "max_det": 300,
+        "precision": "FP32",
+        "precision_argument": "quantize",
+        "precision_value": 32,
+        "retina_masks_s1": true,
+        "source": "configs/detector_segmenter_comparison.yaml",
+        "source_sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+        "tta": false
+      },
+      "ultralytics": "8.4.138"
+    },
+    "input": {
+      "bytes": 3668491956,
+      "filename": "mdina_construction_lossless.avi",
+      "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+    },
+    "input_unchanged": true,
+    "layout": "D2_LEFT_S1_RIGHT_UNSCALED",
+    "max_frames": null,
+    "mode": "compare",
+    "opencv": "5.0.0",
+    "output": {
+      "bytes": 581898040,
+      "filename": "final_construction_ppe_compare.mp4",
+      "sha256": "03c1e2ba2894862db7225a17ceefc1c6eb6a54534f2f94eef6230d0135ba4a69"
+    },
+    "output_video": {
+      "backend": "FFMPEG",
+      "codec_fourcc": "FMP4",
+      "duration_seconds": 104.52,
+      "fps": 25.0,
+      "frame_count": 2613,
+      "height": 1080,
+      "orientation_auto": false,
+      "requested_codec": "mp4v",
+      "verified_decoded_frames": 2613,
+      "width": 3840
+    },
+    "processed_frames": 2613,
+    "processing_elapsed_seconds": 439.1260752000089,
+    "processing_throughput_fps": 5.9504551143082445,
+    "purpose": "DEMO_RUNTIME_MEASUREMENT",
+    "requested_device": "cuda",
+    "schema_version": 1,
+    "source": {
+      "backend": "FFMPEG",
+      "codec_fourcc": "ffv1",
+      "container_extension": ".avi",
+      "duration_seconds": 104.52,
+      "fps": 25.0,
+      "frame_count": 2613,
+      "height": 1080,
+      "orientation_auto": false,
+      "width": 1920
+    },
+    "source_attribution": {
+      "creator": "Frank Vincentz",
+      "license": "CC BY-SA 3.0",
+      "modifications": "Full source decoded to lossless FFV1/AVI without audio; D2 box and S1 mask overlays; side-by-side unscaled panels; audio omitted; timestamp/credit footer added only to extracted screenshots.",
+      "retrieval_date": "2026-09-16",
+      "source_type": "EXTERNAL_REAL_VIDEO",
+      "title": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies",
+      "url": "https://commons.wikimedia.org/wiki/File:Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm"
+    },
+    "source_decoded_sequence_sha256": "cf99e332a7195f4841180a8d6fa84c39a1a2fd5471b9c4ae2007c81aa8505ae9",
+    "status": "COMPLETE",
+    "threshold_changed": false,
+    "timing_contract": "Decode + predict/preprocess/postprocess + render + encode + writer flush; includes first-call framework warmup; excludes setup/model loading, hashes, output verification and sidecar writes. Not comparable to Phase 10C.",
+    "tracking": false,
+    "training": false,
+    "warnings": [
+      "NO_AUDIO_OR_TIMESTAMP_TRACK_COPIED"
+    ]
+  },
+  "execution_ledger": {
+    "attempt": 1,
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "scripts/run_video_demo.py",
+      "--input",
+      "outputs/phase13b_source/mdina_construction_lossless.avi",
+      "--output",
+      "outputs/final_construction_ppe_compare.mp4",
+      "--mode",
+      "compare",
+      "--device",
+      "cuda",
+      "--source-metadata",
+      "reports/final_real_video_attribution.json"
+    ],
+    "engineering_retries": 0,
+    "phase": "13B",
+    "plan_sha256": "56beadb8780ac52342b6fa369e7b1fba388c3381683ab3bffaa45a81ed1c13af",
+    "started_at_utc": "2026-09-16T13:26:03.301702+00:00"
+  },
+  "execution_plan": {
+    "approved_runtime_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+    "device": "cuda",
+    "execution_policy": "ONE_CLI_RUN; retries only after documented engineering failure",
+    "frozen_at_utc": "2026-09-16T13:25:48.034655+00:00",
+    "holdout_accessed": false,
+    "input": "outputs/phase13b_source/mdina_construction_lossless.avi",
+    "input_identity": {
+      "bytes": 3668491956,
+      "filename": "mdina_construction_lossless.avi",
+      "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+    },
+    "max_frames": null,
+    "mode": "compare",
+    "model_selection_changed": false,
+    "output": "outputs/final_construction_ppe_compare.mp4",
+    "phase": "13B",
+    "runtime_settings": {
+      "augment": false,
+      "batch": 1,
+      "conf": 0.25,
+      "imgsz": 768,
+      "iou": 0.7,
+      "max_det": 300,
+      "precision": "FP32",
+      "precision_argument": "quantize",
+      "precision_value": 32,
+      "retina_masks_s1": true,
+      "source": "configs/detector_segmenter_comparison.yaml",
+      "source_sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "tta": false
+    },
+    "runtime_sha256": {
+      "video_models.py": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed",
+      "video_render.py": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187",
+      "video_runtime.py": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21"
+    },
+    "selected_range": {
+      "duration_seconds": 104.52,
+      "end_frame_exclusive": 2613,
+      "selection": "FULL_CLIP_NO_SAMPLING_LOSSLESS_CONTAINER_NORMALIZATION",
+      "start_frame_inclusive": 0
+    },
+    "source_identity": {
+      "bytes": 73256182,
+      "filename": "mdina_construction.webm",
+      "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+    },
+    "source_metadata": "reports/final_real_video_attribution.json",
+    "source_record": "reports/final_real_video_source.json",
+    "source_visual_review": "Real construction site with visible workers; three fixed source-only previews inspected before any inference.",
+    "status": "FROZEN_BEFORE_INFERENCE",
+    "temporal_review": {
+      "contact_sheet_step_seconds": 1,
+      "method": "Inspect contact sheets at every whole second across the complete output; inspect fixed pairs at each third midpoint and 0.5 seconds later at full resolution. Describe one observation per pair including genuine visible failures. No source replacement, model rerun or screenshot reselection for prediction quality.",
+      "scope": "Systematic sampled qualitative review, not exhaustive error annotation",
+      "screenshot_frame_indices_zero_based": [
+        436,
+        448,
+        1306,
+        1318,
+        2178,
+        2190
+      ],
+      "timestamp_semantics": "zero-based frame index / source FPS"
+    },
+    "threshold_changed": false,
+    "tracking": false,
+    "training": false
+  },
+  "execution_plan_sha256": "56beadb8780ac52342b6fa369e7b1fba388c3381683ab3bffaa45a81ed1c13af",
+  "gap_002_status": "RESOLVED",
+  "gap_010_status": "PARTIALLY_RESOLVED",
+  "holdout_accessed": false,
+  "media_license": "CC BY-SA 3.0",
+  "model_selection_changed": false,
+  "phase": "13B",
+  "schema_version": 1,
+  "screenshots": {
+    "contact_samples": 105,
+    "output_sha256": "03c1e2ba2894862db7225a17ceefc1c6eb6a54534f2f94eef6230d0135ba4a69",
+    "screenshots": [
+      {
+        "decoded_output_frame_sha256": "8ebbe5aa1e469c38acf7e868a6fa3043214b04129f7822769e5d4191f8cc8b80",
+        "frame_zero_based": 436,
+        "identity": {
+          "bytes": 1315142,
+          "filename": "frame_000436.jpg",
+          "sha256": "369673ec53dd1c9102cfb98fc4152cafac22ce7ed19dafeede80fe647101117a"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_000436.jpg",
+        "timestamp_seconds": 17.44
+      },
+      {
+        "decoded_output_frame_sha256": "a47b84b91aa95b12d20866e1a65807b1117716866e0c0cd0b9fb281a95a7cd5e",
+        "frame_zero_based": 448,
+        "identity": {
+          "bytes": 1320946,
+          "filename": "frame_000448.jpg",
+          "sha256": "c5dcd63245d231eed2204ffd6ba1066153542daa9df656a865ef2b446b17ab5a"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_000448.jpg",
+        "timestamp_seconds": 17.92
+      },
+      {
+        "decoded_output_frame_sha256": "ac4cc3fad6bfc03f44ee72729a3c015f69418b8ebaf650b69121d14c8f7ef0fb",
+        "frame_zero_based": 1306,
+        "identity": {
+          "bytes": 1304521,
+          "filename": "frame_001306.jpg",
+          "sha256": "5fc7588cfe0c4f1c8912888cfbc5a6d914935467bd41b44af93d3c89d9671c49"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_001306.jpg",
+        "timestamp_seconds": 52.24
+      },
+      {
+        "decoded_output_frame_sha256": "2c77dbf4cc2d4a8e70fb0900f9e73d11db5eaef5b17c7cd51ce663bcae78a8de",
+        "frame_zero_based": 1318,
+        "identity": {
+          "bytes": 1335474,
+          "filename": "frame_001318.jpg",
+          "sha256": "8fda3c1055b1961a219086b3b1855d07ea61682492963982f1fcacd90789a781"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_001318.jpg",
+        "timestamp_seconds": 52.72
+      },
+      {
+        "decoded_output_frame_sha256": "dcb7e0db15ffc28e347b7c1327fee22ca85ae3b6476897224148872eb03aec4e",
+        "frame_zero_based": 2178,
+        "identity": {
+          "bytes": 1295065,
+          "filename": "frame_002178.jpg",
+          "sha256": "bb3f0782c8af6b0569483a57078f2ed668da94e49c9c92a3c2a813b283aecd83"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_002178.jpg",
+        "timestamp_seconds": 87.12
+      },
+      {
+        "decoded_output_frame_sha256": "ef3d34269470fa41a91f6cbef1d3d1a4f9eb5f3fc6b01d659f5c558745da9033",
+        "frame_zero_based": 2190,
+        "identity": {
+          "bytes": 1301210,
+          "filename": "frame_002190.jpg",
+          "sha256": "c7033acf7aba5756f36d507e1fca1ee8d7f401989e18a8df7931ac90aff84aae"
+        },
+        "license": "CC BY-SA 3.0",
+        "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+        "path": "reports/figures/final_video/frame_002190.jpg",
+        "timestamp_seconds": 87.6
+      }
+    ]
+  },
+  "source": {
+    "acquired_at_utc": "2026-09-16T13:25:14.942225+00:00",
+    "actual_video_duration_seconds": 104.52,
+    "actual_video_frame_count": 2613,
+    "audio_not_preserved": true,
+    "container": "WebM (VP8/Vorbis)",
+    "creator": "Frank Vincentz",
+    "decode": {
+      "cfr_contract": "PASS",
+      "frames": 2613,
+      "status": "COMPLETE",
+      "timestamp_delta_max_ms": 40.00000000001455,
+      "timestamp_delta_min_ms": 39.99999999998545
+    },
+    "direct_asset_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm",
+    "identity": {
+      "bytes": 73256182,
+      "filename": "mdina_construction.webm",
+      "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+    },
+    "license": "CC BY-SA 3.0",
+    "license_evidence": "Commons creator own-work CC BY-SA 3.0 grant; this option selected from the explicit dual-license grant.",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "local_path": "outputs/phase13b_source/mdina_construction.webm",
+    "modifications": "Full source decoded to lossless FFV1/AVI without audio; D2 box and S1 mask overlays; side-by-side unscaled panels; audio omitted; timestamp/credit footer added only to extracted screenshots.",
+    "normalization": {
+      "codec": "FFV1",
+      "frame_insertion_or_deletion": false,
+      "frames": 2613,
+      "identity": {
+        "bytes": 3668491956,
+        "filename": "mdina_construction_lossless.avi",
+        "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+      },
+      "local_path": "outputs/phase13b_source/mdina_construction_lossless.avi",
+      "pixel_sequence_identical": true,
+      "pixel_sequence_sha256": "cf99e332a7195f4841180a8d6fa84c39a1a2fd5471b9c4ae2007c81aa8505ae9",
+      "reason": "WebM CAP_PROP_FRAME_COUNT estimates 2616 from container duration; 2613 regularly timestamped video frames decode. Use exact-count lossless AVI to satisfy the unchanged approved runtime contract without frame insertion/deletion.",
+      "spatial_transform": "NONE",
+      "video": {
+        "backend": "FFMPEG",
+        "codec_fourcc": "ffv1",
+        "duration_seconds": 104.52,
+        "fps": 25.0,
+        "frame_count": 2613,
+        "height": 1080,
+        "orientation_auto": false,
+        "width": 1920
+      }
+    },
+    "original_filename": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies.webm",
+    "retrieval_date": "2026-09-16",
+    "source_type": "EXTERNAL_REAL_VIDEO",
+    "title": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies",
+    "url": "https://commons.wikimedia.org/wiki/File:Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm",
+    "video": {
+      "backend": "FFMPEG",
+      "codec_fourcc": "VP80",
+      "duration_seconds": 104.64,
+      "fps": 25.0,
+      "frame_count": 2616,
+      "height": 1080,
+      "orientation_auto": false,
+      "width": 1920
+    }
+  },
+  "storage": {
+    "classification": "EXTERNAL_DELIVERY_ARTIFACT",
+    "delivery_instructions": "Deliver MP4 together with final_real_video_demo.md and its provenance/attribution. Verify recorded SHA-256 before submission. Public URL and checkpoint retrieval remain pending; GAP-010 stays partial.",
+    "distribution": "LOCAL_ONLY; no upload authorized",
+    "local_path": "outputs/final_construction_ppe_compare.mp4",
+    "public_url": null
+  },
+  "temporal_review": {
+    "annotation_status": "NO_NEW_GROUND_TRUTH_OR_ACCURACY_METRICS",
+    "coverage": "105 contact samples: every integer second from 0 through 104, plus the six frozen full-resolution frames. All samples inspected; not exhaustive frame-by-frame annotation.",
+    "observations": [
+      {
+        "evidence_level": "FACT (visible output); cause UNKNOWN",
+        "frames_zero_based": [
+          436,
+          448
+        ],
+        "genuine_failure_visible": true,
+        "interpretation": "A persistent visible background false positive in this sampled pair. Persistence does not make the prediction correct. This is a local visual finding, not a measured false-positive rate or a model ranking; its cause is UNKNOWN.",
+        "systems_classes": "S1 person; D2/S1 person and vest_on_body context",
+        "third": "First",
+        "timestamps_seconds": [
+          17.44,
+          17.92
+        ],
+        "visible_behavior": "S1 draws a person box and blue mask over the wrapped construction materials on the pallet behind the central pillar in both frames. No person is visible at that location. D2 does not draw a corresponding person box on that pallet. Both systems also draw person/vest overlays on several actual workers; crowded labels overlap around the pillar."
+      },
+      {
+        "evidence_level": "FACT (visible output); cause UNKNOWN",
+        "frames_zero_based": [
+          1306,
+          1318
+        ],
+        "genuine_failure_visible": true,
+        "interpretation": "A genuine spurious PPE prediction and a change between two nearby sampled frames. The sample establishes appearance/disappearance, not the exact start, end or duration of the error. Why it occurred is UNKNOWN; no threshold change or rerun followed.",
+        "systems_classes": "S1 helmet_loose; D2/S1 person and vest_on_body context",
+        "third": "Middle",
+        "timestamps_seconds": [
+          52.24,
+          52.72
+        ],
+        "visible_behavior": "At 52.24 s S1 displays a large helmet_loose box and ochre mask over the portable toilets, loader and nearby background on the left of its panel. That helmet_loose overlay is absent at 52.72 s. D2 has no corresponding large helmet_loose overlay in either frame. Person and vest_on_body overlays on the worker in red beside the tree remain visible in both systems in the pair."
+      },
+      {
+        "evidence_level": "FACT (visible output); cause UNKNOWN",
+        "frames_zero_based": [
+          2178,
+          2190
+        ],
+        "genuine_failure_visible": true,
+        "interpretation": "Visible missed-helmet evidence and temporal variation at the frozen operating point. This pair does not establish a tracking identity, a general occlusion failure mechanism, or a class recall estimate. Causes and behavior between the sampled instants are UNKNOWN.",
+        "systems_classes": "S1 and D2 helmet_on_head; person and vest_on_body",
+        "third": "Final",
+        "timestamps_seconds": [
+          87.12,
+          87.6
+        ],
+        "visible_behavior": "Workers cross the foreground while both systems retain several person/vest overlays. On the bent worker wearing the pale helmet near the center, S1 has no helmet_on_head box at that helmet in the 87.12 s sample and has one at 87.60 s. D2 has no helmet_on_head box at that same visible helmet in either sample. The S1 masks and overlapping boxes around the group change with the scene."
+      }
+    ],
+    "render_review": {
+      "labels": "Readable at native resolution; overlapping labels in crowded regions remain a documented limitation",
+      "layout": "D2 left / S1 right; both panels present and unscaled",
+      "masks": "Overlay coordinates agree with visible scene locations; erroneous masks are retained as predictions, not corrected",
+      "screenshot_selection_changed_after_inference": false
+    },
+    "review_type": "SYSTEMATIC_SAMPLED_VISUAL_REVIEW",
+    "reviewer": "Codex visual inspection of decoded final-video screenshots"
+  },
+  "threshold_changed": false,
+  "tracking": false,
+  "training": false
+}

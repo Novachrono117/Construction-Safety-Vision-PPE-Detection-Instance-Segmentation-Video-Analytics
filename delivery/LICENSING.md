@@ -144,3 +144,13 @@ tests it only with synthetic bytes and does not read the real checkpoints.
 A later fetcher must accept only the explicitly documented source, write to
 ignored storage, verify size and digest before an atomic promotion, and fail
 closed on mismatch. Network tests must use synthetic fixtures.
+
+## Phase 13B real-video media
+
+The original Mdina construction footage is by **Frank Vincentz**, under
+**CC BY-SA 3.0**. The derived demonstration MP4 and its six screenshots retain
+that license; project contributions to these media use the same license.
+They are not relicensed as repository code. Preserve the full title, creator,
+source URL, license link and modification notice in the
+[video attribution report](../reports/final_real_video_demo.md) beside any copy.
+No endorsement by the creator is implied. Project code remains GNU AGPL-3.0.

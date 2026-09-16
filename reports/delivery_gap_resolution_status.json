@@ -23,13 +23,13 @@
     "pitch": "NOT_GENERATED",
     "publication_metadata": "RECOMMENDATIONS_ONLY",
     "readme_final_professionalization": "PENDING",
-    "video": "RUNTIME_COMPLETE_REAL_VIDEO_PENDING"
+    "video": "FINAL_REAL_VIDEO_DEMO_COMPLETE"
   },
   "gap_counts": {
     "DEFERRED_OPTIONAL": 1,
-    "OPEN": 9,
+    "OPEN": 8,
     "PARTIALLY_RESOLVED": 4,
-    "RESOLVED": 8
+    "RESOLVED": 9
   },
   "gaps": [
     {
@@ -44,15 +44,18 @@
       "resolution_phase": "12B"
     },
     {
-      "current_status": "OPEN",
+      "current_status": "RESOLVED",
       "evidence": [
-        "reports/final_delivery_gap_register.csv"
+        "reports/final_real_video_demo.json",
+        "reports/final_real_video_demo.md",
+        "reports/final_real_video_demo.provenance.json",
+        "delivery/VIDEO.md"
       ],
       "gap_id": "GAP-002",
       "original_severity": "P0",
       "phase_12a_status": "OPEN",
-      "remaining_action": "Acquire a licensed construction video of at least 30 s, record its provenance, build the inference runtime, measure FPS on named hardware and describe at least three temporal failure modes with timestamps.",
-      "resolution_phase": null
+      "remaining_action": "none",
+      "resolution_phase": "13B"
     },
     {
       "current_status": "OPEN",
@@ -143,17 +146,16 @@
     {
       "current_status": "PARTIALLY_RESOLVED",
       "evidence": [
-        "delivery/VIDEO.md",
-        "scripts/run_video_demo.py",
-        "reports/video_runtime_foundation.json",
-        "reports/video_runtime_foundation.md",
-        "reports/video_runtime_foundation.provenance.json"
+        "reports/final_real_video_demo.json",
+        "reports/final_real_video_demo.md",
+        "reports/final_real_video_demo.provenance.json",
+        "delivery/VIDEO.md"
       ],
       "gap_id": "GAP-010",
       "original_severity": "P1",
       "phase_12a_status": "OPEN",
-      "remaining_action": "Produce and publish the licensed real-video demonstration.",
-      "resolution_phase": "13A"
+      "remaining_action": "Publish the recorded MP4 with attribution after approval; public checkpoint retrieval also remains unavailable.",
+      "resolution_phase": "13B"
     },
     {
       "current_status": "RESOLVED",
@@ -310,6 +312,13 @@
     "mandatory_real_video": "OPEN",
     "tracking": "NOT_IMPLEMENTED"
   },
+  "phase_13b": {
+    "classification": "FINAL_REAL_VIDEO_DEMO_COMPLETE",
+    "distribution": "LOCAL_ONLY_EXTERNAL_DELIVERY_ARTIFACT",
+    "evidence": "reports/final_real_video_demo.provenance.json",
+    "mandatory_real_video": "COMPLETE",
+    "tracking": "NOT_IMPLEMENTED"
+  },
   "repository_license": {
     "canonical_text_bytes": 34523,
     "canonical_text_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
@@ -349,6 +358,13 @@
       "phase_12a_state": "PARTIAL",
       "remaining_action": "none",
       "requirement_id": "R13"
+    },
+    {
+      "current_state": "COMPLETE",
+      "evidence": "reports/final_real_video_demo.md",
+      "phase_12a_state": "MISSING",
+      "remaining_action": "none; local deliverable validated; public distribution pending",
+      "requirement_id": "R14"
     }
   ],
   "schema_version": 1,

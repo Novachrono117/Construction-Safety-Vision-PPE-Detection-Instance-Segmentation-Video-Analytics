@@ -53,14 +53,23 @@ def test_validator_rejects_false_runtime_evidence(monkeypatch, defect, expected)
 def test_unrelated_gaps_and_phase12c_artifacts_preserved():
     import subprocess
 
-    from construction_safety_vision.video_delivery import BASELINE
+    from construction_safety_vision.video_delivery import APPROVED_RUNTIME_COMMIT, BASELINE
 
     before = json.loads(
         subprocess.check_output(
             ["git", "show", f"{BASELINE}:reports/delivery_gap_resolution_status.json"], cwd=ROOT
         )
     )
-    current = json.loads((ROOT / "reports/delivery_gap_resolution_status.json").read_text())
+    current = json.loads(
+        subprocess.check_output(
+            [
+                "git",
+                "show",
+                f"{APPROVED_RUNTIME_COMMIT}:reports/delivery_gap_resolution_status.json",
+            ],
+            cwd=ROOT,
+        )
+    )
     for old, new in zip(before["gaps"], current["gaps"], strict=True):
         if old["gap_id"] != "GAP-010":
             assert old == new

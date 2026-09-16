@@ -1,6 +1,7 @@
 # Frozen-model video runtime
 
-**Phase 13A runtime complete. Final real >=30-second assignment video: OPEN.**
+**Phase 13B real >=30-second assignment video: COMPLETE locally.**
+[Final report, rights and screenshots](../reports/final_real_video_demo.md).
 This CLI processes ordinary local videos with the frozen final D2 and S1.
 Engineering evidence: [runtime report](../reports/video_runtime_foundation.md).
 
@@ -127,7 +128,29 @@ generate small video fixtures in temporary directories and require no real model
 The committed smoke configuration/script documents the executed integration
 procedure; it refuses an existing execution ledger instead of repeating it.
 
-GAP-010 is partially resolved by this functional runtime. GAP-002 stays OPEN:
-no real >=30-second construction video, final annotated deliverable or temporal
-failure analysis exists yet. Long/high-resolution real footage, sustained memory
-behavior and codec portability are not validated. Tracking remains deferred.
+GAP-002 is RESOLVED: the full 104.52-second licensed construction clip was
+processed once on CUDA in compare mode and fully decoded after encoding.
+GAP-010 remains PARTIALLY_RESOLVED: public MP4 distribution and checkpoint
+retrieval are pending. Codec portability and sustained memory behavior outside
+this execution remain untested. Tracking remains deferred.
+
+## Final local deliverable
+
+`outputs/final_construction_ppe_compare.mp4` is the validated 3840x1080 MP4,
+2613 frames at 25 FPS, without audio. It is ignored because it is a large external
+delivery artifact. The [final report](../reports/final_real_video_demo.md) records
+its exact bytes/hash, the executed command, and the six fixed screenshots. Deliver
+the MP4 together with that report and `outputs/final_construction_ppe_compare.mp4.provenance.json`.
+Preserve Frank Vincentz attribution and CC BY-SA 3.0 for the derived media.
+No public URL exists yet; do not rerun inference to validate this deliverable.
+
+```text
+uv run python scripts/final_video_delivery.py validate --with-video
+```
+
+Source preparation used `scripts/prepare_final_video.py prepare` then `freeze`.
+The full WebM was converted to lossless FFV1/AVI before inference to replace an
+estimated container frame count with an exact count. Every decoded pixel and
+frame was preserved and hashed; both the source and prepared input remain under
+ignored `outputs/phase13b_source/`. These commands refuse existing records. No
+source footage or final output was used for model selection or tuning.

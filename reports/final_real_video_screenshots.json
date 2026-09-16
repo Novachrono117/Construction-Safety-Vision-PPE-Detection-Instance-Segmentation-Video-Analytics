@@ -1,0 +1,84 @@
+{
+  "contact_samples": 105,
+  "output_sha256": "03c1e2ba2894862db7225a17ceefc1c6eb6a54534f2f94eef6230d0135ba4a69",
+  "screenshots": [
+    {
+      "decoded_output_frame_sha256": "8ebbe5aa1e469c38acf7e868a6fa3043214b04129f7822769e5d4191f8cc8b80",
+      "frame_zero_based": 436,
+      "identity": {
+        "bytes": 1315142,
+        "filename": "frame_000436.jpg",
+        "sha256": "369673ec53dd1c9102cfb98fc4152cafac22ce7ed19dafeede80fe647101117a"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_000436.jpg",
+      "timestamp_seconds": 17.44
+    },
+    {
+      "decoded_output_frame_sha256": "a47b84b91aa95b12d20866e1a65807b1117716866e0c0cd0b9fb281a95a7cd5e",
+      "frame_zero_based": 448,
+      "identity": {
+        "bytes": 1320946,
+        "filename": "frame_000448.jpg",
+        "sha256": "c5dcd63245d231eed2204ffd6ba1066153542daa9df656a865ef2b446b17ab5a"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_000448.jpg",
+      "timestamp_seconds": 17.92
+    },
+    {
+      "decoded_output_frame_sha256": "ac4cc3fad6bfc03f44ee72729a3c015f69418b8ebaf650b69121d14c8f7ef0fb",
+      "frame_zero_based": 1306,
+      "identity": {
+        "bytes": 1304521,
+        "filename": "frame_001306.jpg",
+        "sha256": "5fc7588cfe0c4f1c8912888cfbc5a6d914935467bd41b44af93d3c89d9671c49"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_001306.jpg",
+      "timestamp_seconds": 52.24
+    },
+    {
+      "decoded_output_frame_sha256": "2c77dbf4cc2d4a8e70fb0900f9e73d11db5eaef5b17c7cd51ce663bcae78a8de",
+      "frame_zero_based": 1318,
+      "identity": {
+        "bytes": 1335474,
+        "filename": "frame_001318.jpg",
+        "sha256": "8fda3c1055b1961a219086b3b1855d07ea61682492963982f1fcacd90789a781"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_001318.jpg",
+      "timestamp_seconds": 52.72
+    },
+    {
+      "decoded_output_frame_sha256": "dcb7e0db15ffc28e347b7c1327fee22ca85ae3b6476897224148872eb03aec4e",
+      "frame_zero_based": 2178,
+      "identity": {
+        "bytes": 1295065,
+        "filename": "frame_002178.jpg",
+        "sha256": "bb3f0782c8af6b0569483a57078f2ed668da94e49c9c92a3c2a813b283aecd83"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_002178.jpg",
+      "timestamp_seconds": 87.12
+    },
+    {
+      "decoded_output_frame_sha256": "ef3d34269470fa41a91f6cbef1d3d1a4f9eb5f3fc6b01d659f5c558745da9033",
+      "frame_zero_based": 2190,
+      "identity": {
+        "bytes": 1301210,
+        "filename": "frame_002190.jpg",
+        "sha256": "c7033acf7aba5756f36d507e1fca1ee8d7f401989e18a8df7931ac90aff84aae"
+      },
+      "license": "CC BY-SA 3.0",
+      "modification": "Original output raster plus external credit/timestamp footer; JPEG 94",
+      "path": "reports/figures/final_video/frame_002190.jpg",
+      "timestamp_seconds": 87.6
+    }
+  ]
+}

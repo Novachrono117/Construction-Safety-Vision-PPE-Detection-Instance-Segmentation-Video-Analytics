@@ -1,0 +1,43 @@
+{
+  "creator": "Welsh Government / Llywodraeth Cymru",
+  "decoded_frames": 1610,
+  "engineering_retry": false,
+  "expected_interval_ms": 41.666666666666664,
+  "fps": 24.0,
+  "identity": {
+    "bytes": 16410371,
+    "filename": "last_concrete_beam_installation.webm",
+    "sha256": "5f3ff495e668e2de036988c741a1dd4ccaf00a3221822269cf19bcea1e41eb84"
+  },
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "metadata_frame_count": 1618,
+  "model_invocations": {
+    "D2": 0,
+    "S1": 0
+  },
+  "reason": "Source violates approved constant-frame-rate/count contract; no runtime change authorized for this input.",
+  "selection_frozen": false,
+  "source_page": "https://commons.wikimedia.org/wiki/File:Fideo_o%E2%80%99r_trawst_concrit_olaf_yn_cael_ei_osod_%E2%80%93_Tach_2016_Last_concrete_beam_installation_%E2%80%93_2016.webm",
+  "source_type": "EXTERNAL_REAL_VIDEO",
+  "status": "REJECTED_BEFORE_INFERENCE",
+  "timestamp_gaps": [
+    {
+      "delta_ms": 125.0,
+      "frame_zero_based": 366
+    },
+    {
+      "delta_ms": 125.0,
+      "frame_zero_based": 732
+    },
+    {
+      "delta_ms": 125.0,
+      "frame_zero_based": 1098
+    },
+    {
+      "delta_ms": 125.0,
+      "frame_zero_based": 1464
+    }
+  ],
+  "title": "Last concrete beam installation - 2016"
+}

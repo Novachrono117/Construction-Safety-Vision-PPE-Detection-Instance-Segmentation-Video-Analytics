@@ -1,0 +1,66 @@
+{
+  "acquired_at_utc": "2026-09-16T13:25:14.942225+00:00",
+  "actual_video_duration_seconds": 104.52,
+  "actual_video_frame_count": 2613,
+  "audio_not_preserved": true,
+  "container": "WebM (VP8/Vorbis)",
+  "creator": "Frank Vincentz",
+  "decode": {
+    "cfr_contract": "PASS",
+    "frames": 2613,
+    "status": "COMPLETE",
+    "timestamp_delta_max_ms": 40.00000000001455,
+    "timestamp_delta_min_ms": 39.99999999998545
+  },
+  "direct_asset_url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm",
+  "identity": {
+    "bytes": 73256182,
+    "filename": "mdina_construction.webm",
+    "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+  },
+  "license": "CC BY-SA 3.0",
+  "license_evidence": "Commons creator own-work CC BY-SA 3.0 grant; this option selected from the explicit dual-license grant.",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "local_path": "outputs/phase13b_source/mdina_construction.webm",
+  "modifications": "Full source decoded to lossless FFV1/AVI without audio; D2 box and S1 mask overlays; side-by-side unscaled panels; audio omitted; timestamp/credit footer added only to extracted screenshots.",
+  "normalization": {
+    "codec": "FFV1",
+    "frame_insertion_or_deletion": false,
+    "frames": 2613,
+    "identity": {
+      "bytes": 3668491956,
+      "filename": "mdina_construction_lossless.avi",
+      "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+    },
+    "local_path": "outputs/phase13b_source/mdina_construction_lossless.avi",
+    "pixel_sequence_identical": true,
+    "pixel_sequence_sha256": "cf99e332a7195f4841180a8d6fa84c39a1a2fd5471b9c4ae2007c81aa8505ae9",
+    "reason": "WebM CAP_PROP_FRAME_COUNT estimates 2616 from container duration; 2613 regularly timestamped video frames decode. Use exact-count lossless AVI to satisfy the unchanged approved runtime contract without frame insertion/deletion.",
+    "spatial_transform": "NONE",
+    "video": {
+      "backend": "FFMPEG",
+      "codec_fourcc": "ffv1",
+      "duration_seconds": 104.52,
+      "fps": 25.0,
+      "frame_count": 2613,
+      "height": 1080,
+      "orientation_auto": false,
+      "width": 1920
+    }
+  },
+  "original_filename": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies.webm",
+  "retrieval_date": "2026-09-16",
+  "source_type": "EXTERNAL_REAL_VIDEO",
+  "title": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies",
+  "url": "https://commons.wikimedia.org/wiki/File:Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm",
+  "video": {
+    "backend": "FFMPEG",
+    "codec_fourcc": "VP80",
+    "duration_seconds": 104.64,
+    "fps": 25.0,
+    "frame_count": 2616,
+    "height": 1080,
+    "orientation_auto": false,
+    "width": 1920
+  }
+}

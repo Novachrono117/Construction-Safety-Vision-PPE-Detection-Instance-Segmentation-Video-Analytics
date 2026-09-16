@@ -1,0 +1,70 @@
+{
+  "approved_runtime_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+  "device": "cuda",
+  "execution_policy": "ONE_CLI_RUN; retries only after documented engineering failure",
+  "frozen_at_utc": "2026-09-16T13:25:48.034655+00:00",
+  "holdout_accessed": false,
+  "input": "outputs/phase13b_source/mdina_construction_lossless.avi",
+  "input_identity": {
+    "bytes": 3668491956,
+    "filename": "mdina_construction_lossless.avi",
+    "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+  },
+  "max_frames": null,
+  "mode": "compare",
+  "model_selection_changed": false,
+  "output": "outputs/final_construction_ppe_compare.mp4",
+  "phase": "13B",
+  "runtime_settings": {
+    "augment": false,
+    "batch": 1,
+    "conf": 0.25,
+    "imgsz": 768,
+    "iou": 0.7,
+    "max_det": 300,
+    "precision": "FP32",
+    "precision_argument": "quantize",
+    "precision_value": 32,
+    "retina_masks_s1": true,
+    "source": "configs/detector_segmenter_comparison.yaml",
+    "source_sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+    "tta": false
+  },
+  "runtime_sha256": {
+    "video_models.py": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed",
+    "video_render.py": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187",
+    "video_runtime.py": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21"
+  },
+  "selected_range": {
+    "duration_seconds": 104.52,
+    "end_frame_exclusive": 2613,
+    "selection": "FULL_CLIP_NO_SAMPLING_LOSSLESS_CONTAINER_NORMALIZATION",
+    "start_frame_inclusive": 0
+  },
+  "source_identity": {
+    "bytes": 73256182,
+    "filename": "mdina_construction.webm",
+    "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+  },
+  "source_metadata": "reports/final_real_video_attribution.json",
+  "source_record": "reports/final_real_video_source.json",
+  "source_visual_review": "Real construction site with visible workers; three fixed source-only previews inspected before any inference.",
+  "status": "FROZEN_BEFORE_INFERENCE",
+  "temporal_review": {
+    "contact_sheet_step_seconds": 1,
+    "method": "Inspect contact sheets at every whole second across the complete output; inspect fixed pairs at each third midpoint and 0.5 seconds later at full resolution. Describe one observation per pair including genuine visible failures. No source replacement, model rerun or screenshot reselection for prediction quality.",
+    "scope": "Systematic sampled qualitative review, not exhaustive error annotation",
+    "screenshot_frame_indices_zero_based": [
+      436,
+      448,
+      1306,
+      1318,
+      2178,
+      2190
+    ],
+    "timestamp_semantics": "zero-based frame index / source FPS"
+  },
+  "threshold_changed": false,
+  "tracking": false,
+  "training": false
+}

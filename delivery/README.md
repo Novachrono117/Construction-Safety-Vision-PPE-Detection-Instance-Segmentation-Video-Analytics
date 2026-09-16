@@ -1,6 +1,6 @@
 # Delivery entrypoint
 
-**Phase 13A: video runtime foundation complete.** Scientific training and
+**Phase 13B: final real-video demonstration complete locally.** Scientific training and
 final evaluation are complete. D2 and S1 are frozen; selection and tuning are
 closed. Presentation deliverables remain incomplete.
 
@@ -19,6 +19,7 @@ closed. Presentation deliverables remain incomplete.
 | [Live delivery tracker](../reports/delivery_gap_resolution_status.json) | Current delivery resolutions and requirement updates |
 | [Phase 12B provenance](../reports/public_delivery.provenance.json) | Historical source, code and generated metadata hashes |
 | [Validation gallery](../reports/qualitative_validation_gallery.md) | Completed Phase 12C FP/FN and mask evidence |
+| [Real-video demonstration](../reports/final_real_video_demo.md) | 104.52-second output, rights, temporal observations and screenshots; public delivery pending |
 | [Video runtime report](../reports/video_runtime_foundation.md) | Phase 13A engineering checks and limitations |
 | [Reports index](../reports/README.md) | Protocols, results, provenance and historical records |
 
@@ -27,7 +28,8 @@ closed. Presentation deliverables remain incomplete.
 - [Quickstart and research reproduction](REPRODUCTION.md): actual commands and
   explicit missing prerequisites. Public checkpoint retrieval remains pending.
 - [Video runtime](VIDEO.md): detector, segmenter and compare CLI modes, tested on
-  synthetic fixtures with explicit CUDA/CPU; the final real video is pending.
+  synthetic fixtures with explicit CUDA/CPU and a full real clip on CUDA. Local
+  delivery instructions and attribution accompany the final-video report.
 - [Licensing and checkpoint distribution](LICENSING.md): GNU AGPL-3.0 for the
   project source/repository; CC BY 4.0 for dataset material. Dependencies retain
   their own licenses; D2/S1 distribution still requires review.
@@ -36,6 +38,6 @@ closed. Presentation deliverables remain incomplete.
 - [Academic GenAI disclosure](AI_USAGE.md).
 - [Publication recommendations](PUBLICATION.md): a plan, no settings changed.
 
-The full recruiter README, real video, academic report, Colab and pitch are
-pending. The validation gallery is complete. No clean-room reproduction has been
-demonstrated.
+The full recruiter README, academic report, Colab, pitch and public video
+distribution are pending. The real-video deliverable and validation gallery are
+complete. No clean-room reproduction has been demonstrated.

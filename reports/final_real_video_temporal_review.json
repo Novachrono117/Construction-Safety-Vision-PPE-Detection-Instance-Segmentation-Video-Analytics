@@ -1,0 +1,44 @@
+{
+  "review_type": "SYSTEMATIC_SAMPLED_VISUAL_REVIEW",
+  "reviewer": "Codex visual inspection of decoded final-video screenshots",
+  "annotation_status": "NO_NEW_GROUND_TRUTH_OR_ACCURACY_METRICS",
+  "coverage": "105 contact samples: every integer second from 0 through 104, plus the six frozen full-resolution frames. All samples inspected; not exhaustive frame-by-frame annotation.",
+  "observations": [
+    {
+      "third": "First",
+      "frames_zero_based": [436, 448],
+      "timestamps_seconds": [17.44, 17.92],
+      "evidence_level": "FACT (visible output); cause UNKNOWN",
+      "systems_classes": "S1 person; D2/S1 person and vest_on_body context",
+      "visible_behavior": "S1 draws a person box and blue mask over the wrapped construction materials on the pallet behind the central pillar in both frames. No person is visible at that location. D2 does not draw a corresponding person box on that pallet. Both systems also draw person/vest overlays on several actual workers; crowded labels overlap around the pillar.",
+      "interpretation": "A persistent visible background false positive in this sampled pair. Persistence does not make the prediction correct. This is a local visual finding, not a measured false-positive rate or a model ranking; its cause is UNKNOWN.",
+      "genuine_failure_visible": true
+    },
+    {
+      "third": "Middle",
+      "frames_zero_based": [1306, 1318],
+      "timestamps_seconds": [52.24, 52.72],
+      "evidence_level": "FACT (visible output); cause UNKNOWN",
+      "systems_classes": "S1 helmet_loose; D2/S1 person and vest_on_body context",
+      "visible_behavior": "At 52.24 s S1 displays a large helmet_loose box and ochre mask over the portable toilets, loader and nearby background on the left of its panel. That helmet_loose overlay is absent at 52.72 s. D2 has no corresponding large helmet_loose overlay in either frame. Person and vest_on_body overlays on the worker in red beside the tree remain visible in both systems in the pair.",
+      "interpretation": "A genuine spurious PPE prediction and a change between two nearby sampled frames. The sample establishes appearance/disappearance, not the exact start, end or duration of the error. Why it occurred is UNKNOWN; no threshold change or rerun followed.",
+      "genuine_failure_visible": true
+    },
+    {
+      "third": "Final",
+      "frames_zero_based": [2178, 2190],
+      "timestamps_seconds": [87.12, 87.6],
+      "evidence_level": "FACT (visible output); cause UNKNOWN",
+      "systems_classes": "S1 and D2 helmet_on_head; person and vest_on_body",
+      "visible_behavior": "Workers cross the foreground while both systems retain several person/vest overlays. On the bent worker wearing the pale helmet near the center, S1 has no helmet_on_head box at that helmet in the 87.12 s sample and has one at 87.60 s. D2 has no helmet_on_head box at that same visible helmet in either sample. The S1 masks and overlapping boxes around the group change with the scene.",
+      "interpretation": "Visible missed-helmet evidence and temporal variation at the frozen operating point. This pair does not establish a tracking identity, a general occlusion failure mechanism, or a class recall estimate. Causes and behavior between the sampled instants are UNKNOWN.",
+      "genuine_failure_visible": true
+    }
+  ],
+  "render_review": {
+    "layout": "D2 left / S1 right; both panels present and unscaled",
+    "labels": "Readable at native resolution; overlapping labels in crowded regions remain a documented limitation",
+    "masks": "Overlay coordinates agree with visible scene locations; erroneous masks are retained as predictions, not corrected",
+    "screenshot_selection_changed_after_inference": false
+  }
+}

@@ -255,6 +255,51 @@ def build_status(root: Path) -> dict[str, Any]:
                 "mandatory_real_video": "OPEN",
                 "tracking": "NOT_IMPLEMENTED",
             }
+    final_video_path = root / "reports/final_real_video_demo.json"
+    if final_video_path.is_file():
+        final_video = json.loads(final_video_path.read_text(encoding="utf-8"))
+        if final_video.get("classification") == "FINAL_REAL_VIDEO_DEMO_COMPLETE":
+            for gap in result["gaps"]:
+                if gap["gap_id"] in {"GAP-002", "GAP-010"}:
+                    complete = gap["gap_id"] == "GAP-002"
+                    gap.update(
+                        current_status="RESOLVED" if complete else "PARTIALLY_RESOLVED",
+                        resolution_phase="13B",
+                        evidence=[
+                            "reports/final_real_video_demo.json",
+                            "reports/final_real_video_demo.md",
+                            "reports/final_real_video_demo.provenance.json",
+                            "delivery/VIDEO.md",
+                        ],
+                        remaining_action=(
+                            "none"
+                            if complete
+                            else "Publish the recorded MP4 with attribution after approval; "
+                            "public checkpoint retrieval also remains unavailable."
+                        ),
+                    )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in result["gap_counts"]
+            }
+            result["requirement_updates"].append(
+                {
+                    "requirement_id": "R14",
+                    "phase_12a_state": "MISSING",
+                    "current_state": "COMPLETE",
+                    "evidence": "reports/final_real_video_demo.md",
+                    "remaining_action": "none; local deliverable validated; "
+                    "public distribution pending",
+                }
+            )
+            result["delivery_state"]["video"] = final_video["classification"]
+            result["phase_13b"] = {
+                "classification": final_video["classification"],
+                "evidence": "reports/final_real_video_demo.provenance.json",
+                "mandatory_real_video": "COMPLETE",
+                "distribution": "LOCAL_ONLY_EXTERNAL_DELIVERY_ARTIFACT",
+                "tracking": "NOT_IMPLEMENTED",
+            }
     return result
 
 

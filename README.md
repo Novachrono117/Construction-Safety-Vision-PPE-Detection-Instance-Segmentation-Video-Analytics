@@ -10,7 +10,7 @@
 | Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
 | Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
 | Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
-| Delivery | Phase 12B truth/scaffolding, Phase 12C gallery and Phase 13A video runtime complete; real video, final README, report, Colab and pitch pending |
+| Delivery | Phase 12B truth/scaffolding, Phase 12C gallery and Phase 13B real video complete; public video distribution, final README, report, Colab and pitch pending |
 
 [Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
 [Final test report](reports/final_test_evaluation.md) ·
@@ -22,6 +22,15 @@
 The holdout is spent and locked. Frozen membership is deliberately committed
 for auditability; Phase 11 result/report artifacts omit test IDs, and bulk test
 imagery and predictions are not committed. No repeat evaluation is permitted.
+
+## Real-video demonstration
+
+The frozen D2/S1 processed a licensed real construction clip: **104.52 seconds,
+2613 frames, 25 FPS**, D2 boxes left and S1 masks right.
+[Report, temporal observations and six screenshots](reports/final_real_video_demo.md) ·
+[Runtime and local delivery instructions](delivery/VIDEO.md). The MP4 is a local
+external delivery artifact; public distribution is pending. Media: CC BY-SA 3.0,
+Frank Vincentz; full attribution is in the report. No tracking or tuning.
 
 ## Research chronology (historical)
 
@@ -79,8 +88,9 @@ status and outstanding actions are in the [live tracker](reports/delivery_gap_re
 
 A computer-vision research project for detecting and segmenting people and
 personal protective equipment (PPE) in construction scenes, with completed
-controlled evaluation and recorded error analyses. Video inference remains
-pending. Reproducible by design, not yet demonstrated from a clean clone.
+controlled evaluation and recorded error analyses. A complete real-video
+demonstration is recorded in the current delivery section. Reproducible by
+design, not yet demonstrated from a clean clone.
 
 Built as a graduate assignment in Computer Vision and Pattern Recognition, and
 as a public technical portfolio project.
@@ -193,7 +203,7 @@ Two design decisions define this architecture:
 | Claim register | **Committed (phase 10D).** Seven headline claims, each with its evidence artifact, evidence field, scope and limitation, for reuse by the academic report and pitch. |
 | Final holdout protocol | **Frozen (phase 11A) and executed once (phase 11B).** `configs/final_holdout_evaluation.yaml`, fingerprint `a5a328b3...`. Declared both checkpoints by digest, AP inference at conf 0.001, the two canonical `COCOeval` evaluators, the phase 8C direct-IoU diagnostic unchanged, the framework confusion-matrix semantics (conf 0.25, IoU 0.45), object-level TP/FP/FN, a deterministic qualitative ranking, the prediction/result fingerprint design, a 13-state one-shot ledger and 8 named failure states - all before any holdout number could exist. |
 | Final test metrics | **Measured once (phase 11B), holdout.** 65 images / 305 annotations, all evaluated, none sampled or excluded. D2 canonical box mAP@0.50:0.95 **0.427031** (mAP@0.50 0.565260); S1 canonical mask mAP@0.50:0.95 **0.410143** (mAP@0.50 0.579074); S1 canonical box mAP@0.50:0.95 **0.433764**, delta versus D2 **+0.006733** - `DESCRIPTIVE_ONLY`, no winner declared. Direct mask IoU: `matched_mask_iou_mean` **0.834548**, `gt_normalized_mask_iou` **0.585551**. |
-| Video inference | Phase 13A runtime verified with synthetic fixtures; [CLI](delivery/VIDEO.md). Final real >=30-second video remains OPEN. |
+| Video inference | Phase 13B real 104.52-second comparison complete; [report](reports/final_real_video_demo.md), [CLI](delivery/VIDEO.md). Public MP4 distribution pending. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
 What exists today: the project layout, a pinned environment, strict typed
@@ -2387,11 +2397,13 @@ Validated with [uv](https://docs.astral.sh/uv/) and **Python 3.12** (runtime
 Scientific training/inference was validated on an NVIDIA RTX 5070 Laptop GPU,
 PyTorch 2.11.0+cu128 and CUDA 12.8. Blackwell required CUDA >=12.8-compatible
 kernels in this project. Metadata tooling and synthetic unit tests need no GPU
-execution; GPU-free installation and CPU model inference are not demonstrated.
-There is no demo yet, so demo hardware support is pending.
+execution; a GPU-free clean installation has not been demonstrated. Phase 13A
+verified an explicitly requested one-frame CPU model smoke test. Phase 13B
+completed the real-video demonstration on the recorded CUDA environment.
 
 Use the [public quickstart and research reproduction scaffold](delivery/REPRODUCTION.md).
-**DEMO PENDING PHASE 13A.** The commands below are historical research commands,
+**REAL VIDEO COMPLETE; PUBLIC DISTRIBUTION PENDING.** See
+[delivery instructions](delivery/VIDEO.md). The commands below are historical research commands,
 not a current quickstart; stages that write frozen evidence must not be rerun
 in this closed repository. Final holdout evaluation is excluded from reproduction.
 

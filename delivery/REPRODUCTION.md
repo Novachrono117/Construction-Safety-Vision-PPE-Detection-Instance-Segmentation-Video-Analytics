@@ -2,7 +2,7 @@
 
 ## A. Public quickstart
 
-**Phase 13A runtime complete; final real-video demo pending.** The
+**Phase 13B real-video demo complete locally; public distribution pending.** The
 [video CLI](VIDEO.md) requires the exact local frozen checkpoints. Public
 checkpoint distribution still needs license review, so a clean-clone inference
 path is not yet self-contained. The following commands validate repository

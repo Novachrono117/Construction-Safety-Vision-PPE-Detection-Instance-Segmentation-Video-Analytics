@@ -1,0 +1,264 @@
+{
+  "config": {
+    "approved_runtime_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+    "device": "cuda",
+    "execution_policy": "ONE_CLI_RUN; retries only after documented engineering failure",
+    "frozen_at_utc": "2026-09-16T13:25:48.034655+00:00",
+    "holdout_accessed": false,
+    "input": "outputs/phase13b_source/mdina_construction_lossless.avi",
+    "input_identity": {
+      "bytes": 3668491956,
+      "filename": "mdina_construction_lossless.avi",
+      "sha256": "d8a69e5158ea500b33132749faee3ca86241a9585511456e1045dd109546577e"
+    },
+    "max_frames": null,
+    "mode": "compare",
+    "model_selection_changed": false,
+    "output": "outputs/final_construction_ppe_compare.mp4",
+    "phase": "13B",
+    "runtime_settings": {
+      "augment": false,
+      "batch": 1,
+      "conf": 0.25,
+      "imgsz": 768,
+      "iou": 0.7,
+      "max_det": 300,
+      "precision": "FP32",
+      "precision_argument": "quantize",
+      "precision_value": 32,
+      "retina_masks_s1": true,
+      "source": "configs/detector_segmenter_comparison.yaml",
+      "source_sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "tta": false
+    },
+    "runtime_sha256": {
+      "video_models.py": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed",
+      "video_render.py": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187",
+      "video_runtime.py": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21"
+    },
+    "selected_range": {
+      "duration_seconds": 104.52,
+      "end_frame_exclusive": 2613,
+      "selection": "FULL_CLIP_NO_SAMPLING_LOSSLESS_CONTAINER_NORMALIZATION",
+      "start_frame_inclusive": 0
+    },
+    "source_identity": {
+      "bytes": 73256182,
+      "filename": "mdina_construction.webm",
+      "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+    },
+    "source_metadata": "reports/final_real_video_attribution.json",
+    "source_record": "reports/final_real_video_source.json",
+    "source_visual_review": "Real construction site with visible workers; three fixed source-only previews inspected before any inference.",
+    "status": "FROZEN_BEFORE_INFERENCE",
+    "temporal_review": {
+      "contact_sheet_step_seconds": 1,
+      "method": "Inspect contact sheets at every whole second across the complete output; inspect fixed pairs at each third midpoint and 0.5 seconds later at full resolution. Describe one observation per pair including genuine visible failures. No source replacement, model rerun or screenshot reselection for prediction quality.",
+      "scope": "Systematic sampled qualitative review, not exhaustive error annotation",
+      "screenshot_frame_indices_zero_based": [
+        436,
+        448,
+        1306,
+        1318,
+        2178,
+        2190
+      ],
+      "timestamp_semantics": "zero-based frame index / source FPS"
+    },
+    "threshold_changed": false,
+    "tracking": false,
+    "training": false
+  },
+  "created_at": "2026-09-16T13:40:32+00:00",
+  "details": {
+    "approved_runtime_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+    "classification": "FINAL_REAL_VIDEO_DEMO_COMPLETE",
+    "holdout_accessed": false,
+    "model_invocations": {
+      "D2": 2613,
+      "S1": 2613
+    },
+    "model_selection_changed": false,
+    "threshold_changed": false,
+    "tracking": false,
+    "training": false
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.14"
+  },
+  "git_commit": "57e6aa8d95eded75ba7416d1001d24dde274ecfd",
+  "inputs": [
+    {
+      "path": "reports/final_real_video_source.json",
+      "sha256": "e2c3e879e8532269a959b2befe3777bae13eff5525663d144f493b1ad118b4af",
+      "size_bytes": 2949
+    },
+    {
+      "path": "reports/final_real_video_execution_plan.json",
+      "sha256": "56beadb8780ac52342b6fa369e7b1fba388c3381683ab3bffaa45a81ed1c13af",
+      "size_bytes": 2817
+    },
+    {
+      "path": "reports/final_real_video_temporal_review.json",
+      "sha256": "5fbf681068db8c9480db66cd1c8e003f7804cd911ccb58aea6fc04f933029af4",
+      "size_bytes": 3733
+    },
+    {
+      "path": "reports/final_real_video_screenshots.json",
+      "sha256": "20e41542f419ef2059c509f40771bd680d8c64ca8f27c573c3901e8ecbc05852",
+      "size_bytes": 3454
+    },
+    {
+      "path": "reports/final_real_video_attribution.json",
+      "sha256": "eda51cf98362125b5293c1154bb5500811feb131295bd9f3fce67b98c4493a9b",
+      "size_bytes": 599
+    },
+    {
+      "path": "reports/final_real_video_source_rejection.json",
+      "sha256": "357710a35c398a086b3d7b4f2580130ee848d3d2ed4ac5612fb8ca0e057b7c26",
+      "size_bytes": 1302
+    },
+    {
+      "path": "scripts/prepare_final_video.py",
+      "sha256": "8240d73b380f7754a5329c5bb55e4819452dfb5b0860aa4090782a307e911e4a",
+      "size_bytes": 10398
+    },
+    {
+      "path": "scripts/final_video_delivery.py",
+      "sha256": "5dc70986c489a974202e6ddb4078147dedec37b3ff6c6d72b06ab972bde38ef1",
+      "size_bytes": 852
+    },
+    {
+      "path": "src/construction_safety_vision/final_video_delivery.py",
+      "sha256": "14ebb0e1b4eea48713ab6ac77afcb4d876910f9c0bbccf005c9d5295a852be01",
+      "size_bytes": 28852
+    },
+    {
+      "path": "src/construction_safety_vision/delivery_status.py",
+      "sha256": "9d1dbb674f8213660bf20bdcceec54ef030bf86f22de91c0c7c5227778cbbc50",
+      "size_bytes": 22444
+    },
+    {
+      "path": "tests/test_final_video_delivery.py",
+      "sha256": "84a1a869cd2ad5c735c0d3a69a20d8d2cb5e075fc0018b02f49788b632880271",
+      "size_bytes": 4834
+    },
+    {
+      "path": "src/construction_safety_vision/video_delivery.py",
+      "sha256": "608d6fa0fa702d76a986c97b1023b20acb04a390aa4edca9e72ca187280e90fa",
+      "size_bytes": 19259
+    },
+    {
+      "path": "tests/test_video_runtime_artifacts.py",
+      "sha256": "7dcaf1955c1e1628671f885d1b37ce7fcee39cf06f853e433be3c7e205c7ad86",
+      "size_bytes": 2878
+    },
+    {
+      "path": "README.md",
+      "sha256": "2717301325ddabef7e7c9f778ff407a47585903612b5dbcb102504c6fb10f44b",
+      "size_bytes": 151133
+    },
+    {
+      "path": "reports/README.md",
+      "sha256": "98a59bd3b545ff5f2cf60661db8be4982a0d15d8699e53a5f3bd87d73b53111f",
+      "size_bytes": 7065
+    },
+    {
+      "path": "reports/roadmap.md",
+      "sha256": "41d100c487cbb329a43c1923b4ebad57059ff1dbc1104fb4d50345c8f304a082",
+      "size_bytes": 225614
+    },
+    {
+      "path": "delivery/README.md",
+      "sha256": "726c616fc11ade76a79759c3c07992a631775cfe92f07aabacab4a34c242b797",
+      "size_bytes": 3136
+    },
+    {
+      "path": "delivery/REPRODUCTION.md",
+      "sha256": "0aed42a12a95fbaec53fe3997996eb5eb48c9c9512562dc99c5caa9cdb764d7e",
+      "size_bytes": 8192
+    },
+    {
+      "path": "delivery/VIDEO.md",
+      "sha256": "d2966a081ef9f05a7567d54c4ab08e88069a006261477b668844bb4636d3b9de",
+      "size_bytes": 8582
+    },
+    {
+      "path": "delivery/LICENSING.md",
+      "sha256": "93158b1703974c13c0b5ef22f338433415e3ac651337b2c8d66feebad54cefd2",
+      "size_bytes": 8582
+    },
+    {
+      "path": "delivery/FINAL_VIDEO_ATTRIBUTION.md",
+      "sha256": "c1eeb4c3e3d02b7a64a4d275696a676dde99ecb40d5131c4f7b70a6306d40cfa",
+      "size_bytes": 1497
+    },
+    {
+      "path": "reports/figures/final_video/README.md",
+      "sha256": "f69a37acc9646a7419eeff6dfa84fbbca99150e3d624e13ef137bd3ee654422d",
+      "size_bytes": 698
+    },
+    {
+      "path": "outputs/phase13b_execution_ledger.json",
+      "sha256": "8aa04ec922fc019887e14fcb4d5f777051891b2c77f55638485a929ab3b86a5a",
+      "size_bytes": 589
+    },
+    {
+      "path": "outputs/final_construction_ppe_compare.mp4.provenance.json",
+      "sha256": "c9b257495e64e463d2a827134b394516e89c9e10afdcb661cda0ad78e8e7f515",
+      "size_bytes": 5956
+    }
+  ],
+  "name": "final_real_video_demonstration",
+  "outputs": [
+    {
+      "path": "reports/final_real_video_demo.json",
+      "sha256": "30330b7b01c0ba21de5b41c26d8bf4bfb0ffc228ac35990b360c60251e030e80",
+      "size_bytes": 21944
+    },
+    {
+      "path": "reports/final_real_video_demo.md",
+      "sha256": "2e460dcb25594398d7515b3474fc50a20b7277568a6826e8e5197a2353a14145",
+      "size_bytes": 9859
+    },
+    {
+      "path": "reports/delivery_gap_resolution_status.json",
+      "sha256": "7633868dd5e97b035ba3bf589f1b2622ede65bd580b972709f980ec75e9c40f5",
+      "size_bytes": 13398
+    },
+    {
+      "path": "reports/figures/final_video/frame_000436.jpg",
+      "sha256": "369673ec53dd1c9102cfb98fc4152cafac22ce7ed19dafeede80fe647101117a",
+      "size_bytes": 1315142
+    },
+    {
+      "path": "reports/figures/final_video/frame_000448.jpg",
+      "sha256": "c5dcd63245d231eed2204ffd6ba1066153542daa9df656a865ef2b446b17ab5a",
+      "size_bytes": 1320946
+    },
+    {
+      "path": "reports/figures/final_video/frame_001306.jpg",
+      "sha256": "5fc7588cfe0c4f1c8912888cfbc5a6d914935467bd41b44af93d3c89d9671c49",
+      "size_bytes": 1304521
+    },
+    {
+      "path": "reports/figures/final_video/frame_001318.jpg",
+      "sha256": "8fda3c1055b1961a219086b3b1855d07ea61682492963982f1fcacd90789a781",
+      "size_bytes": 1335474
+    },
+    {
+      "path": "reports/figures/final_video/frame_002178.jpg",
+      "sha256": "bb3f0782c8af6b0569483a57078f2ed668da94e49c9c92a3c2a813b283aecd83",
+      "size_bytes": 1295065
+    },
+    {
+      "path": "reports/figures/final_video/frame_002190.jpg",
+      "sha256": "c7033acf7aba5756f36d507e1fca1ee8d7f401989e18a8df7931ac90aff84aae",
+      "size_bytes": 1301210
+    }
+  ],
+  "phase": 13,
+  "schema_version": 1
+}
