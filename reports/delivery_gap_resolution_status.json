@@ -19,7 +19,7 @@
     "academic_report": "NOT_GENERATED",
     "checkpoint_distribution": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
     "colab": "NOT_GENERATED",
-    "fp_fn_gallery": "NOT_STARTED",
+    "fp_fn_gallery": "QUALITATIVE_VALIDATION_GALLERY_COMPLETE",
     "pitch": "NOT_GENERATED",
     "publication_metadata": "RECOMMENDATIONS_ONLY",
     "readme_final_professionalization": "PENDING",
@@ -27,9 +27,9 @@
   },
   "gap_counts": {
     "DEFERRED_OPTIONAL": 1,
-    "OPEN": 11,
+    "OPEN": 10,
     "PARTIALLY_RESOLVED": 3,
-    "RESOLVED": 7
+    "RESOLVED": 8
   },
   "gaps": [
     {
@@ -77,15 +77,21 @@
       "resolution_phase": null
     },
     {
-      "current_status": "OPEN",
+      "current_status": "RESOLVED",
       "evidence": [
-        "reports/final_delivery_gap_register.csv"
+        "reports/qualitative_validation_gallery.md",
+        "reports/qualitative_validation_gallery.json",
+        "reports/qualitative_validation_gallery.provenance.json",
+        "reports/figures/qualitative/validation_fp_fn_d2.png",
+        "reports/figures/qualitative/validation_fp_fn_s1.png",
+        "reports/figures/qualitative/mask_quality_gallery.png",
+        "reports/figures/qualitative/box_vs_mask_hero_candidate.png"
       ],
       "gap_id": "GAP-005",
       "original_severity": "P0",
       "phase_12a_status": "OPEN",
-      "remaining_action": "Render the gallery from validation imagery for both frozen models, five classes, one FP and one FN each, with hypotheses labelled as hypotheses.",
-      "resolution_phase": null
+      "remaining_action": "none",
+      "resolution_phase": "12C"
     },
     {
       "current_status": "RESOLVED",
@@ -288,6 +294,12 @@
   "other_requirements": "Unchanged from the immutable Phase 12A assignment matrix.",
   "phase": "12B",
   "phase_12a_snapshot": "reports/final_repository_audit.json",
+  "phase_12c": {
+    "classification": "QUALITATIVE_VALIDATION_GALLERY_COMPLETE",
+    "evidence": "reports/qualitative_validation_gallery.provenance.json",
+    "historical_phase_12b_accounting_unchanged": true,
+    "split": "validation"
+  },
   "repository_license": {
     "canonical_text_bytes": 34523,
     "canonical_text_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
@@ -320,6 +332,13 @@
       "phase_12a_state": "PARTIAL",
       "remaining_action": "Checkpoint retrieval, isolated commands and clean-room run.",
       "requirement_id": "R17"
+    },
+    {
+      "current_state": "COMPLETE",
+      "evidence": "reports/qualitative_validation_gallery.md",
+      "phase_12a_state": "PARTIAL",
+      "remaining_action": "none",
+      "requirement_id": "R13"
     }
   ],
   "schema_version": 1,

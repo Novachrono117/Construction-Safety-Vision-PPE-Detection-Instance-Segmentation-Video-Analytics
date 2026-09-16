@@ -97,7 +97,7 @@ def build_status(root: Path) -> dict[str, Any]:
         )
     audit = json.loads((root / "reports/final_repository_audit.json").read_text(encoding="utf-8"))
     stale = delivery_audit.stale_claims(root)
-    return {
+    result = {
         "schema_version": 1,
         "phase": "12B",
         "baseline_commit": BASELINE,
@@ -187,6 +187,47 @@ def build_status(root: Path) -> dict[str, Any]:
             "checkpoint_distribution": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
         },
     }
+    gallery_path = root / "reports/qualitative_validation_gallery.json"
+    if gallery_path.is_file():
+        gallery = json.loads(gallery_path.read_text(encoding="utf-8"))
+        if gallery.get("classification") == "QUALITATIVE_VALIDATION_GALLERY_COMPLETE":
+            gap = next(item for item in result["gaps"] if item["gap_id"] == "GAP-005")
+            gap.update(
+                current_status=gallery["gap_005_status"],
+                resolution_phase="12C",
+                evidence=[
+                    "reports/qualitative_validation_gallery.md",
+                    "reports/qualitative_validation_gallery.json",
+                    "reports/qualitative_validation_gallery.provenance.json",
+                    *gallery["figures"],
+                ],
+                remaining_action=(
+                    "none"
+                    if gallery["gap_005_status"] == "RESOLVED"
+                    else "Some class/error types have no qualifying example; see gallery."
+                ),
+            )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in result["gap_counts"]
+            }
+            result["requirement_updates"].append(
+                {
+                    "requirement_id": "R13",
+                    "phase_12a_state": "PARTIAL",
+                    "current_state": gallery["assignment_r13_status"],
+                    "evidence": "reports/qualitative_validation_gallery.md",
+                    "remaining_action": gap["remaining_action"],
+                }
+            )
+            result["delivery_state"]["fp_fn_gallery"] = gallery["classification"]
+            result["phase_12c"] = {
+                "classification": gallery["classification"],
+                "split": gallery["split"],
+                "evidence": "reports/qualitative_validation_gallery.provenance.json",
+                "historical_phase_12b_accounting_unchanged": True,
+            }
+    return result
 
 
 def historical_changes(root: Path) -> list[str]:

@@ -10,6 +10,7 @@ project status. Scientific records and the Phase 12A snapshot are immutable.
 - **Current synthesis:** [Scientific answer and bounded claims](detector_segmenter_scientific_synthesis.md).
 - **Current result:** [Final test evaluation](final_test_evaluation.md).
 - **Current result:** [Validation comparison](detector_segmenter_validation_comparison.md).
+- **Current visual evidence:** [Validation FP/FN and mask gallery](qualitative_validation_gallery.md), with deterministic selections and a nonfinal hero candidate.
 - **Current result:** [Controlled latency and memory benchmark](detector_segmenter_latency_report.md).
 - **Current identities:** [D2 freeze](final_detector_manifest.json), [S1 freeze](final_segmenter_manifest.json).
 - **Current delivery status:** [Live gap tracker](delivery_gap_resolution_status.json), [delivery entrypoint](../delivery/README.md).
@@ -66,7 +67,8 @@ imagery or bulk predictions are published; the spent holdout stays locked.
 
 - **Historical Phase 12A snapshot:** [Audit](final_repository_audit.md), [machine-readable audit](final_repository_audit.json), [gap register](final_delivery_gap_register.csv), [assignment matrix](assignment_compliance_matrix.csv).
 - **Current delivery follow-up:** [Gap resolution status](delivery_gap_resolution_status.json).
-- **Delivery provenance:** [Generation record](public_delivery.provenance.json).
+- **Historical Phase 12B provenance:** [Generation record](public_delivery.provenance.json), scoped to approved commit `73098b7`.
+- **Phase 12C provenance:** [Validation gallery generation](qualitative_validation_gallery.provenance.json).
 - **Current navigation:** [Delivery entrypoint](../delivery/README.md), [reproduction scaffold](../delivery/REPRODUCTION.md), [GenAI disclosure](../delivery/AI_USAGE.md), [licensing](../delivery/LICENSING.md).
 
 ## HISTORICAL SCIENTIFIC RECORD

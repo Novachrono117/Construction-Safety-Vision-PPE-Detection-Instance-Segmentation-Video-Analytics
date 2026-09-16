@@ -61,6 +61,33 @@ def pytest_collection_modifyitems(config, items):
         "test_the_revalidation_corroboration_is_true_on_disk",
     }
     for item in items:
+        # Restored development data must not turn a metadata run into an image/
+        # annotation integration run. Keep the I/O audit active as the fail-closed
+        # backstop; exclude these explicitly known local-data checks up front.
+        task_data_checks = {
+            "test_emitted_documents_match_the_manifest_fingerprints",
+            "test_emitted_documents_are_aligned_on_disk",
+            "test_emitted_counts_match_the_frozen_membership",
+            "test_emitted_image_ids_are_the_frozen_membership",
+            "test_the_same_image_carries_the_same_id_in_both_views",
+            "test_detection_documents_carry_no_masks",
+            "test_segmentation_documents_keep_both_geometry_representations",
+            "test_synthetic_rectangles_are_labelled_as_synthetic",
+            "test_emitted_categories_are_the_frozen_class_map",
+            "test_emitted_documents_carry_no_timestamp",
+            "test_emitted_documents_load_through_pycocotools",
+        }
+        is_task_data = (
+            item.path.name == "test_task_datasets.py" and item.originalname in task_data_checks
+        )
+        is_canonical_fixture = (
+            item.path.name == "test_segmentation_adapter_artifacts.py"
+            and "canonical" in item.fixturenames
+        )
+        if is_task_data or is_canonical_fixture:
+            item.add_marker(
+                pytest.mark.skip(reason="metadata-only: real development data integration excluded")
+            )
         if item.name in local_artifact_checks and item.path.name.endswith("_artifacts.py"):
             item.add_marker(
                 pytest.mark.skip(reason="metadata-only: real experiment file read excluded")

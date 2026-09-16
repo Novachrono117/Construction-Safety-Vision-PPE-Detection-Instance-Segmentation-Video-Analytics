@@ -4,6 +4,7 @@ import ast
 import csv
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -64,11 +65,16 @@ def test_delivery_modules_have_no_model_or_dataset_accessor_path():
 
 
 def test_delivery_provenance_identifies_the_actual_sources_and_outputs():
+    # Phase 12B is approved history. Later delivery phases update the live README,
+    # tracker and builder; its provenance still identifies the exact 12B bytes.
+    approved_phase_12b = "73098b7c62d9cb183cb3114af6209a65f1c532e7"
     record = json.loads((ROOT / PROVENANCE_PATH).read_text(encoding="utf-8"))
     for entry in record["inputs"] + record["outputs"]:
-        path = ROOT / entry["path"]
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"]
-        assert path.stat().st_size == entry["size_bytes"]
+        body = subprocess.check_output(
+            ["git", "show", f"{approved_phase_12b}:{entry['path']}"], cwd=ROOT
+        )
+        assert hashlib.sha256(body).hexdigest() == entry["sha256"]
+        assert len(body) == entry["size_bytes"]
     assert record["details"]["models_executed"] == 0
     assert record["details"]["holdout_accessed"] is False
 

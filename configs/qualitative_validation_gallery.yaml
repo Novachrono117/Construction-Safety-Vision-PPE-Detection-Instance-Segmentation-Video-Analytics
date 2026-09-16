@@ -1,0 +1,42 @@
+# Phase 12C delivery policy, declared before inference or image inspection.
+# These rules select illustrations; they do not select or tune a model.
+schema_version: 1
+purpose: DELIVERY_VISUALIZATION_ONLY
+split: validation
+inference:
+  imgsz: 768
+  conf: 0.25
+  iou: 0.70
+  max_det: 300
+  augment: false
+  tta: false
+  precision: FP32
+  quantize: 32
+  batch: 1
+  retina_masks_s1: true
+matching:
+  box_iou: 0.50
+  class_aware: true
+  assignment: GREEDY_DESCENDING_CONFIDENCE_THEN_HIGHEST_IOU
+  prediction_tie: ORIGINAL_PREDICTION_INDEX
+  ground_truth_tie: CANONICAL_ANNOTATION_ID
+selection:
+  fp: CONFIDENCE_DESC_PREDICTION_INDEX_ASC_IMAGE_ID_ASC
+  fn: CANONICAL_AREA_DESC_ANNOTATION_ID_ASC_IMAGE_ID_ASC
+  masks: EXISTING_8D_BANDS_AND_AREA_FLAGS_ON_BOX_MATCHED_PAIRS
+  good_mask: MASK_IOU_DESC_GT_AREA_DESC_ANNOTATION_ID_ASC_IMAGE_ID_ASC
+  under_mask: RELATIVE_AREA_ERROR_ASC_ANNOTATION_ID_ASC_IMAGE_ID_ASC
+  over_mask: RELATIVE_AREA_ERROR_DESC_ANNOTATION_ID_ASC_IMAGE_ID_ASC
+  hero: BOTH_MODELS_MATCH_PPE_HIGH_QUALITY_MASK_NONRECTANGULAR_THEN_FEWEST_ERRORS
+hero:
+  # Illustration eligibility only, never an inference or evaluation threshold.
+  minimum_gt_area_fraction: 0.005
+  maximum_mask_box_fill: 0.85
+  minimum_mask_box_fill: 0.10
+  minimum_image_width: 640
+  rank: TOTAL_D2_S1_FP_FN_ASC_GT_AREA_FRACTION_DESC_MASK_IOU_DESC_ID_ASC
+render:
+  font: DejaVu Sans
+  mask_alpha: 0.32
+  full_image: true
+  preserve_aspect_ratio: true

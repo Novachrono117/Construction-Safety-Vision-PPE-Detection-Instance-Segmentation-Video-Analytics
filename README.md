@@ -10,11 +10,12 @@
 | Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
 | Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
 | Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
-| Delivery | Phase 12B truth/scaffolding complete; final README, gallery, video, report, Colab and pitch pending |
+| Delivery | Phase 12B truth/scaffolding and Phase 12C validation gallery complete; final README, video, report, Colab and pitch pending |
 
 [Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
 [Final test report](reports/final_test_evaluation.md) ·
 [Final repository audit](reports/final_repository_audit.md) ·
+[Validation qualitative FP/FN gallery](reports/qualitative_validation_gallery.md) ·
 [Delivery and current results](delivery/README.md) · [Reports index](reports/README.md)
 
 The holdout is spent and locked. Frozen membership is deliberately committed

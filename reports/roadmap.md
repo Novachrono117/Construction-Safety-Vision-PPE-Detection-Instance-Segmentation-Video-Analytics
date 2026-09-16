@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 2.0 · Current phase: **12B COMPLETE - public truth and delivery scaffolding**; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
+Version: 2.0 · Current phase: **12C COMPLETE - validation qualitative gallery**; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -25,9 +25,10 @@ updates live status without rewriting frozen results or their historical logs.
 | 9 | Segmentation experiments and model freeze | **delivered by phases 8E-8G** - the controlled variation (S1), the comparison protocol and the model freeze all happened there. No separate phase 9 work remains; the next phase of actual work is 10, the controlled validation comparison of the two frozen models. |
 | 10 | Controlled validation comparison | complete (10A `DETECTOR_SEGMENTER_COMPARISON_PROTOCOL_FROZEN`, fingerprint `d92a1576...` · 10B `DETECTOR_SEGMENTER_VALIDATION_COMPARISON_COMPLETE`: canonical box comparison and spatial-information analysis on validation, FP32 parity proved at runtime · **10C `DETECTOR_SEGMENTER_COST_BENCHMARK_COMPLETE`**: end-to-end latency +2.756991 ms (+30.11%) and peak reserved inference memory 2.375x, `CONTROLLED_LOCAL_HARDWARE_BENCHMARK` · **10D `DETECTOR_SEGMENTER_SCIENTIFIC_SYNTHESIS_COMPLETE`**: the four axes synthesised from committed 10B/10C evidence with no composite score, no declared winner and no model executed) - **phase 10 is complete** |
 | 11 | One-shot final test evaluation | complete (11A `FINAL_HOLDOUT_EVALUATION_PROTOCOL_FROZEN`, fingerprint `a5a328b3...` - the complete final evaluation predeclared with **no holdout byte read** · **11B `TEST_EVALUATION_COMPLETE`, attempt 1, one read, D2 box 0.427031 / S1 mask 0.410143 / S1 box 0.433764**) | **Experimental/modelling work is CLOSED.**
-| 12 | Delivery and error analysis | 12A audit complete; 12B public truth/scaffolding complete; FP/FN gallery pending |
+| 12 | Delivery and error analysis | 12A audit, 12B public truth/scaffolding and 12C validation FP/FN gallery complete |
 | 12A | Final repository audit | complete; immutable snapshot |
 | 12B | Public truth and delivery scaffolding | complete; [live gap status](delivery_gap_resolution_status.json) |
+| 12C | Validation qualitative gallery | complete; [FP/FN and mask evidence](qualitative_validation_gallery.md); hero candidate is not final |
 | 13 | Video inference and tracking | not started |
 | 14 | Submission package and reproducibility audit | not started |
 
@@ -1745,6 +1746,21 @@ was not accessed and no model was executed. Recorded in
 - No model was run, no holdout content was accessed, no metric was recomputed.
   The final README rewrite, FP/FN gallery, video, report, Colab and pitch remain
   pending. See the [delivery entrypoint](../delivery/README.md).
+
+## Phase 12C - validation qualitative gallery (complete)
+
+The [gallery](qualitative_validation_gallery.md) shows deterministic FP/FN
+selections for D2 and S1 across the complete frozen validation population,
+mask-quality examples and a `HERO_CANDIDATE_NOT_FINAL`. Dataset-derived figures
+carry CC BY 4.0 attribution. GAP-005 is resolved in the live tracker; the
+Phase 12A audit remains historical and unchanged.
+
+Visualization inference required two calls per model: the initial list-source
+route ignored the declared batch size and was excluded; the corrected
+validation-directory route enforces and records effective batch 1 and FP32.
+Both executions are disclosed in the gallery provenance. No training, tuning,
+model change, new headline metric or holdout access occurred. Remaining delivery
+phases retain their own scope and were not started here.
 
 ## Phase 12 - Error analysis
 
