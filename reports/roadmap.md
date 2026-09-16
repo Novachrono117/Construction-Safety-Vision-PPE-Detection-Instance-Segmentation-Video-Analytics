@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 2.0 · Current phase: **12C COMPLETE - validation qualitative gallery**; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
+Version: 2.0 · Current phase: **13A COMPLETE - video runtime foundation**; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -29,7 +29,8 @@ updates live status without rewriting frozen results or their historical logs.
 | 12A | Final repository audit | complete; immutable snapshot |
 | 12B | Public truth and delivery scaffolding | complete; [live gap status](delivery_gap_resolution_status.json) |
 | 12C | Validation qualitative gallery | complete; [FP/FN and mask evidence](qualitative_validation_gallery.md); hero candidate is not final |
-| 13 | Video inference and tracking | not started |
+| 13 | Video inference and tracking | 13A runtime complete; real >=30-second video pending; tracking deferred |
+| 13A | Real video runtime foundation | complete; [synthetic engineering evidence](video_runtime_foundation.md) |
 | 14 | Submission package and reproducibility audit | not started |
 
 ---
@@ -1780,12 +1781,26 @@ phases retain their own scope and were not started here.
 
 ## Phase 13 - Video inference and tracking
 
+### Phase 13A - runtime foundation (complete)
+
+The [video runtime](video_runtime_foundation.md) provides detector, segmenter and
+same-frame compare modes with frozen D2/S1, verified MP4/mp4v output, portable
+provenance and explicit failure behavior. Synthetic tests cover all modes; a
+minimal generated-video integration check executed four predict calls per model
+across CUDA and CPU, with no dataset imagery or new scientific metric.
+
+GAP-010 is PARTIALLY_RESOLVED. GAP-002 remains OPEN: the real >=30-second video
+has not been acquired, processed or published. No tracking or compliance rule
+was added. Phase 13B requires its own scope.
+
+### Remaining real-video deliverable
+
 - **Objective.** Demonstrate the frozen models on real construction footage and
   characterise temporal behaviour. Tracking is a bonus, attempted only after the
   mandatory deliverables are complete.
 - **Inputs.** Frozen checkpoints; a construction video of >= 30 s with a
   recorded source and license.
-- **Outputs.** `scripts/run_video_inference.py`; the annotated output video;
+- **Outputs.** Runtime delivered as `scripts/run_video_demo.py`; the annotated output video;
   `reports/video_analysis.md` with measured FPS and hardware; optionally
   ByteTrack integration and `reports/tracking_notes.md`.
 - **Validation gate.** The video meets the duration and provenance requirements;

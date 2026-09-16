@@ -1,0 +1,169 @@
+{
+  "config": {
+    "executions": [
+      {
+        "device": "cuda",
+        "max_frames": null,
+        "mode": "compare"
+      },
+      {
+        "device": "cpu",
+        "max_frames": 1,
+        "mode": "compare"
+      }
+    ],
+    "fixture": {
+      "fps": 10.0,
+      "frames": 3,
+      "height": 192,
+      "width": 320
+    },
+    "purpose": "VERIFY_VIDEO_RUNTIME_INTEGRATION",
+    "schema_version": 1
+  },
+  "created_at": "2026-09-16T12:56:56+00:00",
+  "details": {
+    "baseline_commit": "fd8c13581e31bbadd4369ae5b0a56f227a03d934",
+    "classification": "VIDEO_RUNTIME_FOUNDATION_COMPLETE",
+    "holdout_accessed": false,
+    "model_invocations": {
+      "D2": 4,
+      "S1": 4
+    },
+    "synthetic_tests": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 33,
+      "skipped": 0,
+      "tests": 33
+    }
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_implementation": "CPython",
+    "python_version": "3.12.14"
+  },
+  "git_commit": "fd8c13581e31bbadd4369ae5b0a56f227a03d934",
+  "inputs": [
+    {
+      "path": "src/construction_safety_vision/video_models.py",
+      "sha256": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed",
+      "size_bytes": 9492
+    },
+    {
+      "path": "src/construction_safety_vision/video_runtime.py",
+      "sha256": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21",
+      "size_bytes": 15516
+    },
+    {
+      "path": "src/construction_safety_vision/video_render.py",
+      "sha256": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187",
+      "size_bytes": 3963
+    },
+    {
+      "path": "src/construction_safety_vision/video_fixture.py",
+      "sha256": "5463a3010a94189dc67959f009d708cf3a725954dd809b381def9cc73f8d0e9b",
+      "size_bytes": 1962
+    },
+    {
+      "path": "src/construction_safety_vision/video_delivery.py",
+      "sha256": "3d0b4fe15e49d9f37c9103047a740dd5b38047618431f9fd0d91cfe764f478c8",
+      "size_bytes": 18433
+    },
+    {
+      "path": "src/construction_safety_vision/delivery_status.py",
+      "sha256": "d127af3bfcadff6ae6f5cfc5710ae9d9190eb4d79fa758294a457211ebb53168",
+      "size_bytes": 20127
+    },
+    {
+      "path": "scripts/run_video_demo.py",
+      "sha256": "9bf52de2f8d6d28370411599bb90d94a37246e7fdd1f2450f90c15371b51dcee",
+      "size_bytes": 2319
+    },
+    {
+      "path": "scripts/smoke_video_runtime.py",
+      "sha256": "7e4cab152bb2e44b6ab88ca6135004acf249cfcd6bed9dd7d3f439e0929f656f",
+      "size_bytes": 2212
+    },
+    {
+      "path": "scripts/build_video_runtime_report.py",
+      "sha256": "2a7fe5fc0720af7042fa2ea28a89dae7b19b1629e090c9d9ed494cd744975aa6",
+      "size_bytes": 309
+    },
+    {
+      "path": "scripts/validate_video_runtime.py",
+      "sha256": "0e4219ab590f035237d74e540d903c45c73d5dd0fa40dfb4d13e4679d1982a77",
+      "size_bytes": 655
+    },
+    {
+      "path": "tests/test_video_runtime.py",
+      "sha256": "bb4a9d7f945797c1235e63073b50358d9ec778741e2bf2df29068f22513fa446",
+      "size_bytes": 13996
+    },
+    {
+      "path": "tests/test_video_runtime_artifacts.py",
+      "sha256": "a06e8e95154910e0852ec190c5bbb44c7f3e46f389f18159cd641d481a8d2dd9",
+      "size_bytes": 2683
+    },
+    {
+      "path": "delivery/VIDEO.md",
+      "sha256": "9c73765d7ceb25af09d15d75079919a60b8d171ccf85bb441ce980262d7e250b",
+      "size_bytes": 7313
+    },
+    {
+      "path": "configs/video_runtime_smoke.yaml",
+      "sha256": "3d1d9929012655016fcb1cc1f0b9a1332788148e56ae06076e2cf9d7da5300f9",
+      "size_bytes": 455
+    },
+    {
+      "path": "configs/detector_segmenter_comparison.yaml",
+      "sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25",
+      "size_bytes": 17494
+    },
+    {
+      "path": "delivery/checkpoints.json",
+      "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1",
+      "size_bytes": 1295
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+      "size_bytes": 17220
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+      "size_bytes": 17536
+    },
+    {
+      "path": "outputs/phase13a_smoke/execution.json",
+      "sha256": "906618a4dab8dfd3b8554768f4fc61b018d62778b21a347d3f3919acaafcb536",
+      "size_bytes": 13904
+    },
+    {
+      "path": "outputs/phase13a_unit_tests.xml",
+      "sha256": "dfb564c9e692ee9b4cd871709265e46b7114ddaf74d451344ea5a96c300b5125",
+      "size_bytes": 4059
+    }
+  ],
+  "name": "video_runtime_foundation",
+  "outputs": [
+    {
+      "path": "reports/video_runtime_foundation.json",
+      "sha256": "0d13287fa1855642811c5acfc44e7d5c930267151111497e92117b4b3bf99b54",
+      "size_bytes": 15278
+    },
+    {
+      "path": "reports/video_runtime_foundation.md",
+      "sha256": "1a8763d135677635cd3d3e788e3865082e2289098d45ba69e91a0780f5aa02d0",
+      "size_bytes": 7235
+    },
+    {
+      "path": "reports/delivery_gap_resolution_status.json",
+      "sha256": "a616a3bf48abafe1f68ed1ab0b70c7b925f8eb12414140eaeaaab1f0795862a9",
+      "size_bytes": 12929
+    }
+  ],
+  "phase": 13,
+  "schema_version": 1
+}

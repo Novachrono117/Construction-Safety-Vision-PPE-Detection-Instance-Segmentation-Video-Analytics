@@ -2,9 +2,11 @@
 
 ## A. Public quickstart
 
-**DEMO PENDING PHASE 13A.** There is no public clone-to-inference path yet:
-checkpoint distribution needs license review, and no image/video demo exists.
-The following commands validate repository tooling and delivery metadata.
+**Phase 13A runtime complete; final real-video demo pending.** The
+[video CLI](VIDEO.md) requires the exact local frozen checkpoints. Public
+checkpoint distribution still needs license review, so a clean-clone inference
+path is not yet self-contained. The following commands validate repository
+tooling and delivery metadata.
 
 Validated interpreter: **Python 3.12** (local runtime 3.12.14).
 `.python-version` selects 3.12. The `>=3.11` requirement in `pyproject.toml` and
@@ -45,9 +47,10 @@ The `--metadata-only` mode explicitly skips real-checkpoint integration tests
 and blocks unexpected reads of ignored experiment/data files before opening
 them. It leaves synthetic fixtures and committed text evidence available. The
 Phase 12B run sets `PYTEST_ADDOPTS=--metadata-only` and executes `uv run pytest`.
-No CPU model inference has been validated and no
-CPU fallback is claimed. A future demo's hardware support is **UNKNOWN** until
-implemented and tested.
+Phase 13A verified CUDA and a one-frame CPU video integration smoke test.
+CPU is explicitly requested; CUDA never silently falls back. This is functional
+support, not equivalent speed or a broad hardware guarantee. See the
+[video runtime report](../reports/video_runtime_foundation.md).
 
 ## B. Full research reproduction path
 

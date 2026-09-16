@@ -10,12 +10,13 @@
 | Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
 | Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
 | Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
-| Delivery | Phase 12B truth/scaffolding and Phase 12C validation gallery complete; final README, video, report, Colab and pitch pending |
+| Delivery | Phase 12B truth/scaffolding, Phase 12C gallery and Phase 13A video runtime complete; real video, final README, report, Colab and pitch pending |
 
 [Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
 [Final test report](reports/final_test_evaluation.md) ·
 [Final repository audit](reports/final_repository_audit.md) ·
 [Validation qualitative FP/FN gallery](reports/qualitative_validation_gallery.md) ·
+[Frozen-model video runtime](delivery/VIDEO.md) ·
 [Delivery and current results](delivery/README.md) · [Reports index](reports/README.md)
 
 The holdout is spent and locked. Frozen membership is deliberately committed
@@ -192,7 +193,7 @@ Two design decisions define this architecture:
 | Claim register | **Committed (phase 10D).** Seven headline claims, each with its evidence artifact, evidence field, scope and limitation, for reuse by the academic report and pitch. |
 | Final holdout protocol | **Frozen (phase 11A) and executed once (phase 11B).** `configs/final_holdout_evaluation.yaml`, fingerprint `a5a328b3...`. Declared both checkpoints by digest, AP inference at conf 0.001, the two canonical `COCOeval` evaluators, the phase 8C direct-IoU diagnostic unchanged, the framework confusion-matrix semantics (conf 0.25, IoU 0.45), object-level TP/FP/FN, a deterministic qualitative ranking, the prediction/result fingerprint design, a 13-state one-shot ledger and 8 named failure states - all before any holdout number could exist. |
 | Final test metrics | **Measured once (phase 11B), holdout.** 65 images / 305 annotations, all evaluated, none sampled or excluded. D2 canonical box mAP@0.50:0.95 **0.427031** (mAP@0.50 0.565260); S1 canonical mask mAP@0.50:0.95 **0.410143** (mAP@0.50 0.579074); S1 canonical box mAP@0.50:0.95 **0.433764**, delta versus D2 **+0.006733** - `DESCRIPTIVE_ONLY`, no winner declared. Direct mask IoU: `matched_mask_iou_mean` **0.834548**, `gt_normalized_mask_iou` **0.585551**. |
-| Video inference | Not implemented. |
+| Video inference | Phase 13A runtime verified with synthetic fixtures; [CLI](delivery/VIDEO.md). Final real >=30-second video remains OPEN. |
 | Tracking (bonus) | Not started; deliberately deferred. |
 
 What exists today: the project layout, a pinned environment, strict typed

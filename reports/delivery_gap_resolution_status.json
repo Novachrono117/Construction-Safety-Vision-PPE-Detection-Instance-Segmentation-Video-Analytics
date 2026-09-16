@@ -23,12 +23,12 @@
     "pitch": "NOT_GENERATED",
     "publication_metadata": "RECOMMENDATIONS_ONLY",
     "readme_final_professionalization": "PENDING",
-    "video": "NOT_STARTED"
+    "video": "RUNTIME_COMPLETE_REAL_VIDEO_PENDING"
   },
   "gap_counts": {
     "DEFERRED_OPTIONAL": 1,
-    "OPEN": 10,
-    "PARTIALLY_RESOLVED": 3,
+    "OPEN": 9,
+    "PARTIALLY_RESOLVED": 4,
     "RESOLVED": 8
   },
   "gaps": [
@@ -141,15 +141,19 @@
       "resolution_phase": "12B"
     },
     {
-      "current_status": "OPEN",
+      "current_status": "PARTIALLY_RESOLVED",
       "evidence": [
-        "reports/final_delivery_gap_register.csv"
+        "delivery/VIDEO.md",
+        "scripts/run_video_demo.py",
+        "reports/video_runtime_foundation.json",
+        "reports/video_runtime_foundation.md",
+        "reports/video_runtime_foundation.provenance.json"
       ],
       "gap_id": "GAP-010",
       "original_severity": "P1",
       "phase_12a_status": "OPEN",
-      "remaining_action": "A single predict command taking an image path and writing an annotated output, plus one committed sample image licensed for redistribution.",
-      "resolution_phase": null
+      "remaining_action": "Produce and publish the licensed real-video demonstration.",
+      "resolution_phase": "13A"
     },
     {
       "current_status": "RESOLVED",
@@ -299,6 +303,12 @@
     "evidence": "reports/qualitative_validation_gallery.provenance.json",
     "historical_phase_12b_accounting_unchanged": true,
     "split": "validation"
+  },
+  "phase_13a": {
+    "classification": "VIDEO_RUNTIME_FOUNDATION_COMPLETE",
+    "evidence": "reports/video_runtime_foundation.provenance.json",
+    "mandatory_real_video": "OPEN",
+    "tracking": "NOT_IMPLEMENTED"
   },
   "repository_license": {
     "canonical_text_bytes": 34523,

@@ -11,6 +11,7 @@ project status. Scientific records and the Phase 12A snapshot are immutable.
 - **Current result:** [Final test evaluation](final_test_evaluation.md).
 - **Current result:** [Validation comparison](detector_segmenter_validation_comparison.md).
 - **Current visual evidence:** [Validation FP/FN and mask gallery](qualitative_validation_gallery.md), with deterministic selections and a nonfinal hero candidate.
+- **Current application foundation:** [Video runtime](video_runtime_foundation.md), verified with synthetic fixtures; final real video remains pending.
 - **Current result:** [Controlled latency and memory benchmark](detector_segmenter_latency_report.md).
 - **Current identities:** [D2 freeze](final_detector_manifest.json), [S1 freeze](final_segmenter_manifest.json).
 - **Current delivery status:** [Live gap tracker](delivery_gap_resolution_status.json), [delivery entrypoint](../delivery/README.md).

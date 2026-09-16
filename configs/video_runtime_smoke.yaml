@@ -1,0 +1,17 @@
+# Engineering verification only. No dataset, metric, benchmark or tuning.
+schema_version: 1
+purpose: VERIFY_VIDEO_RUNTIME_INTEGRATION
+fixture:
+  frames: 3
+  width: 320
+  height: 192
+  fps: 10.0
+executions:
+  - device: cuda
+    mode: compare
+    max_frames: null
+  - device: cpu
+    mode: compare
+    max_frames: 1
+# Expected predict() calls if both runs finish: D2=4, S1=4.
+# Each model may perform its normal framework setup warmup, separately recorded.

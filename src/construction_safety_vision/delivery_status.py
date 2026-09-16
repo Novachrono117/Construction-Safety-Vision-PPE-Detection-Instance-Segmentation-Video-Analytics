@@ -227,6 +227,34 @@ def build_status(root: Path) -> dict[str, Any]:
                 "evidence": "reports/qualitative_validation_gallery.provenance.json",
                 "historical_phase_12b_accounting_unchanged": True,
             }
+    video_path = root / "reports/video_runtime_foundation.json"
+    if video_path.is_file():
+        video = json.loads(video_path.read_text(encoding="utf-8"))
+        if video.get("classification") == "VIDEO_RUNTIME_FOUNDATION_COMPLETE":
+            gap = next(item for item in result["gaps"] if item["gap_id"] == "GAP-010")
+            gap.update(
+                current_status="PARTIALLY_RESOLVED",
+                resolution_phase="13A",
+                evidence=[
+                    "delivery/VIDEO.md",
+                    "scripts/run_video_demo.py",
+                    "reports/video_runtime_foundation.json",
+                    "reports/video_runtime_foundation.md",
+                    "reports/video_runtime_foundation.provenance.json",
+                ],
+                remaining_action="Produce and publish the licensed real-video demonstration.",
+            )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in result["gap_counts"]
+            }
+            result["delivery_state"]["video"] = "RUNTIME_COMPLETE_REAL_VIDEO_PENDING"
+            result["phase_13a"] = {
+                "classification": video["classification"],
+                "evidence": "reports/video_runtime_foundation.provenance.json",
+                "mandatory_real_video": "OPEN",
+                "tracking": "NOT_IMPLEMENTED",
+            }
     return result
 
 
