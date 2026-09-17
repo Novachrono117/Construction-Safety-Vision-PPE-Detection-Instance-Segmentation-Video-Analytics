@@ -18,7 +18,7 @@
   "delivery_state": {
     "academic_report": "NOT_GENERATED",
     "checkpoint_distribution": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
-    "colab": "NOT_GENERATED",
+    "colab": "NOTEBOOK_PRESENT_CLOUD_EXECUTION_NOT_VERIFIED",
     "fp_fn_gallery": "QUALITATIVE_VALIDATION_GALLERY_COMPLETE",
     "pitch": "NOT_GENERATED",
     "publication_metadata": "RECOMMENDATIONS_ONLY",

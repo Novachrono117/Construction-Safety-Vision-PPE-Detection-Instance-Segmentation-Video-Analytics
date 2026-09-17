@@ -6,6 +6,11 @@ closed. Presentation deliverables remain incomplete.
 
 ## Current evidence
 
+The [two-mode Colab notebook](../notebooks/construction_safety_vision_demo.ipynb)
+provides evidence-only Mode A and optional checkpoint-upload inference Mode B.
+It is locally checked; GitHub publication and a fresh Colab execution remain
+pending. See [setup and readiness](COLAB.md).
+
 | Read this | Role |
 | --- | --- |
 | [Scientific synthesis](../reports/detector_segmenter_scientific_synthesis.md) | Current answer to the research question; validation and local benchmark evidence |

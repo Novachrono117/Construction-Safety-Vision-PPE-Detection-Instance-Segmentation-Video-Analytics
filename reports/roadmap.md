@@ -10,6 +10,12 @@ criteria defined in [`rubric_contract.md`](rubric_contract.md).
 Scientific phases are now closed; they must not be reopened. Delivery work
 updates live status without rewriting frozen results or their historical logs.
 
+**Additional delivery surface:** the [two-mode Colab notebook](../delivery/COLAB.md)
+is prepared and locally checked. Mode A reads committed evidence without weights;
+Mode B verifies uploaded D2/S1 before dispatching the existing video runtime.
+GitHub publication and an actual fresh Colab run remain pending. This does not
+close the Colab gap or start a new scientific phase.
+
 ## Status overview
 
 | # | Phase | Status |

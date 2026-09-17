@@ -2,6 +2,20 @@
 
 ## A. Public quickstart
 
+### Evidence notebook (Mode A) and optional inference (Mode B)
+
+The [Colab notebook](../notebooks/construction_safety_vision_demo.ipynb) defaults
+to displaying committed metrics, architecture, validation FP/FN and video figures
+without weights, a GPU, or project dependency installation. Its optional Mode B
+installs the locked runtime and accepts only uploaded D2/S1 bytes matching their
+recorded hashes before running an external-video demo.
+
+See [Colab setup](COLAB.md). Local metadata/display and safety checks have passed;
+cloud execution and publication of the notebook/support code and Phase 13B commit
+remain pending. This does not establish a fresh Colab run or close GAP-014.
+
+### Repository tooling and existing CLI
+
 **Phase 13B real-video demo complete locally; public distribution pending.** The
 [video CLI](VIDEO.md) requires the exact local frozen checkpoints. Public
 checkpoint distribution still needs license review, so a clean-clone inference

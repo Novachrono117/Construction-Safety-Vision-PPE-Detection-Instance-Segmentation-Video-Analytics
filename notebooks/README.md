@@ -1,7 +1,17 @@
 # notebooks/
 
-Colab-executable notebooks. None exist yet: notebooks are written by the phase
-that has something real to run, not created empty to fill the directory.
+The delivery notebook is
+[`construction_safety_vision_demo.ipynb`](construction_safety_vision_demo.ipynb).
+It offers two modes:
+
+- **Mode A (default):** architecture, published final metrics, validation FP/FN
+  figures and recorded video frames. No checkpoints or project dependency install.
+- **Mode B (opt-in):** locked environment installation, exact D2/S1 checkpoint
+  uploads and SHA-256 verification, then inference on an uploaded external video.
+
+See [Colab setup and readiness](../delivery/COLAB.md). Local checks are separate
+from cloud verification. The notebook/support code and Phase 13B evidence must be
+published before the clone cell works on Colab. Full MP4 publication remains pending.
 
 ## Rules
 
@@ -15,7 +25,10 @@ that has something real to run, not created empty to fill the directory.
   script run, recorded and reviewable.
 - Clear outputs that embed large binaries before committing; keep diffs readable.
 
-## Planned notebooks
+## Historical notebook plan (scientific lifecycle now closed)
+
+The following table records the original plan. It does not authorize training,
+evaluation or data access now, and these historical notebooks were not delivered.
 
 | Notebook | Phase | Purpose |
 | --- | --- | --- |

@@ -23,6 +23,18 @@ The holdout is spent and locked. Frozen membership is deliberately committed
 for auditability; Phase 11 result/report artifacts omit test IDs, and bulk test
 imagery and predictions are not committed. No repeat evaluation is permitted.
 
+## Evidence notebook: two delivery modes
+
+[Open/import the delivery notebook](notebooks/construction_safety_vision_demo.ipynb)
+in Colab. **Mode A**, the default, shows the architecture, committed metrics,
+validation FP/FN and real-video figures without checkpoints or a project dependency
+install. **Mode B** optionally installs the locked runtime, verifies uploaded D2/S1
+weights by SHA-256, and runs inference on an uploaded external video.
+
+Local checks are complete; cloud execution and public availability remain pending.
+The notebook/support code and Phase 13B evidence must be published before its clone
+cell works in Colab. [Setup, boundaries and readiness](delivery/COLAB.md).
+
 ## Real-video demonstration
 
 The frozen D2/S1 processed a licensed real construction clip: **104.52 seconds,

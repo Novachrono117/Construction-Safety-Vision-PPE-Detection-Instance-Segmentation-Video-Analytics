@@ -300,6 +300,9 @@ def build_status(root: Path) -> dict[str, Any]:
                 "distribution": "LOCAL_ONLY_EXTERNAL_DELIVERY_ARTIFACT",
                 "tracking": "NOT_IMPLEMENTED",
             }
+    notebook = root / "notebooks/construction_safety_vision_demo.ipynb"
+    if notebook.is_file():
+        result["delivery_state"]["colab"] = "NOTEBOOK_PRESENT_CLOUD_EXECUTION_NOT_VERIFIED"
     return result
 
 
