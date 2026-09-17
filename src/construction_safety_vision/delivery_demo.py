@@ -180,8 +180,22 @@ def overview_html(root: Path) -> str:
     synthesis = source_link(
         "reports/detector_segmenter_scientific_synthesis.md", "Scientific synthesis"
     )
+    # Host notebook themes style headings/links directly, overriding inherited color.
+    # Scope the fixed light palette to this panel; other outputs use the host theme.
     return (
-        '<section style="background:#f6f7f2;color:#202923;padding:24px;'
+        "<style>"
+        ".csv-evidence-overview h1,.csv-evidence-overview h2,.csv-evidence-overview h3"
+        "{color:#202923 !important}"
+        ".csv-evidence-overview a,.csv-evidence-overview a:visited"
+        "{color:#075985 !important;text-decoration:underline}"
+        ".csv-evidence-overview a:hover{color:#0c4a6e !important}"
+        ".csv-evidence-overview a:focus-visible"
+        "{outline:2px solid #075985;outline-offset:3px}"
+        ".csv-evidence-overview code"
+        "{color:#202923 !important;background:#e6eade !important;padding:2px 4px}"
+        "</style>"
+        '<section class="csv-evidence-overview" style="color-scheme:light;'
+        "background:#f6f7f2;color:#202923;padding:24px;"
         'font:16px/1.6 system-ui;border-radius:10px">'
         '<p style="color:#923b10;letter-spacing:1px">MODE A / COMMITTED EVIDENCE</p>'
         "<h1>Construction Safety Vision</h1>"
