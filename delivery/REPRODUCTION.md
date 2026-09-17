@@ -2,6 +2,27 @@
 
 ## A. Public quickstart
 
+### Evidence notebook (Mode A) and optional inference (Mode B)
+
+The [Colab notebook](../notebooks/construction_safety_vision_demo.ipynb) defaults
+to displaying committed metrics, architecture, validation FP/FN and video figures
+without weights, a GPU, or project dependency installation. Its optional Mode B
+installs the locked runtime and accepts only uploaded D2/S1 bytes matching their
+recorded hashes before running an external-video demo.
+
+See [Colab setup](COLAB.md) and the [Phase 14A validation report](../reports/academic_colab_delivery.md).
+Local implementation checks and both human-executed Colab modes passed, with
+cloud evidence tied to `8ce5d0375903e3e3760873e0a75ddce37cc1149b`.
+The canonical notebook targets `main`; its final main publication is pending.
+
+GAP-004 (executable Colab) is RESOLVED under the human-approved two-mode
+delivery scope; assignment requirement R18 is COMPLETE. Mode A reads existing
+metrics and Mode B runs an external-video demo with uploaded frozen checkpoints.
+Neither recomputes validation metrics or proves full clean-room research
+reproduction. GAP-014 concerns that separate reproduction audit and remains OPEN.
+
+### Repository tooling and existing CLI
+
 **Phase 13B real-video demo complete locally; public distribution pending.** The
 [video CLI](VIDEO.md) requires the exact local frozen checkpoints. Public
 checkpoint distribution still needs license review, so a clean-clone inference
@@ -51,6 +72,11 @@ Phase 13A verified CUDA and a one-frame CPU video integration smoke test.
 CPU is explicitly requested; CUDA never silently falls back. This is functional
 support, not equivalent speed or a broad hardware guarantee. See the
 [video runtime report](../reports/video_runtime_foundation.md).
+
+Phase 14A additionally observed Tesla T4 inference in Colab, using Python 3.12.3,
+PyTorch 2.11.0+cu128 / CUDA 12.8, Ultralytics 8.4.138 and OpenCV 5.0.0.
+That cloud validation covers `compare` on the recorded 125-frame external clip;
+it is not a new benchmark, a CPU cloud validation or a hardware compatibility survey.
 
 ## B. Full research reproduction path
 

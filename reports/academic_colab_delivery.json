@@ -1,0 +1,542 @@
+{
+  "assignment_colab_status": "COMPLETE",
+  "assignment_requirement_id": "R18",
+  "baseline_commit": "fa0bea2b072b124d65f4e9bd1b932a22d98149d2",
+  "classification": "EXECUTABLE_ACADEMIC_COLAB_COMPLETE",
+  "cloud_validation_scope": {
+    "canonical_notebook_executed_verbatim": false,
+    "cloud_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+    "documented_human_session_deltas": [
+      "Clone target changed once in the Colab session from main to phase14a-colab-validation.",
+      "Mode A kept RUN_INFERENCE=False; Mode B selected True, compare and cuda.",
+      "Mode B added a separate GPU diagnostic cell and confirmed the external video.",
+      "Mode B ran cells individually, skipping the already-validated Mode A displays."
+    ],
+    "final_candidate_commit_executed_in_cloud": false,
+    "finalization_basis": "Human cloud evidence plus unchanged validated execution surface; only delivery documentation, reports, status and verification code change during finalization."
+  },
+  "colab_badge": {
+    "branch": "main",
+    "final_main_availability": "REQUIRES_SEPARATELY_AUTHORIZED_FINAL_COMMIT_PUSH",
+    "repository_visibility": "PUBLIC_CONFIRMED_BEFORE_FINALIZATION",
+    "url": "https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb",
+    "url_validation": "STRUCTURALLY_VALID"
+  },
+  "execution_surface": [
+    {
+      "bytes": 5,
+      "git_blob_oid": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "path": ".python-version",
+      "role": "LOCKED_INSTALLATION_INPUT",
+      "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d"
+    },
+    {
+      "bytes": 17494,
+      "git_blob_oid": "5f10336c22e9ae6f3ab7f1a7f4e3fd0f07bf0a00",
+      "path": "configs/detector_segmenter_comparison.yaml",
+      "role": "FROZEN_INFERENCE_CONFIGURATION",
+      "sha256": "50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25"
+    },
+    {
+      "bytes": 1295,
+      "git_blob_oid": "da88c6bc85ac7e063efe99ee2fa6f209a5004ffe",
+      "path": "delivery/checkpoints.json",
+      "role": "FROZEN_CHECKPOINT_METADATA",
+      "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1"
+    },
+    {
+      "bytes": 12126,
+      "git_blob_oid": "27867bdbc7468aed8304200e17d203f2bdead179",
+      "path": "notebooks/construction_safety_vision_demo.ipynb",
+      "role": "CANONICAL_NOTEBOOK_WITH_DOCUMENTED_SESSION_DELTAS",
+      "sha256": "cfed2af4f197b4eba5b5bc61391197a97e5d53ef355009fe55a70b978b222773"
+    },
+    {
+      "bytes": 5405,
+      "git_blob_oid": "0a9dbefcda73bb4827b8be74626ff919ee1c02d0",
+      "path": "pyproject.toml",
+      "role": "LOCKED_INSTALLATION_INPUT",
+      "sha256": "4d45c1d8d20839311e0be589f1b60bda92ab1902bc942955e79fd660ae3f2cd8"
+    },
+    {
+      "bytes": 9217,
+      "git_blob_oid": "9f74ea027d27f84656fe901032255234c948c30f",
+      "path": "reports/detector_segmenter_box_comparison.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704"
+    },
+    {
+      "bytes": 1315142,
+      "git_blob_oid": "46cfdaf1fbd2a3652ef149603f9c585fb8c6dbb7",
+      "path": "reports/figures/final_video/frame_000436.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "369673ec53dd1c9102cfb98fc4152cafac22ce7ed19dafeede80fe647101117a"
+    },
+    {
+      "bytes": 1320946,
+      "git_blob_oid": "d93d626b09d3ed6869c126ebac19b1a3690f5bd2",
+      "path": "reports/figures/final_video/frame_000448.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "c5dcd63245d231eed2204ffd6ba1066153542daa9df656a865ef2b446b17ab5a"
+    },
+    {
+      "bytes": 1304521,
+      "git_blob_oid": "f717b9267605ee36bff82b241a1a2d5d05c37b78",
+      "path": "reports/figures/final_video/frame_001306.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "5fc7588cfe0c4f1c8912888cfbc5a6d914935467bd41b44af93d3c89d9671c49"
+    },
+    {
+      "bytes": 1335474,
+      "git_blob_oid": "bebaaaabc6b560c615ea92af0956578f8ffcd7b1",
+      "path": "reports/figures/final_video/frame_001318.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "8fda3c1055b1961a219086b3b1855d07ea61682492963982f1fcacd90789a781"
+    },
+    {
+      "bytes": 1295065,
+      "git_blob_oid": "2ee8b7b9b5e79db5e9bb3a4c321275ac6a8ee7da",
+      "path": "reports/figures/final_video/frame_002178.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "bb3f0782c8af6b0569483a57078f2ed668da94e49c9c92a3c2a813b283aecd83"
+    },
+    {
+      "bytes": 1301210,
+      "git_blob_oid": "8a41567dceb469078e3625c6ac41f6b33e720aa1",
+      "path": "reports/figures/final_video/frame_002190.jpg",
+      "role": "APPROVED_EXTERNAL_VIDEO_FIGURE",
+      "sha256": "c7033acf7aba5756f36d507e1fca1ee8d7f401989e18a8df7931ac90aff84aae"
+    },
+    {
+      "bytes": 1673971,
+      "git_blob_oid": "5bd64252d093dad1cbe8e8c753b1fd8c8fc778f9",
+      "path": "reports/figures/qualitative/box_vs_mask_hero_candidate.png",
+      "role": "APPROVED_VALIDATION_FIGURE",
+      "sha256": "0cd046500e88b339e72625f3f4dc058f6f601e0001d8e95ecc57d1c8142c825f"
+    },
+    {
+      "bytes": 4026207,
+      "git_blob_oid": "399aa972942b98b0a0740a74113539c24d24e26e",
+      "path": "reports/figures/qualitative/mask_quality_gallery.png",
+      "role": "APPROVED_VALIDATION_FIGURE",
+      "sha256": "98a38207402202f1d01b5a22e1477d01022c57cf5278b8781e0a58f4b818c35e"
+    },
+    {
+      "bytes": 3885900,
+      "git_blob_oid": "1f1b7907ddbf8765c7252bcaa9edc780668bf8ad",
+      "path": "reports/figures/qualitative/validation_fp_fn_d2.png",
+      "role": "APPROVED_VALIDATION_FIGURE",
+      "sha256": "6ce6dc3e2efca38693a6a9aca19b84641a45bb67b0eb1b03e3806e0d9e28288d"
+    },
+    {
+      "bytes": 4569947,
+      "git_blob_oid": "53615ff7b2cd9fa6be21643c4d2c0febbe4bd787",
+      "path": "reports/figures/qualitative/validation_fp_fn_s1.png",
+      "role": "APPROVED_VALIDATION_FIGURE",
+      "sha256": "0cf28e35e88ea450e6ddf179c15ecd718cb5226041ad41187fe09f4991a3f362"
+    },
+    {
+      "bytes": 17220,
+      "git_blob_oid": "255fe5dbe650a159b8be09a853e46559a48b183a",
+      "path": "reports/final_detector_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205"
+    },
+    {
+      "bytes": 21944,
+      "git_blob_oid": "12650879c9396b7823a8f5bbfbe35464c09d4053",
+      "path": "reports/final_real_video_demo.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "30330b7b01c0ba21de5b41c26d8bf4bfb0ffc228ac35990b360c60251e030e80"
+    },
+    {
+      "bytes": 17536,
+      "git_blob_oid": "d18a11471656ec636471a42d795289c450b721d3",
+      "path": "reports/final_segmenter_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb"
+    },
+    {
+      "bytes": 11248,
+      "git_blob_oid": "62e36c96cc7838e0a781bf5b9abf0be4f8a80f44",
+      "path": "reports/final_test_detector.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9"
+    },
+    {
+      "bytes": 15697,
+      "git_blob_oid": "e21130bf848644a521a556459cbcb55f1a01fa9e",
+      "path": "reports/final_test_segmenter.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "c77ae3ce17cff8c17a8d8de87ccc04b08d276b98c0b3096dfcfc403f2c7c7093"
+    },
+    {
+      "bytes": 487555,
+      "git_blob_oid": "b813783acaf911f85298ce7f86857020e76e3e24",
+      "path": "reports/qualitative_validation_gallery.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "de457afb47baba86ecef5a486294a8db6891d47c143ec98ea9d547eab8826b9c"
+    },
+    {
+      "bytes": 25668,
+      "git_blob_oid": "9afd8196251887d68c5b46e2e4f4dd5af8013191",
+      "path": "reports/qualitative_validation_gallery.provenance.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "af208eb4d7f813ef0470b0ef0bc835a23379fe2a114bf6c5fab915b4654579cb"
+    },
+    {
+      "bytes": 2319,
+      "git_blob_oid": "225b0b448d82a69b337b05fd1cfec1b04b38c7b3",
+      "path": "scripts/run_video_demo.py",
+      "role": "MODE_B_ENTRYPOINT",
+      "sha256": "9bf52de2f8d6d28370411599bb90d94a37246e7fdd1f2450f90c15371b51dcee"
+    },
+    {
+      "bytes": 1730,
+      "git_blob_oid": "5032ca1b27e43b37d9335b1ff83aa7710fb338ef",
+      "path": "src/construction_safety_vision/__init__.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "b9d8d0fe5e371fa90fd70c7e3888574670084b5ec11a85c16c73a7cb99005325"
+    },
+    {
+      "bytes": 5662,
+      "git_blob_oid": "ae5662d9f8fef6b1a58d55d69fd41788c4bc3352",
+      "path": "src/construction_safety_vision/checkpoint_delivery.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "4394e10c10bc4503fef1de55d5b13e1952cf56962fcac8e304f7db84b36c4aa1"
+    },
+    {
+      "bytes": 12531,
+      "git_blob_oid": "c088b8ad247a45191a9c2b9d5fab9457992b35f5",
+      "path": "src/construction_safety_vision/config.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "f4cfde636f30a7c87408ce00e8f5399db7f679e0f94fecaa89292f34c3026eeb"
+    },
+    {
+      "bytes": 2433,
+      "git_blob_oid": "2f46cc106334aa5c4e6a83947a35d3a0063208da",
+      "path": "src/construction_safety_vision/data/__init__.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "ce7bfd4521636a75d001a6f5ef5fdf8f8c8d85a67cdc08d73cda3d1d56fbac78"
+    },
+    {
+      "bytes": 11211,
+      "git_blob_oid": "7f7942825ef76b958d4875cdc8f1823c6b368e01",
+      "path": "src/construction_safety_vision/data/acquisition.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "893b0e80c2e2d75342e220e4fcadb26f52660ad4113d07855a05851b3a006ebc"
+    },
+    {
+      "bytes": 5430,
+      "git_blob_oid": "23817c3f1cb1076cd837b0098e59da0b21136b1d",
+      "path": "src/construction_safety_vision/data/canonical.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "2f730ebed543fc388b0b8fa530fba0aff711357591106dc2d953397d9fb38464"
+    },
+    {
+      "bytes": 10752,
+      "git_blob_oid": "e9cddceff80b87fb722ccca761afa8a0f0086b15",
+      "path": "src/construction_safety_vision/data/coco.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "1c3f351ff170de3a68430e7b8f6eb8d00e67099a886af270a0287401f8695ec6"
+    },
+    {
+      "bytes": 17564,
+      "git_blob_oid": "89134b7e67a883b80ae68952a14414347c5fd054",
+      "path": "src/construction_safety_vision/data/roboflow.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "c245bd1fb8b4452049ab038c22a9d18ff30c0ce89b8c3ca45987355480fad52f"
+    },
+    {
+      "bytes": 3710,
+      "git_blob_oid": "ba13f4e4886353ed7b4d1549ecabfe8d969870f6",
+      "path": "src/construction_safety_vision/data/versioning.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "607e3def348aaecdbbe77a6e1ed9e4e82d528832209ebc851de577aee35cf60b"
+    },
+    {
+      "bytes": 19970,
+      "git_blob_oid": "e98f611377a04831cbdf62e4aff27136a6f29b0e",
+      "path": "src/construction_safety_vision/delivery_demo.py",
+      "role": "STANDALONE_DELIVERY_SUPPORT",
+      "sha256": "be983e8adb4e3a4f6b1b6ec683534e8a20311da9ea561bb0ef4591d16650e094"
+    },
+    {
+      "bytes": 21987,
+      "git_blob_oid": "2c604ef0e778b5cc825b82bff9df147912d8d3f0",
+      "path": "src/construction_safety_vision/detection_freeze.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "9a54dab456e013e27d10bd7a5d6af5a62723a31e17ac824d71ee88fc47bf34ec"
+    },
+    {
+      "bytes": 3382,
+      "git_blob_oid": "33ca4367f00785443d070cd4886ca8923c9e229a",
+      "path": "src/construction_safety_vision/env.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "13436ec33e1125abd879187f945254aa911baed2dfd16245b6081a3e178daa21"
+    },
+    {
+      "bytes": 6775,
+      "git_blob_oid": "5dfc522001f30e9fe5f366cdff8217d62bab1540",
+      "path": "src/construction_safety_vision/paths.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "e55ce08bed78643798707a61bc90cafd7434d71fb3df844b25689e2325dc952e"
+    },
+    {
+      "bytes": 7794,
+      "git_blob_oid": "265b264a19c41e9072180cd0db2eaaf6293b3e0f",
+      "path": "src/construction_safety_vision/provenance.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "f627dea50f470226954d87f970d9e5c9d98dc3da2aa390f7fb450ad44fb55412"
+    },
+    {
+      "bytes": 26829,
+      "git_blob_oid": "0983afe39fafe5cc64a89c3dc1115f9d67208a1f",
+      "path": "src/construction_safety_vision/segmentation_freeze.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "dc3e439916b7eb0286434bf68012f7dd878662947a98e5e447ed082c2f81006f"
+    },
+    {
+      "bytes": 4789,
+      "git_blob_oid": "4d8ff4d1a591903477578556234363499b4d9d7b",
+      "path": "src/construction_safety_vision/splits.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "54d173c439d1d440735e13cde0dd064e8197715ec35429856a7857170a2eb65f"
+    },
+    {
+      "bytes": 9492,
+      "git_blob_oid": "194d26a769833958532be6632534836f3c9730e7",
+      "path": "src/construction_safety_vision/video_models.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "57c215d737993ccb0decd3b7f6869088254f06dfddcf84a4e43eca8da15e90ed"
+    },
+    {
+      "bytes": 3963,
+      "git_blob_oid": "45b878ee10001c9c775c6c027fd1295568185cb9",
+      "path": "src/construction_safety_vision/video_render.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "0646971beb4df488e56fb316ec7cc22edec15ab2b87ee914428e0c6d47632187"
+    },
+    {
+      "bytes": 15516,
+      "git_blob_oid": "9cb31f9ab9fa04e5af2471528cb987b345c751d5",
+      "path": "src/construction_safety_vision/video_runtime.py",
+      "role": "TRANSITIVE_RUNTIME_MODULE",
+      "sha256": "77e7f21e48630eeeb0e76f4e7fe453c5f73b0042c4930a4c89b2ee667b2c3e21"
+    },
+    {
+      "bytes": 377798,
+      "git_blob_oid": "055f68624372f3f762b827a40a5677a5f772b5fb",
+      "path": "uv.lock",
+      "role": "LOCKED_INSTALLATION_INPUT",
+      "sha256": "b50926982203f5cc5fb37e971ada6efebf78ce812fffaad9aabf49b5582353e9"
+    }
+  ],
+  "execution_surface_identity_policy": "Every candidate file must match the exact validated Git blob bytes and SHA-256. Line-ending changes are rejected, including Windows CRLF conversion.",
+  "gap_004_previous_status": "OPEN",
+  "gap_004_status": "RESOLVED",
+  "known_limitations": [
+    "The final candidate commit itself has not been run in Colab; surface identities are preserved.",
+    "Mode B still requires manual uploads and compatible GPU capacity; future Colab changes may matter.",
+    "The five-second output is technical evidence only and must not be published in this phase.",
+    "MP4/mp4v browser playback is not guaranteed; no audio/timestamp track is copied.",
+    "Inference timing is a demo measurement, not a controlled scientific benchmark.",
+    "Checkpoint redistribution remains unresolved; licensing differs across code, data and media.",
+    "The complete Phase 13B MP4 has no public URL; six approved frames keep Mode A useful.",
+    "No Release, technical report, tracking, pitch or broader README professionalization is included."
+  ],
+  "notebook": {
+    "bytes": 12126,
+    "canonical_branch": "main",
+    "path": "notebooks/construction_safety_vision_demo.ipynb",
+    "sha256": "cfed2af4f197b4eba5b5bc61391197a97e5d53ef355009fe55a70b978b222773"
+  },
+  "other_gaps": {
+    "GAP-008": "OPEN",
+    "GAP-010": "PARTIALLY_RESOLVED",
+    "GAP-014": "OPEN"
+  },
+  "phase": "14A",
+  "protocol": {
+    "checkpoint_policy": "Optional manual upload; exact frozen byte size and SHA-256 before deserialization; no download, pretrained substitution or training fallback.",
+    "holdout": "OBSERVED_SPENT_LOCKED",
+    "holdout_accessed_during_finalization": false,
+    "holdout_authorization": "MUST_BE_UNSET",
+    "models_executed_during_finalization": 0,
+    "new_training_tuning_selection_or_metrics": false,
+    "scientific_lifecycle": "CLOSED"
+  },
+  "resolution_scope": "The missing executable-notebook requirement (R18/C6) is fulfilled by artifact-only Run all and optional frozen-model external-video inference. The historical GAP-004 recommended fix mentioned metric reproduction; the approved closed-science delivery scope displays committed metrics and does not recompute them. The Phase 12A snapshot is unchanged. Broader clean-room reproduction remains GAP-014 OPEN.",
+  "schema_version": 1,
+  "source_license_distinction": {
+    "context_does_not_rewrite_cloud_provenance": true,
+    "five_second_output_published": false,
+    "independent_source_context": {
+      "creator": "Frank Vincentz",
+      "identity": {
+        "bytes": 73256182,
+        "sha256": "e15125ca306df31b8f645db71859aa5e86b640ec5a16aa02d952d22fe603a05f"
+      },
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "path": "outputs/phase13b_source/mdina_construction.webm",
+      "source_type": "EXTERNAL_REAL_VIDEO",
+      "title": "Malta - Mdina - Lorenzo Calleja ditch - Il-Foss tal-Imdina (construction) 01 (1) ies",
+      "url": "https://commons.wikimedia.org/wiki/File:Malta_-_Mdina_-_Lorenzo_Calleja_ditch_-_Il-Foss_tal-Imdina_%28construction%29_01_%281%29_ies.webm"
+    },
+    "original_cloud_attribution": {
+      "creator": null,
+      "license": null,
+      "modifications": null,
+      "retrieval_date": null,
+      "source_type": "UNSPECIFIED",
+      "title": null,
+      "url": null
+    },
+    "original_cloud_warning": "SOURCE_LICENSE_UNSPECIFIED: not ready for publication",
+    "source_preparation_identity": {
+      "bytes": 2244,
+      "sha256": "c9a0bd915a9d84e57740fbbda7f33af083bbfc86df8ebe3607846244271a4206"
+    },
+    "source_record": "reports/final_real_video_source.json"
+  },
+  "validated_temporary_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+  "validation_evidence": {
+    "LOCAL_IMPLEMENTATION_VERIFICATION": {
+      "checks": [
+        "Canonical notebook JSON, cleared outputs, main target and safe defaults",
+        "All recorded execution inputs match validated Git blobs",
+        "Exact original cloud provenance/source context preserved and reconciled",
+        "Public text scanner and focused refusal tests"
+      ],
+      "execution_kind": "AGENT_METADATA_ONLY",
+      "holdout_accessed": false,
+      "models_executed_during_finalization": 0,
+      "quality_gates": {
+        "focused_tests": {
+          "duration_seconds": 19.04,
+          "failed": 0,
+          "files": [
+            "tests/test_academic_colab_delivery.py",
+            "tests/test_delivery_demo.py",
+            "tests/test_public_delivery.py",
+            "tests/test_checkpoint_delivery.py",
+            "tests/test_final_video_delivery.py"
+          ],
+          "passed": 110
+        },
+        "note": "Executed on the finalization candidate. Metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. These are local checks, not a new cloud execution.",
+        "pytest": {
+          "duration_seconds": 34.01,
+          "failed": 0,
+          "mode": "metadata-only",
+          "passed": 2745,
+          "skipped": 47,
+          "warnings": 27
+        },
+        "ruff_check": "PASS",
+        "ruff_format": "PASS",
+        "ruff_formatted_files": 254,
+        "scope": "FINALIZATION_CANDIDATE"
+      },
+      "status": "PASS"
+    },
+    "REAL_COLAB_MODE_A_VALIDATION": {
+      "checkpoint_used": false,
+      "contrast_fix": "HUMAN_CONFIRMED_READABLE_IN_REAL_COLAB",
+      "execution_kind": "HUMAN_EXECUTED",
+      "fresh_runtime": true,
+      "holdout_authorization_used": false,
+      "metrics": "DISPLAY_EXISTING_COMMITTED_AGGREGATES_ONLY",
+      "model_inference_used": false,
+      "observation_basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14A_FINALIZATION_ATTESTATION",
+      "observed_messages": [
+        "Repository revision: 8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+        "Mode A ready. No checkpoint, dataset or inference framework loaded.",
+        "Mode A complete. No inference output was created."
+      ],
+      "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
+      "roboflow_key_used": false,
+      "status": "PASS",
+      "validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
+    },
+    "REAL_COLAB_MODE_B_VALIDATION": {
+      "artifact_classification": "COLAB_TECHNICAL_VALIDATION_ARTIFACT",
+      "checkpoint_verification": {
+        "D2": {
+          "architecture": "YOLO11n",
+          "basis": "HUMAN_COLAB_UPLOAD_OUTPUT_AND_MATCHING_RUNTIME_PROVENANCE",
+          "bytes": 5502289,
+          "frames_completed": 125,
+          "result": "VERIFIED_BEFORE_DESERIALIZATION",
+          "sha256": "0466f872a9de22898c70d8834cf1fcfb3d77f6c9fb27e81ee6248d3d19cbc206"
+        },
+        "S1": {
+          "architecture": "YOLO11n-seg",
+          "basis": "HUMAN_COLAB_UPLOAD_OUTPUT_AND_MATCHING_RUNTIME_PROVENANCE",
+          "bytes": 6041685,
+          "frames_completed": 125,
+          "result": "VERIFIED_BEFORE_DESERIALIZATION",
+          "sha256": "29337d671459d0f742fb713613cc41d0eafcb8a21f5846ac0da65b2ffc024f20"
+        }
+      },
+      "execution_kind": "HUMAN_EXECUTED",
+      "execution_status": "COMPLETE",
+      "input": {
+        "backend": "FFMPEG",
+        "bytes": 2068541,
+        "codec_fourcc": "FMP4",
+        "container_extension": ".mp4",
+        "duration_seconds": 5.0,
+        "filename": "external_video.mp4",
+        "fps": 25.0,
+        "frame_count": 125,
+        "height": 360,
+        "orientation_auto": false,
+        "sha256": "b00bbd908a2e7a0e4b40073200bab555ad9f87be4e8c3ddcbd0f994fbd32532b",
+        "width": 640
+      },
+      "original_provenance_identity": {
+        "bytes": 5523,
+        "sha256": "f26e5a7090e3af6729dda85885416e97238defdfd904910c0e11cf641605c4bd"
+      },
+      "original_warnings": [
+        "NO_AUDIO_OR_TIMESTAMP_TRACK_COPIED",
+        "SOURCE_LICENSE_UNSPECIFIED: not ready for publication"
+      ],
+      "output": {
+        "backend": "FFMPEG",
+        "bytes": 8901739,
+        "codec_fourcc": "FMP4",
+        "duration_seconds": 5.0,
+        "filename": "demo_f75991d9a6fd481fb11be6cb4f7ad895.mp4",
+        "fps": 25.0,
+        "frame_count": 125,
+        "height": 360,
+        "layout": "D2_LEFT_S1_RIGHT_UNSCALED",
+        "orientation_auto": false,
+        "requested_codec": "mp4v",
+        "sha256": "12df710d54828195e7e79d2579de84865654a853141219dac40548b001448c69",
+        "verified_decoded_frames": 125,
+        "width": 1280
+      },
+      "processed_frames": 125,
+      "publication_status": "NOT_PUBLICATION_READY",
+      "result_key": "MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION",
+      "runtime": {
+        "cuda_available": true,
+        "gpu": "Tesla T4",
+        "mode": "compare",
+        "opencv": "5.0.0",
+        "python": "3.12.3",
+        "pytorch": "2.11.0+cu128",
+        "pytorch_cuda": "12.8",
+        "requested_device": "cuda",
+        "ultralytics": "8.4.138"
+      },
+      "status": "PASS",
+      "validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+      "verification": "Downloaded output size/hash, full decoding and layout were verified locally; no model inference was repeated. Media remains ignored and unpublished."
+    }
+  }
+}

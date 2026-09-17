@@ -300,6 +300,68 @@ def build_status(root: Path) -> dict[str, Any]:
                 "distribution": "LOCAL_ONLY_EXTERNAL_DELIVERY_ARTIFACT",
                 "tracking": "NOT_IMPLEMENTED",
             }
+    notebook = root / "notebooks/construction_safety_vision_demo.ipynb"
+    if notebook.is_file():
+        result["delivery_state"]["colab"] = "NOTEBOOK_PRESENT_CLOUD_EXECUTION_NOT_VERIFIED"
+    colab_path = root / "reports/academic_colab_delivery.json"
+    if colab_path.is_file():
+        colab = json.loads(colab_path.read_text(encoding="utf-8"))
+        evidence = colab.get("validation_evidence", {})
+        required = (
+            "LOCAL_IMPLEMENTATION_VERIFICATION",
+            "REAL_COLAB_MODE_A_VALIDATION",
+            "REAL_COLAB_MODE_B_VALIDATION",
+        )
+        if (
+            colab.get("classification") == "EXECUTABLE_ACADEMIC_COLAB_COMPLETE"
+            and colab.get("gap_004_status") == "RESOLVED"
+            and colab.get("assignment_requirement_id") == "R18"
+            and colab.get("assignment_colab_status") == "COMPLETE"
+            and all(evidence.get(key, {}).get("status") == "PASS" for key in required)
+        ):
+            gap = next(item for item in result["gaps"] if item["gap_id"] == "GAP-004")
+            gap.update(
+                current_status="RESOLVED",
+                resolution_phase="14A",
+                evidence=[
+                    "notebooks/construction_safety_vision_demo.ipynb",
+                    "delivery/COLAB.md",
+                    "reports/academic_colab_delivery.json",
+                    "reports/academic_colab_delivery.md",
+                    "reports/academic_colab_delivery.provenance.json",
+                ],
+                remaining_action="none for the approved executable two-mode notebook scope; "
+                "public main availability awaits the separately authorized push",
+            )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in result["gap_counts"]
+            }
+            result["requirement_updates"].append(
+                {
+                    "requirement_id": "R18",
+                    "phase_12a_state": "MISSING",
+                    "current_state": "COMPLETE",
+                    "evidence": "reports/academic_colab_delivery.md",
+                    "remaining_action": "none for implementation and real cloud validation; "
+                    "canonical main publication awaits an authorized push",
+                }
+            )
+            result["delivery_state"]["colab"] = colab["classification"]
+            result["phase_14a"] = {
+                "classification": colab["classification"],
+                "evidence": "reports/academic_colab_delivery.provenance.json",
+                "mode_a_cloud": evidence["REAL_COLAB_MODE_A_VALIDATION"]["status"],
+                "mode_b_cloud": evidence["REAL_COLAB_MODE_B_VALIDATION"]["status"],
+                "resolution_scope": "HUMAN_APPROVED_COMMITTED_EVIDENCE_DISPLAY_AND_"
+                "OPTIONAL_FROZEN_MODEL_EXTERNAL_VIDEO_INFERENCE",
+                "validation_metrics_recomputed": False,
+                "clean_room_reproduction_gap_014": "OPEN",
+                "checkpoint_distribution_gap_008": "OPEN",
+                "canonical_main_publication": "AWAITING_AUTHORIZED_PUSH",
+                "models_executed_during_finalization": 0,
+                "historical_phase_12b_accounting_unchanged": True,
+            }
     return result
 
 
@@ -390,6 +452,10 @@ def write_metadata(root: Path) -> None:
 def validate_delivery(root: Path) -> list[str]:
     """Check current public truth and historical immutability without a model/data path."""
     problems = validate_public_license(root)
+    if (root / "reports/academic_colab_delivery.json").is_file():
+        from construction_safety_vision.academic_colab_delivery import validate
+
+        problems.extend(validate(root))
     if "CSVISION_ALLOW_TEST_SPLIT" in os.environ:
         problems.append("holdout environment variable must be absent")
     if historical_changes(root):

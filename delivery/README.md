@@ -1,10 +1,17 @@
 # Delivery entrypoint
 
-**Phase 13B: final real-video demonstration complete locally.** Scientific training and
-final evaluation are complete. D2 and S1 are frozen; selection and tuning are
-closed. Presentation deliverables remain incomplete.
+**Phase 14A: executable academic Colab complete.** Mode A and optional Mode B
+passed human-executed cloud validation; final publication on `main` is pending.
+Scientific training and final evaluation are complete. D2 and S1 are frozen;
+selection and tuning are closed. The overall submission package remains incomplete.
 
 ## Current evidence
+
+The [two-mode Colab notebook](../notebooks/construction_safety_vision_demo.ipynb)
+provides evidence-only Mode A and optional checkpoint-upload inference Mode B.
+Both modes passed at revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b`;
+Mode B used a Tesla T4. See [setup and boundaries](COLAB.md) and the
+[cloud validation record](../reports/academic_colab_delivery.md).
 
 | Read this | Role |
 | --- | --- |
@@ -21,6 +28,7 @@ closed. Presentation deliverables remain incomplete.
 | [Validation gallery](../reports/qualitative_validation_gallery.md) | Completed Phase 12C FP/FN and mask evidence |
 | [Real-video demonstration](../reports/final_real_video_demo.md) | 104.52-second output, rights, temporal observations and screenshots; public delivery pending |
 | [Video runtime report](../reports/video_runtime_foundation.md) | Phase 13A engineering checks and limitations |
+| [Academic Colab delivery](../reports/academic_colab_delivery.md) | Separate local checks, real Mode A and real Mode B validation; execution identities and publication limits |
 | [Reports index](../reports/README.md) | Protocols, results, provenance and historical records |
 
 ## Delivery paths
@@ -38,6 +46,9 @@ closed. Presentation deliverables remain incomplete.
 - [Academic GenAI disclosure](AI_USAGE.md).
 - [Publication recommendations](PUBLICATION.md): a plan, no settings changed.
 
-The full recruiter README, academic report, Colab, pitch and public video
-distribution are pending. The real-video deliverable and validation gallery are
-complete. No clean-room reproduction has been demonstrated.
+The full recruiter README, academic technical report, pitch and public video
+distribution are pending. The academic Colab, real-video deliverable and
+validation gallery are complete. Checkpoints still require manual upload
+(GAP-008 OPEN); public demo distribution remains partial (GAP-010
+PARTIALLY_RESOLVED). No full clean-room research reproduction has been
+demonstrated (GAP-014 OPEN).

@@ -10,7 +10,7 @@
 | Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
 | Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
 | Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
-| Delivery | Phase 12B truth/scaffolding, Phase 12C gallery and Phase 13B real video complete; public video distribution, final README, report, Colab and pitch pending |
+| Delivery | Phase 14A executable academic Colab complete: Mode A and Mode B passed real Colab validation; final main publication, public video distribution, final README, technical report and pitch pending |
 
 [Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
 [Final test report](reports/final_test_evaluation.md) ·
@@ -22,6 +22,27 @@
 The holdout is spent and locked. Frozen membership is deliberately committed
 for auditability; Phase 11 result/report artifacts omit test IDs, and bulk test
 imagery and predictions are not committed. No repeat evaluation is permitted.
+
+## Evidence notebook: two delivery modes
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb)
+
+[Open/import the delivery notebook](notebooks/construction_safety_vision_demo.ipynb)
+in Colab. **Mode A**, the default, shows the architecture, committed metrics,
+validation FP/FN and real-video figures without checkpoints or a project dependency
+install. **Mode B** optionally installs the locked runtime, verifies uploaded D2/S1
+weights by SHA-256, and runs inference on an uploaded external video.
+
+**Real Colab validation passed for both modes** at temporary revision
+`8ce5d0375903e3e3760873e0a75ddce37cc1149b`; Mode B used a Tesla T4 and a
+five-second external clip. [Validation report](reports/academic_colab_delivery.md) ·
+[Setup and boundaries](delivery/COLAB.md).
+
+The canonical notebook and badge target `main`. The repository is public, but
+the final notebook becomes available through this badge only after the final
+Phase 14A commit is pushed to `main`. The temporary branch remains validation
+evidence. The notebook presents existing metrics; it does not reproduce research
+metrics or reopen the spent holdout.
 
 ## Real-video demonstration
 

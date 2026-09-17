@@ -1,6 +1,6 @@
 # Roadmap
 
-Version: 2.0 · Current phase: **13B COMPLETE - final real-video demonstration**; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
+Version: 2.1 · Current phase: **14A COMPLETE - executable academic Colab**; final main publication pending; scientific development remains closed. Phase 12A audit is complete. Next work requires its own delivery scope. Phase 10 complete. Phase 8 history (8A adapter fidelity audited · 8B YOLO11n-seg selected and the S0 protocol frozen · 8C S0 trained once, mask mAP@0.50:0.95 0.407942 on validation · **8D per-instance error analysis · 8E canonical comparison protocol and S1 frozen · 8F S1 trained once, canonical supported macro 0.559463 against S0's 0.484643, delta +0.074820, `S1_IMPROVES_S0_BEYOND_MARGIN` · **8G the final segmenter is FROZEN - S1, YOLO11n-seg at imgsz 768 with `overlap_mask: false`**). **Phase 10 is complete: 10B ran the recognition and spatial comparison on validation, 10C the latency and inference-memory benchmark, and 10D synthesised both into one scientific answer without executing a model.** Both models are frozen, every selection and comparison is validation-only, and the holdout was unobserved throughout selection; it has since been evaluated once. Phase 11A froze the one-shot final holdout evaluation protocol without reading any of it, and **phase 11B then executed it exactly once**: D2 canonical box mAP@0.50:0.95 0.427031, S1 canonical mask mAP@0.50:0.95 0.410143, S1 canonical box mAP@0.50:0.95 0.433764 over 65 images and 305 annotations. `FINAL_TEST_OBSERVED`; model selection, hyperparameter tuning, threshold tuning and performance-motivated data cleaning are CLOSED. Phase 7 is complete: 7A-7C ran all three detection experiments and **7D froze the final detector**, D2 - YOLO11n at imgsz 768, selected on validation only.
 
 Fourteen phases, executed in order. Each phase has a validation gate: the gate
 must pass before the next phase starts, and a gate is passed only by evidence
@@ -9,6 +9,16 @@ criteria defined in [`rubric_contract.md`](rubric_contract.md).
 
 Scientific phases are now closed; they must not be reopened. Delivery work
 updates live status without rewriting frozen results or their historical logs.
+
+**Academic Colab delivery:** [Phase 14A](academic_colab_delivery.md) is
+`EXECUTABLE_ACADEMIC_COLAB_COMPLETE`. Both modes passed human-executed Colab
+validation at `8ce5d0375903e3e3760873e0a75ddce37cc1149b`: Mode A displays
+committed evidence without weights; Mode B verifies uploaded D2/S1 before the
+existing runtime processes an external clip on a Tesla T4. GAP-004 is RESOLVED
+and assignment R18 is COMPLETE under the approved two-mode scope. No validation
+metric was recomputed; GAP-014, the full clean-room research reproduction audit,
+remains OPEN. The canonical notebook clones `main`; final main publication is
+pending. Phase 14 as a whole is not complete.
 
 ## Status overview
 
@@ -32,7 +42,8 @@ updates live status without rewriting frozen results or their historical logs.
 | 13 | Video inference and tracking | 13B real >=30-second video complete locally; public distribution pending; tracking deferred |
 | 13A | Real video runtime foundation | complete; [synthetic engineering evidence](video_runtime_foundation.md) |
 | 13B | Final real-video demonstration | complete; [104.52-second real output evidence](final_real_video_demo.md); public distribution pending |
-| 14 | Submission package and reproducibility audit | not started |
+| 14 | Submission package and reproducibility audit | partial: 14A complete; technical report, final README, pitch and full reproduction audit remain pending |
+| 14A | Executable academic Colab | complete; [real Mode A and Mode B validation](academic_colab_delivery.md); final main publication pending |
 
 ---
 
@@ -1846,6 +1857,7 @@ visible failures; no unobserved failure mode is invented to meet older wording.
 
 | Date | Change |
 | --- | --- |
+| 2026-09-17 | Phase 14A completed the executable academic Colab delivery. Local implementation checks, real Mode A execution and real Mode B inference are recorded separately in [academic_colab_delivery.md](academic_colab_delivery.md). Both cloud modes passed at temporary revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b`; the canonical notebook still clones `main`, and its execution surface is preserved. GAP-004 is RESOLVED and assignment R18 COMPLETE under the human-approved artifact-display plus optional external-inference scope; no validation metrics were recomputed and GAP-014 remains OPEN. The five-second output retains `SOURCE_LICENSE_UNSPECIFIED` and is NOT_PUBLICATION_READY. Final main publication, the complete submission package and video distribution remain pending. No scientific work was reopened. |
 | 2026-09-01 | Roadmap created during the foundation phase (phases 1-14 defined). |
 | 2026-09-02 | Phase 4A completed: 436 source originals acquired and audited. No exact duplicates; 6 cross-split near-duplicate candidates pending visual confirmation; vest_loose present in only 8 images and absent from the provider test split; source project has drifted 76 annotations ahead of the frozen v4 export. Provider split classified UNDETERMINED_PENDING_VISUAL_REVIEW. |
 | 2026-09-02 | Phase 4B completed, closing phase 4: the manual visual audit was recorded in `manual_audit_decisions.csv` (32 decisions) and `manual_audit_report.md`. Six cross-split pairs confirmed as semantic duplicates; three zero-instance images marked out-of-domain exclusion candidates; segmentation-derived boxes preferred but not applied; provider split reclassified UNSUITABLE_FOR_FINAL_PROTOCOL; dataset ACCEPTED_WITH_DOCUMENTED_LIMITATIONS. Twelve entry constraints handed to phase 5. |

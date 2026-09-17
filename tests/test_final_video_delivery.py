@@ -7,7 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from construction_safety_vision.final_video_delivery import REPORT, validate, validate_payload
+from construction_safety_vision.final_video_delivery import (
+    APPROVED_DELIVERY_COMMIT,
+    REPORT,
+    validate,
+    validate_payload,
+)
 from construction_safety_vision.video_delivery import APPROVED_RUNTIME_COMMIT
 from construction_safety_vision.video_models import frozen_settings
 
@@ -91,10 +96,24 @@ def test_only_authorized_gaps_change_and_historical_evidence_is_preserved():
             cwd=ROOT,
         )
     )
-    after = json.loads((ROOT / "reports/delivery_gap_resolution_status.json").read_text())
+    # Preserve the historical Phase 13B transition independently of later delivery work.
+    after = json.loads(
+        subprocess.check_output(
+            [
+                "git",
+                "show",
+                f"{APPROVED_DELIVERY_COMMIT}:reports/delivery_gap_resolution_status.json",
+            ],
+            cwd=ROOT,
+        )
+    )
     for old, new in zip(before["gaps"], after["gaps"], strict=True):
         if old["gap_id"] not in {"GAP-002", "GAP-010"}:
             assert old == new
+    current = json.loads((ROOT / "reports/delivery_gap_resolution_status.json").read_text())
+    for prior, live in zip(after["gaps"], current["gaps"], strict=True):
+        if prior["gap_id"] != "GAP-004":
+            assert prior == live
     assert (
         subprocess.check_output(
             [

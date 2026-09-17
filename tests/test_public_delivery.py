@@ -64,6 +64,61 @@ def test_delivery_modules_have_no_model_or_dataset_accessor_path():
             assert accessor not in text, relative
 
 
+def test_colab_resolution_preserves_unrelated_gaps_and_historical_accounting():
+    current = build_status(ROOT)
+    prior = json.loads(
+        subprocess.check_output(
+            [
+                "git",
+                "show",
+                "8ce5d0375903e3e3760873e0a75ddce37cc1149b:" + STATUS_PATH,
+            ],
+            cwd=ROOT,
+        )
+    )
+    before = {gap["gap_id"]: gap["current_status"] for gap in prior["gaps"]}
+    after = {gap["gap_id"]: gap["current_status"] for gap in current["gaps"]}
+    assert {key for key in before if before[key] != after[key]} == {"GAP-004"}
+    assert after["GAP-004"] == "RESOLVED"
+    assert after["GAP-008"] == after["GAP-014"] == "OPEN"
+    assert after["GAP-010"] == "PARTIALLY_RESOLVED"
+    assert current["scientific_boundary"] == prior["scientific_boundary"]
+    assert (
+        next(entry for entry in current["requirement_updates"] if entry["requirement_id"] == "R18")[
+            "current_state"
+        ]
+        == "COMPLETE"
+    )
+
+
+@pytest.mark.parametrize(
+    "category",
+    [
+        "LOCAL_IMPLEMENTATION_VERIFICATION",
+        "REAL_COLAB_MODE_A_VALIDATION",
+        "REAL_COLAB_MODE_B_VALIDATION",
+    ],
+)
+def test_colab_resolution_requires_every_separate_validation_pass(monkeypatch, category):
+    report_path = ROOT / "reports/academic_colab_delivery.json"
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    payload["validation_evidence"][category]["status"] = "NOT_VERIFIED"
+    original_read = Path.read_text
+
+    def substituted_read(path, *args, **kwargs):
+        if path == report_path:
+            return json.dumps(payload)
+        return original_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", substituted_read)
+    current = build_status(ROOT)
+    assert (
+        next(gap for gap in current["gaps"] if gap["gap_id"] == "GAP-004")["current_status"]
+        == "OPEN"
+    )
+    assert not any(entry["requirement_id"] == "R18" for entry in current["requirement_updates"])
+
+
 def test_delivery_provenance_identifies_the_actual_sources_and_outputs():
     # Phase 12B is approved history. Later delivery phases update the live README,
     # tracker and builder; its provenance still identifies the exact 12B bytes.
