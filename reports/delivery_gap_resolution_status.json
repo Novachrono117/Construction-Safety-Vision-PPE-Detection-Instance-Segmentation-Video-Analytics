@@ -12,11 +12,93 @@
     "purpose": "Durable project protocol instructions for Codex",
     "source": "UNKNOWN; text matches CLAUDE.md except title and tool name"
   },
+  "assignment_exact_wording_audit": {
+    "bonus": {
+      "maximum_extra_points": 0.5,
+      "options": [
+        "ByteTrack or DeepSORT tracking",
+        "Published interactive Gradio or Hugging Face Spaces demo"
+      ],
+      "priority": "Only after mandatory delivery",
+      "requirement": "NOT_REQUIRED",
+      "status": "NOT_STARTED"
+    },
+    "colab_exact_wording": {
+      "classification": "COLAB_EXACT_WORDING_PARTIAL",
+      "evaluation": {
+        "executable_evaluation_cells": false,
+        "explicit_evaluation_section": false,
+        "recorded_aggregate_display_cells": [
+          5
+        ]
+      },
+      "implemented_in_phase_14b": false,
+      "inference": {
+        "human_cloud_validation": "PASS",
+        "identifiable_sections": true,
+        "optional_executable_cell": 17
+      },
+      "minimum_safe_phase_14c": [
+        "Add a TRAINING section with exact frozen command/configuration and recorded training curves/output, explicitly a recipe and historical evidence.",
+        "Add an EVALUATION section with canonical code paths and recorded validation/final-test aggregate outputs, explicitly not a new test run.",
+        "Retain validated optional INFERENCE and separate executed-now outputs from recorded research outputs.",
+        "Human must decide whether literal executable training/evaluation is required; any authorized reproduction path must use only train/validation and preserve the spent holdout."
+      ],
+      "notebook_changed": false,
+      "output_evidence": {
+        "canonical_notebook_embedded_outputs": 0,
+        "interpretation": "Visible outputs are generated during execution; the committed notebook is intentionally cleared.",
+        "mode_a_and_mode_b_human_cloud_evidence": "reports/academic_colab_delivery.json"
+      },
+      "status": "PARTIAL",
+      "training": {
+        "executable_cells": false,
+        "identifiable_section": false,
+        "visible_recorded_training_outputs": false
+      }
+    },
+    "genai_declaration": {
+      "report_section": "Uso de IA generativa",
+      "source": "delivery/AI_USAGE.md",
+      "status": "PASS"
+    },
+    "github_repository": {
+      "basis": "Public main contains approved 14A; the final 14B report is local and must not be pushed in this phase. Final README professionalization and full reproduction audit remain open.",
+      "status": "PARTIAL"
+    },
+    "pitch": {
+      "content": "Show the working system including real inference video",
+      "delivery": "Accessible unlisted YouTube or Google Drive link",
+      "duration_minutes": [
+        5,
+        8
+      ],
+      "participation": "Every group member",
+      "status": "OPEN"
+    },
+    "real_video_requirement": {
+      "basis": "Approved 104.52-second full real-video inference, 2613 decoded frames; the five-second Colab validation clip is not substituted.",
+      "public_full_video_distribution": "PENDING",
+      "status": "PASS"
+    },
+    "report_requirement": {
+      "basis": "Portuguese Markdown source and ten-page PDF: problem, dataset, explicit EDA, methodology/hyperparameters, results, FP/FN, limitations and next steps.",
+      "status": "PASS"
+    },
+    "test_set_error_analysis": {
+      "basis": "Final test AP/P/R/direct IoU, recorded D2 confusion matrix, comments on deterministically selected FP/FN ranks. No test identifiers or images exposed; validation gallery explicitly separate.",
+      "limitation": "Scene-level causes cannot be inferred from public selection metadata. If visual test examples are explicitly demanded later, separate human authorization is required; ignored Phase 11B selections/figures remain unopened.",
+      "scope": "COMMITTED_METADATA_ONLY",
+      "status": "PASS",
+      "visual_test_examples_embedded": false,
+      "visual_test_examples_necessary_for_this_metadata_based_analysis": false
+    }
+  },
   "baseline_commit": "d8605645eea009fe68c6c561b56c31feae937522",
   "classification": "PUBLIC_TRUTH_AND_DELIVERY_SCAFFOLD_COMPLETE",
   "classification_basis": "Run validate_public_delivery.py and the documented quality gates.",
   "delivery_state": {
-    "academic_report": "NOT_GENERATED",
+    "academic_report": "FINAL_ACADEMIC_REPORT_COMPLETE",
     "checkpoint_distribution": "CHECKPOINT_REDISTRIBUTION_REQUIRES_LICENSE_REVIEW",
     "colab": "EXECUTABLE_ACADEMIC_COLAB_COMPLETE",
     "fp_fn_gallery": "QUALITATIVE_VALIDATION_GALLERY_COMPLETE",
@@ -25,11 +107,12 @@
     "readme_final_professionalization": "PENDING",
     "video": "FINAL_REAL_VIDEO_DEMO_COMPLETE"
   },
+  "exact_wording_precedence": "The new assignment audit qualifies earlier approved delivery scopes; historical Phase 14A COMPLETE does not establish literal Colab compliance.",
   "gap_counts": {
     "DEFERRED_OPTIONAL": 1,
-    "OPEN": 7,
+    "OPEN": 6,
     "PARTIALLY_RESOLVED": 4,
-    "RESOLVED": 10
+    "RESOLVED": 11
   },
   "gaps": [
     {
@@ -58,15 +141,17 @@
       "resolution_phase": "13B"
     },
     {
-      "current_status": "OPEN",
+      "current_status": "RESOLVED",
       "evidence": [
-        "reports/final_delivery_gap_register.csv"
+        "academic/final_report.md",
+        "academic/final_report.pdf",
+        "reports/final_academic_report_delivery.json"
       ],
       "gap_id": "GAP-003",
       "original_severity": "P0",
       "phase_12a_status": "OPEN",
-      "remaining_action": "Assemble a 6-10 page report from committed artifacts, quoting the phase 10D claim register entries with their scope and limitation.",
-      "resolution_phase": null
+      "remaining_action": "none for the technical report; author review checklist remains available",
+      "resolution_phase": "14B"
     },
     {
       "current_status": "RESOLVED",
@@ -336,6 +421,12 @@
     "resolution_scope": "HUMAN_APPROVED_COMMITTED_EVIDENCE_DISPLAY_AND_OPTIONAL_FROZEN_MODEL_EXTERNAL_VIDEO_INFERENCE",
     "validation_metrics_recomputed": false
   },
+  "phase_14b": {
+    "all_assignment_requirements_complete": false,
+    "classification": "FINAL_ACADEMIC_REPORT_COMPLETE",
+    "evidence": "reports/final_academic_report_delivery.md",
+    "phase_14a_main_published": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736"
+  },
   "repository_license": {
     "canonical_text_bytes": 34523,
     "canonical_text_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
@@ -389,6 +480,13 @@
       "phase_12a_state": "MISSING",
       "remaining_action": "none for implementation and real cloud validation; canonical main publication awaits an authorized push",
       "requirement_id": "R18"
+    },
+    {
+      "current_state": "COMPLETE",
+      "evidence": "academic/final_report.pdf",
+      "phase_12a_state": "MISSING",
+      "remaining_action": "none for report delivery; exact Colab wording and pitch remain open",
+      "requirement_id": "R15"
     }
   ],
   "schema_version": 1,

@@ -65,7 +65,12 @@ def test_delivery_modules_have_no_model_or_dataset_accessor_path():
 
 
 def test_colab_resolution_preserves_unrelated_gaps_and_historical_accounting():
-    current = build_status(ROOT)
+    # Audit the approved 14A transition; the new report has its own bounded gap test.
+    current = json.loads(
+        subprocess.check_output(
+            ["git", "show", "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736:" + STATUS_PATH], cwd=ROOT
+        )
+    )
     prior = json.loads(
         subprocess.check_output(
             [

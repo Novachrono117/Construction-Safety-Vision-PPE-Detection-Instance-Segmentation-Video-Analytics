@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "source_commit": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736",
+  "sources": {
+    "reports/canonical_modeling_manifest.json": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f",
+    "reports/detector_segmenter_box_comparison.json": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704",
+    "reports/detector_segmenter_latency_comparison.json": "e7b98d37e6f9018e4cdbd112bfa59b9589050c6ae7452c4d5ef69dea5ee0fc02",
+    "reports/detector_segmenter_memory_comparison.json": "e3a4e487860181ebb8deaaf638625f3159071860b0b0faabeb55ea4757b7f418",
+    "reports/detector_segmenter_spatial_comparison.json": "49420d585b58e1a1ca0d5992c4b046f0b1260cf18bc566d6f397ef73b5598f69",
+    "reports/eda_source.json": "a4355a4796e2ba6c7d4ba76a060f3f288941d783eb44278e6254946a21cf1dbc",
+    "reports/final_detector_manifest.json": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205",
+    "reports/final_real_video_demo.json": "30330b7b01c0ba21de5b41c26d8bf4bfb0ffc228ac35990b360c60251e030e80",
+    "reports/final_segmenter_manifest.json": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb",
+    "reports/final_test_detector.json": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9",
+    "reports/final_test_direct_iou.json": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c",
+    "reports/final_test_segmenter.json": "c77ae3ce17cff8c17a8d8de87ccc04b08d276b98c0b3096dfcfc403f2c7c7093"
+  },
+  "claims": {
+    "d2_ap": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_box/CANONICAL_TEST_BOX_MAP50_95",
+      "format": "decimal:6"
+    },
+    "d2_ap50": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_box/CANONICAL_TEST_BOX_MAP50",
+      "format": "decimal:6"
+    },
+    "d2_precision": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_precision_recall/precision",
+      "format": "decimal:6"
+    },
+    "d2_recall": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_precision_recall/recall",
+      "format": "decimal:6"
+    },
+    "s1_box_ap": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_box/S1_CANONICAL_TEST_BOX_MAP50_95",
+      "format": "decimal:6"
+    },
+    "s1_box_ap50": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_box/S1_CANONICAL_TEST_BOX_MAP50",
+      "format": "decimal:6"
+    },
+    "s1_mask_ap": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask/CANONICAL_TEST_MASK_MAP50_95",
+      "format": "decimal:6"
+    },
+    "s1_mask_ap50": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask/CANONICAL_TEST_MASK_MAP50",
+      "format": "decimal:6"
+    },
+    "s1_box_precision": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_box_precision_recall/precision",
+      "format": "decimal:6"
+    },
+    "s1_box_recall": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_box_precision_recall/recall",
+      "format": "decimal:6"
+    },
+    "s1_precision": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask_precision_recall/precision",
+      "format": "decimal:6"
+    },
+    "s1_recall": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask_precision_recall/recall",
+      "format": "decimal:6"
+    },
+    "box_delta": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "localisation_comparison_with_detector/delta_map50_95",
+      "format": "decimal:6"
+    },
+    "d2_name": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "selected_experiment",
+      "format": "text"
+    },
+    "d2_arch": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "model",
+      "format": "text"
+    },
+    "d2_imgsz": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "imgsz",
+      "format": "int"
+    },
+    "s1_name": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "selected_experiment",
+      "format": "text"
+    },
+    "s1_arch": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "model",
+      "format": "text"
+    },
+    "s1_imgsz": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "imgsz",
+      "format": "int"
+    },
+    "mask_ratio": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "mask_ratio",
+      "format": "int"
+    },
+    "d2_selection": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "primary_metric_values/D2",
+      "format": "decimal:6"
+    },
+    "d0_selection": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "primary_metric_values/D0",
+      "format": "decimal:6"
+    },
+    "d1_selection": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "primary_metric_values/D1",
+      "format": "decimal:6"
+    },
+    "d2_selection_delta": {
+      "source": "reports/final_detector_manifest.json",
+      "pointer": "primary_metric_deltas/D2_minus_D0",
+      "format": "decimal:6"
+    },
+    "s0_selection": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "comparison/reference_supported_macro",
+      "format": "decimal:6"
+    },
+    "s1_selection": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "comparison/candidate_supported_macro",
+      "format": "decimal:6"
+    },
+    "s1_selection_delta": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "comparison/delta",
+      "format": "decimal:6"
+    },
+    "source_images": {
+      "source": "reports/canonical_modeling_manifest.json",
+      "pointer": "population/source_provenance_population",
+      "format": "int"
+    },
+    "modeling_images": {
+      "source": "reports/canonical_modeling_manifest.json",
+      "pointer": "population/modeling_image_population",
+      "format": "int"
+    },
+    "canonical_annotations": {
+      "source": "reports/canonical_modeling_manifest.json",
+      "pointer": "population/canonical_annotations",
+      "format": "int"
+    },
+    "split_units": {
+      "source": "reports/canonical_modeling_manifest.json",
+      "pointer": "groups/total",
+      "format": "int"
+    },
+    "matched_iou": {
+      "source": "reports/final_test_direct_iou.json",
+      "pointer": "diagnostic/global/matched_mask_iou_mean",
+      "format": "decimal:6"
+    },
+    "gt_iou": {
+      "source": "reports/final_test_direct_iou.json",
+      "pointer": "diagnostic/global/gt_normalized_mask_iou",
+      "format": "decimal:6"
+    },
+    "coverage": {
+      "source": "reports/final_test_direct_iou.json",
+      "pointer": "diagnostic/global/gt_match_coverage",
+      "format": "decimal:6"
+    },
+    "coverage50": {
+      "source": "reports/final_test_direct_iou.json",
+      "pointer": "diagnostic/global/gt_iou50_coverage",
+      "format": "decimal:6"
+    },
+    "coverage75": {
+      "source": "reports/final_test_direct_iou.json",
+      "pointer": "diagnostic/global/gt_iou75_coverage",
+      "format": "decimal:6"
+    },
+    "d2_val": {
+      "source": "reports/detector_segmenter_box_comparison.json",
+      "pointer": "metrics/CANONICAL_BOX_MAP50_95/D2",
+      "format": "decimal:6"
+    },
+    "s1_box_val": {
+      "source": "reports/detector_segmenter_box_comparison.json",
+      "pointer": "metrics/CANONICAL_BOX_MAP50_95/S1",
+      "format": "decimal:6"
+    },
+    "s1_mask_val": {
+      "source": "reports/final_segmenter_manifest.json",
+      "pointer": "/canonical_all_class/candidate_map50_95",
+      "format": "decimal:6"
+    },
+    "fill_median": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "spatial_features/MASK_TO_BOX_FILL_RATIO/statistics/median",
+      "format": "decimal:6"
+    },
+    "mask_area": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "box_proxies/INSTANCE_AREA_PIXELS/statistics/mask_measurement/mean",
+      "format": "decimal:6"
+    },
+    "box_area": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "box_proxies/INSTANCE_AREA_PIXELS/statistics/box_proxy/mean",
+      "format": "decimal:6"
+    },
+    "overlap_only_boxes": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "geometry_disagreement/box_overlap_without_mask_overlap",
+      "format": "int"
+    },
+    "overlap_pairs": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "geometry_disagreement/candidate_pairs_examined",
+      "format": "int"
+    },
+    "mask_only_associations": {
+      "source": "reports/detector_segmenter_spatial_comparison.json",
+      "pointer": "association/geometry_isolating/frozen_category_counts/MASK_ONLY_ASSOCIATION",
+      "format": "int"
+    },
+    "d2_mean_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/D2/END_TO_END_MODEL_OUTPUT_LATENCY_MS/mean",
+      "format": "decimal:6"
+    },
+    "d2_median_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/D2/END_TO_END_MODEL_OUTPUT_LATENCY_MS/median",
+      "format": "decimal:6"
+    },
+    "d2_p95_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/D2/END_TO_END_MODEL_OUTPUT_LATENCY_MS/p95",
+      "format": "decimal:6"
+    },
+    "d2_alloc": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "memory/D2/peak_memory_allocated_gib",
+      "format": "decimal:6"
+    },
+    "d2_reserved": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "memory/D2/peak_memory_reserved_gib",
+      "format": "decimal:6"
+    },
+    "s1_mean_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/S1/END_TO_END_MODEL_OUTPUT_LATENCY_MS/mean",
+      "format": "decimal:6"
+    },
+    "s1_median_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/S1/END_TO_END_MODEL_OUTPUT_LATENCY_MS/median",
+      "format": "decimal:6"
+    },
+    "s1_p95_ms": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "latency/S1/END_TO_END_MODEL_OUTPUT_LATENCY_MS/p95",
+      "format": "decimal:6"
+    },
+    "s1_alloc": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "memory/S1/peak_memory_allocated_gib",
+      "format": "decimal:6"
+    },
+    "s1_reserved": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "memory/S1/peak_memory_reserved_gib",
+      "format": "decimal:6"
+    },
+    "latency_delta": {
+      "source": "reports/detector_segmenter_latency_comparison.json",
+      "pointer": "deltas/END_TO_END_MODEL_OUTPUT_LATENCY_MS/absolute_latency_delta_ms",
+      "format": "decimal:6"
+    },
+    "allocated_ratio": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "delta/peak_memory_allocated_ratio",
+      "format": "decimal:6"
+    },
+    "reserved_ratio": {
+      "source": "reports/detector_segmenter_memory_comparison.json",
+      "pointer": "delta/peak_memory_reserved_ratio",
+      "format": "decimal:6"
+    },
+    "video_frames": {
+      "source": "reports/final_real_video_demo.json",
+      "pointer": "source/actual_video_frame_count",
+      "format": "int"
+    },
+    "video_duration": {
+      "source": "reports/final_real_video_demo.json",
+      "pointer": "source/actual_video_duration_seconds",
+      "format": "decimal:2"
+    },
+    "video_fps": {
+      "source": "reports/final_real_video_demo.json",
+      "pointer": "source/video/fps",
+      "format": "int"
+    },
+    "video_throughput": {
+      "source": "reports/final_real_video_demo.json",
+      "pointer": "execution/processing_throughput_fps",
+      "format": "decimal:6"
+    },
+    "width_min": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/width/min",
+      "format": "int"
+    },
+    "width_max": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/width/max",
+      "format": "int"
+    },
+    "height_min": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/height/min",
+      "format": "int"
+    },
+    "height_max": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/height/max",
+      "format": "int"
+    },
+    "pixel_median": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/pixels/median",
+      "format": "int"
+    },
+    "luminance_median": {
+      "source": "reports/eda_source.json",
+      "pointer": "image_level/mean_luminance/median",
+      "format": "decimal:3"
+    },
+    "d2_fp": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_precision_recall/false_positives",
+      "format": "int"
+    },
+    "d2_fn": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "canonical_precision_recall/false_negatives",
+      "format": "int"
+    },
+    "s1_fp": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask_precision_recall/false_positives",
+      "format": "int"
+    },
+    "s1_fn": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "canonical_mask_precision_recall/false_negatives",
+      "format": "int"
+    },
+    "test_confusion": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "confusion_matrix/matrix",
+      "format": "matrix"
+    },
+    "d2_fp_rank1": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "qualitative/categories/HIGHEST_CONFIDENCE_FALSE_POSITIVE/selected/0/rank_value",
+      "format": "decimal:6"
+    },
+    "s1_fp_rank1": {
+      "source": "reports/final_test_segmenter.json",
+      "pointer": "qualitative/categories/HIGHEST_CONFIDENCE_FALSE_POSITIVE/selected/0/rank_value",
+      "format": "decimal:6"
+    },
+    "miss_area": {
+      "source": "reports/final_test_detector.json",
+      "pointer": "qualitative/categories/LARGEST_MISSED_INSTANCE/selected/0/rank_value",
+      "format": "int"
+    }
+  }
+}

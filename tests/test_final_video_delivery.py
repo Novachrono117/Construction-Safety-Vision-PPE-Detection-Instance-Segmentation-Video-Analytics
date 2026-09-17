@@ -112,7 +112,7 @@ def test_only_authorized_gaps_change_and_historical_evidence_is_preserved():
             assert old == new
     current = json.loads((ROOT / "reports/delivery_gap_resolution_status.json").read_text())
     for prior, live in zip(after["gaps"], current["gaps"], strict=True):
-        if prior["gap_id"] != "GAP-004":
+        if prior["gap_id"] not in {"GAP-003", "GAP-004"}:
             assert prior == live
     assert (
         subprocess.check_output(

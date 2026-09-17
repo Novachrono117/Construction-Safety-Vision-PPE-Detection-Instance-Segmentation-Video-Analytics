@@ -10,8 +10,9 @@
 | Scientific state | Detector and segmenter training, validation comparison and final evaluation complete |
 | Final test | **OBSERVED** under the documented Phase 11 process: one attempt, one holdout read, three protocol-defined inference passes over two models |
 | Selection / tuning | **CLOSED**: model selection, hyperparameters, thresholds and performance-driven data cleaning |
-| Delivery | Phase 14A executable academic Colab complete: Mode A and Mode B passed real Colab validation; final main publication, public video distribution, final README, technical report and pitch pending |
+| Delivery | Phase 14A executable academic Colab complete: Mode A and Mode B passed real Colab validation; published on main; Phase 14B technical report available; exact Colab wording, public video distribution, final README and pitch pending |
 
+[Final academic report (PDF)](academic/final_report.pdf) · [Markdown source](academic/final_report.md) ·
 [Final scientific synthesis](reports/detector_segmenter_scientific_synthesis.md) ·
 [Final test report](reports/final_test_evaluation.md) ·
 [Final repository audit](reports/final_repository_audit.md) ·
@@ -38,9 +39,7 @@ weights by SHA-256, and runs inference on an uploaded external video.
 five-second external clip. [Validation report](reports/academic_colab_delivery.md) ·
 [Setup and boundaries](delivery/COLAB.md).
 
-The canonical notebook and badge target `main`. The repository is public, but
-the final notebook becomes available through this badge only after the final
-Phase 14A commit is pushed to `main`. The temporary branch remains validation
+The canonical notebook and badge target `main`. The repository is public and Phase 14A is published on `main`. The temporary branch remains validation
 evidence. The notebook presents existing metrics; it does not reproduce research
 metrics or reopen the spent holdout.
 

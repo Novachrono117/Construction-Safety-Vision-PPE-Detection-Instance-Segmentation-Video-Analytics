@@ -362,6 +362,48 @@ def build_status(root: Path) -> dict[str, Any]:
                 "models_executed_during_finalization": 0,
                 "historical_phase_12b_accounting_unchanged": True,
             }
+    academic_path = root / "reports/final_academic_report_delivery.json"
+    if academic_path.is_file():
+        academic = json.loads(academic_path.read_text(encoding="utf-8"))
+        result["assignment_exact_wording_audit"] = academic["ASSIGNMENT_EXACT_WORDING_AUDIT"]
+        result["exact_wording_precedence"] = (
+            "The new assignment audit qualifies earlier approved delivery scopes; "
+            "historical Phase 14A COMPLETE does not establish literal Colab compliance."
+        )
+        if academic.get("classification") == "FINAL_ACADEMIC_REPORT_COMPLETE":
+            gap = next(item for item in result["gaps"] if item["gap_id"] == "GAP-003")
+            gap.update(
+                current_status="RESOLVED",
+                resolution_phase="14B",
+                evidence=[
+                    "academic/final_report.md",
+                    "academic/final_report.pdf",
+                    "reports/final_academic_report_delivery.json",
+                ],
+                remaining_action="none for the technical report; "
+                "author review checklist remains available",
+            )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in result["gap_counts"]
+            }
+            result["requirement_updates"].append(
+                {
+                    "requirement_id": "R15",
+                    "phase_12a_state": "MISSING",
+                    "current_state": "COMPLETE",
+                    "evidence": "academic/final_report.pdf",
+                    "remaining_action": "none for report delivery; "
+                    "exact Colab wording and pitch remain open",
+                }
+            )
+            result["delivery_state"]["academic_report"] = academic["classification"]
+            result["phase_14b"] = {
+                "classification": academic["classification"],
+                "phase_14a_main_published": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736",
+                "evidence": "reports/final_academic_report_delivery.md",
+                "all_assignment_requirements_complete": False,
+            }
     return result
 
 

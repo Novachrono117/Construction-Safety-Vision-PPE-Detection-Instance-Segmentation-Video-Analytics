@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "phase": "14B",
+  "classification": "FINAL_ACADEMIC_REPORT_COMPLETE",
+  "baseline_commit": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736",
+  "phase_14a_push": {
+    "status": "PUSHED",
+    "branch": "main",
+    "commit": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736",
+    "remote_verified": true
+  },
+  "assignment_source": {
+    "type": "HUMAN_SUPPLIED_ASSIGNMENT_SCREENSHOTS_AND_EXPLICIT_ADDENDUM",
+    "received": "2026-09-17",
+    "report_wording": "Relatório técnico README (PDF ou MD, 6–10 páginas): problema e cenário · dataset e EDA · metodologia (modelos e hiperparâmetros) · resultados com métricas · análise de erros · limitações e próximos passos.",
+    "colab_wording": "Notebook Colab executável: com as células de treino, avaliação e inferência (saídas visíveis).",
+    "weights_percent": {
+      "problem_dataset": 10,
+      "detection": 25,
+      "segmentation": 20,
+      "evaluation_critical_analysis": 20,
+      "video": 10,
+      "report_repository": 10,
+      "pitch": 5
+    },
+    "submission_deadline": "2026-09-20T23:55:00-03:00",
+    "planned_completion_date": "2026-09-19"
+  },
+  "report": {
+    "markdown": "academic/final_report.md",
+    "pdf": "academic/final_report.pdf",
+    "language": "pt-BR",
+    "pages": 10,
+    "word_count": 4967,
+    "word_count_method": "visible Markdown tokens; includes tables, captions and references; excludes URLs/comments",
+    "author": "Vinicius Pereira Gomes",
+    "institution": "NOT_SUPPLIED_OMITTED",
+    "course": "Pós-graduação · Visão Computacional e Reconhecimento de Padrões",
+    "professor": "Romes Heriberto",
+    "tables": 3,
+    "figures": 3,
+    "references": 8,
+    "pdf_generation": "COMPLETE",
+    "markdown_source_of_truth": true
+  },
+  "gap_003_previous_status": "OPEN",
+  "gap_003_status": "RESOLVED",
+  "assignment_requirement_id": "R15",
+  "assignment_report_status": "COMPLETE",
+  "all_assignment_requirements_complete": false,
+  "ASSIGNMENT_EXACT_WORDING_AUDIT": {
+    "report_requirement": {
+      "status": "PASS",
+      "basis": "Portuguese Markdown source and ten-page PDF: problem, dataset, explicit EDA, methodology/hyperparameters, results, FP/FN, limitations and next steps."
+    },
+    "test_set_error_analysis": {
+      "status": "PASS",
+      "scope": "COMMITTED_METADATA_ONLY",
+      "basis": "Final test AP/P/R/direct IoU, recorded D2 confusion matrix, comments on deterministically selected FP/FN ranks. No test identifiers or images exposed; validation gallery explicitly separate.",
+      "visual_test_examples_embedded": false,
+      "visual_test_examples_necessary_for_this_metadata_based_analysis": false,
+      "limitation": "Scene-level causes cannot be inferred from public selection metadata. If visual test examples are explicitly demanded later, separate human authorization is required; ignored Phase 11B selections/figures remain unopened."
+    },
+    "colab_exact_wording": {
+      "status": "PARTIAL",
+      "classification": "COLAB_EXACT_WORDING_PARTIAL",
+      "notebook_changed": false,
+      "training": {
+        "identifiable_section": false,
+        "executable_cells": false,
+        "visible_recorded_training_outputs": false
+      },
+      "evaluation": {
+        "recorded_aggregate_display_cells": [
+          5
+        ],
+        "explicit_evaluation_section": false,
+        "executable_evaluation_cells": false
+      },
+      "inference": {
+        "identifiable_sections": true,
+        "optional_executable_cell": 17,
+        "human_cloud_validation": "PASS"
+      },
+      "output_evidence": {
+        "canonical_notebook_embedded_outputs": 0,
+        "mode_a_and_mode_b_human_cloud_evidence": "reports/academic_colab_delivery.json",
+        "interpretation": "Visible outputs are generated during execution; the committed notebook is intentionally cleared."
+      },
+      "minimum_safe_phase_14c": [
+        "Add a TRAINING section with exact frozen command/configuration and recorded training curves/output, explicitly a recipe and historical evidence.",
+        "Add an EVALUATION section with canonical code paths and recorded validation/final-test aggregate outputs, explicitly not a new test run.",
+        "Retain validated optional INFERENCE and separate executed-now outputs from recorded research outputs.",
+        "Human must decide whether literal executable training/evaluation is required; any authorized reproduction path must use only train/validation and preserve the spent holdout."
+      ],
+      "implemented_in_phase_14b": false
+    },
+    "real_video_requirement": {
+      "status": "PASS",
+      "basis": "Approved 104.52-second full real-video inference, 2613 decoded frames; the five-second Colab validation clip is not substituted.",
+      "public_full_video_distribution": "PENDING"
+    },
+    "github_repository": {
+      "status": "PARTIAL",
+      "basis": "Public main contains approved 14A; the final 14B report is local and must not be pushed in this phase. Final README professionalization and full reproduction audit remain open."
+    },
+    "pitch": {
+      "status": "OPEN",
+      "duration_minutes": [
+        5,
+        8
+      ],
+      "participation": "Every group member",
+      "content": "Show the working system including real inference video",
+      "delivery": "Accessible unlisted YouTube or Google Drive link"
+    },
+    "genai_declaration": {
+      "status": "PASS",
+      "source": "delivery/AI_USAGE.md",
+      "report_section": "Uso de IA generativa"
+    },
+    "bonus": {
+      "status": "NOT_STARTED",
+      "requirement": "NOT_REQUIRED",
+      "maximum_extra_points": 0.5,
+      "options": [
+        "ByteTrack or DeepSORT tracking",
+        "Published interactive Gradio or Hugging Face Spaces demo"
+      ],
+      "priority": "Only after mandatory delivery"
+    }
+  },
+  "verification": {
+    "numeric_consistency": {
+      "status": "PASS",
+      "claims": 76,
+      "claim_occurrences": 84,
+      "sources": 12,
+      "figures": 3,
+      "word_count": 4967,
+      "word_count_method": "visible Markdown tokens; includes tables, captions and references; excludes URLs/comments",
+      "editorial_pages": 10,
+      "models_executed": 0,
+      "holdout_accessed": false,
+      "metrics_recomputed": 0
+    },
+    "visual_review": {
+      "agent_render_inspection": "PASS",
+      "human_final_report_review": "PENDING",
+      "scope": "All ten rendered PDF pages; readable body/tables/captions, figure panels, accents and page bounds."
+    },
+    "quality_gates": {
+      "ruff_check": "PASS",
+      "ruff_format": "PASS; 261 files formatted",
+      "pytest": {
+        "passed": 2764,
+        "skipped": 47,
+        "warnings": 27,
+        "seconds": 44.89,
+        "mode": "metadata-only",
+        "report_specific_passed": 19
+      },
+      "sensitive_private_path_scan": {
+        "status": "PASS",
+        "findings": 0,
+        "scope": "Explicit changed/new text files; unrelated AGENTS.md excluded"
+      },
+      "historical_scientific_changes": 0,
+      "colab_execution_surface": "PASS; 44 recorded files byte-identical",
+      "holdout_environment": {
+        "Process": "UNSET",
+        "User": "UNSET",
+        "Machine": "UNSET"
+      },
+      "staged_diff_check": "PASS; PDF explicitly binary in .gitattributes",
+      "pdf_text_scan": "PASS; required headline values present; no private paths or identifier-shaped prose tokens",
+      "staged_file_scan": "PASS; 19 explicit files; forbidden artifact types and unrelated instructions excluded"
+    }
+  },
+  "scientific_boundary": {
+    "models_executed": 0,
+    "training": false,
+    "holdout_accessed": false,
+    "test_accessor_used": false,
+    "metrics_recomputed": 0,
+    "scientific_results_changed": false,
+    "selection_and_tuning": "CLOSED",
+    "holdout": "OBSERVED_SPENT_LOCKED"
+  },
+  "publication": {
+    "phase_14b_push_authorized": false,
+    "phase_14b_pushed": false,
+    "release_created": false,
+    "temporary_branch_preserved": "phase14a-colab-validation"
+  },
+  "human_review_checklist": {
+    "title_author_course_professor": "PENDING_HUMAN_REVIEW",
+    "institution_if_required": "PENDING_HUMAN_REVIEW",
+    "Portuguese_language": "PENDING_HUMAN_REVIEW",
+    "figures_readable": "PENDING_HUMAN_REVIEW",
+    "tables_correct": "PENDING_HUMAN_REVIEW",
+    "citations_and_references": "PENDING_HUMAN_REVIEW",
+    "dataset_attribution": "PENDING_HUMAN_REVIEW",
+    "video_attribution": "PENDING_HUMAN_REVIEW",
+    "GenAI_disclosure": "PENDING_HUMAN_REVIEW",
+    "limitations": "PENDING_HUMAN_REVIEW",
+    "PDF_opens": "PENDING_HUMAN_REVIEW",
+    "no_clipping_or_overflow": "PENDING_HUMAN_REVIEW",
+    "no_tiny_text": "PENDING_HUMAN_REVIEW",
+    "no_unintended_placeholders": "PENDING_HUMAN_REVIEW"
+  }
+}

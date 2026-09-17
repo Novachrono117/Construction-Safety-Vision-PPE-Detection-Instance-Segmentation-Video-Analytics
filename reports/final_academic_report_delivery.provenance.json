@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "phase": "14B",
+  "purpose": "EDITORIAL_SYNTHESIS_OF_COMMITTED_SCIENTIFIC_EVIDENCE",
+  "source_commit": "a788d5303e70ddb12f5dc5ae35dd9a4b56fc6736",
+  "generation_policy": "Markdown is the source of truth. PDF rendering and claim transcription perform no model execution or metric computation. Author/instructor/deadline metadata comes from the human supplied assignment.",
+  "inputs": [
+    {
+      "path": "delivery/AI_USAGE.md",
+      "bytes": 1682,
+      "sha256": "9147e0bdea25f50dc86659223283b920bc16cab01e5a786eaa4ddfd4fe3a0530"
+    },
+    {
+      "path": "delivery/LICENSING.md",
+      "bytes": 8582,
+      "sha256": "93158b1703974c13c0b5ef22f338433415e3ac651337b2c8d66feebad54cefd2"
+    },
+    {
+      "path": "reports/academic_colab_delivery.json",
+      "bytes": 23288,
+      "sha256": "09bd4efc89e07b970e54bea6de07bf814db6725d89a883fcd321000afefb5b82"
+    },
+    {
+      "path": "reports/academic_colab_delivery.provenance.json",
+      "bytes": 32611,
+      "sha256": "37040bb6b07f0e2bccac1b335340c9faeb027a07f908e0afe34faafb95042202"
+    },
+    {
+      "path": "reports/canonical_modeling_manifest.json",
+      "bytes": 6531,
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f"
+    },
+    {
+      "path": "reports/canonical_modeling_population_report.md",
+      "bytes": 7234,
+      "sha256": "90aba81bc1951e63708de8151e27cb74291d3a43b832c969624d4f0ea0465a84"
+    },
+    {
+      "path": "reports/dataset_provenance.md",
+      "bytes": 8228,
+      "sha256": "aef689588c7f3559a3d14b4dc91f416d209e8bd93080972312c1edee0e07e2d3"
+    },
+    {
+      "path": "reports/detection_D2_manifest.json",
+      "bytes": 17485,
+      "sha256": "c5777819a405c7ac0133c5c2bd30dfeac77eca68080b647254dd52a6204ee6ef"
+    },
+    {
+      "path": "reports/detector_segmenter_box_comparison.json",
+      "bytes": 9217,
+      "sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704"
+    },
+    {
+      "path": "reports/detector_segmenter_latency_comparison.json",
+      "bytes": 25901,
+      "sha256": "e7b98d37e6f9018e4cdbd112bfa59b9589050c6ae7452c4d5ef69dea5ee0fc02"
+    },
+    {
+      "path": "reports/detector_segmenter_memory_comparison.json",
+      "bytes": 6491,
+      "sha256": "e3a4e487860181ebb8deaaf638625f3159071860b0b0faabeb55ea4757b7f418"
+    },
+    {
+      "path": "reports/detector_segmenter_scientific_synthesis.md",
+      "bytes": 32210,
+      "sha256": "2b0ea75b7d0fe3ad8fa935cb39a97c8b48063edfd03d6b5f26aa18affa06f0dc"
+    },
+    {
+      "path": "reports/detector_segmenter_spatial_comparison.json",
+      "bytes": 28140,
+      "sha256": "49420d585b58e1a1ca0d5992c4b046f0b1260cf18bc566d6f397ef73b5598f69"
+    },
+    {
+      "path": "reports/eda_report.md",
+      "bytes": 6441,
+      "sha256": "026d4c3b30edf7cccfdabc21b6dfa6cf6ad0314236a0fd2bde4d449f021be71c"
+    },
+    {
+      "path": "reports/eda_source.json",
+      "bytes": 7467,
+      "sha256": "a4355a4796e2ba6c7d4ba76a060f3f288941d783eb44278e6254946a21cf1dbc"
+    },
+    {
+      "path": "reports/figures/final_video/frame_001306.jpg",
+      "bytes": 1304521,
+      "sha256": "5fc7588cfe0c4f1c8912888cfbc5a6d914935467bd41b44af93d3c89d9671c49"
+    },
+    {
+      "path": "reports/figures/qualitative/mask_quality_gallery.png",
+      "bytes": 4026207,
+      "sha256": "98a38207402202f1d01b5a22e1477d01022c57cf5278b8781e0a58f4b818c35e"
+    },
+    {
+      "path": "reports/figures/qualitative/validation_fp_fn_s1.png",
+      "bytes": 4569947,
+      "sha256": "0cf28e35e88ea450e6ddf179c15ecd718cb5226041ad41187fe09f4991a3f362"
+    },
+    {
+      "path": "reports/final_detector_manifest.json",
+      "bytes": 17220,
+      "sha256": "97c1ecaf6fdd8c7437cd063a233a3959fc7144e9f69a2c966d5b452d4bbfc205"
+    },
+    {
+      "path": "reports/final_real_video_demo.json",
+      "bytes": 21944,
+      "sha256": "30330b7b01c0ba21de5b41c26d8bf4bfb0ffc228ac35990b360c60251e030e80"
+    },
+    {
+      "path": "reports/final_real_video_demo.md",
+      "bytes": 9859,
+      "sha256": "2e460dcb25594398d7515b3474fc50a20b7277568a6826e8e5197a2353a14145"
+    },
+    {
+      "path": "reports/final_segmenter_manifest.json",
+      "bytes": 17536,
+      "sha256": "dbdc63211c73ceb0f6ba78e493665fb8fc5432697164466e61b2c086d66acbeb"
+    },
+    {
+      "path": "reports/final_test_detector.json",
+      "bytes": 11248,
+      "sha256": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9"
+    },
+    {
+      "path": "reports/final_test_direct_iou.json",
+      "bytes": 4656,
+      "sha256": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c"
+    },
+    {
+      "path": "reports/final_test_evaluation.md",
+      "bytes": 24387,
+      "sha256": "293de1ed53c41fff9a096f68de4b4fa75ba6d13c0d428f2fdfe591b140eb1b86"
+    },
+    {
+      "path": "reports/final_test_segmenter.json",
+      "bytes": 15697,
+      "sha256": "c77ae3ce17cff8c17a8d8de87ccc04b08d276b98c0b3096dfcfc403f2c7c7093"
+    },
+    {
+      "path": "reports/qualitative_validation_gallery.md",
+      "bytes": 14350,
+      "sha256": "8b12eb4bf6cc0ab0983d0b6ef22576366abae848b109244de4693385e71a94eb"
+    },
+    {
+      "path": "reports/segmentation_S1_result_manifest.json",
+      "bytes": 36791,
+      "sha256": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723"
+    },
+    {
+      "path": "reports/segmentation_adapter_fidelity_report.md",
+      "bytes": 28609,
+      "sha256": "6d6125e5061ede1ddee659ed8f1a69a68ffe49144082b90f7bef73849a6f8a83"
+    },
+    {
+      "path": "reports/segmentation_selection_report.md",
+      "bytes": 11100,
+      "sha256": "0ed20d71b8db348821b3a4538fcc71096fb9571e5ff2eec05c98a36c9cbef068"
+    },
+    {
+      "path": "reports/split_freeze_report.md",
+      "bytes": 13934,
+      "sha256": "c5730cccbdfe7c3377660af8111d494fdb86ff6ae9c2c5b716064928a962b29b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": ".gitattributes",
+      "bytes": 788,
+      "sha256": "2ab138644b5e27b282cba041dad1c1f4b822ea62c2b7dfde6233b339a01bc4e7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 152573,
+      "sha256": "b20d17ddd57c3107c89f64ec70aa287ad643c7cc45888d53b9b1348fdb5f8be7"
+    },
+    {
+      "path": "academic/README.md",
+      "bytes": 2516,
+      "sha256": "68f4333c7abf8f98d858a56c14bacb9e14c6ccc0d930642ddb067f9e3f4561db"
+    },
+    {
+      "path": "academic/final_report.md",
+      "bytes": 38414,
+      "sha256": "4d11d25d681af342748b47d356c6c3ffcf34768a281ed547dd5c9e271d6c90e0"
+    },
+    {
+      "path": "academic/final_report.pdf",
+      "bytes": 4761218,
+      "sha256": "dc355cdd10700b1289b71eff6c0ca0f57eb27603adae9e73b9f2aa9cb58a699e"
+    },
+    {
+      "path": "academic/report_claims.json",
+      "bytes": 14383,
+      "sha256": "75dd06df70d0fd26fce3cf3b6df4b6e37ed7d75235a89d754690b9f8ad773838"
+    },
+    {
+      "path": "academic/requirements.txt",
+      "bytes": 130,
+      "sha256": "fa78f81ad8f2dc370ad048b251db56c9cd1574f3c55798db05cf0c46f2151b5b"
+    },
+    {
+      "path": "reports/delivery_gap_resolution_status.json",
+      "bytes": 19064,
+      "sha256": "acfd84c530d4ea49df8710685fbf157ee79ee05f5b85b78134e193c57b19c0da"
+    },
+    {
+      "path": "reports/final_academic_report_delivery.json",
+      "bytes": 8734,
+      "sha256": "7c3fe3d72cf32aabb7b685fbe248c338cef75ed0569cfe6594d53f3476cc0170"
+    },
+    {
+      "path": "reports/final_academic_report_delivery.md",
+      "bytes": 10980,
+      "sha256": "ddb2f6849c989675e0f203b19a9e385898a18bdc98cda25504fcdc8636ddcb38"
+    },
+    {
+      "path": "reports/roadmap.md",
+      "bytes": 228190,
+      "sha256": "187f5d84b026370ce4198dc9b6d04910a303abb47ef1c52ef4ec01c59887cf5d"
+    },
+    {
+      "path": "scripts/build_academic_report.py",
+      "bytes": 9371,
+      "sha256": "43e107e02680e43aead88f7c80323d0f802d12719c52097698b8a84d1ab2015e"
+    },
+    {
+      "path": "scripts/validate_academic_report.py",
+      "bytes": 278,
+      "sha256": "25a48a918278ea0e2d223f7baa82d988f7cb8260074e2d5e41959c581e6a0810"
+    },
+    {
+      "path": "src/construction_safety_vision/academic_report.py",
+      "bytes": 5465,
+      "sha256": "cfbd7a0c5e8399175826af4b37c476d6512c191b5b7e4967365ec59b2d5cb10d"
+    },
+    {
+      "path": "src/construction_safety_vision/delivery_status.py",
+      "bytes": 28103,
+      "sha256": "18362a1eee7fc7b80373c4e94335ee624fecd02ad8f04ce4379352bbd9b5645d"
+    },
+    {
+      "path": "tests/test_academic_report.py",
+      "bytes": 2407,
+      "sha256": "a84647f7e7c0556668cf9a8bdd652821dc5232459fd9e3bcaf2aa7a249c40ac0"
+    },
+    {
+      "path": "tests/test_final_video_delivery.py",
+      "bytes": 5398,
+      "sha256": "4bce712e9c11c63e4153d13775689ba7bdb051bdbe6bd99f12ac0557c823d3ed"
+    },
+    {
+      "path": "tests/test_public_delivery.py",
+      "bytes": 6809,
+      "sha256": "0aba44b42bdc3d2dc8df55252eb8fb722526eeb9697b53f2084d67d07fc9d6f5"
+    }
+  ],
+  "document_toolchain": {
+    "reportlab": "4.4.9",
+    "pypdf": "6.10.0",
+    "Pillow": "12.3.0",
+    "environment": "Codex bundled document runtime, separate from frozen project inference dependencies",
+    "project_lockfiles_changed": false
+  },
+  "figure_transformations": [
+    {
+      "source": "reports/figures/qualitative/validation_fp_fn_s1.png",
+      "operation": "Select person/vest_loose rows; preserve complete scenes and existing overlays; embed JPEG at quality 93."
+    },
+    {
+      "source": "reports/figures/qualitative/mask_quality_gallery.png",
+      "operation": "Re-layout three complete disagreement scene panels; editorial Portuguese labels; preserve predictions."
+    },
+    {
+      "source": "reports/figures/final_video/frame_001306.jpg",
+      "operation": "Fit existing full frame and footer to report width; JPEG quality 93; no new model overlay."
+    }
+  ],
+  "scopes": {
+    "test_evidence": "Committed aggregate metrics and deterministic qualitative selection ranks only",
+    "test_identifiers_or_images_read": false,
+    "models_executed": 0,
+    "metrics_recomputed": 0,
+    "holdout_accessed": false,
+    "notebook_modified": false
+  },
+  "human_visual_review": "PENDING; agent rendering review is separate",
+  "output_hash_exclusions": "This provenance does not hash itself or attempt to contain its own future commit SHA.",
+  "quality_gates": {
+    "ruff_check": "PASS",
+    "ruff_format": "PASS; 261 files formatted",
+    "pytest": {
+      "passed": 2764,
+      "skipped": 47,
+      "warnings": 27,
+      "seconds": 44.89,
+      "mode": "metadata-only",
+      "report_specific_passed": 19
+    },
+    "sensitive_private_path_scan": {
+      "status": "PASS",
+      "findings": 0,
+      "scope": "Explicit changed/new text files; unrelated AGENTS.md excluded"
+    },
+    "historical_scientific_changes": 0,
+    "colab_execution_surface": "PASS; 44 recorded files byte-identical",
+    "holdout_environment": {
+      "Process": "UNSET",
+      "User": "UNSET",
+      "Machine": "UNSET"
+    },
+    "staged_diff_check": "PASS; PDF explicitly binary in .gitattributes",
+    "pdf_text_scan": "PASS; required headline values present; no private paths or identifier-shaped prose tokens",
+    "staged_file_scan": "PASS; 19 explicit files; forbidden artifact types and unrelated instructions excluded"
+  }
+}
