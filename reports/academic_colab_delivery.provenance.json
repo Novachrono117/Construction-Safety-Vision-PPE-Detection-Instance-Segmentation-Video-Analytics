@@ -23,11 +23,11 @@
       "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1"
     },
     {
-      "bytes": 12126,
-      "git_blob_oid": "27867bdbc7468aed8304200e17d203f2bdead179",
+      "bytes": 17891,
+      "git_blob_oid": "3a3bf1a549caa8de18df29898f37232f30ecdc41",
       "path": "notebooks/construction_safety_vision_demo.ipynb",
       "role": "CANONICAL_NOTEBOOK_WITH_DOCUMENTED_SESSION_DELTAS",
-      "sha256": "cfed2af4f197b4eba5b5bc61391197a97e5d53ef355009fe55a70b978b222773"
+      "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92"
     },
     {
       "bytes": 5405,
@@ -37,11 +37,32 @@
       "sha256": "4d45c1d8d20839311e0be589f1b60bda92ab1902bc942955e79fd660ae3f2cd8"
     },
     {
+      "bytes": 6531,
+      "git_blob_oid": "4760c62ff980d3b7643729d4d2b7797a746aa69d",
+      "path": "reports/canonical_modeling_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f"
+    },
+    {
+      "bytes": 17485,
+      "git_blob_oid": "cd0e27574f8f43590bde3b55239e31f048dd6f24",
+      "path": "reports/detection_D2_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "c5777819a405c7ac0133c5c2bd30dfeac77eca68080b647254dd52a6204ee6ef"
+    },
+    {
       "bytes": 9217,
       "git_blob_oid": "9f74ea027d27f84656fe901032255234c948c30f",
       "path": "reports/detector_segmenter_box_comparison.json",
       "role": "COMMITTED_EVIDENCE_INPUT",
       "sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704"
+    },
+    {
+      "bytes": 322982,
+      "git_blob_oid": "14dd774aa3b8ac1595a2a0a5827c470743461c1c",
+      "path": "reports/figures/detection/D2/results.png",
+      "role": "COMMITTED_TRAINING_CURVE_FIGURE",
+      "sha256": "71e1eb86df79f8d3f1accbe26a7f105002aa0b26add4bce24cb368b99f8c3f5c"
     },
     {
       "bytes": 1315142,
@@ -114,6 +135,13 @@
       "sha256": "0cf28e35e88ea450e6ddf179c15ecd718cb5226041ad41187fe09f4991a3f362"
     },
     {
+      "bytes": 498789,
+      "git_blob_oid": "adfbe111d9b78e8388c30e6f96172177abb12133",
+      "path": "reports/figures/segmentation_S1/results.png",
+      "role": "COMMITTED_TRAINING_CURVE_FIGURE",
+      "sha256": "d182686b8adf68b837e03980c8dbc30c26204e6f4f5d263b9cffd5010091d8e3"
+    },
+    {
       "bytes": 17220,
       "git_blob_oid": "255fe5dbe650a159b8be09a853e46559a48b183a",
       "path": "reports/final_detector_manifest.json",
@@ -142,6 +170,13 @@
       "sha256": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9"
     },
     {
+      "bytes": 4656,
+      "git_blob_oid": "ab16bf12dbd8702e6051369a3e555944675b7511",
+      "path": "reports/final_test_direct_iou.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c"
+    },
+    {
       "bytes": 15697,
       "git_blob_oid": "e21130bf848644a521a556459cbcb55f1a01fa9e",
       "path": "reports/final_test_segmenter.json",
@@ -161,6 +196,27 @@
       "path": "reports/qualitative_validation_gallery.provenance.json",
       "role": "COMMITTED_EVIDENCE_INPUT",
       "sha256": "af208eb4d7f813ef0470b0ef0bc835a23379fe2a114bf6c5fab915b4654579cb"
+    },
+    {
+      "bytes": 5102,
+      "git_blob_oid": "ec9083b9e635bbb48f65849373d2ec0bd068e525",
+      "path": "reports/segmentation_S1_canonical_evaluation.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1"
+    },
+    {
+      "bytes": 5517,
+      "git_blob_oid": "37869acfd7993e48564545b600efe46a0927c9c3",
+      "path": "reports/segmentation_S1_mask_iou.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d"
+    },
+    {
+      "bytes": 36791,
+      "git_blob_oid": "94da29b9c17e31e8ecd956f54ed796728ce0207c",
+      "path": "reports/segmentation_S1_result_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723"
     },
     {
       "bytes": 2319,
@@ -231,6 +287,13 @@
       "path": "src/construction_safety_vision/data/versioning.py",
       "role": "TRANSITIVE_RUNTIME_MODULE",
       "sha256": "607e3def348aaecdbbe77a6e1ed9e4e82d528832209ebc851de577aee35cf60b"
+    },
+    {
+      "bytes": 32232,
+      "git_blob_oid": "2bd188a79a80269f3bc9cc1765e4d1945daf1457",
+      "path": "src/construction_safety_vision/delivery_academic.py",
+      "role": "STANDALONE_ARTIFACT_PRESENTATION_SUPPORT",
+      "sha256": "03a35ed044e6abcae350b15a5afb9bc1e130293ed8c690dcff63a82043240738"
     },
     {
       "bytes": 19970,
@@ -314,38 +377,86 @@
   "generator": "src/construction_safety_vision/academic_colab_delivery.py",
   "human_observation": {
     "agent_cloud_execution": false,
-    "basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14A_FINALIZATION_ATTESTATION",
+    "basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14C_FINALIZATION_ATTESTATION",
     "executor": "HUMAN_MAINTAINER",
     "mode_a": "PASS",
+    "mode_a_reexecuted_in_phase_14c": true,
+    "mode_a_runtime": "CPU",
+    "mode_a_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
     "mode_b": "PASS",
-    "observation_date": "2026-09-17"
+    "mode_b_observation_date": "2026-09-17",
+    "mode_b_reexecuted_in_phase_14c": false,
+    "mode_b_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+    "observation_date": "2026-09-18"
+  },
+  "mode_b_surface_identity": {
+    "changed_paths": [],
+    "compared_count": 25,
+    "compared_paths": [
+      ".python-version",
+      "configs/detector_segmenter_comparison.yaml",
+      "delivery/checkpoints.json",
+      "pyproject.toml",
+      "scripts/run_video_demo.py",
+      "src/construction_safety_vision/__init__.py",
+      "src/construction_safety_vision/checkpoint_delivery.py",
+      "src/construction_safety_vision/config.py",
+      "src/construction_safety_vision/data/__init__.py",
+      "src/construction_safety_vision/data/acquisition.py",
+      "src/construction_safety_vision/data/canonical.py",
+      "src/construction_safety_vision/data/coco.py",
+      "src/construction_safety_vision/data/roboflow.py",
+      "src/construction_safety_vision/data/versioning.py",
+      "src/construction_safety_vision/delivery_demo.py",
+      "src/construction_safety_vision/detection_freeze.py",
+      "src/construction_safety_vision/env.py",
+      "src/construction_safety_vision/paths.py",
+      "src/construction_safety_vision/provenance.py",
+      "src/construction_safety_vision/segmentation_freeze.py",
+      "src/construction_safety_vision/splits.py",
+      "src/construction_safety_vision/video_models.py",
+      "src/construction_safety_vision/video_render.py",
+      "src/construction_safety_vision/video_runtime.py",
+      "uv.lock"
+    ],
+    "conclusion": "MODE_B_REVALIDATION_NOT_REQUIRED",
+    "identical": true,
+    "mode_a_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+    "mode_b_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+    "notebook_excluded_because": "The notebook is the one file phase 14C changed, so it is validated in its own right by the phase 14C Mode A cloud run rather than by this comparison.",
+    "roles_compared": [
+      "FROZEN_CHECKPOINT_METADATA",
+      "FROZEN_INFERENCE_CONFIGURATION",
+      "LOCKED_INSTALLATION_INPUT",
+      "MODE_B_ENTRYPOINT",
+      "STANDALONE_DELIVERY_SUPPORT",
+      "TRANSITIVE_RUNTIME_MODULE"
+    ]
   },
   "purpose": "DELIVERY_RECONCILIATION_OF_HUMAN_CLOUD_OBSERVATIONS",
   "quality_gates": {
     "focused_tests": {
-      "duration_seconds": 19.04,
       "failed": 0,
       "files": [
-        "tests/test_academic_colab_delivery.py",
         "tests/test_delivery_demo.py",
+        "tests/test_delivery_academic.py",
+        "tests/test_academic_colab_delivery.py",
         "tests/test_public_delivery.py",
-        "tests/test_checkpoint_delivery.py",
-        "tests/test_final_video_delivery.py"
+        "tests/test_academic_report.py"
       ],
-      "passed": 110
+      "passed": 96
     },
-    "note": "Executed on the finalization candidate. Metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. These are local checks, not a new cloud execution.",
+    "note": "Executed on the finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. Numbers were re-measured against the committed tree after the delivery records were generated.",
     "pytest": {
-      "duration_seconds": 34.01,
       "failed": 0,
       "mode": "metadata-only",
-      "passed": 2745,
+      "passed": 2777,
       "skipped": 47,
       "warnings": 27
     },
     "ruff_check": "PASS",
     "ruff_format": "PASS",
-    "ruff_formatted_files": 254,
+    "ruff_formatted_files": 263,
     "scope": "FINALIZATION_CANDIDATE"
   },
   "schema_version": 1,
@@ -589,5 +700,5 @@
       }
     }
   },
-  "validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
+  "validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024"
 }

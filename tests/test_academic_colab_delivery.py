@@ -25,7 +25,11 @@ def portable_reports(tmp_path, monkeypatch, provenance):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / relative, target)
     original = colab.git_bytes
-    monkeypatch.setattr(colab, "git_bytes", lambda root, relative: original(ROOT, relative))
+    monkeypatch.setattr(
+        colab,
+        "git_bytes",
+        lambda root, relative, revision=colab.VALIDATED: original(ROOT, relative, revision),
+    )
     return tmp_path
 
 

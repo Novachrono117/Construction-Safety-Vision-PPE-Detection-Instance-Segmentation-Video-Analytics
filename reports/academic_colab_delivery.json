@@ -1,19 +1,23 @@
 {
   "assignment_colab_status": "COMPLETE",
   "assignment_requirement_id": "R18",
+  "assignment_wording_status": "COLAB_EXACT_WORDING_SATISFIED",
   "baseline_commit": "fa0bea2b072b124d65f4e9bd1b932a22d98149d2",
   "classification": "EXECUTABLE_ACADEMIC_COLAB_COMPLETE",
   "cloud_validation_scope": {
     "canonical_notebook_executed_verbatim": false,
-    "cloud_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+    "cloud_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
     "documented_human_session_deltas": [
-      "Clone target changed once in the Colab session from main to phase14a-colab-validation.",
-      "Mode A kept RUN_INFERENCE=False; Mode B selected True, compare and cuda.",
-      "Mode B added a separate GPU diagnostic cell and confirmed the external video.",
-      "Mode B ran cells individually, skipping the already-validated Mode A displays."
+      "Phase 14C: clone target changed once in the Colab session from main to phase14c-colab-validation.",
+      "Phase 14C: Mode A ran top to bottom on a fresh CPU runtime with RUN_INFERENCE=False and the canonical compare/cpu defaults.",
+      "Phase 14A: clone target changed once from main to phase14a-colab-validation.",
+      "Phase 14A: Mode A kept RUN_INFERENCE=False; Mode B selected True, compare and cuda.",
+      "Phase 14A: Mode B added a separate GPU diagnostic cell, which was never committed and is not part of any canonical notebook.",
+      "Phase 14A: Mode B ran cells individually, skipping the already-validated Mode A displays."
     ],
     "final_candidate_commit_executed_in_cloud": false,
-    "finalization_basis": "Human cloud evidence plus unchanged validated execution surface; only delivery documentation, reports, status and verification code change during finalization."
+    "finalization_basis": "Phase 14C human Mode A cloud evidence on the changed notebook, plus a derived byte-identity proof that every Mode B execution input is unchanged since the phase 14A inference validation; only delivery documentation, reports, status and verification code change during finalization.",
+    "mode_b_cloud_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
   },
   "colab_badge": {
     "branch": "main",
@@ -21,6 +25,15 @@
     "repository_visibility": "PUBLIC_CONFIRMED_BEFORE_FINALIZATION",
     "url": "https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb",
     "url_validation": "STRUCTURALLY_VALID"
+  },
+  "evaluation_section": {
+    "content": "Executable cells read the committed one-shot holdout result artifacts by field and render canonical COCO average precision, operating-point precision and recall, per-class AP, the direct instance-mask IoU diagnostic, object-level TP/FP/FN, both final-test confusion matrices from their recorded counts, and the bounded validation-versus-test comparison.",
+    "default_notebook_reruns_final_test": false,
+    "executable_validation_evaluation_path": false,
+    "holdout_content_accessed": false,
+    "label": "FINAL TEST RESULTS - READ FROM THE COMMITTED ONE-SHOT EVALUATION",
+    "metrics_recomputed": 0,
+    "models_invoked": 0
   },
   "execution_surface": [
     {
@@ -45,11 +58,11 @@
       "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1"
     },
     {
-      "bytes": 12126,
-      "git_blob_oid": "27867bdbc7468aed8304200e17d203f2bdead179",
+      "bytes": 17891,
+      "git_blob_oid": "3a3bf1a549caa8de18df29898f37232f30ecdc41",
       "path": "notebooks/construction_safety_vision_demo.ipynb",
       "role": "CANONICAL_NOTEBOOK_WITH_DOCUMENTED_SESSION_DELTAS",
-      "sha256": "cfed2af4f197b4eba5b5bc61391197a97e5d53ef355009fe55a70b978b222773"
+      "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92"
     },
     {
       "bytes": 5405,
@@ -59,11 +72,32 @@
       "sha256": "4d45c1d8d20839311e0be589f1b60bda92ab1902bc942955e79fd660ae3f2cd8"
     },
     {
+      "bytes": 6531,
+      "git_blob_oid": "4760c62ff980d3b7643729d4d2b7797a746aa69d",
+      "path": "reports/canonical_modeling_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f"
+    },
+    {
+      "bytes": 17485,
+      "git_blob_oid": "cd0e27574f8f43590bde3b55239e31f048dd6f24",
+      "path": "reports/detection_D2_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "c5777819a405c7ac0133c5c2bd30dfeac77eca68080b647254dd52a6204ee6ef"
+    },
+    {
       "bytes": 9217,
       "git_blob_oid": "9f74ea027d27f84656fe901032255234c948c30f",
       "path": "reports/detector_segmenter_box_comparison.json",
       "role": "COMMITTED_EVIDENCE_INPUT",
       "sha256": "ebeabe3f6bf87e2059446d21bba7ae61cbd717a2b38b4b6eba90fbe90ec76704"
+    },
+    {
+      "bytes": 322982,
+      "git_blob_oid": "14dd774aa3b8ac1595a2a0a5827c470743461c1c",
+      "path": "reports/figures/detection/D2/results.png",
+      "role": "COMMITTED_TRAINING_CURVE_FIGURE",
+      "sha256": "71e1eb86df79f8d3f1accbe26a7f105002aa0b26add4bce24cb368b99f8c3f5c"
     },
     {
       "bytes": 1315142,
@@ -136,6 +170,13 @@
       "sha256": "0cf28e35e88ea450e6ddf179c15ecd718cb5226041ad41187fe09f4991a3f362"
     },
     {
+      "bytes": 498789,
+      "git_blob_oid": "adfbe111d9b78e8388c30e6f96172177abb12133",
+      "path": "reports/figures/segmentation_S1/results.png",
+      "role": "COMMITTED_TRAINING_CURVE_FIGURE",
+      "sha256": "d182686b8adf68b837e03980c8dbc30c26204e6f4f5d263b9cffd5010091d8e3"
+    },
+    {
       "bytes": 17220,
       "git_blob_oid": "255fe5dbe650a159b8be09a853e46559a48b183a",
       "path": "reports/final_detector_manifest.json",
@@ -164,6 +205,13 @@
       "sha256": "2169a5317324a299123cec5109b5d346ab44a2398e57b29d0aee19d172967bd9"
     },
     {
+      "bytes": 4656,
+      "git_blob_oid": "ab16bf12dbd8702e6051369a3e555944675b7511",
+      "path": "reports/final_test_direct_iou.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "0de72ae9769e0e6d3be9eb23ff52f4a489f85171d2af9d1dfacf96b3282b289c"
+    },
+    {
       "bytes": 15697,
       "git_blob_oid": "e21130bf848644a521a556459cbcb55f1a01fa9e",
       "path": "reports/final_test_segmenter.json",
@@ -183,6 +231,27 @@
       "path": "reports/qualitative_validation_gallery.provenance.json",
       "role": "COMMITTED_EVIDENCE_INPUT",
       "sha256": "af208eb4d7f813ef0470b0ef0bc835a23379fe2a114bf6c5fab915b4654579cb"
+    },
+    {
+      "bytes": 5102,
+      "git_blob_oid": "ec9083b9e635bbb48f65849373d2ec0bd068e525",
+      "path": "reports/segmentation_S1_canonical_evaluation.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "edafc31a0cec9a8a8019ea18156e398d1c4c619fa9de485ccb84163e44b818a1"
+    },
+    {
+      "bytes": 5517,
+      "git_blob_oid": "37869acfd7993e48564545b600efe46a0927c9c3",
+      "path": "reports/segmentation_S1_mask_iou.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "be3b893b602ddfe3d589c46676e599f33bc9abd813f76b1c2d3855d0d8dd149d"
+    },
+    {
+      "bytes": 36791,
+      "git_blob_oid": "94da29b9c17e31e8ecd956f54ed796728ce0207c",
+      "path": "reports/segmentation_S1_result_manifest.json",
+      "role": "COMMITTED_EVIDENCE_INPUT",
+      "sha256": "7fe12ea2515fb2821fc7e5a6e8914ec4929393937c5234b22b817e50b3521723"
     },
     {
       "bytes": 2319,
@@ -253,6 +322,13 @@
       "path": "src/construction_safety_vision/data/versioning.py",
       "role": "TRANSITIVE_RUNTIME_MODULE",
       "sha256": "607e3def348aaecdbbe77a6e1ed9e4e82d528832209ebc851de577aee35cf60b"
+    },
+    {
+      "bytes": 32232,
+      "git_blob_oid": "2bd188a79a80269f3bc9cc1765e4d1945daf1457",
+      "path": "src/construction_safety_vision/delivery_academic.py",
+      "role": "STANDALONE_ARTIFACT_PRESENTATION_SUPPORT",
+      "sha256": "03a35ed044e6abcae350b15a5afb9bc1e130293ed8c690dcff63a82043240738"
     },
     {
       "bytes": 19970,
@@ -337,6 +413,9 @@
   "gap_004_status": "RESOLVED",
   "known_limitations": [
     "The final candidate commit itself has not been run in Colab; surface identities are preserved.",
+    "Mode B was validated once, at the phase 14A revision, and was not re-executed for phase 14C; the carry-forward rests on byte identity, not a second run.",
+    "The training and evaluation sections present recorded evidence. The notebook does not retrain the models and does not rerun the spent holdout evaluation, and it offers no executable path that would.",
+    "Reproducing a training run needs a CUDA GPU and the materialised dataset, neither of which the notebook provides.",
     "Mode B still requires manual uploads and compatible GPU capacity; future Colab changes may matter.",
     "The five-second output is technical evidence only and must not be published in this phase.",
     "MP4/mp4v browser playback is not guaranteed; no audio/timestamp track is copied.",
@@ -345,18 +424,72 @@
     "The complete Phase 13B MP4 has no public URL; six approved frames keep Mode A useful.",
     "No Release, technical report, tracking, pitch or broader README professionalization is included."
   ],
+  "mode_b_surface_identity": {
+    "changed_paths": [],
+    "compared_count": 25,
+    "compared_paths": [
+      ".python-version",
+      "configs/detector_segmenter_comparison.yaml",
+      "delivery/checkpoints.json",
+      "pyproject.toml",
+      "scripts/run_video_demo.py",
+      "src/construction_safety_vision/__init__.py",
+      "src/construction_safety_vision/checkpoint_delivery.py",
+      "src/construction_safety_vision/config.py",
+      "src/construction_safety_vision/data/__init__.py",
+      "src/construction_safety_vision/data/acquisition.py",
+      "src/construction_safety_vision/data/canonical.py",
+      "src/construction_safety_vision/data/coco.py",
+      "src/construction_safety_vision/data/roboflow.py",
+      "src/construction_safety_vision/data/versioning.py",
+      "src/construction_safety_vision/delivery_demo.py",
+      "src/construction_safety_vision/detection_freeze.py",
+      "src/construction_safety_vision/env.py",
+      "src/construction_safety_vision/paths.py",
+      "src/construction_safety_vision/provenance.py",
+      "src/construction_safety_vision/segmentation_freeze.py",
+      "src/construction_safety_vision/splits.py",
+      "src/construction_safety_vision/video_models.py",
+      "src/construction_safety_vision/video_render.py",
+      "src/construction_safety_vision/video_runtime.py",
+      "uv.lock"
+    ],
+    "conclusion": "MODE_B_REVALIDATION_NOT_REQUIRED",
+    "identical": true,
+    "mode_a_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+    "mode_b_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+    "notebook_excluded_because": "The notebook is the one file phase 14C changed, so it is validated in its own right by the phase 14C Mode A cloud run rather than by this comparison.",
+    "roles_compared": [
+      "FROZEN_CHECKPOINT_METADATA",
+      "FROZEN_INFERENCE_CONFIGURATION",
+      "LOCKED_INSTALLATION_INPUT",
+      "MODE_B_ENTRYPOINT",
+      "STANDALONE_DELIVERY_SUPPORT",
+      "TRANSITIVE_RUNTIME_MODULE"
+    ]
+  },
   "notebook": {
-    "bytes": 12126,
+    "bytes": 17891,
     "canonical_branch": "main",
     "path": "notebooks/construction_safety_vision_demo.ipynb",
-    "sha256": "cfed2af4f197b4eba5b5bc61391197a97e5d53ef355009fe55a70b978b222773"
+    "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92"
   },
+  "notebook_sections": [
+    "1 Overview",
+    "2 Dataset and classes",
+    "3 TREINO / TRAINING",
+    "4 AVALIACAO / EVALUATION",
+    "5 Qualitative evidence",
+    "6 Video evidence",
+    "7 INFERENCIA / INFERENCE",
+    "8 Limitations and licences"
+  ],
   "other_gaps": {
     "GAP-008": "OPEN",
     "GAP-010": "PARTIALLY_RESOLVED",
     "GAP-014": "OPEN"
   },
-  "phase": "14A",
+  "phase": "14C",
   "protocol": {
     "checkpoint_policy": "Optional manual upload; exact frozen byte size and SHA-256 before deserialization; no download, pretrained substitution or training fallback.",
     "holdout": "OBSERVED_SPENT_LOCKED",
@@ -400,7 +533,17 @@
     },
     "source_record": "reports/final_real_video_source.json"
   },
-  "validated_temporary_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+  "training_section": {
+    "content": "Executable cells read each frozen model's committed experiment manifest and render its architecture, image size, epochs, batch, seed, the optimizer that `optimizer: auto` resolved to, the full augmentation set, the checkpoint selection rule, the selected epoch, the frozen checkpoint identity and the committed training and validation curves.",
+    "default_notebook_retrains": false,
+    "execution": "NO_NEW_TRAINING_EXECUTED",
+    "label": "RECORDED_TRAINING_EVIDENCE",
+    "reproducible_entry_points": [
+      "uv run python scripts/train_detection_experiment.py --experiment D2",
+      "uv run python scripts/train_segmentation_comparison.py"
+    ]
+  },
+  "validated_temporary_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
   "validation_evidence": {
     "LOCAL_IMPLEMENTATION_VERIFICATION": {
       "checks": [
@@ -414,29 +557,27 @@
       "models_executed_during_finalization": 0,
       "quality_gates": {
         "focused_tests": {
-          "duration_seconds": 19.04,
           "failed": 0,
           "files": [
-            "tests/test_academic_colab_delivery.py",
             "tests/test_delivery_demo.py",
+            "tests/test_delivery_academic.py",
+            "tests/test_academic_colab_delivery.py",
             "tests/test_public_delivery.py",
-            "tests/test_checkpoint_delivery.py",
-            "tests/test_final_video_delivery.py"
+            "tests/test_academic_report.py"
           ],
-          "passed": 110
+          "passed": 96
         },
-        "note": "Executed on the finalization candidate. Metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. These are local checks, not a new cloud execution.",
+        "note": "Executed on the finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. Numbers were re-measured against the committed tree after the delivery records were generated.",
         "pytest": {
-          "duration_seconds": 34.01,
           "failed": 0,
           "mode": "metadata-only",
-          "passed": 2745,
+          "passed": 2777,
           "skipped": 47,
           "warnings": 27
         },
         "ruff_check": "PASS",
         "ruff_format": "PASS",
-        "ruff_formatted_files": 254,
+        "ruff_formatted_files": 263,
         "scope": "FINALIZATION_CANDIDATE"
       },
       "status": "PASS"
@@ -445,23 +586,51 @@
       "checkpoint_used": false,
       "contrast_fix": "HUMAN_CONFIRMED_READABLE_IN_REAL_COLAB",
       "execution_kind": "HUMAN_EXECUTED",
+      "final_test_evaluation_executed": false,
       "fresh_runtime": true,
+      "gpu_required": false,
       "holdout_authorization_used": false,
+      "human_readability_review": {
+        "confusion_matrices": "PASS",
+        "evaluation_tables": "PASS",
+        "qualitative_figures": "PASS",
+        "tables": "PASS",
+        "training_curves": "PASS",
+        "video_evidence": "PASS"
+      },
       "metrics": "DISPLAY_EXISTING_COMMITTED_AGGREGATES_ONLY",
       "model_inference_used": false,
-      "observation_basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14A_FINALIZATION_ATTESTATION",
+      "observation_basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14C_FINALIZATION_ATTESTATION",
+      "observation_date": "2026-09-18",
       "observed_messages": [
-        "Repository revision: 8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+        "Repository revision: 2e355d8012b6f1f49923c5cb3ead06760490f024",
         "Mode A ready. No checkpoint, dataset or inference framework loaded.",
+        "Mode B installation skipped.",
+        "Checkpoint upload skipped.",
+        "Video upload and inference skipped.",
         "Mode A complete. No inference output was created."
       ],
       "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
       "roboflow_key_used": false,
+      "run_all": true,
+      "runtime_accelerator": "CPU",
+      "sections_rendered": [
+        "dataset and classes",
+        "TREINO / TRAINING with D2 and S1 recipes and committed curves",
+        "AVALIACAO / EVALUATION with final-test metrics and both confusion matrices",
+        "qualitative evidence",
+        "real-video evidence",
+        "INFERENCIA / INFERENCE present and skipped"
+      ],
       "status": "PASS",
-      "validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
+      "traceback_observed": false,
+      "training_executed": false,
+      "validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024"
     },
     "REAL_COLAB_MODE_B_VALIDATION": {
       "artifact_classification": "COLAB_TECHNICAL_VALIDATION_ARTIFACT",
+      "carried_forward_basis": "MODE_B_EXECUTION_SURFACE_BYTE_IDENTICAL",
+      "carried_forward_conclusion": "MODE_B_REVALIDATION_NOT_REQUIRED",
       "checkpoint_verification": {
         "D2": {
           "architecture": "YOLO11n",
@@ -496,6 +665,7 @@
         "sha256": "b00bbd908a2e7a0e4b40073200bab555ad9f87be4e8c3ddcbd0f994fbd32532b",
         "width": 640
       },
+      "observation_date": "2026-09-17",
       "original_provenance_identity": {
         "bytes": 5523,
         "sha256": "f26e5a7090e3af6729dda85885416e97238defdfd904910c0e11cf641605c4bd"
@@ -522,6 +692,7 @@
       },
       "processed_frames": 125,
       "publication_status": "NOT_PUBLICATION_READY",
+      "reexecuted_in_phase_14c": false,
       "result_key": "MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION",
       "runtime": {
         "cuda_available": true,

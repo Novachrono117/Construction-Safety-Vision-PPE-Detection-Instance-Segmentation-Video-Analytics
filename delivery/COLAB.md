@@ -1,12 +1,52 @@
 # Colab delivery: evidence first, optional inference
 
 Notebook: [construction_safety_vision_demo.ipynb](../notebooks/construction_safety_vision_demo.ipynb).
-Support: [delivery_demo.py](../src/construction_safety_vision/delivery_demo.py).
+Support: [delivery_demo.py](../src/construction_safety_vision/delivery_demo.py) and
+[delivery_academic.py](../src/construction_safety_vision/delivery_academic.py).
 
-**Phase 14A: `EXECUTABLE_ACADEMIC_COLAB_COMPLETE`.** Human-executed Mode A and
-Mode B cloud validation passed on 2026-09-17 at revision
-`8ce5d0375903e3e3760873e0a75ddce37cc1149b`.
+**Phase 14C: `EXECUTABLE_ACADEMIC_COLAB_COMPLETE` / `COLAB_EXACT_WORDING_SATISFIED`.**
+Human-executed Mode A cloud validation passed on 2026-09-18 on a fresh **CPU**
+runtime at revision `2e355d8012b6f1f49923c5cb3ead06760490f024`, after the notebook
+gained explicit TREINO and AVALIACAO sections. Mode B passed on 2026-09-17 at
+revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was **not** re-executed:
+all 25 Mode B execution inputs are byte-identical between the two revisions, which
+the report derives by comparing Git blobs rather than asserting.
 [Validation report and execution identities](../reports/academic_colab_delivery.md).
+
+## Notebook structure
+
+1. Overview - clone and load both support modules; architecture and headline metrics.
+2. Dataset and classes - modelling population, class inventory, frozen split sizes.
+3. **TREINO / TRAINING** - `RECORDED_TRAINING_EVIDENCE` / `NO_NEW_TRAINING_EXECUTED`.
+4. **AVALIACAO / EVALUATION** - committed one-shot holdout results.
+5. Qualitative evidence - holdout selection accounting plus the committed validation gallery.
+6. Video evidence - the three reviewed frame pairs.
+7. **INFERENCIA / INFERENCE** - the optional Mode B path, unchanged.
+8. Limitations and licences.
+
+### What the training and evaluation sections do, and do not, execute
+
+Both sections are executable and produce visible output in artifact-only Mode A.
+Neither runs a model. The training cells read each frozen model's committed
+experiment manifest and print the complete recipe - architecture, image size,
+epochs, batch, seed, the optimizer that `optimizer: auto` actually resolved to,
+every augmentation argument, the checkpoint-selection rule, the selected epoch and
+the frozen checkpoint identity - followed by the training and validation curves
+recorded at the time. The reproducible entry points
+(`scripts/train_detection_experiment.py --experiment D2` and
+`scripts/train_segmentation_comparison.py`) are printed with each recipe; running
+them needs a CUDA GPU and the materialised dataset, which the notebook does not
+provide.
+
+**The default notebook does not retrain the models and does not rerun the spent
+holdout evaluation.** Each model was trained once under a protocol frozen before
+the run, so a re-run would produce different bytes under the same name and
+invalidate the published results. The holdout was read exactly once and is spent.
+The evaluation cells therefore read the committed result artifacts by field; no
+executable final-test path exists, and no executable validation-evaluation path is
+offered either, because that would need the dataset and the frozen checkpoints.
+The final-test confusion matrices are rendered from their recorded counts, never
+from the figures under `reports/figures/final_test/`.
 
 The repository is public. The canonical notebook clones `main`, and the
 [production Colab URL](https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb)
@@ -18,10 +58,11 @@ Phase 14A commit is pushed to `main`; this finalization does not perform that pu
 1. Open/import the `.ipynb` in Colab.
 2. Leave `RUN_INFERENCE = False` and run the notebook from top to bottom.
 3. The bootstrap clones the repository, prints its exact Git revision and checks
-   that it contains the approved Phase 13B evidence and the delivery support module.
-4. Inspect the architecture, committed final-test and validation metrics, validation
-   FP/FN/mask gallery and the three recorded video frame pairs. Change a display
-   selector and rerun that cell to inspect another existing view.
+   that it contains the approved Phase 13B evidence and both delivery support modules.
+4. Inspect the dataset and class inventory, the recorded training recipes and curves,
+   the committed final-test and validation metrics, the validation FP/FN/mask gallery
+   and the three recorded video frame pairs. Change a display selector and rerun that
+   cell to inspect another existing view.
 
 Python's standard library handles metadata. IPython display is provided by the
 notebook environment. Mode A installs no project packages, reads no dataset or
@@ -87,22 +128,35 @@ Colab storage is temporary. **Clear notebook outputs before saving to Git.**
   only public evidence, without data, checkpoints or project dependencies.
   Mode B tests use synthetic bytes and a mocked CLI process to verify identity
   rejection, existing-file preservation and dispatch. They do not execute D2/S1.
-- **REAL_COLAB_MODE_A_VALIDATION: PASS.** The human used a fresh Colab runtime,
-  observed the exact revision above, and reached `Mode A complete. No inference
-  output was created.` No checkpoints, Roboflow key, holdout authorization or
-  model inference were used. The corrected panel contrast was checked in Colab.
-- **REAL_COLAB_MODE_B_VALIDATION: PASS.** The human installed the locked
+- **REAL_COLAB_MODE_A_VALIDATION: PASS (Phase 14C, 2026-09-18).** The human used a
+  fresh **CPU** Colab runtime, observed revision
+  `2e355d8012b6f1f49923c5cb3ead06760490f024`, ran the notebook top to bottom with
+  `RUN_INFERENCE=False`, saw no traceback, and reached `Mode A complete. No
+  inference output was created.` The dataset, TREINO, AVALIACAO, qualitative and
+  video sections all rendered, and the human confirmed every table, curve, matrix
+  and figure was readable. No GPU, checkpoints, Roboflow key, holdout
+  authorization or model inference were used; no training ran and no final-test
+  evaluation was rerun.
+- **REAL_COLAB_MODE_B_VALIDATION: PASS (Phase 14A, 2026-09-17, not re-executed in
+  Phase 14C).** `MODE_B_REVALIDATION_NOT_REQUIRED`: every Mode B execution input is
+  byte-identical between the two validated revisions. The human installed the locked
   environment, verified CUDA on a Tesla T4, uploaded the exact D2/S1 bytes,
   observed verification before deserialization, and ran `compare` on an external
   five-second, 125-frame clip. Output completion, identity and full decoding were
   checked without repeating inference. The observed runtime was Python 3.12.3,
   PyTorch 2.11.0+cu128 / CUDA 12.8, Ultralytics 8.4.138 and OpenCV 5.0.0.
   This is one recorded CUDA configuration; cloud CPU inference was not validated.
-- Cloud evidence belongs to the temporary revision above. The human changed the
-  clone branch to `phase14a-colab-validation` only inside the Colab session and
-  enabled the optional Mode B controls for that validation. The canonical
+- Cloud evidence belongs to the temporary revisions above. In each session the
+  human changed the clone branch only inside Colab - to
+  `phase14a-colab-validation`, then to `phase14c-colab-validation` - and enabled
+  the optional Mode B controls for the Phase 14A validation. The canonical
   notebook still clones `main`, defaults to `RUN_INFERENCE = False`, and retains
   its validated bytes. Finalization preserves the execution-critical files.
+- The Phase 14A session added a separate GPU diagnostic cell that was **never
+  committed** and is absent from every canonical notebook. A stale saved copy of
+  that session will fail on a CPU runtime; that is a session artifact, not a
+  delivery defect. Always open the notebook from GitHub rather than from a saved
+  Drive copy.
 - The notebook's prepublication notice is historical wording retained to preserve
   those validated bytes. Current availability is stated here and in the report.
   The bootstrap still stops with `PUBLICATION_REQUIRED` if the cloned checkout
@@ -112,10 +166,14 @@ Colab storage is temporary. **Clear notebook outputs before saving to Git.**
 ### Academic scope and remaining gaps
 
 GAP-004 is **RESOLVED** and assignment Colab requirement R18 is **COMPLETE**
-under the human-approved two-mode delivery scope. The immutable Phase 12A audit
-proposed reproducing validation metrics; the approved Phase 14A scope instead
-displays the committed results and demonstrates optional external-video inference.
-No validation metric was recomputed. GAP-014 is the separate **clean-room research
+under the human-approved two-mode delivery scope. Phase 14C additionally satisfies
+the literal wording the assignment uses for the notebook - executable training,
+evaluation and inference cells with visible outputs - on the stated basis that the
+training and evaluation sections present recorded evidence rather than
+re-executing the closed study. The immutable Phase 12A audit proposed reproducing
+validation metrics; the approved scope instead displays the committed results and
+demonstrates optional external-video inference. No validation metric was
+recomputed. GAP-014 is the separate **clean-room research
 reproduction audit**, and remains OPEN. The Phase 12A snapshot is unchanged.
 
 GAP-008 (public checkpoint redistribution) remains OPEN: users supply the frozen

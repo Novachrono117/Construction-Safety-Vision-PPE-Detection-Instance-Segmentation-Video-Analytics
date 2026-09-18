@@ -13,6 +13,7 @@ from pathlib import Path
 
 import pytest
 
+from construction_safety_vision import delivery_academic as academic
 from construction_safety_vision import delivery_demo as demo
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +27,9 @@ def public_copy(tmp_path):
     data = demo.catalog(ROOT)
     paths += data["gallery"] + [row["path"] for row in data["screenshots"]]
     paths += ["src/construction_safety_vision/delivery_demo.py"]
+    paths += [*academic.SOURCES, *academic.FIGURES]
+    paths += ["src/construction_safety_vision/delivery_academic.py"]
+    paths = list(dict.fromkeys(paths))
     for relative in paths:
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -255,7 +259,10 @@ def test_notebook_mode_a_skips_install_upload_and_runtime(public_copy, monkeypat
     monkeypatch.setitem(sys.modules, "IPython", types.ModuleType("IPython"))
     monkeypatch.setitem(sys.modules, "IPython.display", display)
     module = runpy.run_path(str(public_copy / "src/construction_safety_vision/delivery_demo.py"))
-    namespace = {"ROOT": public_copy, "demo": module}
+    support = runpy.run_path(
+        str(public_copy / "src/construction_safety_vision/delivery_academic.py")
+    )
+    namespace = {"ROOT": public_copy, "demo": module, "academic": support}
     code_cells = [c for c in notebook["cells"] if c["cell_type"] == "code"]
     for index, cell in enumerate(code_cells):
         if index == 1:  # Clone/bootstrap is independently checked, no network in this test.
