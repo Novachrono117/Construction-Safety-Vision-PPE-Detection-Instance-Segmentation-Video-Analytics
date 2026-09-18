@@ -20,6 +20,8 @@ BASELINE = "d8605645eea009fe68c6c561b56c31feae937522"
 STATUS_PATH = "reports/delivery_gap_resolution_status.json"
 PROVENANCE_PATH = "reports/public_delivery.provenance.json"
 COMPLETE = "PUBLIC_TRUTH_AND_DELIVERY_SCAFFOLD_COMPLETE"
+PITCH_MANIFEST_PATH = "delivery/pitch/pitch_manifest.json"
+PITCH_READY = "VIDEO_PITCH_READY_TO_RECORD"
 REPOSITORY_LICENSE = "AGPL-3.0"
 LICENSE_SOURCE = "https://www.gnu.org/licenses/agpl-3.0.txt"
 LICENSE_SHA256 = "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
@@ -404,6 +406,49 @@ def build_status(root: Path) -> dict[str, Any]:
                 "evidence": "reports/final_academic_report_delivery.md",
                 "all_assignment_requirements_complete": False,
             }
+    pitch_path = root / PITCH_MANIFEST_PATH
+    if pitch_path.is_file():
+        pitch = json.loads(pitch_path.read_text(encoding="utf-8"))
+        # Preparation is not delivery: the gap only leaves OPEN, and it cannot reach
+        # RESOLVED until a human recording exists at an accessible link.
+        if (
+            pitch.get("classification") == PITCH_READY
+            and pitch.get("recorded_video_exists") is False
+            and pitch.get("published_link_exists") is False
+        ):
+            gap = next(item for item in result["gaps"] if item["gap_id"] == pitch["gap_id"])
+            gap.update(
+                current_status="READY_TO_RECORD",
+                resolution_phase="15B",
+                evidence=sorted(pitch["documents"].values()),
+                remaining_action="Record the scripted pitch and publish it as an unlisted "
+                "YouTube video or a link-shared Drive file, then verify it from a "
+                "signed-out browser.",
+            )
+            result["gap_counts"] = {
+                state: sum(g["current_status"] == state for g in result["gaps"])
+                for state in (*result["gap_counts"], "READY_TO_RECORD")
+            }
+            result["requirement_updates"].append(
+                {
+                    "requirement_id": pitch["assignment_requirement_id"],
+                    "phase_12a_state": "MISSING",
+                    "current_state": "READY_TO_RECORD",
+                    "evidence": "delivery/pitch/README.md",
+                    "remaining_action": "Human recording and accessible publication.",
+                }
+            )
+            result["delivery_state"]["pitch"] = PITCH_READY
+            result["phase_15b"] = {
+                "classification": PITCH_READY,
+                "evidence": PITCH_MANIFEST_PATH,
+                "presenters": [person["name"] for person in pitch["presenters"]],
+                "recorded_video_exists": False,
+                "published_link_exists": False,
+                "models_executed": 0,
+                "holdout_accessed": False,
+                "historical_phase_12b_accounting_unchanged": True,
+            }
     return result
 
 
@@ -525,7 +570,13 @@ def validate_delivery(root: Path) -> list[str]:
         STATUS_PATH,
         PROVENANCE_PATH,
     ]
-    public += [path.relative_to(root).as_posix() for path in sorted((root / "delivery").glob("*"))]
+    # Recurse, and keep files only: delivery/ now holds subdirectories, and a
+    # directory handed to read_text raises instead of being validated.
+    public += [
+        path.relative_to(root).as_posix()
+        for path in sorted((root / "delivery").rglob("*"))
+        if path.is_file()
+    ]
     for relative in public:
         text = (root / relative).read_text(encoding="utf-8")
         if relative.endswith(".md"):

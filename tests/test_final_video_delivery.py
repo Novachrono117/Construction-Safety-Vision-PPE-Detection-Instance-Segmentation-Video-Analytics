@@ -112,7 +112,9 @@ def test_only_authorized_gaps_change_and_historical_evidence_is_preserved():
             assert old == new
     current = json.loads((ROOT / "reports/delivery_gap_resolution_status.json").read_text())
     for prior, live in zip(after["gaps"], current["gaps"], strict=True):
-        if prior["gap_id"] not in {"GAP-003", "GAP-004"}:
+        # GAP-003 report, GAP-004 Colab and GAP-007 pitch belong to later delivery
+        # phases; every other gap must still read exactly as this phase left it.
+        if prior["gap_id"] not in {"GAP-003", "GAP-004", "GAP-007"}:
             assert prior == live
     assert (
         subprocess.check_output(

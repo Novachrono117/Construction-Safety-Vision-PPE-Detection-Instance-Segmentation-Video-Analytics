@@ -51,11 +51,14 @@ def test_report_closes_only_its_gap_and_preserves_exact_colab_partial():
         subprocess.check_output(["git", "show", f"{report.BASELINE}:{STATUS_PATH}"], cwd=ROOT)
     )
     after = build_status(ROOT)
+    # GAP-007 is the video pitch, moved to READY_TO_RECORD by a later delivery phase.
+    # This test still pins what the report phase itself was allowed to change.
+    later_phase_gaps = {"GAP-007"}
     for old, new in zip(before["gaps"], after["gaps"], strict=True):
         if old["gap_id"] == "GAP-003":
             assert old["current_status"] == "OPEN"
             assert new["current_status"] == "RESOLVED"
-        else:
+        elif old["gap_id"] not in later_phase_gaps:
             assert old == new
     audit = after["assignment_exact_wording_audit"]
     assert audit["colab_exact_wording"]["classification"] == "COLAB_EXACT_WORDING_PARTIAL"

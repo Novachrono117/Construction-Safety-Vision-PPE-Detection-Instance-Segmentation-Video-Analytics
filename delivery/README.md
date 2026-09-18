@@ -47,6 +47,8 @@ TREINO and AVALIACAO sections; Mode B passed on a Tesla T4 at revision
   their own licenses; D2/S1 distribution still requires review.
 - [Public checkpoint metadata](checkpoints.json): generated from the two final
   freeze manifests, without a download locator until one exists.
+- [Video-pitch package](pitch/README.md): script, cue sheet, storyboard, Q&A and
+  recording checklist. `VIDEO_PITCH_READY_TO_RECORD`; no recording exists yet.
 - [Academic GenAI disclosure](AI_USAGE.md).
 - [Publication recommendations](PUBLICATION.md): a plan, no settings changed.
 
@@ -55,6 +57,6 @@ the [final technical report](../academic/final_report.md), the real-video
 deliverable, the validation gallery and the public project README are complete.
 Checkpoints still require manual upload (GAP-008 OPEN); public demo distribution
 remains partial (GAP-010 PARTIALLY_RESOLVED). No full clean-room research
-reproduction has been demonstrated (GAP-014 OPEN). The live tracker's own
-delivery-state fields are refreshed by the separate final delivery audit, not by
-the work they describe.
+reproduction has been demonstrated (GAP-014 OPEN). The tracker's
+`readme_final_professionalization` field is refreshed by the separate final
+delivery audit, not by the README work itself.

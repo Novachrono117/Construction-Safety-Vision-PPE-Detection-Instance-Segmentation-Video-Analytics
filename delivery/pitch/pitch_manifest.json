@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "classification": "VIDEO_PITCH_READY_TO_RECORD",
+  "assignment_requirement_id": "R19",
+  "assignment_requirement": "Video pitch of 5-8 minutes, unlisted YouTube or Google Drive, with every group member participating, demonstrating the system working including the inference video.",
+  "gap_id": "GAP-007",
+  "gap_status": "READY_TO_RECORD",
+  "recorded_video_exists": false,
+  "published_link_exists": false,
+  "completion_requires": "A human recording published as an unlisted YouTube video or a link-shared Google Drive file, verified accessible from a signed-out browser.",
+  "presenters": [
+    {
+      "name": "Vinicius Pereira Gomes",
+      "role": "SOLE_DOCUMENTED_AUTHOR",
+      "evidence": "academic/final_report.md",
+      "segments": "ALL"
+    }
+  ],
+  "presenter_note": "Only one project member is documented in the repository, so the single presenter covers every segment. Commit authorship was not used to infer additional group members.",
+  "duration": {
+    "target": "6:30",
+    "safe_range": "5:30-7:15",
+    "assignment_range": "5:00-8:00",
+    "spoken_words": 917,
+    "assumed_rate_words_per_minute": 140,
+    "estimated_at_assumed_rate": "6:33"
+  },
+  "documents": {
+    "entry_point": "delivery/pitch/README.md",
+    "full_script": "delivery/pitch/full_script.md",
+    "presenter_cues": "delivery/pitch/presenter_cues.md",
+    "storyboard": "delivery/pitch/storyboard.md",
+    "questions_and_answers": "delivery/pitch/qa.md",
+    "recording_checklist": "delivery/pitch/recording_checklist.md"
+  },
+  "video_segment": {
+    "source_output": "outputs/final_construction_ppe_compare.mp4",
+    "source_output_committed": false,
+    "selected_start_seconds": 12.0,
+    "selected_end_seconds": 26.0,
+    "selected_duration_seconds": 14.0,
+    "anchor_instants_seconds": [17.44, 17.92],
+    "anchor_evidence": "reports/final_real_video_screenshots.json",
+    "observation_evidence": "reports/final_real_video_demo.md",
+    "selection_basis": "PRESENTATION_WINDOW_ANCHORED_ON_DOCUMENTED_INSTANTS",
+    "shows_visible_failure": true,
+    "visible_failure": "S1 draws a person box and mask over wrapped materials on the pallet behind the central pillar in both reviewed frames, where no person is visible; D2 draws no equivalent. Cause UNKNOWN.",
+    "alternative_start_seconds": 82.0,
+    "alternative_end_seconds": 94.0,
+    "alternative_anchor_instants_seconds": [87.12, 87.6],
+    "rejected_segment_seconds": [52.24, 52.72],
+    "rejected_reason": "The spurious helmet_loose overlay is present at 52.24 s and absent at 52.72 s; the record establishes appearance and disappearance, not duration, so a short live clip may not contain it.",
+    "predictions_edited": false,
+    "highlight_reel": false
+  },
+  "spoken_claims": [
+    {
+      "id": "source_images",
+      "spoken": "436",
+      "value": 436,
+      "artifact": "reports/canonical_annotation_manifest.json",
+      "field": "source_image_count"
+    },
+    {
+      "id": "canonical_annotations",
+      "spoken": "2.031",
+      "value": 2031,
+      "artifact": "reports/canonical_annotation_manifest.json",
+      "field": "annotation_count"
+    },
+    {
+      "id": "train_images",
+      "spoken": "303",
+      "value": 303,
+      "artifact": "reports/split_manifest.json",
+      "field": "actual_image_counts.train"
+    },
+    {
+      "id": "validation_images",
+      "spoken": "65",
+      "value": 65,
+      "artifact": "reports/split_manifest.json",
+      "field": "actual_image_counts.validation"
+    },
+    {
+      "id": "test_images",
+      "spoken": "65",
+      "value": 65,
+      "artifact": "reports/final_test_detector.json",
+      "field": "population.images"
+    },
+    {
+      "id": "test_annotations",
+      "spoken": "305",
+      "value": 305,
+      "artifact": "reports/final_test_detector.json",
+      "field": "population.annotations"
+    },
+    {
+      "id": "d2_test_box_map50_95",
+      "spoken": "42,7%",
+      "value": 0.427031,
+      "artifact": "reports/final_test_detector.json",
+      "field": "canonical_box.CANONICAL_TEST_BOX_MAP50_95"
+    },
+    {
+      "id": "s1_test_box_map50_95",
+      "spoken": "43,4%",
+      "value": 0.433764,
+      "artifact": "reports/final_test_segmenter.json",
+      "field": "canonical_box.S1_CANONICAL_TEST_BOX_MAP50_95"
+    },
+    {
+      "id": "s1_test_mask_map50_95",
+      "spoken": "41,0%",
+      "value": 0.410143,
+      "artifact": "reports/final_test_segmenter.json",
+      "field": "canonical_mask.CANONICAL_TEST_MASK_MAP50_95"
+    },
+    {
+      "id": "matched_mask_iou_mean",
+      "spoken": "0,83",
+      "value": 0.834548,
+      "artifact": "reports/final_test_direct_iou.json",
+      "field": "diagnostic.global.matched_mask_iou_mean"
+    },
+    {
+      "id": "gt_normalized_mask_iou",
+      "spoken": "0,59",
+      "value": 0.585551,
+      "artifact": "reports/final_test_direct_iou.json",
+      "field": "diagnostic.global.gt_normalized_mask_iou"
+    },
+    {
+      "id": "d2_test_true_positives",
+      "spoken": "189",
+      "value": 189,
+      "artifact": "reports/final_test_detector.json",
+      "field": "object_level.true_positives"
+    },
+    {
+      "id": "d2_test_false_positives",
+      "spoken": "51",
+      "value": 51,
+      "artifact": "reports/final_test_detector.json",
+      "field": "object_level.false_positives"
+    },
+    {
+      "id": "d2_test_false_negatives",
+      "spoken": "116",
+      "value": 116,
+      "artifact": "reports/final_test_detector.json",
+      "field": "object_level.false_negatives"
+    },
+    {
+      "id": "s1_test_true_positives",
+      "spoken": "205",
+      "value": 205,
+      "artifact": "reports/final_test_segmenter.json",
+      "field": "object_level.true_positives"
+    },
+    {
+      "id": "s1_test_false_positives",
+      "spoken": "56",
+      "value": 56,
+      "artifact": "reports/final_test_segmenter.json",
+      "field": "object_level.false_positives"
+    },
+    {
+      "id": "s1_test_false_negatives",
+      "spoken": "100",
+      "value": 100,
+      "artifact": "reports/final_test_segmenter.json",
+      "field": "object_level.false_negatives"
+    },
+    {
+      "id": "vest_loose_test_instances",
+      "spoken": "7",
+      "value": 7,
+      "artifact": "reports/final_test_detector.json",
+      "field": "canonical_precision_recall.per_class.vest_loose.ground_truth"
+    },
+    {
+      "id": "vest_loose_test_true_positives",
+      "spoken": "nenhuma",
+      "value": 0,
+      "artifact": "reports/final_test_detector.json",
+      "field": "canonical_precision_recall.per_class.vest_loose.true_positives"
+    },
+    {
+      "id": "mask_to_box_fill_ratio_median",
+      "spoken": "0,66",
+      "value": 0.664433,
+      "artifact": "reports/detector_segmenter_spatial_comparison.json",
+      "field": "spatial_features.MASK_TO_BOX_FILL_RATIO.statistics.median"
+    },
+    {
+      "id": "d2_end_to_end_latency_ms",
+      "spoken": "9,2 ms",
+      "value": 9.157766,
+      "artifact": "reports/detector_segmenter_latency_comparison.json",
+      "field": "latency.D2.END_TO_END_MODEL_OUTPUT_LATENCY_MS.mean"
+    },
+    {
+      "id": "s1_end_to_end_latency_ms",
+      "spoken": "11,9 ms",
+      "value": 11.914757,
+      "artifact": "reports/detector_segmenter_latency_comparison.json",
+      "field": "latency.S1.END_TO_END_MODEL_OUTPUT_LATENCY_MS.mean"
+    },
+    {
+      "id": "relative_latency_cost",
+      "spoken": "aproximadamente 30% a mais",
+      "value": 0.301055,
+      "artifact": "reports/detector_segmenter_latency_comparison.json",
+      "field": "deltas.END_TO_END_MODEL_OUTPUT_LATENCY_MS.relative_latency_cost"
+    },
+    {
+      "id": "peak_reserved_memory_ratio",
+      "spoken": "cerca de 2,4 vezes",
+      "value": 2.375,
+      "artifact": "reports/detector_segmenter_memory_comparison.json",
+      "field": "delta.peak_memory_reserved_ratio"
+    },
+    {
+      "id": "video_duration_seconds",
+      "spoken": "104 segundos",
+      "value": 104.52,
+      "artifact": "reports/final_real_video_demo.json",
+      "field": "execution.output_video.duration_seconds"
+    },
+    {
+      "id": "video_frames",
+      "spoken": "2.613 quadros",
+      "value": 2613,
+      "artifact": "reports/final_real_video_demo.json",
+      "field": "execution.output_video.frame_count"
+    },
+    {
+      "id": "video_source_fps",
+      "spoken": "25 da fonte",
+      "value": 25.0,
+      "artifact": "reports/final_real_video_demo.json",
+      "field": "execution.source.fps"
+    },
+    {
+      "id": "video_processing_fps",
+      "spoken": "cerca de 6 quadros por segundo",
+      "value": 5.9504551143082445,
+      "artifact": "reports/final_real_video_demo.json",
+      "field": "execution.processing_throughput_fps"
+    }
+  ],
+  "forbidden_phrasing": [
+    "o S1 venceu",
+    "a segmentação foi melhor",
+    "o D2 perdeu",
+    "tempo real",
+    "pronto para produção",
+    "estado da arte"
+  ],
+  "mandatory_disclosures": [
+    "Three of the five classes declined in the final-test D2 versus S1 box comparison, and no winner is declared.",
+    "No significance test was predeclared and each configuration ran exactly once.",
+    "vest_loose has 7 test instances across 2 images and D2 recovered none of them.",
+    "The demonstration throughput of about 6 FPS is the whole demo pipeline, not inference latency, and no real-time capability is claimed.",
+    "A visible failure in the shown video segment must be narrated, not skipped.",
+    "The holdout was read once and is spent; no further tuning may use it."
+  ],
+  "publication": {
+    "recommended": "YOUTUBE_UNLISTED",
+    "accepted_alternative": "GOOGLE_DRIVE_LINK_SHARED",
+    "uploaded_by_this_repository": false,
+    "verification_required": "Open the published link in a signed-out or private browser window and confirm it plays.",
+    "link": null
+  },
+  "scientific_lock": {
+    "models_executed": 0,
+    "training_executed": 0,
+    "evaluations_executed": 0,
+    "holdout_accessed": false,
+    "metrics_recomputed": 0,
+    "scientific_artifacts_changed": false,
+    "holdout_identifiers_published": false
+  }
+}
