@@ -103,6 +103,26 @@ def test_original_text_round_trips_lf_and_crlf_without_normalization(provenance)
     assert colab.identity(context) == records["external_clip_preparation"]["identity"]
 
 
+def test_notebook_executable_surface_is_measured_not_asserted():
+    record = colab.notebook_executable_identity(ROOT)
+    assert record["current_validated_revision"] == colab.VALIDATED
+    assert record["previous_validated_revision"] == colab.PHASE_14C_VALIDATED
+    assert record["changed_code_cells"] == []
+    assert record["code_cells_identical"] is True
+    assert record["change_kind"] == "MARKDOWN_ONLY"
+    assert record["markdown_cells_after"] > record["markdown_cells_before"]
+
+
+def test_changed_executable_cell_invalidates_carried_forward_mode_b(provenance):
+    record = copy.deepcopy(provenance)
+    surface = record["notebook_executable_surface_identity"]
+    surface["changed_code_cells"] = [4]
+    surface["code_cells_identical"] = False
+    assert "Notebook executable surface changed; carried-forward Mode B is invalid" in (
+        colab.provenance_problems(record)
+    )
+
+
 def test_local_verification_cannot_be_relabelled_as_cloud_execution(provenance):
     provenance["human_observation"]["agent_cloud_execution"] = True
     assert "Human cloud observation missing or misrepresented" in colab.provenance_problems(

@@ -4,13 +4,15 @@ Notebook: [construction_safety_vision_demo.ipynb](../notebooks/construction_safe
 Support: [delivery_demo.py](../src/construction_safety_vision/delivery_demo.py) and
 [delivery_academic.py](../src/construction_safety_vision/delivery_academic.py).
 
-**Phase 14C: `EXECUTABLE_ACADEMIC_COLAB_COMPLETE` / `COLAB_EXACT_WORDING_SATISFIED`.**
+**Phase 15C: `EXECUTABLE_ACADEMIC_COLAB_COMPLETE` / `COLAB_EXACT_WORDING_SATISFIED`.**
 Human-executed Mode A cloud validation passed on 2026-09-18 on a fresh **CPU**
-runtime at revision `2e355d8012b6f1f49923c5cb3ead06760490f024`, after the notebook
-gained explicit TREINO and AVALIACAO sections. Mode B passed on 2026-09-17 at
-revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was **not** re-executed:
-all 25 Mode B execution inputs are byte-identical between the two revisions, which
-the report derives by comparing Git blobs rather than asserting.
+runtime at revision `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e`, after the notebook
+gained its pedagogical sections. Mode B passed on 2026-09-17 at revision
+`8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was **not** re-executed: all 25
+Mode B execution inputs are byte-identical between the two revisions, and the
+notebook's own 15 code cells are unchanged since the phase 14C validated notebook,
+so phase 15C added Markdown only. The report derives both comparisons rather than
+asserting them.
 [Validation report and execution identities](../reports/academic_colab_delivery.md).
 
 ## Notebook structure
@@ -127,18 +129,28 @@ Colab storage is temporary. **Clear notebook outputs before saving to Git.**
   only public evidence, without data, checkpoints or project dependencies.
   Mode B tests use synthetic bytes and a mocked CLI process to verify identity
   rejection, existing-file preservation and dispatch. They do not execute D2/S1.
-- **REAL_COLAB_MODE_A_VALIDATION: PASS (Phase 14C, 2026-09-18).** The human used a
+- **REAL_COLAB_MODE_A_VALIDATION: PASS (Phase 15C, 2026-09-18).** The human used a
   fresh **CPU** Colab runtime, observed revision
-  `2e355d8012b6f1f49923c5cb3ead06760490f024`, ran the notebook top to bottom with
+  `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e`, ran the notebook top to bottom with
   `RUN_INFERENCE=False`, saw no traceback, and reached `Mode A complete. No
-  inference output was created.` The dataset, TREINO, AVALIACAO, qualitative and
-  video sections all rendered, and the human confirmed every table, curve, matrix
-  and figure was readable. No GPU, checkpoints, Roboflow key, holdout
-  authorization or model inference were used; no training ran and no final-test
-  evaluation was rerun.
+  inference output was created.` Every new pedagogical section rendered - 3.1
+  models and selection, 3.2 training hyperparameters, 3.3 augmentation, 4.1
+  evaluation algorithms, 4.2 operating points and 7.1 inference pipeline - with
+  TREINO showing the recorded D2 and S1 evidence and AVALIACAO the committed
+  final-test evidence. No GPU, checkpoints, Roboflow key, holdout authorization
+  or model inference were used; no training ran and no final-test evaluation was
+  rerun.
+- **Earlier Mode A event, preserved: PASS (Phase 14C, 2026-09-18)** at revision
+  `2e355d8012b6f1f49923c5cb3ead06760490f024`, when the notebook gained its explicit
+  TREINO and AVALIACAO sections and the human confirmed every table, curve,
+  matrix and figure was readable. It is superseded as the current Mode A
+  evidence, not withdrawn.
 - **REAL_COLAB_MODE_B_VALIDATION: PASS (Phase 14A, 2026-09-17, not re-executed in
-  Phase 14C).** `MODE_B_REVALIDATION_NOT_REQUIRED`: every Mode B execution input is
-  byte-identical between the two validated revisions. The human installed the locked
+  Phase 14C or Phase 15C).** `MODE_B_REVALIDATION_NOT_REQUIRED`: every Mode B
+  execution input is byte-identical between the validated revisions, and phase 15C
+  changed no code cell, so it adds no distance from this evidence. A Mode A run
+  never enters the Mode B cells, which is why the cell comparison is made
+  explicitly rather than inferred from the Mode A pass. The human installed the locked
   environment, verified CUDA on a Tesla T4, uploaded the exact D2/S1 bytes,
   observed verification before deserialization, and ran `compare` on an external
   five-second, 125-frame clip. Output completion, identity and full decoding were
@@ -147,8 +159,10 @@ Colab storage is temporary. **Clear notebook outputs before saving to Git.**
   This is one recorded CUDA configuration; cloud CPU inference was not validated.
 - Cloud evidence belongs to the temporary revisions above. In each session the
   human changed the clone branch only inside Colab - to
-  `phase14a-colab-validation`, then to `phase14c-colab-validation` - and enabled
-  the optional Mode B controls for the Phase 14A validation. The canonical
+  `phase14a-colab-validation`, then `phase14c-colab-validation`, then
+  `phase15c-colab-pedagogical-validation` - and enabled the optional Mode B
+  controls for the Phase 14A validation. Each is a validation-session delta, not a
+  repository defect. The canonical
   notebook still clones `main`, defaults to `RUN_INFERENCE = False`, and retains
   its validated bytes. Finalization preserves the execution-critical files.
 - The Phase 14A session added a separate GPU diagnostic cell that was **never
@@ -165,7 +179,7 @@ Colab storage is temporary. **Clear notebook outputs before saving to Git.**
 ### Academic scope and remaining gaps
 
 GAP-004 is **RESOLVED** and assignment Colab requirement R18 is **COMPLETE**
-under the human-approved two-mode delivery scope. Phase 14C additionally satisfies
+under the human-approved two-mode delivery scope. Phase 14C additionally satisfied
 the literal wording the assignment uses for the notebook - executable training,
 evaluation and inference cells with visible outputs - on the stated basis that the
 training and evaluation sections present recorded evidence rather than

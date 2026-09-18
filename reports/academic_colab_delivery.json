@@ -6,8 +6,11 @@
   "classification": "EXECUTABLE_ACADEMIC_COLAB_COMPLETE",
   "cloud_validation_scope": {
     "canonical_notebook_executed_verbatim": false,
-    "cloud_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+    "cloud_validated_revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
     "documented_human_session_deltas": [
+      "Phase 15C: clone target changed once in the Colab session from main to phase15c-colab-pedagogical-validation. This is a validation-session delta, not a repository defect: the committed notebook still clones main.",
+      "Phase 15C: Mode A ran top to bottom on a fresh CPU runtime with RUN_INFERENCE=False and the canonical compare/cpu defaults.",
+      "Phase 15C: Mode B was not re-executed; no checkpoint or video was uploaded.",
       "Phase 14C: clone target changed once in the Colab session from main to phase14c-colab-validation.",
       "Phase 14C: Mode A ran top to bottom on a fresh CPU runtime with RUN_INFERENCE=False and the canonical compare/cpu defaults.",
       "Phase 14A: clone target changed once from main to phase14a-colab-validation.",
@@ -16,7 +19,7 @@
       "Phase 14A: Mode B ran cells individually, skipping the already-validated Mode A displays."
     ],
     "final_candidate_commit_executed_in_cloud": false,
-    "finalization_basis": "Phase 14C human Mode A cloud evidence on the changed notebook, plus a derived byte-identity proof that every Mode B execution input is unchanged since the phase 14A inference validation; only delivery documentation, reports, status and verification code change during finalization.",
+    "finalization_basis": "Phase 15C human Mode A cloud evidence on the changed notebook, plus two derived byte-identity proofs: every non-notebook Mode B execution input is unchanged since the phase 14A inference validation, and the notebook's own code cells are unchanged since the phase 14C validated notebook, so phase 15C added no executable byte. Only delivery documentation, reports, status and verification code change during finalization.",
     "mode_b_cloud_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
   },
   "colab_badge": {
@@ -58,11 +61,11 @@
       "sha256": "8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1"
     },
     {
-      "bytes": 17891,
-      "git_blob_oid": "3a3bf1a549caa8de18df29898f37232f30ecdc41",
+      "bytes": 34771,
+      "git_blob_oid": "703b6effe3cb3688fb523cb93edf93a6f0d09dac",
       "path": "notebooks/construction_safety_vision_demo.ipynb",
       "role": "CANONICAL_NOTEBOOK_WITH_DOCUMENTED_SESSION_DELTAS",
-      "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92"
+      "sha256": "5c92ff84289cf2a47cc5f5164826a099a5c43bf665ff8003f05bf254dc625dea"
     },
     {
       "bytes": 5405,
@@ -413,7 +416,8 @@
   "gap_004_status": "RESOLVED",
   "known_limitations": [
     "The final candidate commit itself has not been run in Colab; surface identities are preserved.",
-    "Mode B was validated once, at the phase 14A revision, and was not re-executed for phase 14C; the carry-forward rests on byte identity, not a second run.",
+    "Mode B was validated once, at the phase 14A revision, and was not re-executed for phase 14C or phase 15C; the carry-forward rests on byte identity, not a second run.",
+    "Phase 15C adds no distance from that Mode B evidence, because it changed no code cell. The distance the phase 14C notebook change introduced is disclosed and unchanged here, not closed.",
     "The training and evaluation sections present recorded evidence. The notebook does not retrain the models and does not rerun the spent holdout evaluation, and it offers no executable path that would.",
     "Reproducing a training run needs a CUDA GPU and the materialised dataset, neither of which the notebook provides.",
     "Mode B still requires manual uploads and compatible GPU capacity; future Colab changes may matter.",
@@ -456,9 +460,9 @@
     ],
     "conclusion": "MODE_B_REVALIDATION_NOT_REQUIRED",
     "identical": true,
-    "mode_a_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+    "mode_a_validated_revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
     "mode_b_validated_revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
-    "notebook_excluded_because": "The notebook is the one file phase 14C changed, so it is validated in its own right by the phase 14C Mode A cloud run rather than by this comparison.",
+    "notebook_excluded_because": "The notebook is the one file phase 15C changed, so it is compared separately by notebook_executable_identity, which measures whether any executable cell moved.",
     "roles_compared": [
       "FROZEN_CHECKPOINT_METADATA",
       "FROZEN_INFERENCE_CONFIGURATION",
@@ -469,10 +473,24 @@
     ]
   },
   "notebook": {
-    "bytes": 17891,
+    "bytes": 34771,
     "canonical_branch": "main",
     "path": "notebooks/construction_safety_vision_demo.ipynb",
-    "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92"
+    "sha256": "5c92ff84289cf2a47cc5f5164826a099a5c43bf665ff8003f05bf254dc625dea"
+  },
+  "notebook_executable_surface_identity": {
+    "change_kind": "MARKDOWN_ONLY",
+    "changed_code_cells": [],
+    "code_cells_after": 15,
+    "code_cells_before": 15,
+    "code_cells_identical": true,
+    "comparison": "FULL_CODE_CELL_OBJECTS_INCLUDING_METADATA",
+    "conclusion": "NOTEBOOK_EXECUTABLE_SURFACE_UNCHANGED",
+    "current_validated_revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
+    "markdown_cells_after": 20,
+    "markdown_cells_before": 14,
+    "previous_validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+    "residual_gap_note": "This proof is relative to the phase 14C validated notebook. The notebook's code cells did change between the phase 14A Mode B revision and phase 14C; that pre-existing, phase 14C-disclosed distance is unchanged by phase 15C, not closed."
   },
   "notebook_sections": [
     "1 Overview",
@@ -489,7 +507,7 @@
     "GAP-010": "PARTIALLY_RESOLVED",
     "GAP-014": "OPEN"
   },
-  "phase": "14C",
+  "phase": "15C",
   "protocol": {
     "checkpoint_policy": "Optional manual upload; exact frozen byte size and SHA-256 before deserialization; no download, pretrained substitution or training fallback.",
     "holdout": "OBSERVED_SPENT_LOCKED",
@@ -543,7 +561,48 @@
       "uv run python scripts/train_segmentation_comparison.py"
     ]
   },
-  "validated_temporary_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+  "validated_temporary_revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
+  "validation_events": [
+    {
+      "clone_target": "phase14a-colab-validation",
+      "mode": "B",
+      "observation_date": "2026-09-17",
+      "phase": "14A",
+      "result": "PASS",
+      "result_key": "MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION",
+      "revision": "8ce5d0375903e3e3760873e0a75ddce37cc1149b",
+      "run_inference": true,
+      "runtime_accelerator": "GPU",
+      "scope": "Optional external-video inference with both frozen checkpoints uploaded.",
+      "standing": "CURRENT_MODE_B_EVIDENCE"
+    },
+    {
+      "clone_target": "phase14c-colab-validation",
+      "mode": "A",
+      "observation_date": "2026-09-18",
+      "phase": "14C",
+      "result": "PASS",
+      "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
+      "revision": "2e355d8012b6f1f49923c5cb3ead06760490f024",
+      "run_inference": false,
+      "runtime_accelerator": "CPU",
+      "scope": "Explicit executable TREINO, AVALIACAO and INFERENCIA sections.",
+      "standing": "SUPERSEDED_AS_CURRENT_MODE_A_EVIDENCE_BY_PHASE_15C"
+    },
+    {
+      "clone_target": "phase15c-colab-pedagogical-validation",
+      "mode": "A",
+      "observation_date": "2026-09-18",
+      "phase": "15C",
+      "result": "PASS",
+      "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
+      "revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
+      "run_inference": false,
+      "runtime_accelerator": "CPU",
+      "scope": "Pedagogical sections 3.1, 3.2, 3.3, 4.1, 4.2 and 7.1; Markdown only.",
+      "standing": "CURRENT_MODE_A_EVIDENCE"
+    }
+  ],
   "validation_evidence": {
     "LOCAL_IMPLEMENTATION_VERIFICATION": {
       "checks": [
@@ -565,19 +624,19 @@
             "tests/test_public_delivery.py",
             "tests/test_academic_report.py"
           ],
-          "passed": 96
+          "passed": 98
         },
-        "note": "Executed on the finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. Numbers were re-measured against the committed tree after the delivery records were generated.",
+        "note": "Executed on the phase 15C finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. The records were first generated from a provisional quality record, the gates were then measured against the resulting tree, and the records were regenerated with those measured numbers.",
         "pytest": {
           "failed": 0,
           "mode": "metadata-only",
-          "passed": 2777,
+          "passed": 2837,
           "skipped": 47,
           "warnings": 27
         },
         "ruff_check": "PASS",
         "ruff_format": "PASS",
-        "ruff_formatted_files": 263,
+        "ruff_formatted_files": 273,
         "scope": "FINALIZATION_CANDIDATE"
       },
       "status": "PASS"
@@ -585,47 +644,59 @@
     "REAL_COLAB_MODE_A_VALIDATION": {
       "checkpoint_used": false,
       "contrast_fix": "HUMAN_CONFIRMED_READABLE_IN_REAL_COLAB",
+      "earlier_readability_review": {
+        "confusion_matrices": "PASS",
+        "evaluation_tables": "PASS",
+        "phase": "14C",
+        "qualitative_figures": "PASS",
+        "tables": "PASS",
+        "training_curves": "PASS",
+        "video_evidence": "PASS"
+      },
       "execution_kind": "HUMAN_EXECUTED",
       "final_test_evaluation_executed": false,
       "fresh_runtime": true,
       "gpu_required": false,
       "holdout_authorization_used": false,
       "human_readability_review": {
-        "confusion_matrices": "PASS",
-        "evaluation_tables": "PASS",
-        "qualitative_figures": "PASS",
-        "tables": "PASS",
-        "training_curves": "PASS",
-        "video_evidence": "PASS"
+        "evaluation_section": "PASS",
+        "pedagogical_markdown": "PASS",
+        "training_section": "PASS"
       },
+      "human_readability_review_scope": "PHASE_15C_ATTESTED_ITEMS_ONLY",
       "metrics": "DISPLAY_EXISTING_COMMITTED_AGGREGATES_ONLY",
       "model_inference_used": false,
-      "observation_basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14C_FINALIZATION_ATTESTATION",
+      "observation_basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_15C_FINALIZATION_ATTESTATION",
       "observation_date": "2026-09-18",
       "observed_messages": [
-        "Repository revision: 2e355d8012b6f1f49923c5cb3ead06760490f024",
-        "Mode A ready. No checkpoint, dataset or inference framework loaded.",
+        "Repository revision: 958eefaa58b785ff2f9eb4dd2751efc26dd9b09e",
         "Mode B installation skipped.",
-        "Checkpoint upload skipped.",
         "Video upload and inference skipped.",
         "Mode A complete. No inference output was created."
+      ],
+      "observed_messages_scope": "PHASE_15C_VERBATIM_ATTESTED_LINES_ONLY",
+      "pedagogical_sections_confirmed": [
+        "3.1 models and selection",
+        "3.2 training hyperparameters",
+        "3.3 augmentation",
+        "4.1 evaluation algorithms",
+        "4.2 operating points",
+        "7.1 inference pipeline"
       ],
       "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
       "roboflow_key_used": false,
       "run_all": true,
       "runtime_accelerator": "CPU",
       "sections_rendered": [
-        "dataset and classes",
-        "TREINO / TRAINING with D2 and S1 recipes and committed curves",
-        "AVALIACAO / EVALUATION with final-test metrics and both confusion matrices",
-        "qualitative evidence",
-        "real-video evidence",
-        "INFERENCIA / INFERENCE present and skipped"
+        "every new pedagogical Markdown section",
+        "TREINO / TRAINING with the recorded D2 and S1 evidence",
+        "AVALIACAO / EVALUATION with the committed final-test evidence",
+        "INFERENCIA / INFERENCE present, with the checkpoint and video path inactive"
       ],
       "status": "PASS",
       "traceback_observed": false,
       "training_executed": false,
-      "validated_revision": "2e355d8012b6f1f49923c5cb3ead06760490f024"
+      "validated_revision": "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e"
     },
     "REAL_COLAB_MODE_B_VALIDATION": {
       "artifact_classification": "COLAB_TECHNICAL_VALIDATION_ARTIFACT",

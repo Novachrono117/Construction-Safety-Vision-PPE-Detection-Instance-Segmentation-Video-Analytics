@@ -12,7 +12,7 @@ recorded hashes before running an external-video demo.
 
 See [Colab setup](COLAB.md) and the [validation report](../reports/academic_colab_delivery.md).
 Local implementation checks and both human-executed Colab modes passed, with
-cloud evidence tied to `2e355d8012b6f1f49923c5cb3ead06760490f024` (Mode A, CPU)
+cloud evidence tied to `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e` (Mode A, CPU)
 and `8ce5d0375903e3e3760873e0a75ddce37cc1149b` (Mode B, Tesla T4).
 The canonical notebook targets `main` and is published there.
 

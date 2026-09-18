@@ -21,12 +21,13 @@ that would.
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb)
 
 See [Colab setup and boundaries](../delivery/COLAB.md) and the
-[Phase 14C report](../reports/academic_colab_delivery.md). Local implementation
+[Phase 15C report](../reports/academic_colab_delivery.md). Local implementation
 checks, real Mode A execution and real Mode B inference are separate evidence
 categories. Mode A passed on a fresh CPU runtime at revision
-`2e355d8012b6f1f49923c5cb3ead06760490f024`; Mode B passed at revision
+`958eefaa58b785ff2f9eb4dd2751efc26dd9b09e`; Mode B passed at revision
 `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was not re-executed, because every
-Mode B execution input is byte-identical between the two.
+Mode B execution input is byte-identical between the validated revisions and
+phase 15C changed no code cell.
 
 The canonical notebook clones `main`. The badge targets its production path and
 becomes usable after the final commit is pushed to `main`. The temporary

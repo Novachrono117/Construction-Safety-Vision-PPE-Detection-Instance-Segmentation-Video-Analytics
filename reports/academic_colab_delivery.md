@@ -1,11 +1,21 @@
-# Phase 14C - executable academic Colab with explicit training and evaluation
+# Phase 15C - executable academic Colab with pedagogical training and evaluation
 
 **Classification:** `EXECUTABLE_ACADEMIC_COLAB_COMPLETE`. **Assignment wording:** `COLAB_EXACT_WORDING_SATISFIED`.
 
 Human cloud validation and local metadata verification are separate evidence categories.
 Approved scientific baseline: `fa0bea2b072b124d65f4e9bd1b932a22d98149d2`.
-Mode A validated revision: `2e355d8012b6f1f49923c5cb3ead06760490f024` (phase 14C, fresh CPU runtime).
+Mode A validated revision: `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e` (phase 15C, fresh CPU runtime).
 Mode B validated revision: `8ce5d0375903e3e3760873e0a75ddce37cc1149b` (phase 14A, not re-executed).
+
+## Human cloud validation events
+
+Each event is evidence for the revision it names. A later event does not restate an earlier one as though it had been observed again, and none is removed when superseded.
+
+| Phase | Mode | Revision | Runtime | RUN_INFERENCE | Date | Result | Standing |
+|---|---|---|---|---|---|---|---|
+| 14A | B | `8ce5d0375903e3e3760873e0a75ddce37cc1149b` | GPU | true | 2026-09-17 | PASS | `CURRENT_MODE_B_EVIDENCE` |
+| 14C | A | `2e355d8012b6f1f49923c5cb3ead06760490f024` | CPU | false | 2026-09-18 | PASS | `SUPERSEDED_AS_CURRENT_MODE_A_EVIDENCE_BY_PHASE_15C` |
+| 15C | A | `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e` | CPU | false | 2026-09-18 | PASS | `CURRENT_MODE_A_EVIDENCE` |
 
 ## Notebook structure
 
@@ -35,7 +45,9 @@ The default notebook does **not** rerun the final-test evaluation (`default_note
 
 ## Mode B carry-forward
 
-**MODE_B_REVALIDATION_NOT_REQUIRED.** Phase 14C re-validated Mode A only. Every one of the 25 Mode B execution inputs is byte-identical between `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and `2e355d8012b6f1f49923c5cb3ead06760490f024`, so the phase 14A inference evidence still describes the code that would run. This is derived by comparing Git blobs, not asserted. Changed paths: none. The notebook is the one file phase 14C changed, so it is validated in its own right by the phase 14C Mode A cloud run rather than by this comparison..
+**MODE_B_REVALIDATION_NOT_REQUIRED.** Phase 15C re-validated Mode A only. Every one of the 25 Mode B execution inputs is byte-identical between `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and `958eefaa58b785ff2f9eb4dd2751efc26dd9b09e`, so the phase 14A inference evidence still describes the code that would run. This is derived by comparing Git blobs, not asserted. Changed paths: none. The notebook is the one file phase 15C changed, so it is compared separately by notebook_executable_identity, which measures whether any executable cell moved..
+
+The notebook itself is measured separately: **NOTEBOOK_EXECUTABLE_SURFACE_UNCHANGED**. Its 15 code cells are compared as whole objects (`FULL_CODE_CELL_OBJECTS_INCLUDING_METADATA`) against the phase 14C validated notebook `2e355d8012b6f1f49923c5cb3ead06760490f024`; changed code cells: none. Phase 15C is therefore `MARKDOWN_ONLY`, growing the Markdown from 14 to 20 cells while executing identically. This matters because a Mode A run never enters the Mode B cells, so a Mode A pass alone could not validate them. This proof is relative to the phase 14C validated notebook. The notebook's code cells did change between the phase 14A Mode B revision and phase 14C; that pre-existing, phase 14C-disclosed distance is unchanged by phase 15C, not closed.
 
 ## LOCAL_IMPLEMENTATION_VERIFICATION
 
@@ -52,19 +64,19 @@ PASS: notebook safety, source provenance, publication scan and execution-surface
       "tests/test_public_delivery.py",
       "tests/test_academic_report.py"
     ],
-    "passed": 96
+    "passed": 98
   },
-  "note": "Executed on the finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. Numbers were re-measured against the committed tree after the delivery records were generated.",
+  "note": "Executed on the phase 15C finalization candidate. The metadata-only I/O guard blocked real local datasets and checkpoints; selected integration checks were skipped. The records were first generated from a provisional quality record, the gates were then measured against the resulting tree, and the records were regenerated with those measured numbers.",
   "pytest": {
     "failed": 0,
     "mode": "metadata-only",
-    "passed": 2777,
+    "passed": 2837,
     "skipped": 47,
     "warnings": 27
   },
   "ruff_check": "PASS",
   "ruff_format": "PASS",
-  "ruff_formatted_files": 263,
+  "ruff_formatted_files": 273,
   "scope": "FINALIZATION_CANDIDATE"
 }
 ```
@@ -74,36 +86,42 @@ PASS: notebook safety, source provenance, publication scan and execution-surface
 **ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION: PASS** - executed by the human maintainer on 2026-09-18, fresh runtime, accelerator `CPU`, Run all, no traceback.
 A fresh Colab run required no GPU, checkpoints, Roboflow key, holdout authorization or inference. It rendered:
 
-- dataset and classes;
-- TREINO / TRAINING with D2 and S1 recipes and committed curves;
-- AVALIACAO / EVALUATION with final-test metrics and both confusion matrices;
-- qualitative evidence;
-- real-video evidence;
-- INFERENCIA / INFERENCE present and skipped;
+- every new pedagogical Markdown section;
+- TREINO / TRAINING with the recorded D2 and S1 evidence;
+- AVALIACAO / EVALUATION with the committed final-test evidence;
+- INFERENCIA / INFERENCE present, with the checkpoint and video path inactive;
 
 No training was executed and no final-test evaluation was rerun (`training_executed: false`, `final_test_evaluation_executed: false`).
 
-| Human readability review | Result |
+The human visually confirmed every new pedagogical section:
+
+- 3.1 models and selection;
+- 3.2 training hyperparameters;
+- 3.3 augmentation;
+- 4.1 evaluation algorithms;
+- 4.2 operating points;
+- 7.1 inference pipeline;
+
+| Human readability review (`PHASE_15C_ATTESTED_ITEMS_ONLY`) | Result |
 |---|---|
-| tables | PASS |
-| training curves | PASS |
-| evaluation tables | PASS |
-| confusion matrices | PASS |
-| qualitative figures | PASS |
-| video evidence | PASS |
+| pedagogical markdown | PASS |
+| training section | PASS |
+| evaluation section | PASS |
+
+The wider phase 14C readability review - tables, training curves, evaluation tables, confusion matrices, qualitative figures and video evidence - is preserved in the structured report and is not restated here as a phase 15C observation.
+
+Verbatim lines attested for phase 15C (`PHASE_15C_VERBATIM_ATTESTED_LINES_ONLY`):
 
 ```text
-Repository revision: 2e355d8012b6f1f49923c5cb3ead06760490f024
-Mode A ready. No checkpoint, dataset or inference framework loaded.
+Repository revision: 958eefaa58b785ff2f9eb4dd2751efc26dd9b09e
 Mode B installation skipped.
-Checkpoint upload skipped.
 Video upload and inference skipped.
 Mode A complete. No inference output was created.
 ```
 
 ## REAL_COLAB_MODE_B_VALIDATION
 
-**MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION: PASS** - executed by the human maintainer on 2026-09-17 at `8ce5d0375903e3e3760873e0a75ddce37cc1149b`. It was **not** re-executed for phase 14C; see the carry-forward proof above (`MODE_B_EXECUTION_SURFACE_BYTE_IDENTICAL`).
+**MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION: PASS** - executed by the human maintainer on 2026-09-17 at `8ce5d0375903e3e3760873e0a75ddce37cc1149b`. It was **not** re-executed for phase 14C or phase 15C; see the carry-forward proofs above (`MODE_B_EXECUTION_SURFACE_BYTE_IDENTICAL`).
 
 | Runtime | Observed value |
 |---|---|
@@ -143,7 +161,7 @@ Code licensing, checkpoint redistribution, dataset licensing and external-video 
 
 ## Canonical notebook and validation scope
 
-Notebook: `notebooks/construction_safety_vision_demo.ipynb`; 17891 bytes; SHA-256 `34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92`.
+Notebook: `notebooks/construction_safety_vision_demo.ipynb`; 34771 bytes; SHA-256 `5c92ff84289cf2a47cc5f5164826a099a5c43bf665ff8003f05bf254dc625dea`.
 The canonical file still clones `main`, defaults to `RUN_INFERENCE=False`, and contains no saved outputs. It was not changed to the temporary branch locally.
 In each Colab session the human changed the clone branch, so the canonical notebook was not executed verbatim, and the final candidate commit itself was not cloud executed. The phase 14A session additionally added a separate GPU diagnostic cell; that cell was never committed and is absent from every canonical notebook, so a stale saved copy of it is a session artifact rather than a delivery defect.
 Finalization relies on that disclosed cloud execution and unchanged execution-critical bytes.
@@ -157,7 +175,7 @@ Each identity is the exact Git blob content at the validated revision. All candi
 | `.python-version` | `e4fba2183587225f216eeada4c78dfab6b2e65f5` | 5 | `7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d` |
 | `configs/detector_segmenter_comparison.yaml` | `5f10336c22e9ae6f3ab7f1a7f4e3fd0f07bf0a00` | 17494 | `50c113208402986881223eec068f8bb52655212f68f593c37457ed618b539c25` |
 | `delivery/checkpoints.json` | `da88c6bc85ac7e063efe99ee2fa6f209a5004ffe` | 1295 | `8595a00d618fc57ee79b1342c31b872fe3892572dfccea9ab07a1fafc7c66ce1` |
-| `notebooks/construction_safety_vision_demo.ipynb` | `3a3bf1a549caa8de18df29898f37232f30ecdc41` | 17891 | `34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92` |
+| `notebooks/construction_safety_vision_demo.ipynb` | `703b6effe3cb3688fb523cb93edf93a6f0d09dac` | 34771 | `5c92ff84289cf2a47cc5f5164826a099a5c43bf665ff8003f05bf254dc625dea` |
 | `pyproject.toml` | `0a9dbefcda73bb4827b8be74626ff919ee1c02d0` | 5405 | `4d45c1d8d20839311e0be589f1b60bda92ab1902bc942955e79fd660ae3f2cd8` |
 | `reports/canonical_modeling_manifest.json` | `4760c62ff980d3b7643729d4d2b7797a746aa69d` | 6531 | `26ffea257c28630d8d5fb4ca8c310b5eb11f22ad85a1dbb4acea4090b5b24f8f` |
 | `reports/detection_D2_manifest.json` | `cd0e27574f8f43590bde3b55239e31f048dd6f24` | 17485 | `c5777819a405c7ac0133c5c2bd30dfeac77eca68080b647254dd52a6204ee6ef` |
@@ -221,7 +239,8 @@ No GitHub Release or full-video publication is part of this phase. The temporary
 ## Known limitations
 
 - The final candidate commit itself has not been run in Colab; surface identities are preserved.
-- Mode B was validated once, at the phase 14A revision, and was not re-executed for phase 14C; the carry-forward rests on byte identity, not a second run.
+- Mode B was validated once, at the phase 14A revision, and was not re-executed for phase 14C or phase 15C; the carry-forward rests on byte identity, not a second run.
+- Phase 15C adds no distance from that Mode B evidence, because it changed no code cell. The distance the phase 14C notebook change introduced is disclosed and unchanged here, not closed.
 - The training and evaluation sections present recorded evidence. The notebook does not retrain the models and does not rerun the spent holdout evaluation, and it offers no executable path that would.
 - Reproducing a training run needs a CUDA GPU and the materialised dataset, neither of which the notebook provides.
 - Mode B still requires manual uploads and compatible GPU capacity; future Colab changes may matter.

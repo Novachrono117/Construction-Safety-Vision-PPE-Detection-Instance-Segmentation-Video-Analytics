@@ -18,16 +18,18 @@ MARKDOWN = "reports/academic_colab_delivery.md"
 PROVENANCE = "reports/academic_colab_delivery.provenance.json"
 COMPLETE = "EXECUTABLE_ACADEMIC_COLAB_COMPLETE"
 BASELINE = "fa0bea2b072b124d65f4e9bd1b932a22d98149d2"
-# Phase 14C re-validated Mode A on a fresh CPU runtime after the notebook gained its
-# explicit training and evaluation sections. Mode B was NOT re-executed: its evidence
-# still belongs to the phase 14A revision, and the two revisions are proved
-# byte-identical across every Mode B execution input below.
-VALIDATED = "2e355d8012b6f1f49923c5cb3ead06760490f024"
+# Phase 15C re-validated Mode A on a fresh CPU runtime after the notebook gained its
+# pedagogical sections. Mode B was NOT re-executed: its evidence still belongs to the
+# phase 14A revision, and the revisions are proved byte-identical across every Mode B
+# execution input below. The previously validated Mode A revision is kept so the
+# notebook's own executable surface can be compared against it rather than asserted.
+VALIDATED = "958eefaa58b785ff2f9eb4dd2751efc26dd9b09e"
+PHASE_14C_VALIDATED = "2e355d8012b6f1f49923c5cb3ead06760490f024"
 MODE_B_VALIDATED = "8ce5d0375903e3e3760873e0a75ddce37cc1149b"
 NOTEBOOK = "notebooks/construction_safety_vision_demo.ipynb"
 NOTEBOOK_IDENTITY = {
-    "bytes": 17891,
-    "sha256": "34eed8efd8198652cb7539dc28487c9bc5cb99d41c80db4a52fb440b27ad5c92",
+    "bytes": 34771,
+    "sha256": "5c92ff84289cf2a47cc5f5164826a099a5c43bf665ff8003f05bf254dc625dea",
 }
 # The roles that actually execute during Mode B inference. Identity across the two
 # validated revisions is what carries the phase 14A inference evidence forward. The
@@ -43,22 +45,68 @@ MODE_B_ROLES = frozenset(
         "STANDALONE_DELIVERY_SUPPORT",
     }
 )
-# What the maintainer actually observed. Mode A was re-executed for phase 14C on a
+# Every human cloud validation this delivery rests on, oldest first. Phase 15C
+# re-validated Mode A only, so the earlier events are preserved rather than replaced:
+# each one is the evidence for a different revision, and none of them is restated here
+# as though it had been observed again.
+VALIDATION_EVENTS = (
+    {
+        "phase": "14A",
+        "mode": "B",
+        "result_key": "MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION",
+        "revision": MODE_B_VALIDATED,
+        "clone_target": "phase14a-colab-validation",
+        "runtime_accelerator": "GPU",
+        "run_inference": True,
+        "observation_date": "2026-09-17",
+        "result": "PASS",
+        "standing": "CURRENT_MODE_B_EVIDENCE",
+        "scope": "Optional external-video inference with both frozen checkpoints uploaded.",
+    },
+    {
+        "phase": "14C",
+        "mode": "A",
+        "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
+        "revision": PHASE_14C_VALIDATED,
+        "clone_target": "phase14c-colab-validation",
+        "runtime_accelerator": "CPU",
+        "run_inference": False,
+        "observation_date": "2026-09-18",
+        "result": "PASS",
+        "standing": "SUPERSEDED_AS_CURRENT_MODE_A_EVIDENCE_BY_PHASE_15C",
+        "scope": "Explicit executable TREINO, AVALIACAO and INFERENCIA sections.",
+    },
+    {
+        "phase": "15C",
+        "mode": "A",
+        "result_key": "ARTIFACT_ONLY_COLAB_CLOUD_EXECUTION",
+        "revision": VALIDATED,
+        "clone_target": "phase15c-colab-pedagogical-validation",
+        "runtime_accelerator": "CPU",
+        "run_inference": False,
+        "observation_date": "2026-09-18",
+        "result": "PASS",
+        "standing": "CURRENT_MODE_A_EVIDENCE",
+        "scope": "Pedagogical sections 3.1, 3.2, 3.3, 4.1, 4.2 and 7.1; Markdown only.",
+    },
+)
+# What the maintainer actually observed. Mode A was re-executed for phase 15C on a
 # fresh CPU runtime; Mode B was not re-run, and its phase 14A result is carried
 # forward only because nothing it executes changed.
 HUMAN_OBSERVATION = {
     "executor": "HUMAN_MAINTAINER",
-    "basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_14C_FINALIZATION_ATTESTATION",
+    "basis": "COLAB_SCREENSHOTS_AND_EXPLICIT_PHASE_15C_FINALIZATION_ATTESTATION",
     "observation_date": "2026-09-18",
     "mode_a": "PASS",
     "mode_a_validated_revision": VALIDATED,
     "mode_a_runtime": "CPU",
-    "mode_a_reexecuted_in_phase_14c": True,
+    "mode_a_reexecuted_in_phase_15c": True,
     "mode_b": "PASS",
     "mode_b_validated_revision": MODE_B_VALIDATED,
     "mode_b_observation_date": "2026-09-17",
-    "mode_b_reexecuted_in_phase_14c": False,
+    "mode_b_reexecuted_in_phase_15c": False,
     "agent_cloud_execution": False,
+    "validation_events": [dict(event) for event in VALIDATION_EVENTS],
 }
 REPOSITORY = (
     "Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics"
@@ -135,13 +183,13 @@ def git_bytes(root: Path, relative: str, revision: str = VALIDATED) -> bytes:
 def mode_b_surface_identity(root: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     """Compare every Mode B execution input across the two cloud-validated revisions.
 
-    Phase 14C re-validated Mode A only. Carrying the phase 14A inference evidence
+    Phase 15C re-validated Mode A only. Carrying the phase 14A inference evidence
     forward is legitimate exactly when nothing Mode B executes has changed between
     the two revisions, so that is derived here rather than asserted.
 
     Args:
         root: Repository root.
-        rows: The execution surface at the phase 14C validated revision.
+        rows: The execution surface at the phase 15C validated revision.
 
     Returns:
         The compared paths and any that differ.
@@ -161,11 +209,61 @@ def mode_b_surface_identity(root: Path, rows: list[dict[str, Any]]) -> dict[str,
         "identical": not changed,
         "roles_compared": sorted(MODE_B_ROLES),
         "notebook_excluded_because": (
-            "The notebook is the one file phase 14C changed, so it is validated in its own "
-            "right by the phase 14C Mode A cloud run rather than by this comparison."
+            "The notebook is the one file phase 15C changed, so it is compared separately by "
+            "notebook_executable_identity, which measures whether any executable cell moved."
         ),
         "conclusion": (
             "MODE_B_REVALIDATION_NOT_REQUIRED" if not changed else "MODE_B_REVALIDATION_REQUIRED"
+        ),
+    }
+
+
+def notebook_executable_identity(root: Path) -> dict[str, Any]:
+    """Measure whether phase 15C changed anything the notebook actually executes.
+
+    Mode B was not re-run for phase 15C, so the carry-forward must not rest on the
+    notebook having merely passed a Mode A run: a Mode A run never enters the Mode B
+    cells. Comparing every code cell against the previously validated notebook is what
+    turns "Markdown only" into a measurement instead of a claim.
+
+    Args:
+        root: Repository root.
+
+    Returns:
+        The compared cell counts, any differing code-cell indices and the conclusion.
+    """
+    previous = json.loads(git_bytes(root, NOTEBOOK, PHASE_14C_VALIDATED))
+    current = json.loads(git_bytes(root, NOTEBOOK, VALIDATED))
+
+    def cells(notebook: dict[str, Any], kind: str) -> list[dict[str, Any]]:
+        return [cell for cell in notebook["cells"] if cell["cell_type"] == kind]
+
+    before, after = cells(previous, "code"), cells(current, "code")
+    if len(before) != len(after):
+        changed: list[Any] = ["CODE_CELL_COUNT_CHANGED"]
+    else:
+        pairs = enumerate(zip(before, after, strict=True))
+        changed = [index for index, pair in pairs if pair[0] != pair[1]]
+    return {
+        "previous_validated_revision": PHASE_14C_VALIDATED,
+        "current_validated_revision": VALIDATED,
+        "code_cells_before": len(before),
+        "code_cells_after": len(after),
+        "markdown_cells_before": len(cells(previous, "markdown")),
+        "markdown_cells_after": len(cells(current, "markdown")),
+        "changed_code_cells": changed,
+        "code_cells_identical": not changed,
+        "comparison": "FULL_CODE_CELL_OBJECTS_INCLUDING_METADATA",
+        "change_kind": "MARKDOWN_ONLY" if not changed else "EXECUTABLE_CHANGE",
+        "conclusion": (
+            "NOTEBOOK_EXECUTABLE_SURFACE_UNCHANGED"
+            if not changed
+            else "NOTEBOOK_EXECUTABLE_SURFACE_CHANGED"
+        ),
+        "residual_gap_note": (
+            "This proof is relative to the phase 14C validated notebook. The notebook's code "
+            "cells did change between the phase 14A Mode B revision and phase 14C; that "
+            "pre-existing, phase 14C-disclosed distance is unchanged by phase 15C, not closed."
         ),
     }
 
@@ -311,6 +409,11 @@ def provenance_problems(provenance: dict[str, Any]) -> list[str]:
         problems.append("Mode B execution surface changed; carried-forward evidence is invalid")
     if identity_record.get("mode_b_validated_revision") != MODE_B_VALIDATED:
         problems.append("Mode B evidence revision mismatch")
+    notebook_record = provenance.get("notebook_executable_surface_identity", {})
+    if not notebook_record.get("code_cells_identical") or notebook_record.get("changed_code_cells"):
+        problems.append("Notebook executable surface changed; carried-forward Mode B is invalid")
+    if notebook_record.get("current_validated_revision") != VALIDATED:
+        problems.append("Notebook executable-surface proof revision mismatch")
     quality = provenance.get("quality_gates", {})
     pytest_result = quality.get("pytest", {})
     if (
@@ -360,12 +463,14 @@ def build_report(provenance: dict[str, Any]) -> dict[str, Any]:
     }
     return {
         "schema_version": 1,
-        "phase": "14C",
+        "phase": "15C",
         "classification": COMPLETE,
         "assignment_wording_status": "COLAB_EXACT_WORDING_SATISFIED",
         "baseline_commit": BASELINE,
         "validated_temporary_revision": VALIDATED,
         "mode_b_surface_identity": provenance["mode_b_surface_identity"],
+        "notebook_executable_surface_identity": provenance["notebook_executable_surface_identity"],
+        "validation_events": provenance["human_observation"]["validation_events"],
         "notebook_sections": [
             "1 Overview",
             "2 Dataset and classes",
@@ -419,6 +524,12 @@ def build_report(provenance: dict[str, Any]) -> dict[str, Any]:
             "final_candidate_commit_executed_in_cloud": False,
             "canonical_notebook_executed_verbatim": False,
             "documented_human_session_deltas": [
+                "Phase 15C: clone target changed once in the Colab session from main "
+                "to phase15c-colab-pedagogical-validation. This is a validation-session "
+                "delta, not a repository defect: the committed notebook still clones main.",
+                "Phase 15C: Mode A ran top to bottom on a fresh CPU runtime with "
+                "RUN_INFERENCE=False and the canonical compare/cpu defaults.",
+                "Phase 15C: Mode B was not re-executed; no checkpoint or video was uploaded.",
                 "Phase 14C: clone target changed once in the Colab session from main "
                 "to phase14c-colab-validation.",
                 "Phase 14C: Mode A ran top to bottom on a fresh CPU runtime with "
@@ -432,10 +543,12 @@ def build_report(provenance: dict[str, Any]) -> dict[str, Any]:
                 "Mode A displays.",
             ],
             "finalization_basis": (
-                "Phase 14C human Mode A cloud evidence on the changed notebook, plus a derived "
-                "byte-identity proof that every Mode B execution input is unchanged since the "
-                "phase 14A inference validation; only delivery documentation, reports, status "
-                "and verification code change during finalization."
+                "Phase 15C human Mode A cloud evidence on the changed notebook, plus two derived "
+                "byte-identity proofs: every non-notebook Mode B execution input is unchanged "
+                "since the phase 14A inference validation, and the notebook's own code cells are "
+                "unchanged since the phase 14C validated notebook, so phase 15C added no "
+                "executable byte. Only delivery documentation, reports, status and verification "
+                "code change during finalization."
             ),
         },
         "validation_evidence": {
@@ -465,21 +578,33 @@ def build_report(provenance: dict[str, Any]) -> dict[str, Any]:
                 "traceback_observed": False,
                 "observed_messages": [
                     f"Repository revision: {VALIDATED}",
-                    "Mode A ready. No checkpoint, dataset or inference framework loaded.",
                     "Mode B installation skipped.",
-                    "Checkpoint upload skipped.",
                     "Video upload and inference skipped.",
                     "Mode A complete. No inference output was created.",
                 ],
+                "observed_messages_scope": "PHASE_15C_VERBATIM_ATTESTED_LINES_ONLY",
                 "sections_rendered": [
-                    "dataset and classes",
-                    "TREINO / TRAINING with D2 and S1 recipes and committed curves",
-                    "AVALIACAO / EVALUATION with final-test metrics and both confusion matrices",
-                    "qualitative evidence",
-                    "real-video evidence",
-                    "INFERENCIA / INFERENCE present and skipped",
+                    "every new pedagogical Markdown section",
+                    "TREINO / TRAINING with the recorded D2 and S1 evidence",
+                    "AVALIACAO / EVALUATION with the committed final-test evidence",
+                    "INFERENCIA / INFERENCE present, with the checkpoint and video path inactive",
+                ],
+                "pedagogical_sections_confirmed": [
+                    "3.1 models and selection",
+                    "3.2 training hyperparameters",
+                    "3.3 augmentation",
+                    "4.1 evaluation algorithms",
+                    "4.2 operating points",
+                    "7.1 inference pipeline",
                 ],
                 "human_readability_review": {
+                    "pedagogical_markdown": "PASS",
+                    "training_section": "PASS",
+                    "evaluation_section": "PASS",
+                },
+                "human_readability_review_scope": "PHASE_15C_ATTESTED_ITEMS_ONLY",
+                "earlier_readability_review": {
+                    "phase": "14C",
                     "tables": "PASS",
                     "training_curves": "PASS",
                     "evaluation_tables": "PASS",
@@ -577,7 +702,11 @@ def build_report(provenance: dict[str, Any]) -> dict[str, Any]:
             "The final candidate commit itself has not been run in Colab; "
             "surface identities are preserved.",
             "Mode B was validated once, at the phase 14A revision, and was not re-executed "
-            "for phase 14C; the carry-forward rests on byte identity, not a second run.",
+            "for phase 14C or phase 15C; the carry-forward rests on byte identity, "
+            "not a second run.",
+            "Phase 15C adds no distance from that Mode B evidence, because it changed no "
+            "code cell. The distance the phase 14C notebook change introduced is disclosed "
+            "and unchanged here, not closed.",
             "The training and evaluation sections present recorded evidence. The notebook "
             "does not retrain the models and does not rerun the spent holdout evaluation, "
             "and it offers no executable path that would.",
@@ -605,18 +734,33 @@ def render_markdown(report: dict[str, Any]) -> str:
     mode_b = evidence["REAL_COLAB_MODE_B_VALIDATION"]
     runtime = mode_b["runtime"]
     identity_record = report["mode_b_surface_identity"]
+    notebook_record = report["notebook_executable_surface_identity"]
     training = report["training_section"]
     evaluation = report["evaluation_section"]
     lines = [
-        "# Phase 14C - executable academic Colab with explicit training and evaluation",
+        "# Phase 15C - executable academic Colab with pedagogical training and evaluation",
         "",
         f"**Classification:** `{report['classification']}`. "
         f"**Assignment wording:** `{report['assignment_wording_status']}`.",
         "",
         "Human cloud validation and local metadata verification are separate evidence categories.",
         f"Approved scientific baseline: `{BASELINE}`.",
-        f"Mode A validated revision: `{VALIDATED}` (phase 14C, fresh CPU runtime).",
+        f"Mode A validated revision: `{VALIDATED}` (phase 15C, fresh CPU runtime).",
         f"Mode B validated revision: `{MODE_B_VALIDATED}` (phase 14A, not re-executed).",
+        "",
+        "## Human cloud validation events",
+        "",
+        "Each event is evidence for the revision it names. A later event does not restate an "
+        "earlier one as though it had been observed again, and none is removed when superseded.",
+        "",
+        "| Phase | Mode | Revision | Runtime | RUN_INFERENCE | Date | Result | Standing |",
+        "|---|---|---|---|---|---|---|---|",
+        *[
+            f"| {event['phase']} | {event['mode']} | `{event['revision']}` "
+            f"| {event['runtime_accelerator']} | {str(event['run_inference']).lower()} "
+            f"| {event['observation_date']} | {event['result']} | `{event['standing']}` |"
+            for event in report["validation_events"]
+        ],
         "",
         "## Notebook structure",
         "",
@@ -653,12 +797,23 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         "## Mode B carry-forward",
         "",
-        f"**{identity_record['conclusion']}.** Phase 14C re-validated Mode A only. Every one of "
+        f"**{identity_record['conclusion']}.** Phase 15C re-validated Mode A only. Every one of "
         f"the {identity_record['compared_count']} Mode B execution inputs is byte-identical "
         f"between `{MODE_B_VALIDATED}` and `{VALIDATED}`, so the phase 14A inference evidence "
         "still describes the code that would run. This is derived by comparing Git blobs, not "
         f"asserted. Changed paths: {identity_record['changed_paths'] or 'none'}. "
         f"{identity_record['notebook_excluded_because']}.",
+        "",
+        f"The notebook itself is measured separately: **{notebook_record['conclusion']}**. Its "
+        f"{notebook_record['code_cells_after']} code cells are compared as whole objects "
+        f"(`{notebook_record['comparison']}`) against the phase 14C validated notebook "
+        f"`{notebook_record['previous_validated_revision']}`; changed code cells: "
+        f"{notebook_record['changed_code_cells'] or 'none'}. Phase 15C is therefore "
+        f"`{notebook_record['change_kind']}`, growing the Markdown from "
+        f"{notebook_record['markdown_cells_before']} to "
+        f"{notebook_record['markdown_cells_after']} cells while executing identically. "
+        "This matters because a Mode A run never enters the Mode B cells, so a Mode A pass "
+        f"alone could not validate them. {notebook_record['residual_gap_note']}",
         "",
         "## LOCAL_IMPLEMENTATION_VERIFICATION",
         "",
@@ -688,12 +843,22 @@ def render_markdown(report: dict[str, Any]) -> str:
         "`final_test_evaluation_executed: "
         f"{str(mode_a['final_test_evaluation_executed']).lower()}`).",
         "",
-        "| Human readability review | Result |",
+        "The human visually confirmed every new pedagogical section:",
+        "",
+        *[f"- {item};" for item in mode_a["pedagogical_sections_confirmed"]],
+        "",
+        f"| Human readability review (`{mode_a['human_readability_review_scope']}`) | Result |",
         "|---|---|",
         *[
             f"| {key.replace('_', ' ')} | {value} |"
             for key, value in mode_a["human_readability_review"].items()
         ],
+        "",
+        "The wider phase 14C readability review - tables, training curves, evaluation tables, "
+        "confusion matrices, qualitative figures and video evidence - is preserved in the "
+        "structured report and is not restated here as a phase 15C observation.",
+        "",
+        f"Verbatim lines attested for phase 15C (`{mode_a['observed_messages_scope']}`):",
         "",
         "```text",
         *mode_a["observed_messages"],
@@ -703,7 +868,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         "**MODE_B_COLAB_OPTIONAL_INFERENCE_VALIDATION: PASS** - executed by the human "
         f"maintainer on {mode_b['observation_date']} at `{MODE_B_VALIDATED}`. It was **not** "
-        f"re-executed for phase 14C; see the carry-forward proof above "
+        f"re-executed for phase 14C or phase 15C; see the carry-forward proofs above "
         f"(`{mode_b['carried_forward_basis']}`).",
         "",
         "| Runtime | Observed value |",
@@ -811,6 +976,8 @@ def validate(root: Path) -> list[str]:
         problems.extend(notebook_problems((root / NOTEBOOK).read_bytes()))
         if provenance["mode_b_surface_identity"] != mode_b_surface_identity(root, expected_surface):
             problems.append("Mode B carry-forward proof does not re-derive")
+        if provenance["notebook_executable_surface_identity"] != notebook_executable_identity(root):
+            problems.append("Notebook executable-surface proof does not re-derive")
         expected = build_report(provenance)
         if report != expected:
             problems.append("Report claims disagree with preserved validation evidence")
@@ -845,6 +1012,7 @@ def write_reports(root: Path, quality_gates: dict[str, Any]) -> None:
         "source_records": source_records(root),
         "execution_surface": surface,
         "mode_b_surface_identity": mode_b_surface_identity(root, surface),
+        "notebook_executable_surface_identity": notebook_executable_identity(root),
         "quality_gates": quality_gates,
         "generator": "src/construction_safety_vision/academic_colab_delivery.py",
         "generation_policy": (

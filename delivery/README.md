@@ -10,10 +10,11 @@ selection and tuning are closed. The overall submission package remains incomple
 The [two-mode Colab notebook](../notebooks/construction_safety_vision_demo.ipynb)
 provides evidence-only Mode A and optional checkpoint-upload inference Mode B.
 Mode A passed on a CPU runtime at revision
-`2e355d8012b6f1f49923c5cb3ead06760490f024` after the notebook gained explicit
-TREINO and AVALIACAO sections; Mode B passed on a Tesla T4 at revision
+`958eefaa58b785ff2f9eb4dd2751efc26dd9b09e` after the notebook gained its
+pedagogical sections; Mode B passed on a Tesla T4 at revision
 `8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was not re-executed, because all
-25 of its execution inputs are byte-identical between the two revisions. See
+25 of its execution inputs are byte-identical between the validated revisions and
+the notebook's own code cells are unchanged. See
 [setup and boundaries](COLAB.md) and the
 [cloud validation record](../reports/academic_colab_delivery.md).
 
