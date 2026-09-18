@@ -50,8 +50,7 @@ from the figures under `reports/figures/final_test/`.
 
 The repository is public. The canonical notebook clones `main`, and the
 [production Colab URL](https://colab.research.google.com/github/Novachrono117/Construction-Safety-Vision-PPE-Detection-Instance-Segmentation-Video-Analytics/blob/main/notebooks/construction_safety_vision_demo.ipynb)
-targets that branch. Its final content will become available after the final
-Phase 14A commit is pushed to `main`; this finalization does not perform that push.
+targets that branch, and the notebook is published there.
 
 ## Mode A — no checkpoints
 

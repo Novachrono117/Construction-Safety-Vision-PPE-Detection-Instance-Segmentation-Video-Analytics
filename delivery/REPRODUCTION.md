@@ -10,10 +10,11 @@ without weights, a GPU, or project dependency installation. Its optional Mode B
 installs the locked runtime and accepts only uploaded D2/S1 bytes matching their
 recorded hashes before running an external-video demo.
 
-See [Colab setup](COLAB.md) and the [Phase 14A validation report](../reports/academic_colab_delivery.md).
+See [Colab setup](COLAB.md) and the [validation report](../reports/academic_colab_delivery.md).
 Local implementation checks and both human-executed Colab modes passed, with
-cloud evidence tied to `8ce5d0375903e3e3760873e0a75ddce37cc1149b`.
-The canonical notebook targets `main`; its final main publication is pending.
+cloud evidence tied to `2e355d8012b6f1f49923c5cb3ead06760490f024` (Mode A, CPU)
+and `8ce5d0375903e3e3760873e0a75ddce37cc1149b` (Mode B, Tesla T4).
+The canonical notebook targets `main` and is published there.
 
 GAP-004 (executable Colab) is RESOLVED under the human-approved two-mode
 delivery scope; assignment requirement R18 is COMPLETE. Mode A reads existing

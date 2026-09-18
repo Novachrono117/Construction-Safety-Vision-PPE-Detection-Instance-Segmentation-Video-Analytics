@@ -1,7 +1,7 @@
 # Delivery entrypoint
 
-**Phase 14A: executable academic Colab complete.** Mode A and optional Mode B
-passed human-executed cloud validation; final publication on `main` is pending.
+**Executable academic Colab and final technical report complete, and published on
+`main`.** Mode A and optional Mode B passed human-executed cloud validation.
 Scientific training and final evaluation are complete. D2 and S1 are frozen;
 selection and tuning are closed. The overall submission package remains incomplete.
 
@@ -9,8 +9,12 @@ selection and tuning are closed. The overall submission package remains incomple
 
 The [two-mode Colab notebook](../notebooks/construction_safety_vision_demo.ipynb)
 provides evidence-only Mode A and optional checkpoint-upload inference Mode B.
-Both modes passed at revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b`;
-Mode B used a Tesla T4. See [setup and boundaries](COLAB.md) and the
+Mode A passed on a CPU runtime at revision
+`2e355d8012b6f1f49923c5cb3ead06760490f024` after the notebook gained explicit
+TREINO and AVALIACAO sections; Mode B passed on a Tesla T4 at revision
+`8ce5d0375903e3e3760873e0a75ddce37cc1149b` and was not re-executed, because all
+25 of its execution inputs are byte-identical between the two revisions. See
+[setup and boundaries](COLAB.md) and the
 [cloud validation record](../reports/academic_colab_delivery.md).
 
 | Read this | Role |
@@ -46,9 +50,11 @@ Mode B used a Tesla T4. See [setup and boundaries](COLAB.md) and the
 - [Academic GenAI disclosure](AI_USAGE.md).
 - [Publication recommendations](PUBLICATION.md): a plan, no settings changed.
 
-The full recruiter README, academic technical report, pitch and public video
-distribution are pending. The academic Colab, real-video deliverable and
-validation gallery are complete. Checkpoints still require manual upload
-(GAP-008 OPEN); public demo distribution remains partial (GAP-010
-PARTIALLY_RESOLVED). No full clean-room research reproduction has been
-demonstrated (GAP-014 OPEN).
+The recorded pitch and public video distribution are pending. The academic Colab,
+the [final technical report](../academic/final_report.md), the real-video
+deliverable, the validation gallery and the public project README are complete.
+Checkpoints still require manual upload (GAP-008 OPEN); public demo distribution
+remains partial (GAP-010 PARTIALLY_RESOLVED). No full clean-room research
+reproduction has been demonstrated (GAP-014 OPEN). The live tracker's own
+delivery-state fields are refreshed by the separate final delivery audit, not by
+the work they describe.

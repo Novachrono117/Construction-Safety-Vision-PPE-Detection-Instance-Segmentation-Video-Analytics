@@ -51,9 +51,11 @@ Delivery planning targets 19 September, before the 20 September 2026 23:55 deadl
 | 13 | Video inference and tracking | 13B real >=30-second video complete locally; public distribution pending; tracking deferred |
 | 13A | Real video runtime foundation | complete; [synthetic engineering evidence](video_runtime_foundation.md) |
 | 13B | Final real-video demonstration | complete; [104.52-second real output evidence](final_real_video_demo.md); public distribution pending |
-| 14 | Submission package and reproducibility audit | partial: 14A/14B approved scopes complete; exact Colab wording, final README, pitch and full reproduction audit remain pending |
-| 14A | Executable academic Colab | complete in approved two-mode scope; published; exact training/evaluation wording remains partial |
-| 14B | Final academic technical report | complete; [ten-page report and exact assignment audit](final_academic_report_delivery.md); not pushed |
+| 14 | Submission package and reproducibility audit | partial: 14A/14B/14C approved scopes complete and published on `main`; the recorded pitch and the full clean-clone reproduction audit remain pending |
+| 14A | Executable academic Colab | complete in approved two-mode scope; published |
+| 14B | Final academic technical report | complete; [ten-page report and exact assignment audit](final_academic_report_delivery.md); published on `main` at `b13d6852e075198695f11cbfc99209ff4fb58878` |
+| 14C | Colab alignment with the exact assignment wording | complete; `COLAB_EXACT_WORDING_SATISFIED` - explicit executable TREINO / AVALIACAO / INFERENCIA sections, Mode A re-validated on a CPU Colab runtime; published on `main` at `775e71c1e3d6ba6ea7f4e4cdad3c7a11377410ce` |
+| 15A | Public repository presentation | complete; the root README is now the public entry point for academic, recruiter and engineering readers, built entirely from committed evidence; no model executed and no scientific artifact changed |
 
 ---
 
@@ -1867,6 +1869,7 @@ visible failures; no unobserved failure mode is invented to meet older wording.
 
 | Date | Change |
 | --- | --- |
+| 2026-09-18 | Phase 14B (final academic technical report) and Phase 14C (`COLAB_EXACT_WORDING_SATISFIED`: explicit executable TREINO / AVALIACAO / INFERENCIA sections, Mode A re-validated on a fresh CPU Colab runtime at `2e355d8012b6f1f49923c5cb3ead06760490f024`) were published to `main`, which now points at `775e71c1e3d6ba6ea7f4e4cdad3c7a11377410ce`. Phase 15A then replaced the development-log root README with a public project README aimed at an academic evaluator, a technical recruiter and an ML engineer, and retired the remaining stale publication statements in `delivery/README.md`, `delivery/COLAB.md`, `delivery/REPRODUCTION.md` and this status table. Every headline number in the new README is read from a committed artifact; the development history stays here and in the per-phase reports. **No model was executed, no training or evaluation was run, no holdout byte was read, no metric was recomputed and no scientific artifact changed.** The live delivery tracker's own `readme_final_professionalization` field is refreshed by the separate final delivery audit, not by this phase. |
 | 2026-09-17 | Phase 14A completed the executable academic Colab delivery. Local implementation checks, real Mode A execution and real Mode B inference are recorded separately in [academic_colab_delivery.md](academic_colab_delivery.md). Both cloud modes passed at temporary revision `8ce5d0375903e3e3760873e0a75ddce37cc1149b`; the canonical notebook still clones `main`, and its execution surface is preserved. GAP-004 is RESOLVED and assignment R18 COMPLETE under the human-approved artifact-display plus optional external-inference scope; no validation metrics were recomputed and GAP-014 remains OPEN. The five-second output retains `SOURCE_LICENSE_UNSPECIFIED` and is NOT_PUBLICATION_READY. Final main publication, the complete submission package and video distribution remain pending. No scientific work was reopened. |
 | 2026-09-01 | Roadmap created during the foundation phase (phases 1-14 defined). |
 | 2026-09-02 | Phase 4A completed: 436 source originals acquired and audited. No exact duplicates; 6 cross-split near-duplicate candidates pending visual confirmation; vest_loose present in only 8 images and absent from the provider test split; source project has drifted 76 annotations ahead of the frozen v4 export. Provider split classified UNDETERMINED_PENDING_VISUAL_REVIEW. |
